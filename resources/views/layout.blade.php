@@ -156,37 +156,37 @@
                 </a>
             </li><!-- End Profile Page Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="{{route ('showDataDiri')}}">
-                  <i class="bi bi-person"></i>
-                  <span>Data Diri</span>
+                <a class="nav-link collapsed" href="{{ route('showDataDiri') }}">
+                    <i class="bi bi-person"></i>
+                    <span>Data Diri</span>
                 </a>
-              </li><!-- End Profile Page Nav -->
-              <li class="nav-heading">Suggestion System</li>
+            </li><!-- End Profile Page Nav -->
+            <li class="nav-heading">Suggestion Systems</li>
 
-              <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="">
-                  <i class="bi bi-person"></i>
-                  <span>Dashboard</span>
+                    <i class="bi bi-person"></i>
+                    <span>Dashboard</span>
                 </a>
-              </li><!-- End Profile Page Nav -->
-              <li class="nav-item">
-                <a class="nav-link collapsed" href="{{route ('showSS')}}">
-                  <i class="bi bi-journal-text fs-6"></i>
-                  <span>Form SS</span>
+            </li><!-- End Profile Page Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{{ route('showSS') }}">
+                    <i class="bi bi-journal-text fs-6"></i>
+                    <span>Form SS</span>
                 </a>
-              </li><!-- End Profile Page Nav -->
-              <li class="nav-item">
+            </li><!-- End Profile Page Nav -->
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="">
-                  <i class="bi bi-person"></i>
-                  <span>Approve SS</span>
+                    <i class="bi bi-person"></i>
+                    <span>Approve SS</span>
                 </a>
-              </li><!-- End Profile Page Nav -->
-              <li class="nav-item">
+            </li><!-- End Profile Page Nav -->
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="">
-                  <i class="bi bi-person"></i>
-                  <span>PIC Penilai | Komite</span>
+                    <i class="bi bi-person"></i>
+                    <span>PIC Penilai | Komite</span>
                 </a>
-              </li><!-- End Profile Page Nav -->
+            </li><!-- End Profile Page Nav -->
             @if (Auth::check())
                 @if (Auth::user()->role_id == 7 ||
                         Auth::user()->role_id == 8 ||
