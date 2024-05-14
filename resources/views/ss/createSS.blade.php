@@ -442,62 +442,58 @@
             }
 
             function openEditModal(id) {
-                // Call the endpoint to get the sumbang saran data by ID
+                // Panggil endpoint untuk mendapatkan data sumbang saran berdasarkan ID
                 $.ajax({
                     url: '/editSS/' + id,
                     type: 'GET',
                     success: function(response) {
-                        // Fill the modal form with the retrieved data
-                        document.getElementById('editTglPengajuan').value = response.tgl_pengajuan_ide;
-                        document.getElementById('editLokasiIde').value = response.lokasi_ide;
-                        document.getElementById('editTglDiterapkan').value = response.tgl_diterapkan;
-                        document.getElementById('editJudulIde').value = response.judul;
-                        document.getElementById('editKeadaanSebelumnya').value = response.keadaan_sebelumnya;
-                        document.getElementById('editUsulanIde').value = response.usulan_ide;
-                        document.getElementById('editSumbangSaranId').value = response.id;
-                        document.getElementById('editKeuntungan').value = response.keuntungan_ide;
+                        // Isi form modal dengan data yang diperoleh
+                        $('#editTglPengajuan').val(response.tgl_pengajuan_ide);
+                        $('#editLokasiIde').val(response.lokasi_ide);
+                        $('#editTglDiterapkan').val(response.tgl_diterapkan);
+                        $('#editJudulIde').val(response.judul);
+                        $('#editKeadaanSebelumnya').val(response.keadaan_sebelumnya);
+                        $('#editUsulanIde').val(response.usulan_ide);
+                        $('#editSumbangSaranId').val(response.id);
+                        $('#editKeuntungan').val(response.keuntungan_ide);
 
-                        // Set the file labels and hidden inputs if files exist
+                        // Atur label file dan input tersembunyi jika file ada
                         if (response.edit_image_url) {
-                            document.getElementById('editImagePreview').src = response
-                                .edit_image_url; // Set image src
-                            document.getElementById('editImagePreview').style.display = 'block'; // Show the image
+                            $('#editImagePreview').attr('src', response.edit_image_url)
+                                .show(); // Atur src gambar dan tampilkan
                         } else {
-                            document.getElementById('editImagePreview').src = ''; // Clear image src
-                            document.getElementById('editImagePreview').style.display = 'none'; // Hide the image
+                            $('#editImagePreview').attr('src', '').hide(); // Kosongkan src gambar dan sembunyikan
                         }
                         if (response.edit_image_2_url) {
-                            document.getElementById('editImage2Preview').src = response
-                                .edit_image_2_url; // Set image src
-                            document.getElementById('editImage2Preview').style.display = 'block'; // Show the image
+                            $('#editImage2Preview').attr('src', response.edit_image_2_url)
+                                .show(); // Atur src gambar dan tampilkan
                         } else {
-                            document.getElementById('editImage2Preview').src = ''; // Clear image src
-                            document.getElementById('editImage2Preview').style.display = 'none'; // Hide the image
+                            $('#editImage2Preview').attr('src', '').hide(); // Kosongkan src gambar dan sembunyikan
                         }
 
-                        // Show the modal
+                        // Tampilkan modal
                         $('#editSumbangSaranModal').modal('show');
                     },
                     error: function(xhr) {
-                        // Handle errors if any
+                        // Tangani kesalahan jika ada
                         console.log(xhr.responseText);
                     }
                 });
             }
 
             function submitEditForm() {
-                // Get the form data
+                // Dapatkan data dari form
                 var formData = new FormData($('#editSumbangSaranForm')[0]);
 
-                // Send the form data using AJAX
+                // Kirim data form menggunakan AJAX
                 $.ajax({
                     url: '/updateSS',
-                    type: 'POST', // Use POST method to simulate PUT
+                    type: 'POST', // Gunakan metode POST untuk mensimulasikan PUT
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        // Display a success message using SweetAlert
+                        // Tampilkan pesan sukses menggunakan SweetAlert
                         Swal.fire({
                             title: 'Berhasil!',
                             text: 'Data berhasil diperbarui.',
@@ -505,12 +501,16 @@
                             confirmButtonText: 'OK'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                // Close the modal
+                                // Tutup modal
                                 $('#editSumbangSaranModal').modal('hide');
-                                // Optionally reload the page or update the table to reflect changes
+                                // Pilihan: reload halaman atau perbarui tabel untuk mencerminkan perubahan
                                 window.location.href = '{{ route('showSS') }}';
                             }
                         });
+                    },
+                    error: function(xhr) {
+                        // Tangani kesalahan jika ada
+                        console.log(xhr.responseText);
                     }
                 });
             }
@@ -526,15 +526,14 @@
                     confirmButtonText: 'Ya, hapus!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        fetch(`/delete-ss/${id}`, {
-                                method: 'POST',
-                                headers: {
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
+                        $.ajax({
+                            url: `/delete-ss/${id}`,
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json'
+                            },
+                            success: function(data) {
                                 if (data.message === 'Data berhasil dihapus') {
                                     Swal.fire(
                                         'Dihapus!',
@@ -551,15 +550,16 @@
                                         'error'
                                     );
                                 }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
+                            },
+                            error: function(xhr) {
+                                console.error('Error:', xhr.responseText);
                                 Swal.fire(
                                     'Gagal!',
                                     'Terjadi kesalahan saat menghapus data.',
                                     'error'
                                 );
-                            });
+                            }
+                        });
                     }
                 });
             }
