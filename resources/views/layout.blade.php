@@ -68,7 +68,7 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <h3 class="fw-bold mt-2 ps-5">DMS Adasi</h3>
+            <h3 class="fw-bold mt-2 ps-5">DMS Adasi DS8</h3>
             {{-- <a href="" class="logo d-flex align-items-center">
                 <span class="d-none d-lg-block"></span>
             </a> --}}
