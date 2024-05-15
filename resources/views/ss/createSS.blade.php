@@ -81,7 +81,7 @@
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="sumbangSaranModalLabel">Tambah Sumbang Saran</h5>
+                            <h5 class="modal-title" id="sumbangSaranModalLabel">Form Tambah SS</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -170,7 +170,7 @@
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editSumbangSaranModalLabel">Edit Sumbang Saran</h5>
+                            <h5 class="modal-title" id="editSumbangSaranModalLabel">Form Edit SS</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
@@ -277,7 +277,7 @@
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="viewSumbangSaranModalLabel">View Sumbang Saran</h5>
+                            <h5 class="modal-title" id="viewSumbangSaranModalLabel">Form View SS</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
@@ -376,10 +376,40 @@
         <script>
             // ADD
             function submitForm() {
-                // Ambil data dari formulir
-                var formData = new FormData(document.getElementById('sumbangSaranForm'));
+                // Ambil elemen formulir
+                var form = document.getElementById('sumbangSaranForm');
 
-                // Kirim data menggunakan AJAX ke route simpanSS
+                // Periksa field yang required
+                var requiredFields = form.querySelectorAll('[required]');
+                var valid = true;
+                var firstInvalidField = null;
+                requiredFields.forEach(function(field) {
+                    if (!field.value.trim()) {
+                        valid = false;
+                        if (!firstInvalidField) {
+                            firstInvalidField = field;
+                        }
+                    }
+                });
+
+                if (!valid) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Harap isi semua field yang wajib diisi.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        if (firstInvalidField) {
+                            firstInvalidField.focus();
+                        }
+                    });
+                    return;
+                }
+
+                // Buat objek formData
+                var formData = new FormData(form);
+
+                // Kirim permintaan AJAX
                 $.ajax({
                     url: '{{ route('simpanSS') }}',
                     method: 'POST',
@@ -387,9 +417,9 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        // Handle success
+                        // Handle sukses
                         console.log(response);
-                        // Tampilkan SweetAlert
+                        // Tampilkan alert sukses
                         Swal.fire({
                             title: 'Berhasil!',
                             text: 'Data berhasil disimpan.',
@@ -399,9 +429,9 @@
                             if (result.isConfirmed) {
                                 // Tutup modal
                                 $('#sumbangSaranModal').modal('hide');
-                                // Bersihkan formulir
-                                document.getElementById('sumbangSaranForm').reset();
-                                // Redirect to showSS
+                                // Reset formulir
+                                form.reset();
+                                // Redirect ke showSS
                                 window.location.href = '{{ route('showSS') }}';
                             }
                         });

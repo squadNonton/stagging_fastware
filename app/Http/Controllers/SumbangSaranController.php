@@ -43,7 +43,6 @@ class SumbangSaranController extends Controller
             'judul' => 'required|string',
             'keadaan_sebelumnya' => 'required|string',
             'usulan_ide' => 'required|string',
-            'keuntungan_ide' => 'required|string',
         ]);
 
         // Simpan data
