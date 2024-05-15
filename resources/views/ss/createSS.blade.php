@@ -474,7 +474,7 @@
             function openEditModal(id) {
                 // Panggil endpoint untuk mendapatkan data sumbang saran berdasarkan ID
                 $.ajax({
-                    url: '/editSS/' + id,
+                    url: '{{ route('editSS', ['id' => ':id']) }}'.replace(':id', id),
                     type: 'GET',
                     success: function(response) {
                         // Isi form modal dengan data yang diperoleh
@@ -517,7 +517,7 @@
 
                 // Kirim data form menggunakan AJAX
                 $.ajax({
-                    url: '/updateSS',
+                    url: '{{ route('updateSS') }}',
                     type: 'POST', // Gunakan metode POST untuk mensimulasikan PUT
                     data: formData,
                     processData: false,
@@ -595,7 +595,7 @@
             function showViewSumbangSaranModal(id) {
                 // Gunakan AJAX untuk mengambil data berdasarkan ID
                 $.ajax({
-                    url: '/getSumbangSaran/' + id, // Endpoint untuk mendapatkan data Sumbang Saran
+                    url: '{{ route('getSumbangSaran', ['id' => ':id']) }}'.replace(':id', id), // Endpoint untuk mendapatkan data Sumbang Saran
                     type: 'GET',
                     success: function(data) {
                         // Isi form dengan data yang diambil
