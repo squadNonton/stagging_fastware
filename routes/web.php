@@ -9,6 +9,7 @@ use App\Http\Controllers\HandlingController;
 use App\Http\Controllers\MesinController;
 use App\Http\Controllers\PreventiveController;
 use App\Http\Controllers\SparepartController;
+use App\Http\Controllers\SumbangSaranController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -163,9 +164,14 @@ Route::middleware(['web', 'auth'])->group(function () {
 
     // SS
     Route::get('/showSS', 'App\Http\Controllers\SumbangSaranController@showSS')->name('showSS');
+
     Route::post('/simpanSS', 'App\Http\Controllers\SumbangSaranController@simpanSS')->name('simpanSS');
-    Route::get('/editSS/{id}', 'App\Http\Controllers\SumbangSaranController@editSS')->name('editSS');
-    Route::post('/updateSS', 'App\Http\Controllers\SumbangSaranController@updateSS')->name('updateSS');
-    Route::post('/delete-ss/{id}', 'App\Http\Controllers\SumbangSaranController@deleteSS')->name('delete-ss');
-    Route::get('/getSumbangSaran/{id}', 'App\Http\Controllers\SumbangSaranController@getSumbangSaran')->name('getSumbangSaran');
+
+    Route::get('/editSS/{id}', [SumbangSaranController::class, 'editSS'])->name('editSS');
+    Route::post('/updateSS', [SumbangSaranController::class, 'updateSS'])->name('updateSS');
+    Route::delete('/delete-ss/{id}', [SumbangSaranController::class, 'deleteSS'])->name('deleteSS');
+
+    Route::get('/getSumbangSaran/{id}', [SumbangSaranController::class, 'getSumbangSaran'])->name('getSumbangSaran');
+
+    // Route::get('/getSumbangSaran/{id}', 'App\Http\Controllers\SumbangSaranController@getSumbangSaran')->name('getSumbangSaran');
 });

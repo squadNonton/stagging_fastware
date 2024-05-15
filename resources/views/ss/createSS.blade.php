@@ -557,11 +557,10 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: `/delete-ss/${id}`,
-                            type: 'POST',
+                            url: '{{ route('deleteSS', ['id' => ':id']) }}'.replace(':id', id),
+                            type: 'DELETE', // Ganti dengan DELETE
                             headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Content-Type': 'application/json'
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             success: function(data) {
                                 if (data.message === 'Data berhasil dihapus') {
@@ -570,7 +569,6 @@
                                         'Data berhasil dihapus.',
                                         'success'
                                     ).then(() => {
-                                        // Lakukan tindakan tambahan seperti menyegarkan halaman atau menghapus baris tabel
                                         location.reload();
                                     });
                                 } else {
