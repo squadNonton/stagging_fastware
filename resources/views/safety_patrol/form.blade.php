@@ -10,8 +10,8 @@
             <h1>Karyawan</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item">List Form Safety Patrol</li>
-                    <li class="breadcrumb-item active">Tambah Form Safety Patrol</li>
+                    <li class="breadcrumb-item">List Safety Patrol</li>
+                    <li class="breadcrumb-item active">Tambah Safety Patrol</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -22,10 +22,10 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Form Tambah patrol</h5>
+                                <h5 class="card-title">Form Tambah Safety Patrol</h5>
 
                                 <form id="patrolForm" action="{{ route('patrols.simpanPatrol') }}" method="POST"
-                                    enctype="multipart/form-data" onsubmit="return validateForm()">
+                                    enctype="multipart/form-data">
                                     @csrf
 
                                     <div class="mb-3">
@@ -400,83 +400,91 @@
 
         <!-- Di bagian body -->
         <script>
-            // Fungsi untuk menampilkan Sweet Alert
-            function showSuccessAlert() {
+            // Function to display Sweet Alert
+            function showSuccessAlert(event) {
+                event.preventDefault(); // Prevent form from submitting immediately
+
                 var isValid = true;
 
-                // Validasi tanggal patrol
+                // Validation for tanggal patrol
                 var tanggalPatrol = document.getElementById("tanggal_patrol").value;
                 if (tanggalPatrol === "") {
                     isValid = false;
                 }
 
-                // Validasi area patrol
+                // Validation for area patrol
                 var areaPatrol = document.querySelector('input[name="area_patrol"]:checked');
                 if (areaPatrol === null) {
                     isValid = false;
                 }
 
-                // Validasi PIC Area
+                // Validation for PIC Area
                 var picArea = document.getElementById("pic_area").value;
                 if (picArea === "") {
                     isValid = false;
                 }
 
-                // Validasi Petugas Patrol
+                // Validation for Petugas Patrol
                 var petugasPatrol = document.getElementById("petugas_patrol").value;
                 if (petugasPatrol === "") {
                     isValid = false;
                 }
 
-                // Validasi Kategori 5S/5R
+                // Validation for Kategori 5S/5R
                 var kategori1 = document.querySelector('input[name="kategori_1"]:checked');
                 var kategori2 = document.querySelector('input[name="kategori_2"]:checked');
                 var kategori3 = document.querySelector('input[name="kategori_3"]:checked');
                 var kategori4 = document.querySelector('input[name="kategori_4"]:checked');
                 var kategori5 = document.querySelector('input[name="kategori_5"]:checked');
+                var kategoriCatatan = document.getElementById("kategori_catatan").value;
                 if (kategori1 === null || kategori2 === null || kategori3 === null || kategori4 === null || kategori5 ===
-                    null) {
+                    null || kategoriCatatan === "") {
                     isValid = false;
                 }
 
-                // Validasi Safety
+                // Validation for Safety
                 var safety1 = document.querySelector('input[name="safety_1"]:checked');
                 var safety2 = document.querySelector('input[name="safety_2"]:checked');
                 var safety3 = document.querySelector('input[name="safety_3"]:checked');
                 var safety4 = document.querySelector('input[name="safety_4"]:checked');
                 var safety5 = document.querySelector('input[name="safety_5"]:checked');
-                if (safety1 === null || safety2 === null || safety3 === null || safety4 === null || safety5 === null) {
+                var safetyCatatan = document.getElementById("safety_catatan").value;
+                if (safety1 === null || safety2 === null || safety3 === null || safety4 === null || safety5 === null ||
+                    safetyCatatan === "") {
                     isValid = false;
                 }
 
-                // Validasi Lingkungan
+                // Validation for Lingkungan
                 var lingkungan1 = document.querySelector('input[name="lingkungan_1"]:checked');
                 var lingkungan2 = document.querySelector('input[name="lingkungan_2"]:checked');
                 var lingkungan3 = document.querySelector('input[name="lingkungan_3"]:checked');
                 var lingkungan4 = document.querySelector('input[name="lingkungan_4"]:checked');
-                if (lingkungan1 === null || lingkungan2 === null || lingkungan3 === null || lingkungan4 === null) {
+                var lingkunganCatatan = document.getElementById("lingkungan_catatan").value;
+                if (lingkungan1 === null || lingkungan2 === null || lingkungan3 === null || lingkungan4 === null ||
+                    lingkunganCatatan === "") {
                     isValid = false;
                 }
 
-                // Tampilkan Sweet Alert jika tidak valid
-                if (!isValid) {
-                    showErrorAlert();
-                } else {
+                if (isValid) {
                     Swal.fire({
                         title: "Berhasil!",
-                        text: "Data berhasil disimpan!",
+                        text: "Form Safety Patrol berhasil disimpan!",
                         icon: "success",
                         showCancelButton: false,
-                        didClose: () => {
-                            document.getElementById("patrolForm").submit();
-                        }
+                    }).then(() => {
+                        document.getElementById("patrolForm").submit();
                     });
+                } else {
+                    showErrorAlert();
                 }
             }
 
             function showErrorAlert() {
                 Swal.fire("Perhatian!", "Harap isi semua kolom yang diperlukan!", "warning");
             }
+
+            // Attach the event listener to the form's submit button
+            document.querySelector('button[type="submit"]').addEventListener('click', showSuccessAlert);
         </script>
 
     </main><!-- End #main -->

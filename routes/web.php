@@ -180,9 +180,17 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/kirim-ss2/{id}', [SumbangSaranController::class, 'kirimSS2'])->name('kirimSS2');
     Route::get('/getSumbangSaran/{id}', [SumbangSaranController::class, 'getSumbangSaran'])->name('getSumbangSaran');
 
-    // Security Patrol
+    // Safety Patrol
     Route::get('listpatrol', [SafetyController::class, 'listSafetyPatrol'])->name('listpatrol');
+    Route::get('listpatrolpic', [SafetyController::class, 'listSafetyPatrolPIC'])->name('listpatrolpic');
+    Route::get('reportpatrol', [SafetyController::class, 'reportPatrol'])->name('reportpatrol');
     Route::get('buatsafetypatrol', [SafetyController::class, 'buatFormSafety'])->name('patrols.buatFormSafety');
     Route::post('simpanPatrol', [SafetyController::class, 'simpanPatrol'])->name('patrols.simpanPatrol');
     Route::get('detailPatrol/{patrol}', [SafetyController::class, 'detailPatrol'])->name('patrols.detailPatrol');
+    Route::get('/get-pic-area', [SafetyController::class, 'getPICArea']);
+    Route::get('/get-area-patrol', [SafetyController::class, 'getAreaPatrol']);
+    Route::get('/get-kategori-patrol', [SafetyController::class, 'getKategoriPatrol']);
+    Route::get('/get-safety-patrol', [SafetyController::class, 'getSafetyPatrol']);
+    Route::get('/get-lingkungan-patrol', [SafetyController::class, 'getLingkunganPatrol']);
+    Route::get('/safetypatrol/export/', [SafetyController::class, 'exportPatrol'])->name('patrol.export');
 });

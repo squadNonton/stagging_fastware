@@ -10,8 +10,8 @@
             <h1>Karyawan</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item">List Form Safety Patrol</li>
-                    <li class="breadcrumb-item active">Lihat Form Safety Patrol</li>
+                    <li class="breadcrumb-item">List Safety Patrol</li>
+                    <li class="breadcrumb-item active">Lihat Safety Patrol</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->

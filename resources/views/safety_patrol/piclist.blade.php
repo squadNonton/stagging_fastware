@@ -2,16 +2,16 @@
 @section('content')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.20.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
 
 
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Karyawan</h1>
+            <h1>PIC</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item">Karyawan</li>
+                    <li class="breadcrumb-item">PIC</li>
                     <li class="breadcrumb-item active">List Safety Patrol</li>
                 </ol>
             </nav>
@@ -28,6 +28,12 @@
                                     <i class="bi bi-plus"></i> Tambah Form Safety Patrol
                                 </a>
                             </div>
+                            <div class="text-end">
+                                <a class="btn btn-success float-right" href="{{ route('patrol.export') }}">
+                                    <i class="bi bi-filetype-xlsx"></i> Export Data
+                                    Safety Patrol</a>
+                            </div>
+                            <br>
 
                             <!-- Table with stripped rows -->
                             <div class="table-responsive">
@@ -146,6 +152,7 @@
                 text-align: center;
             }
         </style>
+
 
 
 
