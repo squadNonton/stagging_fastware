@@ -28,16 +28,20 @@
                                     <i class="bi bi-plus"></i> Tambah Form Safety Patrol
                                 </a>
                             </div>
-                            <div class="text-end">
+                            {{-- <div class="text-end">
                                 <a class="btn btn-success float-right" href="{{ route('patrol.export') }}">
                                     <i class="bi bi-filetype-xlsx"></i> Export Data
                                     Safety Patrol</a>
+                            </div> --}}
+                            <div class="text-end">
+                                <button class="btn btn-success float-right" onclick="downloadExcel()">
+                                    <i class="bi bi-filetype-xlsx"></i> Export Data Safety Patrol
+                                </button>
                             </div>
                             <br>
-
                             <!-- Table with stripped rows -->
                             <div class="table-responsive">
-                                <table id="" class="datatable table table-bordered">
+                                <table id="tableToExport" class="datatable table table-bordered">
                                     <thead>
                                         <tr>
                                             <th scope="col" rowspan="2">No</th>
@@ -152,9 +156,52 @@
                 text-align: center;
             }
         </style>
+        <script>
+            document.getElementById("exportButton").addEventListener("click", function() {
+                downloadExcel();
+            });
 
-
-
+            function downloadExcel() {
+                // Mengambil tabel berdasarkan ID
+                var table = document.getElementById("tableToExport");
+                if (!table) {
+                    console.error("Tabel dengan ID 'tableToExport' tidak ditemukan.");
+                    return;
+                }
+                // Hapus kolom "Aksi" dari tabel
+                var rows = table.rows;
+                for (var i = 0; i < rows.length; i++) {
+                    rows[i].deleteCell(-1); // Menghapus sel terakhir dari setiap baris
+                }
+                // Membuat objek untuk WorkSheet baru
+                var worksheet = XLSX.utils.table_to_sheet(table);
+                // Membuat objek WorkBook baru
+                var workbook = XLSX.utils.book_new();
+                // Menambahkan WorkSheet ke dalam WorkBook
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+                // Mengkonversi WorkBook ke dalam format Excel
+                var excelBuffer = XLSX.write(workbook, {
+                    bookType: 'xlsx',
+                    type: 'array'
+                });
+                // Mengkonversi buffer ke dalam blob Excel
+                var blob = new Blob([excelBuffer], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+                });
+                // Menghasilkan URL untuk file Excel
+                var excelFileURL = URL.createObjectURL(blob);
+                // Membuat link untuk download
+                var a = document.createElement("a");
+                a.href = excelFileURL;
+                a.download = "Safety-Patrol.xlsx";
+                // Menambahkan link ke dalam dokumen
+                document.body.appendChild(a);
+                // Mengklik link untuk mengunduh file
+                a.click();
+                // Membersihkan link setelah di klik
+                document.body.removeChild(a);
+            }
+        </script>
 
 
     </main><!-- End #main -->
