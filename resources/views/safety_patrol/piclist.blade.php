@@ -175,6 +175,57 @@
                 }
                 // Membuat objek untuk WorkSheet baru
                 var worksheet = XLSX.utils.table_to_sheet(table);
+
+                // Menentukan lebar kolom berdasarkan konten terpanjang di setiap kolom
+                var colWidths = [];
+                var rowHeights = [];
+                var range = XLSX.utils.decode_range(worksheet['!ref']);
+                for (var C = range.s.c; C <= range.e.c; ++C) {
+                    var maxWidth = 10; // Lebar minimum
+                    for (var R = range.s.r; R <= range.e.r; ++R) {
+                        var cellAddress = XLSX.utils.encode_cell({
+                            c: C,
+                            r: R
+                        });
+                        var cell = worksheet[cellAddress];
+                        if (cell && cell.v) {
+                            var cellValue = cell.v.toString();
+                            maxWidth = Math.max(maxWidth, cellValue.length);
+                            // Mengatur wrap text untuk setiap sel
+                            if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
+                            worksheet[cellAddress].s.alignment = {
+                                wrapText: true
+                            };
+                        }
+                    }
+                    colWidths.push({
+                        wch: maxWidth
+                    });
+                }
+                worksheet['!cols'] = colWidths;
+
+                // Mengatur tinggi baris berdasarkan konten
+                for (var R = range.s.r; R <= range.e.r; ++R) {
+                    var maxHeight = 15; // Tinggi minimum
+                    for (var C = range.s.c; C <= range.e.c; ++C) {
+                        var cellAddress = XLSX.utils.encode_cell({
+                            c: C,
+                            r: R
+                        });
+                        var cell = worksheet[cellAddress];
+                        if (cell && cell.v) {
+                            var cellValue = cell.v.toString();
+                            // Perkirakan tinggi baris berdasarkan jumlah baris teks dalam sel
+                            var lines = cellValue.split('\n').length;
+                            maxHeight = Math.max(maxHeight, lines * 15); // Misal, 15px per baris teks
+                        }
+                    }
+                    rowHeights.push({
+                        hpx: maxHeight
+                    });
+                }
+                worksheet['!rows'] = rowHeights;
+
                 // Membuat objek WorkBook baru
                 var workbook = XLSX.utils.book_new();
                 // Menambahkan WorkSheet ke dalam WorkBook
@@ -190,10 +241,18 @@
                 });
                 // Menghasilkan URL untuk file Excel
                 var excelFileURL = URL.createObjectURL(blob);
-                // Membuat link untuk download
+                // Mendapatkan tanggal saat ini
+                var today = new Date();
+                var day = today.getDate();
+                var month = today.toLocaleString('default', {
+                    month: 'long'
+                });
+                var year = today.getFullYear();
+                var formattedDate = day + ' ' + month + ' ' + year;
+                // Membuat link untuk download dengan nama file plus tanggal saat ini
                 var a = document.createElement("a");
                 a.href = excelFileURL;
-                a.download = "Safety-Patrol.xlsx";
+                a.download = "Safety-Patrol-" + formattedDate + ".xlsx";
                 // Menambahkan link ke dalam dokumen
                 document.body.appendChild(a);
                 // Mengklik link untuk mengunduh file

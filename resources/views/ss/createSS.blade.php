@@ -352,13 +352,13 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="editImage" class="col-sm-2 col-form-label">File Upload 1</label>
+                                    <label for="viewImage" class="col-sm-2 col-form-label">File Upload 1</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="editImage" name="edit_image"
-                                            onchange="showFileName2('editImage', 'editImageLabel', 'editImagePreview')">
-                                        <label id="editImageLabel" class="form-label"></label>
-                                        <input type="hidden" id="editImageUrl" name="edit_image_url">
-                                        <img id="editImagePreview" class="image-popup" src="#" alt="Preview"
+                                        <input class="form-control" type="file" id="viewImage" name="view_image"
+                                            onchange="showFileName2('viewImage', 'viewImageLabel', 'viewImagePreview')">
+                                        <label id="viewImageLabel" class="form-label"></label>
+                                        <input type="hidden" id="viewImageUrl" name="edit_image_url">
+                                        <img id="viewImagePreview" class="image-popup" src="#" alt="Preview"
                                             style="max-width: 100px; display: none;">
                                     </div>
                                 </div>
@@ -371,13 +371,13 @@
                                 </div>
                                 <!-- Input File Upload 2 -->
                                 <div class="row mb-3">
-                                    <label for="editImage2" class="col-sm-2 col-form-label">File Upload 2</label>
+                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload 1</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="editImage2" name="edit_image_2"
-                                            onchange="showFileName2('editImage2', 'editImage2Label', 'editImage2Preview')">
-                                        <label id="editImage2Label" class="form-label"></label>
-                                        <input type="hidden" id="editImage2Url" name="edit_image_2_url">
-                                        <img id="editImage2Preview" class="image-popup" src="#" alt="Preview"
+                                        <input class="form-control" type="file" id="viewImage2" name="view_image2"
+                                            onchange="showFileName2('viewImage2', 'viewImage2Label', 'viewImage2Preview')">
+                                        <label id="viewImage2Label" class="form-label"></label>
+                                        <input type="hidden" id="viewImage2Url" name="view_image_url">
+                                        <img id="viewImage2Preview" class="image-popup" src="#" alt="Preview"
                                             style="max-width: 100px; display: none;">
                                     </div>
                                 </div>
