@@ -23,53 +23,81 @@
                             <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                 data-bs-target="#sumbangSaranModal"><i class="fas fa-plus"></i> Tambah</button>
                             <!-- Table with stripped rows -->
-                            <table class="table datatable">
-                                <thead>
-                                    <tr>
-                                        <th width="50px">NO</th>
-                                        <th width="100px">Nama</th>
-                                        <th width="100px">NPK</th>
-                                        <th class="text-center" width="100px">Bagian</th>
-                                        <th width="100px">Judul Ide</th>
-                                        <th width="100px">Tanggal Pengajuan Ide</th>
-                                        <th width="100px">Lokasi</th>
-                                        <th width="100px">Tanggal Diterapkan</th>
-                                        <th width="100px">Pembaruan Terakhir</th>
-                                        <th width="100px">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($data as $data)
+                            <div class="table-responsive" style="height: 100%; overflow-y: auto;">
+                                <table class="datatable table">
+                                    <thead>
                                         <tr>
-                                            <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                                            <td class="text-center py-3">{{ $data->users->name ?? '' }}</td>
-                                            <td class="text-center py-3">{{ $data->users->npk ?? '' }}</td>
-                                            <td class="text-center py-3">{{ $usersRoles[$data->id_user] ?? '' }}</td>
-                                            <td class="text-center py-3">{{ $data->judul }}</td>
-                                            <td class="text-center py-3">{{ $data->tgl_pengajuan_ide }}</td>
-                                            <td class="text-center py-3">{{ $data->lokasi_ide }}</td>
-                                            <td class="text-center py-3">{{ $data->tgl_diterapkan }}</td>
-                                            <td class="text-center py-3">{{ $data->created_at }}</td>
-                                            <td class="text-center">
-                                                <button class="btn btn-primary btn-sm"
-                                                    onclick="openEditModal({{ $data->id }})"
-                                                    data-id="{{ $data->id }}" title="Edit">
-                                                    <i class="fa-solid fa-edit fa-1x"></i>
-                                                </button>
-                                                <button class="btn btn-danger btn-sm"
-                                                    onclick="confirmDelete('{{ $data->id }}')" title="Hapus">
-                                                    <i class="fas fa-trash fa-1x"></i>
-                                                </button>
-                                                <button class="btn btn-success btn-sm"
-                                                    onclick="showViewSumbangSaranModal({{ $data->id }})"
-                                                    data-id="{{ $data->id }}" title="lihat">
-                                                    <i class="fa-solid fa-eye fa-1x"></i>
-                                                </button>
-                                            </td>
+                                            <th class="text-center" width="30px">NO</th>
+                                            <th class="text-center" width="100px">Nama</th>
+                                            <th class="text-center" width="40px">NPK</th>
+                                            <th class="text-center" width="100px">Bagian</th>
+                                            <th class="text-center" width="100px">Judul Ide</th>
+                                            <th class="text-center" width="90px">Tanggal Pengajuan Ide</th>
+                                            <th class="text-center" width="100px">Lokasi</th>
+                                            <th class="text-center" width="100px">Tanggal Diterapkan</th>
+                                            <th class="text-center" width="100px">Pembaruan Terakhir</th>
+                                            <th class="text-center" width="150px">Status</th>
+                                            <th class="text-center" width="140px">Aksi</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($data as $data)
+                                            <tr>
+                                                <th scope="row" class="text-center">{{ $loop->iteration }}</th>
+                                                <td class="text-center py-3">{{ $data->users->name ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $data->users->npk ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $usersRoles[$data->id_user] ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $data->judul }}</td>
+                                                <td class="text-center py-3">{{ $data->tgl_pengajuan_ide }}</td>
+                                                <td class="text-center py-3">{{ $data->lokasi_ide }}</td>
+                                                <td class="text-center py-3">{{ $data->tgl_diterapkan }}</td>
+                                                <td class="text-center py-3">{{ $data->created_at }}</td>
+                                                <td class="text-center py-4"
+                                                    style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                                    title="@if ($data->status == 1) Draf @elseif ($data->status == 2) Menunggu Approve Foreman @elseif($data->status == 3) Menunggu Approve Dept. Head @elseif($data->status == 4) Direksi @endif">
+                                                    @if ($data->status == 1)
+                                                        <span class="badge bg-secondary align-items-center"
+                                                            style="font-size: 18px;">Draf</span>
+                                                    @elseif ($data->status == 2)
+                                                        <span class="badge bg-info align-items-center"
+                                                            style="font-size: 18px;">Menunggu<br>KonfirmasiForeman</span>
+                                                    @elseif($data->status == 3)
+                                                        <span class="badge bg-info align-items-center"
+                                                            style="font-size: 18px;">Menunggu<br>Konfirmasi<br>Dept.
+                                                            Head</span>
+                                                    @elseif($data->status == 4)
+                                                        <span class="badge bg-danger align-items-center"
+                                                            style="font-size: 18px;">Direksi</span>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($data->status != 2 && $data->status != 3 && $data->status != 4)
+                                                        <button class="btn btn-primary btn-sm"
+                                                            onclick="openEditModal({{ $data->id }})"
+                                                            data-id="{{ $data->id }}" title="Edit">
+                                                            <i class="fa-solid fa-edit fa-1x"></i>
+                                                        </button>
+                                                        <button class="btn btn-danger btn-sm"
+                                                            onclick="confirmDelete('{{ $data->id }}')" title="Hapus">
+                                                            <i class="fas fa-trash fa-1x"></i>
+                                                        </button>
+                                                        <button class="btn btn-primary btn-sm"
+                                                            onclick="confirmKirim({{ $data->id }})"
+                                                            data-id="{{ $data->id }}" title="Kirim">
+                                                            <i class="fa-solid fa fa-paper-plane fa-1x"></i>
+                                                        </button>
+                                                    @endif
+                                                    <button class="btn btn-success btn-sm"
+                                                        onclick="showViewSumbangSaranModal({{ $data->id }})"
+                                                        data-id="{{ $data->id }}" title="lihat">
+                                                        <i class="fa-solid fa-eye fa-1x"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                             <!-- End Table with stripped rows -->
                         </div>
                     </div>
@@ -94,7 +122,8 @@
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="tgl_pengajuan_ide"
                                             name="tgl_pengajuan_ide" required>
-                                        <input type="hidden" id="id_user" name="id_user" value="{{ Auth::user()->id }}">
+                                        <input type="hidden" id="id_user" name="id_user"
+                                            value="{{ Auth::user()->id }}">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -217,7 +246,6 @@
                                         <textarea class="form-control" style="height: 100px" id="editKeadaanSebelumnya" name="keadaan_sebelumnya" required></textarea>
                                     </div>
                                 </div>
-
                                 <!-- Input File Upload 1 -->
                                 <div class="row mb-3">
                                     <label for="editImage" class="col-sm-2 col-form-label">File Upload 1</label>
@@ -238,7 +266,6 @@
                                         <textarea class="form-control" style="height: 100px" id="editUsulanIde" name="usulan_ide" required></textarea>
                                     </div>
                                 </div>
-
                                 <!-- Input File Upload 2 -->
                                 <div class="row mb-3">
                                     <label for="editImage2" class="col-sm-2 col-form-label">File Upload 2</label>
@@ -271,7 +298,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Readonly Modal Form Edit Sumbang Saran -->
+            <!-- Readonly Modal Form View Sumbang Saran -->
             <div class="modal fade" id="viewSumbangSaranModal" tabindex="-1"
                 aria-labelledby="viewSumbangSaranModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
@@ -324,20 +351,17 @@
                                         <textarea class="form-control" style="height: 100px" id="viewKeadaanSebelumnya" name="keadaan_sebelumnya" readonly></textarea>
                                     </div>
                                 </div>
-
-                                <!-- Input File Upload 1 -->
                                 <div class="row mb-3">
-                                    <label for="viewImage" class="col-sm-2 col-form-label">File Upload 1</label>
+                                    <label for="editImage" class="col-sm-2 col-form-label">File Upload 1</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="viewImage" name="edit_image"
-                                            readonly>
-                                        <label id="viewImageLabel" class="form-label"></label>
-                                        <input type="hidden" id="viewImageUrl" name="edit_image_url">
-                                        <img id="viewImagePreview" class="image-popup" src="#" alt="Preview"
+                                        <input class="form-control" type="file" id="editImage" name="edit_image"
+                                            onchange="showFileName2('editImage', 'editImageLabel', 'editImagePreview')">
+                                        <label id="editImageLabel" class="form-label"></label>
+                                        <input type="hidden" id="editImageUrl" name="edit_image_url">
+                                        <img id="editImagePreview" class="image-popup" src="#" alt="Preview"
                                             style="max-width: 100px; display: none;">
                                     </div>
                                 </div>
-
                                 <div class="row mb-3">
                                     <label for="viewUsulanIde" class="col-sm-2 col-form-label">Usulan Ide <span
                                             style="color: red;">*</span></label>
@@ -345,16 +369,15 @@
                                         <textarea class="form-control" style="height: 100px" id="viewUsulanIde" name="usulan_ide" readonly></textarea>
                                     </div>
                                 </div>
-
                                 <!-- Input File Upload 2 -->
                                 <div class="row mb-3">
-                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload 2</label>
+                                    <label for="editImage2" class="col-sm-2 col-form-label">File Upload 2</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="viewImage2" name="edit_image_2"
-                                            readonly>
-                                        <label id="viewImage2Label" class="form-label"></label>
-                                        <input type="hidden" id="viewImage2Url" name="edit_image_2_url">
-                                        <img id="viewImage2Preview" class="image-popup" src="#" alt="Preview"
+                                        <input class="form-control" type="file" id="editImage2" name="edit_image_2"
+                                            onchange="showFileName2('editImage2', 'editImage2Label', 'editImage2Preview')">
+                                        <label id="editImage2Label" class="form-label"></label>
+                                        <input type="hidden" id="editImage2Url" name="edit_image_2_url">
+                                        <img id="editImage2Preview" class="image-popup" src="#" alt="Preview"
                                             style="max-width: 100px; display: none;">
                                     </div>
                                 </div>
@@ -471,6 +494,23 @@
                 }
             }
 
+            function showFileName2(inputId, labelId, previewId) {
+                var input = document.getElementById(inputId);
+                var label = document.getElementById(labelId);
+                var preview = document.getElementById(previewId);
+
+                if (input.files && input.files.length > 0) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(input.files[0]);
+
+                    label.innerText = input.files[0].name;
+                }
+            }
+
             function openEditModal(id) {
                 // Panggil endpoint untuk mendapatkan data sumbang saran berdasarkan ID
                 $.ajax({
@@ -569,7 +609,7 @@
                                         'Data berhasil dihapus.',
                                         'success'
                                     ).then(() => {
-                                        location.reload();
+                                        window.location.href = '{{ route('showSS') }}';
                                     });
                                 } else {
                                     Swal.fire(
@@ -592,10 +632,44 @@
                 });
             }
 
+            function confirmKirim(id) {
+                Swal.fire({
+                    title: 'Apakah data sudah benar?',
+                    text: 'Setelah dikirim, Anda tidak akan dapat mengubah data ini!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, kirim!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('kirimSS', ['id' => ':id']) }}'.replace(':id', id),
+                            type: 'POST', // Ganti dengan DELETE
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            success: function(data) {
+                                if (data.message === 'Data berhasil dikirim') {
+                                    Swal.fire(
+                                        'Dikirim!',
+                                        'Data berhasil dikirim.',
+                                        'success'
+                                    ).then(() => {
+                                        window.location.href = '{{ route('showSS') }}';
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
             function showViewSumbangSaranModal(id) {
                 // Gunakan AJAX untuk mengambil data berdasarkan ID
                 $.ajax({
-                    url: '{{ route('getSumbangSaran', ['id' => ':id']) }}'.replace(':id', id), // Endpoint untuk mendapatkan data Sumbang Saran
+                    url: '{{ route('getSumbangSaran', ['id' => ':id']) }}'.replace(':id',
+                        id), // Endpoint untuk mendapatkan data Sumbang Saran
                     type: 'GET',
                     success: function(data) {
                         // Isi form dengan data yang diambil

@@ -11,6 +11,7 @@ use App\Http\Controllers\PreventiveController;
 use App\Http\Controllers\SparepartController;
 use App\Http\Controllers\SumbangSaranController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SafetyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -164,14 +165,20 @@ Route::middleware(['web', 'auth'])->group(function () {
 
     // SS
     Route::get('/showSS', 'App\Http\Controllers\SumbangSaranController@showSS')->name('showSS');
+    Route::get('/showKonfirmasiForeman', 'App\Http\Controllers\SumbangSaranController@showKonfirmasiForeman')->name('showKonfirmasiForeman');
 
     Route::post('/simpanSS', 'App\Http\Controllers\SumbangSaranController@simpanSS')->name('simpanSS');
 
     Route::get('/editSS/{id}', [SumbangSaranController::class, 'editSS'])->name('editSS');
     Route::post('/updateSS', [SumbangSaranController::class, 'updateSS'])->name('updateSS');
     Route::delete('/delete-ss/{id}', [SumbangSaranController::class, 'deleteSS'])->name('deleteSS');
-
+    Route::post('/kirim-ss/{id}', [SumbangSaranController::class, 'kirimSS'])->name('kirimSS');
+    Route::post('/kirim-ss2/{id}', [SumbangSaranController::class, 'kirimSS2'])->name('kirimSS2');
     Route::get('/getSumbangSaran/{id}', [SumbangSaranController::class, 'getSumbangSaran'])->name('getSumbangSaran');
 
-    // Route::get('/getSumbangSaran/{id}', 'App\Http\Controllers\SumbangSaranController@getSumbangSaran')->name('getSumbangSaran');
+    // Security Patrol
+    Route::get('listpatrol', [SafetyController::class, 'listSafetyPatrol'])->name('listpatrol');
+    Route::get('buatsafetypatrol', [SafetyController::class, 'buatFormSafety'])->name('patrols.buatFormSafety');
+    Route::post('simpanPatrol', [SafetyController::class, 'simpanPatrol'])->name('patrols.simpanPatrol');
+    Route::get('detailPatrol/{patrol}', [SafetyController::class, 'detailPatrol'])->name('patrols.detailPatrol');
 });

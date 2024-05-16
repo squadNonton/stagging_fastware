@@ -17,8 +17,8 @@ class SumbangSaranController extends Controller
     public function showSS()
     {
         $data = SumbangSaran::with('users')
-    ->whereIn('sumbang_sarans.status', [1, 2, 3]) // Tambahkan alias untuk kolom status
-    ->orderByRaw('FIELD(sumbang_sarans.status, 3, 2, 1)') // Tambahkan alias untuk kolom status
+    ->whereIn('sumbang_sarans.status', [1, 2, 3, 4]) // Tambahkan alias untuk kolom status
+    ->orderByRaw('FIELD(sumbang_sarans.status, 4, 3, 2, 1)') // Tambahkan alias untuk kolom status
     ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
     ->paginate();
 
@@ -31,6 +31,25 @@ class SumbangSaranController extends Controller
             ->pluck('roles.role', 'users.id');
 
         return view('ss.createSS', compact('data', 'usersRoles'));
+    }
+
+    public function showKonfirmasiForeman()
+    {
+        $data = SumbangSaran::with('users')
+    ->whereIn('sumbang_sarans.status', [2, 3, 4]) // Tambahkan alias untuk kolom status
+    ->orderByRaw('FIELD(sumbang_sarans.status, 4, 3, 2)') // Tambahkan alias untuk kolom status
+    ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
+    ->paginate();
+
+        // Ambil hanya id user untuk menghindari "N + 1" query
+        $userIds = $data->pluck('id_user')->unique()->toArray();
+
+        // Ambil data peran (role) berdasarkan user ids
+        $usersRoles = User::whereIn('users.id', $userIds)
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+            ->pluck('roles.role', 'users.id');
+
+        return view('ss.konfirmForeman', compact('data', 'usersRoles'));
     }
 
     public function simpanSS(Request $request)
@@ -101,9 +120,9 @@ class SumbangSaranController extends Controller
         // Retrieve the sumbang saran data by ID
         $sumbangSaran = SumbangSaran::findOrFail($id);
 
-        // // Include file paths in the response if available
-        // $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/'.$sumbangSaran->image) : null;
-        // $sumbangSaran->edit_image_2_url = $sumbangSaran->image_2 ? asset('assets/image/'.$sumbangSaran->image_2) : null;
+        // Include file paths in the response if available
+        $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/'.$sumbangSaran->image) : null;
+        $sumbangSaran->edit_image_2_url = $sumbangSaran->image_2 ? asset('assets/image/'.$sumbangSaran->image_2) : null;
 
         // Send data to the view to be displayed in the edit modal
         return response()->json($sumbangSaran);
@@ -155,6 +174,36 @@ class SumbangSaranController extends Controller
 
         // Return a success response
         return response()->json(['success' => 'Data updated successfully']);
+    }
+
+    public function kirimSS($id)
+    {
+        // Temukan data berdasarkan ID
+        $sumbangSaran = SumbangSaran::findOrFail($id);
+
+        // Ubah status menjadi 0
+        $sumbangSaran->status = 2;
+
+        // Simpan perubahan
+        $sumbangSaran->save();
+
+        // Kembalikan respons JSON
+        return response()->json(['message' => 'Data berhasil dikirim'], 200);
+    }
+
+    public function kirimSS2($id)
+    {
+        // Temukan data berdasarkan ID
+        $sumbangSaran = SumbangSaran::findOrFail($id);
+
+        // Ubah status menjadi 0
+        $sumbangSaran->status = 3;
+
+        // Simpan perubahan
+        $sumbangSaran->save();
+
+        // Kembalikan respons JSON
+        return response()->json(['message' => 'Data berhasil dikirim'], 200);
     }
 
     public function deleteSS($id)

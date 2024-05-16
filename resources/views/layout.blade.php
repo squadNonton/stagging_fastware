@@ -169,18 +169,34 @@
                   <span>Form SS</span>
                 </a>
               </li><!-- End Profile Page Nav -->
+              @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 18)
+              <li class="nav-item">
+                <a class="nav-link collapsed" href="{{route ('showKonfirmasiForeman')}}">
+                  <i class="bi bi-clipboard-check-fill"></i>
+                  <span>Konfirmasi SS by Foreman</span>
+                </a>
+              </li><!-- End Profile Page Nav -->
+              @endif @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 18)
               <li class="nav-item">
                 <a class="nav-link collapsed" href="">
                   <i class="bi bi-clipboard-check-fill"></i>
-                  <span>Approve SS</span>
+                  <span>Konfirmasi SS by Dept. Head</span>
                 </a>
               </li><!-- End Profile Page Nav -->
+              @endif
               <li class="nav-item">
                 <a class="nav-link collapsed" href="">
                   <i class="bi bi-person"></i>
                   <span>PIC Penilai | Komite</span>
                 </a>
               </li><!-- End Profile Page Nav -->
+              <li class="nav-heading">Security Patrol</li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{{ route('listpatrol') }}">
+                    <i class="bi bi-person"></i>
+                    <span>Form Security Patrol</span>
+                </a>
+            </li><!-- End Profile Page Nav -->
             @if (Auth::check())
                 @if (Auth::user()->role_id == 7 ||
                         Auth::user()->role_id == 8 ||
