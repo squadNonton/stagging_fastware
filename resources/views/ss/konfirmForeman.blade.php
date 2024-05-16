@@ -4,7 +4,7 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Form SS</h1>
+            <h1>Konfirmasi SS by Foreman</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboardHandling') }}">Dashboard</a></li>

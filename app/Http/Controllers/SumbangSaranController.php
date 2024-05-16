@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PenilaianSS;
 use App\Models\Role;
 use App\Models\SumbangSaran;
 use App\Models\User;
@@ -50,6 +51,25 @@ class SumbangSaranController extends Controller
             ->pluck('roles.role', 'users.id');
 
         return view('ss.konfirmForeman', compact('data', 'usersRoles'));
+    }
+
+    public function showKonfirmasiDeptHead()
+    {
+        $data = SumbangSaran::with('users')
+    ->whereIn('sumbang_sarans.status', [3, 4]) // Tambahkan alias untuk kolom status
+    ->orderByRaw('FIELD(sumbang_sarans.status, 4, 3)') // Tambahkan alias untuk kolom status
+    ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
+    ->paginate();
+
+        // Ambil hanya id user untuk menghindari "N + 1" query
+        $userIds = $data->pluck('id_user')->unique()->toArray();
+
+        // Ambil data peran (role) berdasarkan user ids
+        $usersRoles = User::whereIn('users.id', $userIds)
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+            ->pluck('roles.role', 'users.id');
+
+        return view('ss.konfimDeptHead', compact('data', 'usersRoles'));
     }
 
     public function simpanSS(Request $request)
@@ -126,6 +146,28 @@ class SumbangSaranController extends Controller
 
         // Send data to the view to be displayed in the edit modal
         return response()->json($sumbangSaran);
+    }
+
+    public function getPenilaians($id)
+    {
+        // Retrieve the sumbang saran data by ID
+        $sumbangSaran = SumbangSaran::findOrFail($id);
+
+        // Retrieve related penilaians
+        $penilaians = PenilaianSS::where('ss_id', $id)->get();
+
+        // Include file paths in the response if available
+        $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/'.$sumbangSaran->image) : null;
+        $sumbangSaran->edit_image_2_url = $sumbangSaran->image_2 ? asset('assets/image/'.$sumbangSaran->image_2) : null;
+
+        // Prepare the data to return as JSON
+        $response = [
+            'sumbangSaran' => $sumbangSaran,
+            'penilaians' => $penilaians,
+        ];
+
+        // Return the data as JSON
+        return response()->json($response);
     }
 
     public function updateSS(Request $request)
@@ -219,5 +261,73 @@ class SumbangSaranController extends Controller
 
         // Kembalikan respons JSON
         return response()->json(['message' => 'Data berhasil dihapus'], 200);
+    }
+
+    public function simpanPenilaian(Request $request)
+    {
+        // Validasi data yang diterima dari formulir
+        $request->validate([
+            'ss_id' => 'required|integer',
+            'telah_direvisi' => 'nullable|boolean',
+            'belum_diterapkan' => 'nullable|boolean',
+            'sedang_diterapkan' => 'nullable|boolean',
+            'sudah_diterapkan' => 'nullable|boolean',
+            'tidak_bisa_diterapkan' => 'nullable|boolean',
+            'keterangan' => 'nullable|string',
+            'ide' => 'required|string',
+            'persiapan' => 'required|string',
+            'penghematan_biaya' => 'required|string',
+            'kualitas' => 'required|string',
+            'delivery' => 'required|string',
+            'safety' => 'required|string',
+            'biaya_penerapan' => 'required|string',
+            'usaha' => 'required|string',
+            'pencapaian_target' => 'required|string',
+            'catatan_penilaian' => 'nullable|string',
+        ]);
+
+        // Buat instance PenilaianSS baru
+        $penilaian = new PenilaianSS();
+
+        // Atur atribut berdasarkan data yang diterima dari permintaan
+        if (isset($request->telah_direvisi)) {
+            $penilaian->telah_direvisi = $request->telah_direvisi;
+        }
+        if (isset($request->belum_diterapkan)) {
+            $penilaian->belum_diterapkan = $request->belum_diterapkan;
+        }
+        if (isset($request->sedang_diterapkan)) {
+            $penilaian->sedang_diterapkan = $request->sedang_diterapkan;
+        }
+        if (isset($request->sudah_diterapkan)) {
+            $penilaian->sudah_diterapkan = $request->sudah_diterapkan;
+        }
+        if (isset($request->tidak_bisa_diterapkan)) {
+            $penilaian->tidak_bisa_diterapkan = $request->tidak_bisa_diterapkan;
+        }
+        $penilaian->keterangan = $request->keterangan;
+        $penilaian->ide = $request->ide;
+        $penilaian->persiapan = $request->persiapan;
+        $penilaian->penghematan_biaya = $request->penghematan_biaya;
+        $penilaian->kualitas = $request->kualitas;
+        $penilaian->delivery = $request->delivery;
+        $penilaian->safety = $request->safety;
+        $penilaian->biaya_penerapan = $request->biaya_penerapan;
+        $penilaian->usaha = $request->usaha;
+        $penilaian->pencapaian_target = $request->pencapaian_target;
+        $penilaian->catatan_penilaian = $request->catatan_penilaian;
+        $penilaian->ss_id = $request->ss_id;
+
+        $penilaian->id_users = $request->user()->id;
+        // Simpan data Penilaian
+        $penilaian->save();
+
+        // Set status pada model SumbangSaran menjadi 4
+        $sumbangSaran = SumbangSaran::findOrFail($request->ss_id);
+        $sumbangSaran->status = 4;
+        $sumbangSaran->save();
+
+        // Jika penyimpanan berhasil, kembalikan respons berhasil
+        return response()->json(['message' => 'Data Penilaian berhasil disimpan'], 200);
     }
 }

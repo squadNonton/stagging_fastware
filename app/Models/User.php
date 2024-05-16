@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(SumbangSaran::class);
     }
+
+    public function penilaians(): HasMany
+    {
+        return $this->hasMany(PenilaianSS::class);
+    }
 }

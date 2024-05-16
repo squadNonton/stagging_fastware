@@ -8,10 +8,10 @@ use App\Http\Controllers\FormFPPController;
 use App\Http\Controllers\HandlingController;
 use App\Http\Controllers\MesinController;
 use App\Http\Controllers\PreventiveController;
+use App\Http\Controllers\SafetyController;
 use App\Http\Controllers\SparepartController;
 use App\Http\Controllers\SumbangSaranController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\SafetyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -166,10 +166,14 @@ Route::middleware(['web', 'auth'])->group(function () {
     // SS
     Route::get('/showSS', 'App\Http\Controllers\SumbangSaranController@showSS')->name('showSS');
     Route::get('/showKonfirmasiForeman', 'App\Http\Controllers\SumbangSaranController@showKonfirmasiForeman')->name('showKonfirmasiForeman');
+    Route::get('/showKonfirmasiDeptHead', 'App\Http\Controllers\SumbangSaranController@showKonfirmasiDeptHead')->name('showKonfirmasiDeptHead');
 
     Route::post('/simpanSS', 'App\Http\Controllers\SumbangSaranController@simpanSS')->name('simpanSS');
+    Route::post('/simpanPenilaian', 'App\Http\Controllers\SumbangSaranController@simpanPenilaian')->name('simpanPenilaian');
 
     Route::get('/editSS/{id}', [SumbangSaranController::class, 'editSS'])->name('editSS');
+    Route::post('/updateSS', [SumbangSaranController::class, 'updateSS'])->name('updateSS');
+    Route::get('/getPenilaians/{id}', [SumbangSaranController::class, 'getPenilaians'])->name('getPenilaians');
     Route::post('/updateSS', [SumbangSaranController::class, 'updateSS'])->name('updateSS');
     Route::delete('/delete-ss/{id}', [SumbangSaranController::class, 'deleteSS'])->name('deleteSS');
     Route::post('/kirim-ss/{id}', [SumbangSaranController::class, 'kirimSS'])->name('kirimSS');

@@ -176,9 +176,9 @@
                   <span>Konfirmasi SS by Foreman</span>
                 </a>
               </li><!-- End Profile Page Nav -->
-              @endif @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 18)
+              @endif @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 7 || Auth::user()->role_id == 11 || Auth::user()->role_id == 14 || Auth::user()->role_id == 15)
               <li class="nav-item">
-                <a class="nav-link collapsed" href="">
+                <a class="nav-link collapsed" href="{{route ('showKonfirmasiDeptHead')}}">
                   <i class="bi bi-clipboard-check-fill"></i>
                   <span>Konfirmasi SS by Dept. Head</span>
                 </a>

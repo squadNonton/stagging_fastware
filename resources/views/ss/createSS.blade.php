@@ -63,11 +63,11 @@
                                                             style="font-size: 18px;">Menunggu<br>KonfirmasiForeman</span>
                                                     @elseif($data->status == 3)
                                                         <span class="badge bg-info align-items-center"
-                                                            style="font-size: 18px;">Menunggu<br>Konfirmasi<br>Dept.
+                                                            style="font-size: 18px;">Menunggu<br>Konfirmasi Dept.
                                                             Head</span>
                                                     @elseif($data->status == 4)
-                                                        <span class="badge bg-danger align-items-center"
-                                                            style="font-size: 18px;">Direksi</span>
+                                                        <span class="badge bg-info align-items-center"
+                                                            style="font-size: 18px;">Menunggur<br>Konfirmasi Direksi</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
