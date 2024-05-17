@@ -88,4 +88,19 @@ class AuthController extends Controller
         // Redirect ke halaman profil dengan pesan sukses
         return redirect()->route('showDataDiri')->with('success', 'Password berhasil diubah.');
     }
+
+    public function ubahDataDiri(Request $request)
+    {
+        $user = Auth::user();
+
+        // Perbarui data pengguna
+        $user->name = $request->name;
+        $user->npk = $request->npk;
+        $user->telp = $request->telp;
+        $user->email = $request->email;
+        $user->save();
+
+        // Redirect ke halaman profil dengan pesan sukses
+        return redirect()->route('showDataDiri')->with('success', 'Password berhasil diubah.');
+    }
 }

@@ -54,6 +54,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     // Change Pass
     Route::get('/showDataDiri', 'App\Http\Controllers\AuthController@showDataDiri')->name('showDataDiri');
     Route::post('/ubahPassword', 'App\Http\Controllers\AuthController@ubahPassword')->name('ubahPassword');
+    Route::post('/ubahDataDiri', 'App\Http\Controllers\AuthController@ubahDataDiri')->name('ubahDataDiri');
 
     // Admin
     Route::get('dashboardusers', [UserController::class, 'index'])->name('dashboardusers');

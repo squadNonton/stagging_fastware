@@ -39,7 +39,10 @@
                                     <button class="nav-link active" data-bs-toggle="tab"
                                         data-bs-target="#profile-overview">Data Diri</button>
                                 </li>
-
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Data
+                                        Diri</button>
+                                </li>
                                 <li class="nav-item">
                                     <button class="nav-link" data-bs-toggle="tab"
                                         data-bs-target="#profile-change-password">Ubah Password</button>
@@ -62,6 +65,10 @@
                                     </div>
 
                                     <div class="row">
+                                        <div class="col-lg-3 col-md-4 label">NPK</div>
+                                        <div class="col-lg-9 col-md-8">{{ $user->npk }}</div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-lg-3 col-md-4 label">No. Telp</div>
                                         <div class="col-lg-9 col-md-8">{{ $user->telp }}</div>
                                     </div>
@@ -70,6 +77,60 @@
                                         <div class="col-lg-3 col-md-4 label">Email</div>
                                         <div class="col-lg-9 col-md-8">{{ $user->email }}</div>
                                     </div>
+
+                                </div>
+
+                                <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+
+                                    <!-- Profile Edit Form -->
+                                    <form id="ubahDataDiriForm" action="{{ route('ubahDataDiri') }}" method="post">
+                                        @csrf
+                                        <div class="row mb-3">
+                                            <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Nama
+                                                lengkap</label>
+                                            <div class="col-md-8 col-lg-9">
+                                                <input name="name" type="text" class="form-control" id="name"
+                                                    value="{{ $user->name }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label for="about"
+                                                class="col-md-4 col-lg-3 col-form-label">Departemen</label>
+                                            <div class="col-md-8 col-lg-9">
+                                                <input name="name" type="text" class="form-control" id="name"
+                                                    value="{{ $role->role }}" disabled>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label for="company" class="col-md-4 col-lg-3 col-form-label">NPK</label>
+                                            <div class="col-md-8 col-lg-9">
+                                                <input name="npk" type="text" class="form-control" id="company"
+                                                    value="{{ $user->npk }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label for="Job" class="col-md-4 col-lg-3 col-form-label">No. Telp</label>
+                                            <div class="col-md-8 col-lg-9">
+                                                <input name="telp" type="text" class="form-control" id="telp"
+                                                    value="{{ $user->telp }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <label for="Country" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                                            <div class="col-md-8 col-lg-9">
+                                                <input name="email" type="text" class="form-control" id="email"
+                                                    value="{{ $user->email }}">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-primary"
+                                                onclick="submitDataDiri()">Save</button>
+                                        </div>
+                                    </form><!-- End Profile Edit Form -->
 
                                 </div>
 
@@ -99,12 +160,12 @@
                                             <label for="newPassword_confirmation"
                                                 class="col-md-4 col-lg-3 col-form-label">Konfirmasi Password Baru</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="newPassword_confirmation" type="password" class="form-control"
-                                                    id="newPassword_confirmation" required>
+                                                <input name="newPassword_confirmation" type="password"
+                                                    class="form-control" id="newPassword_confirmation" required>
                                             </div>
                                         </div>
 
-                                        <div class="text-center">
+                                        <div class="d-flex justify-content-end">
                                             <button type="submit" class="btn btn-primary"
                                                 onclick="return validatePasswordChange();">Ubah Password</button>
                                         </div>
@@ -180,6 +241,20 @@
                     showConfirmButton: false // Hilangkan tombol OK
                 });
                 return true;
+            }
+
+
+            function submitDataDiri() {
+                // Submit form menggunakan JavaScript
+                document.getElementById('ubahDataDiriForm').submit();
+
+                // Tampilkan SweetAlert setelah form disubmit
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Data berhasil disimpan.',
+                    icon: 'success',
+                    showConfirmButton: false
+                });
             }
         </script>
     </main><!-- End #main -->
