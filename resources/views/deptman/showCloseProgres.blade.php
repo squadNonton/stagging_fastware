@@ -130,13 +130,13 @@
                                         <div class="col-md-3">
                                             <label for="w" class="form-label">OD:</label>
                                             <input type="text" class="form-control input-sm" id="outer_diameter"
-                                                name="outer_diameter" placeholder="Outer Diameter" style="max-width: 40%"
+                                                name="outer_diameter" placeholder="Outer Diameter" style="max-width: 80%"
                                                 value="{{ $handlings->outer_diameter }}" disabled>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="w" class="form-label">ID:</label>
                                             <input type="text" class="form-control input-sm" id="inner_diameter"
-                                                name="inner_diameter" placeholder="Inner Diameter" style="max-width: 40%"
+                                                name="inner_diameter" placeholder="Inner Diameter" style="max-width: 80%"
                                                 value="{{ $handlings->inner_diameter }}" disabled>
                                         </div>
                                     </div>
@@ -144,13 +144,13 @@
                                         <div class="col-md-3">
                                             <label for="qty" class="form-label">QTY (Kg):</label>
                                             <input type="text" class="form-control input-sm" id="qty"
-                                                name="qty" style="max-width: 40%;" value="{{ $handlings->qty }}"
+                                                name="qty" style="max-width: 80%;" value="{{ $handlings->qty }}"
                                                 required disabled>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="pcs" class="form-label">Unit (Pcs):</label>
                                             <input type="text" class="form-control input-sm" id="pcs"
-                                                name="pcs" style="max-width: 40%" value="{{ $handlings->pcs }}"
+                                                name="pcs" style="max-width: 80%" value="{{ $handlings->pcs }}"
                                                 required disabled>
                                         </div>
                                     </div>

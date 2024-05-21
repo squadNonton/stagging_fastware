@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\SumbangSaran;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 // import Facade "Storage"
@@ -18,8 +19,8 @@ class SumbangSaranController extends Controller
     public function showSS()
     {
         $data = SumbangSaran::with('users')
-    ->whereIn('sumbang_sarans.status', [1, 2, 3, 4]) // Tambahkan alias untuk kolom status
-    ->orderByRaw('FIELD(sumbang_sarans.status, 4, 3, 2, 1)') // Tambahkan alias untuk kolom status
+    ->whereIn('sumbang_sarans.status', [1, 2, 3, 4, 5]) // Tambahkan alias untuk kolom status
+    ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3, 2, 1)') // Tambahkan alias untuk kolom status
     ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
     ->paginate();
 
@@ -37,8 +38,8 @@ class SumbangSaranController extends Controller
     public function showKonfirmasiForeman()
     {
         $data = SumbangSaran::with('users')
-    ->whereIn('sumbang_sarans.status', [2, 3, 4]) // Tambahkan alias untuk kolom status
-    ->orderByRaw('FIELD(sumbang_sarans.status, 4, 3, 2)') // Tambahkan alias untuk kolom status
+    ->whereIn('sumbang_sarans.status', [2, 3, 4, 5]) // Tambahkan alias untuk kolom status
+    ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3, 2)') // Tambahkan alias untuk kolom status
     ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
     ->paginate();
 
@@ -56,8 +57,8 @@ class SumbangSaranController extends Controller
     public function showKonfirmasiDeptHead()
     {
         $data = SumbangSaran::with('users')
-    ->whereIn('sumbang_sarans.status', [3, 4]) // Tambahkan alias untuk kolom status
-    ->orderByRaw('FIELD(sumbang_sarans.status, 4, 3)') // Tambahkan alias untuk kolom status
+    ->whereIn('sumbang_sarans.status', [3, 4, 5]) // Tambahkan alias untuk kolom status
+    ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3)') // Tambahkan alias untuk kolom status
     ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
     ->paginate();
 
@@ -70,6 +71,44 @@ class SumbangSaranController extends Controller
             ->pluck('roles.role', 'users.id');
 
         return view('ss.konfimDeptHead', compact('data', 'usersRoles'));
+    }
+
+    public function showKonfirmasiKomite()
+    {
+        $data = SumbangSaran::with('users')
+    ->whereIn('sumbang_sarans.status', [4, 5]) // Tambahkan alias untuk kolom status
+    ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4)') // Tambahkan alias untuk kolom status
+    ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
+    ->paginate();
+
+        // Ambil hanya id user untuk menghindari "N + 1" query
+        $userIds = $data->pluck('id_user')->unique()->toArray();
+
+        // Ambil data peran (role) berdasarkan user ids
+        $usersRoles = User::whereIn('users.id', $userIds)
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+            ->pluck('roles.role', 'users.id');
+
+        return view('ss.konfirmKomite', compact('data', 'usersRoles'));
+    }
+
+    public function showKonfirmasiHRGA()
+    {
+        $data = SumbangSaran::with('users')
+    ->whereIn('sumbang_sarans.status', [5, 6]) // Tambahkan alias untuk kolom status
+    ->orderByRaw('FIELD(sumbang_sarans.status, 6, 5)') // Tambahkan alias untuk kolom status
+    ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
+    ->paginate();
+
+        // Ambil hanya id user untuk menghindari "N + 1" query
+        $userIds = $data->pluck('id_user')->unique()->toArray();
+
+        // Ambil data peran (role) berdasarkan user ids
+        $usersRoles = User::whereIn('users.id', $userIds)
+            ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+            ->pluck('roles.role', 'users.id');
+
+        return view('ss.konfirmHRGA', compact('data', 'usersRoles'));
     }
 
     public function simpanSS(Request $request)
@@ -165,6 +204,72 @@ class SumbangSaranController extends Controller
             'sumbangSaran' => $sumbangSaran,
             'penilaians' => $penilaians,
         ];
+
+        // Return the data as JSON
+        return response()->json($response);
+    }
+
+    public function getNilai($id)
+    {
+        // Log the incoming ID
+        Log::info('Fetching sumbang saran with ID:', ['id' => $id]);
+
+        // Retrieve the sumbang saran data by ID
+        $sumbangSaran = SumbangSaran::findOrFail($id);
+
+        // Retrieve related penilaian
+        $penilaian = PenilaianSS::where('ss_id', $id)->first();
+
+        // Log the penilaian data
+        Log::info('Penilaian data:', ['penilaian' => $penilaian]);
+
+        // Check if $penilaian is null before trying to access its properties
+        $nilai = $penilaian ? $penilaian->nilai : null;
+
+        // Log the nilai
+        Log::info('Nilai:', ['nilai' => $nilai]);
+
+        // Prepare the data to return as JSON
+        $response = [
+            'sumbangSaran' => $sumbangSaran,
+            'nilai' => $nilai, // Send 'nilai' if available
+        ];
+
+        // Log the response data
+        Log::info('Response:', ['response' => $response]);
+
+        // Return the data as JSON
+        return response()->json($response);
+    }
+
+    public function getTambahNilai($id)
+    {
+        // Log the incoming ID
+        Log::info('Fetching sumbang saran with ID:', ['id' => $id]);
+
+        // Retrieve the sumbang saran data by ID
+        $sumbangSaran = SumbangSaran::findOrFail($id);
+
+        // Retrieve related penilaian
+        $penilaian = PenilaianSS::where('ss_id', $id)->first();
+
+        // Log the penilaian data
+        Log::info('Penilaian data:', ['penilaian' => $penilaian]);
+
+        // Check if $penilaian is null before trying to access its properties
+        $tambahan_nilai = $penilaian ? $penilaian->tambahan_nilai : null;
+
+        // Log the nilai
+        Log::info('tambahan_nilai:', ['tambahan_nilai' => $tambahan_nilai]);
+
+        // Prepare the data to return as JSON
+        $response = [
+            'sumbangSaran' => $sumbangSaran,
+            'tambahan_nilai' => $tambahan_nilai, // Send 'nilai' if available
+        ];
+
+        // Log the response data
+        Log::info('Response:', ['response' => $response]);
 
         // Return the data as JSON
         return response()->json($response);
@@ -274,16 +379,6 @@ class SumbangSaranController extends Controller
             'sudah_diterapkan' => 'nullable|boolean',
             'tidak_bisa_diterapkan' => 'nullable|boolean',
             'keterangan' => 'nullable|string',
-            'ide' => 'required|string',
-            'persiapan' => 'required|string',
-            'penghematan_biaya' => 'required|string',
-            'kualitas' => 'required|string',
-            'delivery' => 'required|string',
-            'safety' => 'required|string',
-            'biaya_penerapan' => 'required|string',
-            'usaha' => 'required|string',
-            'pencapaian_target' => 'required|string',
-            'catatan_penilaian' => 'nullable|string',
         ]);
 
         // Buat instance PenilaianSS baru
@@ -306,16 +401,6 @@ class SumbangSaranController extends Controller
             $penilaian->tidak_bisa_diterapkan = $request->tidak_bisa_diterapkan;
         }
         $penilaian->keterangan = $request->keterangan;
-        $penilaian->ide = $request->ide;
-        $penilaian->persiapan = $request->persiapan;
-        $penilaian->penghematan_biaya = $request->penghematan_biaya;
-        $penilaian->kualitas = $request->kualitas;
-        $penilaian->delivery = $request->delivery;
-        $penilaian->safety = $request->safety;
-        $penilaian->biaya_penerapan = $request->biaya_penerapan;
-        $penilaian->usaha = $request->usaha;
-        $penilaian->pencapaian_target = $request->pencapaian_target;
-        $penilaian->catatan_penilaian = $request->catatan_penilaian;
         $penilaian->ss_id = $request->ss_id;
 
         $penilaian->id_users = $request->user()->id;
@@ -329,5 +414,89 @@ class SumbangSaranController extends Controller
 
         // Jika penyimpanan berhasil, kembalikan respons berhasil
         return response()->json(['message' => 'Data Penilaian berhasil disimpan'], 200);
+    }
+
+    public function submitNilai(Request $request)
+    {
+        Log::info('submitNilai dipanggil', $request->all()); // Log request data
+
+        // Validasi data yang diterima dari formulir
+        $request->validate([
+            'ss_id' => 'required|integer',
+            'nilai' => 'required|integer',
+        ]);
+
+        // Cari entri PenilaianSS yang ada berdasarkan ss_id
+        $penilaian = PenilaianSS::where('ss_id', $request->ss_id)->first();
+
+        if ($penilaian) {
+            // Jika entri ditemukan, update data
+            $penilaian->nilai = $request->nilai;
+            $penilaian->id_users = $request->user()->id;
+            $penilaian->modified_by = $request->user()->name;
+            $penilaian->save();
+        } else {
+            // Jika entri tidak ditemukan, buat entri baru (opsional)
+            $penilaian = new PenilaianSS();
+            $penilaian->nilai = $request->nilai;
+            $penilaian->ss_id = $request->ss_id;
+            $penilaian->id_users = $request->user()->id;
+            $penilaian->modified_by = $request->user()->name;
+            $penilaian->save();
+        }
+
+        // Update status pada model SumbangSaran menjadi 5
+        $sumbangSaran = SumbangSaran::findOrFail($request->ss_id);
+        $sumbangSaran->status = 5;
+        $sumbangSaran->save();
+
+        // Jika penyimpanan berhasil, kembalikan respons berhasil
+        return response()->json(['message' => 'Data Penilaian berhasil disimpan'], 200);
+    }
+
+    public function submitTambahNilai(Request $request)
+    {
+        Log::info('submitTambahNilai dipanggil', $request->all()); // Log request data
+
+        // Validasi data yang diterima dari formulir
+        $request->validate([
+            'ss_id' => 'required|integer',
+            'tambahan_nilai' => 'required|integer',
+        ]);
+
+        // Cari entri PenilaianSS yang ada berdasarkan ss_id
+        $penilaian = PenilaianSS::where('ss_id', $request->ss_id)->first();
+
+        if ($penilaian) {
+            // Jika entri ditemukan, update data
+            $penilaian->tambahan_nilai = $request->tambahan_nilai;
+            $penilaian->id_users = $request->user()->id;
+            $penilaian->modified_by = $request->user()->name;
+            $penilaian->save();
+            Log::info('Penilaian diperbarui', ['penilaian' => $penilaian]);
+        } else {
+            // Jika entri tidak ditemukan, buat entri baru (opsional)
+            $penilaian = new PenilaianSS();
+            $penilaian->tambahan_nilai = $request->tambahan_nilai;
+            $penilaian->ss_id = $request->ss_id;
+            $penilaian->id_users = $request->user()->id;
+            $penilaian->modified_by = $request->user()->name;
+            $penilaian->save();
+            Log::info('Penilaian baru dibuat', ['penilaian' => $penilaian]);
+        }
+
+        // Update status pada model SumbangSaran menjadi 6
+        $sumbangSaran = SumbangSaran::findOrFail($request->ss_id);
+        $sumbangSaran->status = 5;
+        $sumbangSaran->save();
+
+        Log::info('Status SumbangSaran diperbarui', ['sumbangSaran' => $sumbangSaran]);
+
+        // Jika penyimpanan berhasil, kembalikan respons berhasil
+        return response()->json([
+            'message' => 'Data Penilaian berhasil disimpan',
+            'tambahan_nilai' => $penilaian->tambahan_nilai,
+            'ss_id' => $penilaian->ss_id,
+        ], 200);
     }
 }

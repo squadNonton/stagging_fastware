@@ -168,13 +168,21 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/showSS', 'App\Http\Controllers\SumbangSaranController@showSS')->name('showSS');
     Route::get('/showKonfirmasiForeman', 'App\Http\Controllers\SumbangSaranController@showKonfirmasiForeman')->name('showKonfirmasiForeman');
     Route::get('/showKonfirmasiDeptHead', 'App\Http\Controllers\SumbangSaranController@showKonfirmasiDeptHead')->name('showKonfirmasiDeptHead');
+    Route::get('/showKonfirmasiKomite', 'App\Http\Controllers\SumbangSaranController@showKonfirmasiKomite')->name('showKonfirmasiKomite');
+    Route::get('/showKonfirmasiHRGA', 'App\Http\Controllers\SumbangSaranController@showKonfirmasiHRGA')->name('showKonfirmasiHRGA');
 
     Route::post('/simpanSS', 'App\Http\Controllers\SumbangSaranController@simpanSS')->name('simpanSS');
     Route::post('/simpanPenilaian', 'App\Http\Controllers\SumbangSaranController@simpanPenilaian')->name('simpanPenilaian');
+    Route::post('/submitnilai', 'App\Http\Controllers\SumbangSaranController@submitNilai')->name('submitnilai');
+    Route::post('/submitTambahNilai', 'App\Http\Controllers\SumbangSaranController@submitTambahNilai')->name('submitTambahNilai');
 
     Route::get('/editSS/{id}', [SumbangSaranController::class, 'editSS'])->name('editSS');
     Route::post('/updateSS', [SumbangSaranController::class, 'updateSS'])->name('updateSS');
+
     Route::get('/getPenilaians/{id}', [SumbangSaranController::class, 'getPenilaians'])->name('getPenilaians');
+    Route::get('/getNilai/{id}', [SumbangSaranController::class, 'getNilai'])->name('getNilai');
+    Route::get('/getTambahNilai/{id}', [SumbangSaranController::class, 'getTambahNilai'])->name('getTambahNilai');
+
     Route::post('/updateSS', [SumbangSaranController::class, 'updateSS'])->name('updateSS');
     Route::delete('/delete-ss/{id}', [SumbangSaranController::class, 'deleteSS'])->name('deleteSS');
     Route::post('/kirim-ss/{id}', [SumbangSaranController::class, 'kirimSS'])->name('kirimSS');

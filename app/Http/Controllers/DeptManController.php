@@ -24,9 +24,9 @@ class DeptManController extends Controller
     // viewSubmission
     public function submission()
     {
-        $view1 = Handling::with('customers', 'type_materials')
-            ->where('status', '=', 0) // Filter berdasarkan status '0'
-            ->orderByDesc('created_at') // Urutkan secara descending berdasarkan kolom 'created_at' atau sesuaikan dengan kolom yang sesuai
+        $view1 = Handling::with(['customers', 'type_materials']) // Menggunakan array untuk parameter with
+            ->where('status', 0) // Menggunakan operator default '=' secara implisit
+            ->orderBy('created_at', 'desc') // Urutkan secara descending berdasarkan kolom 'created_at'
             ->paginate();
 
         $view2 = Handling::with('customers', 'type_materials')
@@ -105,9 +105,13 @@ class DeptManController extends Controller
      */
     public function showConfirm(string $id): View
     {
-        // get handlings by ID
-        $handlings = Handling::findOrFail($id);
+        // Mengambil data handling berdasarkan ID
+        $handlings = Handling::with(['customers', 'type_materials'])->findOrFail($id);
+
+        // Mengambil semua data pelanggan
         $customers = Customer::all();
+
+        // Mengambil semua data tipe bahan
         $type_materials = TypeMaterial::all();
 
         // render view with handlings
@@ -116,13 +120,17 @@ class DeptManController extends Controller
 
     public function showFollowUp(string $id): View
     {
-        // get handlings by ID
-        $handlings = Handling::findOrFail($id);
+        // Mengambil data handling berdasarkan ID
+        $handlings = Handling::with(['customers', 'type_materials'])->findOrFail($id);
 
+        // Mengambil semua data pelanggan
         $customers = Customer::all();
+
+        // Mengambil semua data tipe bahan
         $type_materials = TypeMaterial::all();
 
-        $data = ScheduleVisit::where('handling_id', $id)->with('handlings')->get();
+        // Mengambil data schedule visit berdasarkan handling_id
+        $data = ScheduleVisit::where('handling_id', $id)->get();
 
         // render view with handlings
         return view('deptman.followup', compact('handlings', 'customers', 'type_materials', 'data'));
@@ -130,15 +138,17 @@ class DeptManController extends Controller
 
     public function showHistoryProgres(string $id): View
     {
-        // Mendapatkan data handling berdasarkan ID
-        $handling = Handling::findOrFail($id);
+        // Mengambil data handling berdasarkan ID
+        $handling = Handling::with(['customers', 'type_materials'])->findOrFail($id);
 
-        // Mengambil data customers dan type materials
+        // Mengambil semua data pelanggan
         $customers = Customer::all();
+
+        // Mengambil semua data tipe bahan
         $type_materials = TypeMaterial::all();
 
-        // Mengambil data schedule visit yang terkait dengan handling tersebut
-        $data = ScheduleVisit::where('handling_id', $id)->with('handlings')->get();
+        // Mengambil data schedule visit berdasarkan handling_id
+        $data = ScheduleVisit::where('handling_id', $id)->get();
 
         // Mengembalikan view 'deptman.historyProgres' dengan data yang dibutuhkan
         return view('deptman.historyProgres', compact('handling', 'customers', 'type_materials', 'data'));

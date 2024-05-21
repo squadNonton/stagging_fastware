@@ -34,8 +34,7 @@
                                             value="{{ $handlings->no_wo }}" required disabled>
                                         <input type="hidden" id="handling_id" name="handling_id"
                                             value="{{ $handlings->id }}">
-                                            <input type="hidden" id="users_id" name="users_id"
-                                                value="{{ Auth::user()->id }}">
+                                        <input type="hidden" id="users_id" name="users_id" value="{{ Auth::user()->id }}">
                                     </div>
                                 </div>
                                 <br>
@@ -47,11 +46,13 @@
                                     <div class="col-lg-6">
                                         <select name="customer_id" id="customer_id_code" class="select2" style="width: 100%"
                                             onchange="updateCustomerInfo()" disabled>
+                                            <option value="">Pilih Kode Pelanggan</option>
                                             @foreach ($customers as $customer)
                                                 <option value="{{ $customer->id }}"
                                                     @if ($customer->id == $handlings->customer_id) selected @endif
                                                     data-name_customer="{{ $customer->name_customer }}"
-                                                    data-area="{{ $customer->area }}">{{ $customer->customer_code }}
+                                                    data-area="{{ $customer->area }}">
+                                                    {{ $customer->customer_code }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -64,14 +65,8 @@
                                                 style="color: red;">*</span></label>
                                     </div>
                                     <div class="col-lg-6">
-                                        <select name="customer_name" id="customer_id_name" class="select2"
-                                            style="width: 100%" disabled>
-                                            @foreach ($customers as $customer)
-                                                <option value="{{ $customer->name_customer }}">
-                                                    {{ $customer->name_customer }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" id="customer_name" class="form-control"
+                                            value="{{ $handlings->customers->name_customer }}" disabled>
                                     </div>
                                 </div>
                                 <br>
@@ -81,12 +76,8 @@
                                                 style="color: red;">*</span></label>
                                     </div>
                                     <div class="col-lg-6">
-                                        <select name="area" id="customer_id_area" class="select2" style="width: 100%"
-                                            disabled>
-                                            @foreach ($customers as $customer)
-                                                <option value="{{ $customer->area }}">{{ $customer->area }}</option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" id="customer_area" class="form-control"
+                                            value="{{ $handlings->customers->area }}" disabled>
                                     </div>
                                 </div>
                                 <br>
@@ -96,7 +87,7 @@
                                                 style="color: red;">*</span></label>
                                     </div>
                                     <div class="col-lg-6">
-                                        <select name="type_id" id="type_id" class="" style="width: 100%" disabled>
+                                        <select name="type_id" id="type_id" class="select2" style="width: 100%">
                                             @foreach ($type_materials as $typeMaterial)
                                                 <option value="{{ $typeMaterial->id }}"
                                                     @if ($typeMaterial->id == $handlings->type_id) selected @endif>
@@ -116,8 +107,8 @@
                                     </div>
                                     <div class="col-md-3">
                                         <label for="w" class="form-label">W:</label>
-                                        <input type="text" class="form-control input-sm" id="weight" name="weight"
-                                            placeholder="Weight" style="max-width: 80%;"
+                                        <input type="text" class="form-control input-sm" id="weight"
+                                            name="weight" placeholder="Weight" style="max-width: 80%;"
                                             value="{{ $handlings->weight }}" disabled>
                                     </div>
                                     <div class="col-md-3">
@@ -372,16 +363,16 @@
                                 </div>
                             </div>
                             <div id="imageModal" class="modal"
-                                    style="display: none; position: fixed; z-index: 1; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9);">
-                                    <div
-                                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; max-width: 700px; background-color: #fefefe; border-radius: 5px;">
-                                        <span class="close"
-                                            style="position: absolute; top: 10px; right: 10px; color: #000; font-size: 30px; font-weight: bold; cursor: pointer;"
-                                            onclick="closeModal()">&times;</span>
-                                        <img class="modal-content" id="modalImage"
-                                            style="display: block; margin: auto; width: 50%; max-width: 70%;">
-                                    </div>
+                                style="display: none; position: fixed; z-index: 1; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9);">
+                                <div
+                                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; max-width: 700px; background-color: #fefefe; border-radius: 5px;">
+                                    <span class="close"
+                                        style="position: absolute; top: 10px; right: 10px; color: #000; font-size: 30px; font-weight: bold; cursor: pointer;"
+                                        onclick="closeModal()">&times;</span>
+                                    <img class="modal-content" id="modalImage"
+                                        style="display: block; margin: auto; width: 50%; max-width: 70%;">
                                 </div>
+                            </div>
                         </div>
                         <div class="ps-3 mb-3 mt-3 d-flex justify-content-end">
                             <button type="submit" name="action" value="claim" class="btn btn-success mb-4 me-2"
@@ -501,6 +492,31 @@
             </div>
         </section>
         <script>
+            function updateCustomerInfo() {
+                var customerIdCodeSelect = document.getElementById('customer_id_code');
+                var customerNameInput = document.getElementById('customer_name');
+                var customerAreaInput = document.getElementById('customer_area');
+                var customerIdNameSelect = document.getElementById('customer_id_name');
+                var customerIdAreaSelect = document.getElementById('customer_id_area');
+
+                var selectedOption = customerIdCodeSelect.options[customerIdCodeSelect.selectedIndex];
+                var customerName = selectedOption.getAttribute('data-name_customer');
+                var customerArea = selectedOption.getAttribute('data-area');
+
+                // Update input fields
+                customerNameInput.value = customerName;
+                customerAreaInput.value = customerArea;
+
+                // Update select fields
+                customerIdNameSelect.value = customerName;
+                customerIdAreaSelect.value = customerArea;
+            }
+
+            // Initialize the customer info on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                updateCustomerInfo();
+            });
+
             function buttonFollowUp() {
                 // Ambil nilai input PIC
                 var picInput = document.getElementById('pic').value;

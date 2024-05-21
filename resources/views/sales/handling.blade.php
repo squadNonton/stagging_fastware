@@ -73,7 +73,7 @@
                                                 <tr>
                                                     <td class="text-center py-3">{{ $loop->iteration }}</td>
                                                     <td class="text-center py-3">{{ $row->no_wo }}</td>
-                                                    <td class="text-center py-3">{{ $row->users->name ?? ''}}</td>
+                                                    <td class="text-center py-3">{{ $row->users->name ?? '' }}</td>
                                                     <td class="text-center py-3">{{ $row->customers->customer_code ?? '' }}
                                                     </td>
                                                     <td class="text-center py-3">{{ $row->customers->name_customer ?? '' }}
@@ -204,7 +204,7 @@
                 new DataTable('#viewSales');
 
             });
-            //sweet alert status close
+
             function confirmStatusChange(id) {
                 Swal.fire({
                     title: 'Anda yakin?',
@@ -217,28 +217,29 @@
                     cancelButtonText: 'Tidak'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Jika pengguna menekan tombol "Yes", kirim permintaan PATCH ke endpoint changeStatus
+                        // Jika pengguna menekan tombol "Iya", kirim permintaan POST dengan metode spoofing ke endpoint changeStatus
                         changeStatus(id);
-                        // Merefresh halaman
-                        location.reload();
                     }
                 });
             }
-            // Fungsi untuk mengirimkan permintaan PATCH ke endpoint changeStatus
+
             function changeStatus(id) {
-                // Kirimkan permintaan AJAX menggunakan jQuery
                 $.ajax({
-                    type: 'PATCH', // Metode HTTP yang digunakan adalah PATCH
-                    url: '/changeStatus/' + id, // URL endpoint dengan parameter id
+                    type: 'POST', // Menggunakan POST dengan spoofing metode PATCH
+                    url: '{{ route('changeStatus', ['id' => '__id__']) }}'.replace('__id__',
+                    id), // URL endpoint dengan parameter id
                     data: {
                         _token: '{{ csrf_token() }}', // Token CSRF untuk keamanan
                         _method: 'PATCH' // Metode HTTP yang digunakan adalah PATCH
                     },
                     success: function(response) {
-                        // Tampilkan pesan sukses jika permintaan berhasil
-                        Swal.fire('Success!', 'Status has been changed successfully.', 'success');
-                        // Lakukan reload halaman atau update tabel jika diperlukan
-                        window.location.href = '{{ route('index') }}';
+                        Swal.fire('Success!', 'Status has been changed successfully.', 'success')
+                            .then(() => {
+                                window.location.href = '{{ route('index') }}';
+                            });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire('Error!', 'There was an error changing the status.', 'error');
                     }
                 });
             }

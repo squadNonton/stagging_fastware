@@ -44,11 +44,13 @@
                                         <div class="col-lg-6">
                                             <select name="customer_id" id="customer_id_code" class="select2"
                                                 style="width: 100%" onchange="updateCustomerInfo()" disabled>
+                                                <option value="">Pilih Kode Pelanggan</option>
                                                 @foreach ($customers as $customer)
                                                     <option value="{{ $customer->id }}"
                                                         @if ($customer->id == $handlings->customer_id) selected @endif
                                                         data-name_customer="{{ $customer->name_customer }}"
-                                                        data-area="{{ $customer->area }}">{{ $customer->customer_code }}
+                                                        data-area="{{ $customer->area }}">
+                                                        {{ $customer->customer_code }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -61,14 +63,8 @@
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
-                                            <select name="customer_name" id="customer_id_name" class="select2"
-                                                style="width: 100%" disabled>
-                                                @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->name_customer }}">
-                                                        {{ $customer->name_customer }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            <input type="text" id="customer_name" class="form-control"
+                                                value="{{ $handlings->customers->name_customer }}" disabled>
                                         </div>
                                     </div>
                                     <br>
@@ -78,12 +74,8 @@
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
-                                            <select name="area" id="customer_id_area" class="select2" style="width: 100%"
-                                                disabled>
-                                                @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->area }}">{{ $customer->area }}</option>
-                                                @endforeach
-                                            </select>
+                                            <input type="text" id="customer_area" class="form-control"
+                                                value="{{ $handlings->customers->area }}" disabled>
                                         </div>
                                     </div>
                                     <br>
@@ -93,8 +85,7 @@
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
-                                            <select name="type_id" id="type_id" class="" style="width: 100%"
-                                                disabled>
+                                            <select name="type_id" id="type_id" class="select2" style="width: 100%">
                                                 @foreach ($type_materials as $typeMaterial)
                                                     <option value="{{ $typeMaterial->id }}"
                                                         @if ($typeMaterial->id == $handlings->type_id) selected @endif>
@@ -129,13 +120,13 @@
                                         <div class="col-md-3">
                                             <label for="w" class="form-label">OD:</label>
                                             <input type="text" class="form-control input-sm" id="outer_diameter"
-                                                name="outer_diameter" placeholder="Outer Diameter" style="max-width: 40%"
+                                                name="outer_diameter" placeholder="Outer Diameter" style="max-width: 80%"
                                                 value="{{ $handlings->outer_diameter }}" disabled>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="w" class="form-label">ID:</label>
                                             <input type="text" class="form-control input-sm" id="inner_diameter"
-                                                name="inner_diameter" placeholder="Inner Diameter" style="max-width: 40%"
+                                                name="inner_diameter" placeholder="Inner Diameter" style="max-width: 80%"
                                                 value="{{ $handlings->inner_diameter }}" disabled>
                                         </div>
                                     </div>
@@ -143,13 +134,13 @@
                                         <div class="col-md-3">
                                             <label for="qty" class="form-label">QTY (Kg):</label>
                                             <input type="text" class="form-control input-sm" id="qty"
-                                                name="qty" style="max-width: 40%;" value="{{ $handlings->qty }}"
+                                                name="qty" style="max-width: 80%;" value="{{ $handlings->qty }}"
                                                 required disabled>
                                         </div>
                                         <div class="col-md-3">
                                             <label for="pcs" class="form-label">Unit (Pcs):</label>
                                             <input type="text" class="form-control input-sm" id="pcs"
-                                                name="pcs" style="max-width: 40%" value="{{ $handlings->pcs }}"
+                                                name="pcs" style="max-width: 80%" value="{{ $handlings->pcs }}"
                                                 required disabled>
                                         </div>
                                     </div>
@@ -416,7 +407,32 @@
             </div>
         </section>
         <script>
-             function showModal(imageSrc) {
+            function updateCustomerInfo() {
+                var customerIdCodeSelect = document.getElementById('customer_id_code');
+                var customerNameInput = document.getElementById('customer_name');
+                var customerAreaInput = document.getElementById('customer_area');
+                var customerIdNameSelect = document.getElementById('customer_id_name');
+                var customerIdAreaSelect = document.getElementById('customer_id_area');
+
+                var selectedOption = customerIdCodeSelect.options[customerIdCodeSelect.selectedIndex];
+                var customerName = selectedOption.getAttribute('data-name_customer');
+                var customerArea = selectedOption.getAttribute('data-area');
+
+                // Update input fields
+                customerNameInput.value = customerName;
+                customerAreaInput.value = customerArea;
+
+                // Update select fields
+                customerIdNameSelect.value = customerName;
+                customerIdAreaSelect.value = customerArea;
+            }
+
+            // Initialize the customer info on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                updateCustomerInfo();
+            });
+
+            function showModal(imageSrc) {
                 var modal = document.getElementById("imageModal");
                 var modalImg = document.getElementById("modalImage");
                 modal.style.display = "block";
@@ -473,5 +489,4 @@
             }
         </script>
     </main><!-- End #main -->
-    
 @endsection

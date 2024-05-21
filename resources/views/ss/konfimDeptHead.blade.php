@@ -64,24 +64,28 @@
                                                             Head</span>
                                                     @elseif($data->status == 4)
                                                         <span class="badge bg-info align-items-center"
-                                                            style="font-size: 18px;">Menunggur<br>Konfirmasi Direksi</span>
+                                                            style="font-size: 18px;">Menunggur<br>Konfirmasi Komite</span>
+                                                    @elseif($data->status == 5)
+                                                        <span class="badge bg-info align-items-center"
+                                                            style="font-size: 18px;">SS sudah dinilai</span>
                                                     @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($data->status != 4)
-                                                        <button class="btn btn-primary btn-sm"
-                                                            onclick="openFormPenilaian({{ $data->id }})"
-                                                            data-id="{{ $data->id }}" title="Kirim">
-                                                            <i class="fa-solid fa fa-check-square fa-1x"></i>
-                                                        </button>
-                                                    @endif
-                                                    <button class="btn btn-success btn-sm"
-                                                        onclick="showViewSumbangSaranModal({{ $data->id }})"
-                                                        data-id="{{ $data->id }}" title="lihat">
-                                                        <i class="fa-solid fa-eye fa-1x"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                                @endif
+                                        </td>
+                                        <td class="text-center">
+                                            @if ($data->status != 4)
+                                                <button class="btn btn-primary btn-sm"
+                                                    onclick="openFormPenilaian({{ $data->id }})"
+                                                    data-id="{{ $data->id }}" title="Kirim">
+                                                    <i class="fa-solid fa fa-check-square fa-1x"></i>
+                                                </button>
+                                            @endif
+                                            <button class="btn btn-success btn-sm"
+                                                onclick="showViewSumbangSaranModal({{ $data->id }})"
+                                                data-id="{{ $data->id }}" title="lihat">
+                                                <i class="fa-solid fa-eye fa-1x"></i>
+                                            </button>
+                                        </td>
+                                        </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -95,7 +99,7 @@
             <!-- Modal Form Edit Sumbang Saran -->
             <div class="modal fade" id="editSumbangSaranModal" tabindex="-1" aria-labelledby="editSumbangSaranModalLabel"
                 aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="editSumbangSaranModalLabel">Form Edit SS</h5>
@@ -105,302 +109,59 @@
                             <!-- Form Edit Sumbang Saran -->
                             <form id="editSumbangSaranForm" enctype="multipart/form-data">
                                 @csrf
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <label for="editTglPengajuan">Tgl. pengajuan Ide <span
-                                                        style="color: red;">*</span>
-                                                </label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="date" class="form-control" id="editTglPengajuan"
-                                                    name="tgl_pengajuan_ide" style="width: 100%" readonly>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <label for="editLokasiIde">Lokasi Ide <span style="color: red;">*</span>
-                                                </label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="editLokasiIde"
-                                                    name="lokasi_ide" style="width: 100%;" readonly>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <label for="editTglDiterapkan">Tgl. Diterapkan<span
-                                                        style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="date" class="form-control" id="editTglDiterapkan"
-                                                    style="width: 100%" name="tgl_diterapkan" readonly>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <label for="editJudulIde">Judul Ide <span
-                                                        style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="editJudulIde"
-                                                    name="judul" style="width: 100%" readonly>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <label for="editKeadaanSebelumnya">Keadaan
-                                                    Sebelumnya
-                                                    (Permasalahan) <span style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <textarea class="form-control" style="height: 100px" id="editKeadaanSebelumnya" name="keadaan_sebelumnya"
-                                                    style="width: 100%" readonly></textarea>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <label for="editImage">File Upload 1</label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label id="editImageLabel" class="form-label"></label>
-                                                <input type="hidden" id="editImageUrl" name="edit_image_url">
-                                                <img id="editImagePreview" class="image-popup" src="#"
-                                                    alt="Preview" style="width: 100% display: none;">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <label for="editUsulanIde">Usulan Ide <span
-                                                        style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <textarea class="form-control" style="height: 100px" id="editUsulanIde" name="usulan_ide" style="width: 100%"
-                                                    readonly></textarea>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <label for="editImage2">File Upload 2</label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <label id="editImage2Label" class="form-label"></label>
-                                                <input type="hidden" id="editImage2Url" name="edit_image_2_url">
-                                                <img id="editImage2Preview" class="image-popup" src="#"
-                                                    alt="Preview" style="width: 50%">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <label for="editKeuntungan">Keuntungan Dari Penerapan
-                                                    Ide</label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <textarea class="form-control" style="height: 100px" id="editKeuntungan" name="keuntungan_ide" style="width: 100%"
-                                                    readonly></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <label for="telah_direvisi">Telah Direvisi</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-1">
-                                                <input type="hidden" name="telah_direvisi" value="0">
-                                                <input type="checkbox" id="telah_direvisi" name="telah_direvisi"
-                                                    value="1">
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <label for="keterangan">Keterangan SS</label>
-                                            </div>
-                                            <div class="col-lg-5">
-                                                <textarea class="form-control" style="height: 100px" id="keterangan" name="keterangan" style="width: 100%"></textarea>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <label for="belum_diterapkan">Belum Diterapkan</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <input type="hidden" name="belum_diterapkan" value="0">
-                                                <input type="checkbox" id="belum_diterapkan" name="belum_diterapkan"
-                                                    value="1">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <label for="sedang_diterapkan">Sedang Diterapkan</label>
-
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <input type="hidden" name="sedang_diterapkan" value="0">
-                                                <input type="checkbox" id="sedang_diterapkan" name="sedang_diterapkan"
-                                                    value="1">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <label for="sudah_diterapkan">Sudah Diterapkan</label>
-
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <input type="hidden" name="sudah_diterapkan" value="0">
-                                                <input type="checkbox" id="sudah_diterapkan" name="sudah_diterapkan"
-                                                    value="1">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <label for="tidak_bisa_diterapkan">Tidak Bisa Diterapkan</label>
-
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <input type="hidden" name="tidak_bisa_diterapkan" value="0">
-                                                <input type="checkbox" id="tidak_bisa_diterapkan"
-                                                    name="tidak_bisa_diterapkan" value="1">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <!-- Ide Field -->
-                                            <div class="col-lg-2">
-                                                <label for="ide">Ide<span style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="ide" name="ide"
-                                                    required style="width: 100%">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <!-- Persiapan Field -->
-                                            <div class="col-lg-2">
-                                                <label for="persiapan">Persiapan<span style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="persiapan"
-                                                    name="persiapan" required style="width: 100%">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <!-- Penghematan Biaya Field -->
-                                            <div class="col-lg-2">
-                                                <label for="penghematan_biaya">Penghematan Biaya<span
-                                                        style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="penghematan_biaya"
-                                                    name="penghematan_biaya" required style="width: 100%">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <!-- Kualitas Field -->
-                                            <div class="col-lg-2">
-                                                <label for="kualitas">Kualitas<span style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="kualitas"
-                                                    name="kualitas" required style="width: 100%">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <!-- Delivery Field -->
-                                            <div class="col-lg-2">
-                                                <label for="delivery">Delivery<span style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="delivery"
-                                                    name="delivery" required style="width: 100%">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <!-- Safety Field -->
-                                            <div class="col-lg-2">
-                                                <label for="safety">Safety<span style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="safety" name="safety"
-                                                    required style="width: 100%">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <!-- Biaya Penerapan Field -->
-                                            <div class="col-lg-2">
-                                                <label for="biaya_penerapan">Biaya Penerapan<span
-                                                        style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="biaya_penerapan"
-                                                    name="biaya_penerapan" required style="width: 100%">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <!-- Usaha Field -->
-                                            <div class="col-lg-2">
-                                                <label for="usaha">Usaha<span style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="usaha" name="usaha"
-                                                    required style="width: 100%">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <!-- Pencapaian Target Field -->
-                                            <div class="col-lg-2">
-                                                <label for="pencapaian_target">Pencapaian Target<span
-                                                        style="color: red;">*</span></label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <input type="text" class="form-control" id="pencapaian_target"
-                                                    name="pencapaian_target" required style="width: 100%">
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <!-- Catatan Penilaian Field -->
-                                            <div class="col-lg-2">
-                                                <label for="catatan_penilaian">Catatan Penilaian</label>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <textarea class="form-control" style="height: 100px" id="catatan_penilaian" name="catatan_penilaian"
-                                                    style="width: 100%"></textarea>
-                                            </div>
-                                        </div>
-                                        <br>
-                                    </div>
-                                </div>
                                 <input type="hidden" id="editSumbangSaranId" name="id">
                                 <input type="hidden" id="ss_id" name="ss_id">
+
+                                <div class="mb-3">
+                                    <label for="telah_direvisi" class="form-label">Telah Direvisi</label>
+                                    <div class="form-check">
+                                        <input type="hidden" name="telah_direvisi" value="0">
+                                        <input type="checkbox" class="form-check-input" id="telah_direvisi"
+                                            name="telah_direvisi" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="belum_diterapkan" class="form-label">Belum Diterapkan</label>
+                                    <div class="form-check">
+                                        <input type="hidden" name="belum_diterapkan" value="0">
+                                        <input type="checkbox" class="form-check-input" id="belum_diterapkan"
+                                            name="belum_diterapkan" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="sedang_diterapkan" class="form-label">Sedang Diterapkan</label>
+                                    <div class="form-check">
+                                        <input type="hidden" name="sedang_diterapkan" value="0">
+                                        <input type="checkbox" class="form-check-input" id="sedang_diterapkan"
+                                            name="sedang_diterapkan" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="sudah_diterapkan" class="form-label">Sudah Diterapkan</label>
+                                    <div class="form-check">
+                                        <input type="hidden" name="sudah_diterapkan" value="0">
+                                        <input type="checkbox" class="form-check-input" id="sudah_diterapkan"
+                                            name="sudah_diterapkan" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="tidak_bisa_diterapkan" class="form-label">Tidak Bisa Diterapkan</label>
+                                    <div class="form-check">
+                                        <input type="hidden" name="tidak_bisa_diterapkan" value="0">
+                                        <input type="checkbox" class="form-check-input" id="tidak_bisa_diterapkan"
+                                            name="tidak_bisa_diterapkan" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="keterangan" class="form-label">Keterangan SS</label>
+                                    <textarea class="form-control" id="keterangan" name="keterangan" style="height: 100px; width: 100%;"></textarea>
+                                </div>
+
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Close</button>
@@ -409,10 +170,10 @@
                                 </div>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
+
             <!-- Readonly Modal Form View Sumbang Saran -->
             <div class="modal fade" id="viewSumbangSaranModal" tabindex="-1"
                 aria-labelledby="viewSumbangSaranModalLabel" aria-hidden="true">

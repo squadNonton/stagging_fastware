@@ -67,33 +67,37 @@
                                                             Head</span>
                                                     @elseif($data->status == 4)
                                                         <span class="badge bg-info align-items-center"
-                                                            style="font-size: 18px;">Menunggur<br>Konfirmasi Direksi</span>
+                                                            style="font-size: 18px;">Menunggur<br>Konfirmasi Komite</span>
+                                                    @elseif($data->status == 5)
+                                                        <span class="badge bg-info align-items-center"
+                                                            style="font-size: 18px;">SS sudah dinilai</span>
                                                     @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($data->status != 2 && $data->status != 3 && $data->status != 4)
-                                                        <button class="btn btn-primary btn-sm"
-                                                            onclick="openEditModal({{ $data->id }})"
-                                                            data-id="{{ $data->id }}" title="Edit">
-                                                            <i class="fa-solid fa-edit fa-1x"></i>
-                                                        </button>
-                                                        <button class="btn btn-danger btn-sm"
-                                                            onclick="confirmDelete('{{ $data->id }}')" title="Hapus">
-                                                            <i class="fas fa-trash fa-1x"></i>
-                                                        </button>
-                                                        <button class="btn btn-primary btn-sm"
-                                                            onclick="confirmKirim({{ $data->id }})"
-                                                            data-id="{{ $data->id }}" title="Kirim">
-                                                            <i class="fa-solid fa fa-paper-plane fa-1x"></i>
-                                                        </button>
-                                                    @endif
-                                                    <button class="btn btn-success btn-sm"
-                                                        onclick="showViewSumbangSaranModal({{ $data->id }})"
-                                                        data-id="{{ $data->id }}" title="lihat">
-                                                        <i class="fa-solid fa-eye fa-1x"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                        @endif
+                                        </td>
+                                        <td class="text-center">
+                                            @if ($data->status != 2 && $data->status != 3 && $data->status != 4)
+                                                <button class="btn btn-primary btn-sm"
+                                                    onclick="openEditModal({{ $data->id }})"
+                                                    data-id="{{ $data->id }}" title="Edit">
+                                                    <i class="fa-solid fa-edit fa-1x"></i>
+                                                </button>
+                                                <button class="btn btn-danger btn-sm"
+                                                    onclick="confirmDelete('{{ $data->id }}')" title="Hapus">
+                                                    <i class="fas fa-trash fa-1x"></i>
+                                                </button>
+                                                <button class="btn btn-primary btn-sm"
+                                                    onclick="confirmKirim({{ $data->id }})"
+                                                    data-id="{{ $data->id }}" title="Kirim">
+                                                    <i class="fa-solid fa fa-paper-plane fa-1x"></i>
+                                                </button>
+                                            @endif
+                                            <button class="btn btn-success btn-sm"
+                                                onclick="showViewSumbangSaranModal({{ $data->id }})"
+                                                data-id="{{ $data->id }}" title="lihat">
+                                                <i class="fa-solid fa-eye fa-1x"></i>
+                                            </button>
+                                        </td>
+                                        </tr>
                                         @endforeach
                                     </tbody>
                                 </table>

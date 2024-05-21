@@ -20,16 +20,10 @@ class PenilaianSS extends Model
         'sudah_diterapkan',
         'tidak_bisa_diterapkan',
         'keterangan',
-        'ide',
-        'persiapan',
-        'penghematan_biaya',
-        'kualitas',
-        'delivery',
-        'safety',
-        'biaya_penerapan',
-        'usaha',
-        'pencapaian_target',
         'catatan_penilaian',
+        'nilai',
+        'tambahan_nilai',
+        'modified_by',
     ];
 
     public function users(): BelongsTo

@@ -22,12 +22,11 @@ class HandlingController extends Controller
 
     public function index()
     {
-        $data = Handling::with('customers', 'type_materials', 'users')
-    ->whereIn('status', [1, 2, 0, 3])
-    ->orderByRaw('FIELD(status, 3, 2, 0, 1)')
-    ->orderByDesc('created_at')
-    ->paginate();
-        $data = $data->reverse();
+        $data = Handling::with(['customers', 'type_materials', 'users'])
+        ->whereIn('status', [2, 1, 0, 3])
+        ->orderByRaw('FIELD(status, 2, 1, 0, 3)') // Urutkan berdasarkan urutan status yang diinginkan
+        ->orderByDesc('created_at') // Urutkan berdasarkan created_at dalam setiap status
+        ->paginate();
 
         return view('sales.handling', compact('data'));
     }
@@ -68,27 +67,28 @@ class HandlingController extends Controller
 
     public function changeStatus($id)
     {
-        // Temukan data berdasarkan ID
         $data = Handling::findOrFail($id);
-
-        // Ubah status menjadi 3 (Close)
         $data->status = 3;
         $data->save();
 
-        // Redirect kembali ke halaman yang sesuai (opsional)
-        return redirect()->route('index')->with('success', 'Status changed successfully.');
+        return response()->json(['success' => 'Status changed successfully.']);
     }
 
     public function showHistory($id)
     {
-        // get handlings by ID
-        $handlings = Handling::findOrFail($id);
+        // Mengambil data handling berdasarkan ID
+        $handlings = Handling::with(['customers', 'type_materials'])->findOrFail($id);
 
+        // Mengambil semua data pelanggan
         $customers = Customer::all();
+
+        // Mengambil semua data tipe bahan
         $type_materials = TypeMaterial::all();
+
+        // Mengambil data schedule visit berdasarkan handling_id
         $data = ScheduleVisit::where('handling_id', $id)->get();
 
-        // render view with handlings
+        // Mengirim data ke view
         return view('sales.showHistory', compact('handlings', 'customers', 'type_materials', 'data'));
     }
 
@@ -286,12 +286,10 @@ class HandlingController extends Controller
      */
     public function edit(string $id): View
     {
-        // get handlings by ID
-        $handlings = Handling::findOrFail($id);
+        $handlings = Handling::with(['customers', 'type_materials'])->findOrFail($id);
         $customers = Customer::all();
         $type_materials = TypeMaterial::all();
 
-        // render view with handlings
         return view('sales.edit', compact('handlings', 'customers', 'type_materials'));
     }
 

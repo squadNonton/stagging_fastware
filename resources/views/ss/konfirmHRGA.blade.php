@@ -4,11 +4,11 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Konfirmasi SS by Foreman</h1>
+            <h1>Penilaian SS by HRGA</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboardHandling') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Konfirmasi SS</li>
+                    <li class="breadcrumb-item active">Penilaian SS</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -18,7 +18,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Table View Konfirmasi</h5>
+                            <h5 class="card-title">Table View Penilaian</h5>
                             <!-- Table with stripped rows -->
                             <div class="table-responsive" style="height: 100%; overflow-y: auto;">
                                 <table class="datatable table">
@@ -65,16 +65,17 @@
                                                     @elseif($data->status == 4)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Komite</span>
+                                                    @elseif($data->status == 5)
+                                                        <span class="badge bg-info align-items-center"
+                                                            style="font-size: 18px;">SS sudah dinilai</span>
                                                     @endif
                                                 </td>
-                                                <td class="text-center">
-                                                    @if ($data->status != 3 && $data->status != 4)
-                                                        <button class="btn btn-primary btn-sm"
-                                                            onclick="confirmKirim({{ $data->id }})"
-                                                            data-id="{{ $data->id }}" title="Kirim">
-                                                            <i class="fa-solid fa fa-paper-plane fa-1x"></i>
-                                                        </button>
-                                                    @endif
+                                                <td>
+                                                    <button class="btn btn-primary btn-sm"
+                                                        onclick="openFormTambahNilai({{ $data->id }})"
+                                                        data-id="{{ $data->id }}" title="Tambahan Nilai">
+                                                        <i class="fa-solid fa-tasks fa-1x"></i>
+                                                    </button>
                                                     <button class="btn btn-success btn-sm"
                                                         onclick="showViewSumbangSaranModal({{ $data->id }})"
                                                         data-id="{{ $data->id }}" title="lihat">
@@ -91,7 +92,37 @@
                     </div>
                 </div>
             </div>
-            <!-- Readonly Modal Form Edit Sumbang Saran -->
+            <div class="modal fade" id="editTambahNilai" tabindex="-1" aria-labelledby="editTambahNilai"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="editSumbangSaranModalLabel">Form Tambah Nilai Sumbang Saran</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="formTambahNilai" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" id="editSumbangSaranId" name="id">
+                                <input type="hidden" id="ss_id" name="ss_id">
+                                <div class="mb-3">
+                                    <label for="tambahan_nilai" class="form-label">Tambah Nilai</label>
+                                    <input type="text" class="form-control" id="tambahan_nilai" name="tambahan_nilai"
+                                        required>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Readonly Modal Form View Sumbang Saran -->
             <div class="modal fade" id="viewSumbangSaranModal" tabindex="-1"
                 aria-labelledby="viewSumbangSaranModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
@@ -144,6 +175,7 @@
                                         <textarea class="form-control" style="height: 100px" id="viewKeadaanSebelumnya" name="keadaan_sebelumnya" readonly></textarea>
                                     </div>
                                 </div>
+
                                 <!-- Input File Upload 1 -->
                                 <div class="row mb-3">
                                     <label for="viewImage" class="col-sm-2 col-form-label">File Upload 1</label>
@@ -190,42 +222,142 @@
                     </div>
                 </div>
             </div>
-            
+
         </section>
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-        <script>
 
-            function confirmKirim(id) {
-                Swal.fire({
-                    title: 'Apakah anda menyetujui ide?',
-                    text: 'Setelah dikirim, data tidak dapat kirim ulang!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, kirim!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '{{ route('kirimSS2', ['id' => ':id']) }}'.replace(':id', id),
-                            type: 'POST', // Ganti dengan DELETE
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            success: function(data) {
-                                if (data.message === 'Data berhasil dikirim') {
-                                    Swal.fire(
-                                        'Dikirim!',
-                                        'Data berhasil dikirim.',
-                                        'success'
-                                    ).then(() => {
-                                        window.location.href = '{{ route('showKonfirmasiForeman') }}';
-                                    });
-                                }
+        <script>
+            function openFormTambahNilai(id) {
+                // Panggil endpoint untuk mendapatkan data sumbang saran berdasarkan ID
+                $.ajax({
+                    url: '{{ route('getTambahNilai', ['id' => ':id']) }}'.replace(':id', id),
+                    type: 'GET',
+                    success: function(response) {
+                        console.log('Response received:', response); // Log response for debugging
+
+                        var sumbangSaran = response.sumbangSaran; // Objek sumbangSaran dari respons
+                        var tambahan_nilai = response.tambahan_nilai; // Nilai tambahan_nilai dari respons
+
+                        console.log('SumbangSaran:', sumbangSaran); // Log sumbangSaran for debugging
+                        console.log('tambahan_nilai:', tambahan_nilai); // Log tambahan_nilai for debugging
+
+                        $('#editSumbangSaranId').val(sumbangSaran.id);
+                        $('#tambahan_nilai').val(tambahan_nilai); // Isi nilai ke input field
+
+                        // Set nilai ss_id ke input tersembunyi dalam modal
+                        $('#ss_id').val(sumbangSaran.id);
+                        // Tampilkan modal
+                        $('#editTambahNilai').modal('show');
+                    },
+                    error: function(xhr) {
+                        // Tangani kesalahan jika ada
+                        console.log('Error:', xhr.responseText); // Log error for debugging
+                    }
+                });
+            }
+
+            function submitFormTambahNilai(event) {
+                event.preventDefault(); // Prevent form from submitting normally
+
+                var form = document.getElementById('formTambahNilai');
+                var requiredFields = form.querySelectorAll('[required]');
+                var valid = true;
+                var firstInvalidField = null;
+
+                requiredFields.forEach(function(field) {
+                    if (!field.value.trim()) {
+                        valid = false;
+                        if (!firstInvalidField) {
+                            firstInvalidField = field;
+                        }
+                    }
+                });
+
+                if (!valid) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Harap isi semua field yang wajib diisi.',
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1000 // Alert will auto-close after 2 seconds
+                    }).then(() => {
+                        if (firstInvalidField) {
+                            firstInvalidField.focus();
+                        }
+                    });
+                    return;
+                }
+
+                var formData = new FormData(form);
+
+                $.ajax({
+                    url: '{{ route('submitTambahNilai') }}',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        console.log('Response:', response); // Log response
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Data berhasil disimpan.',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 2000 // Alert will auto-close after 2 seconds
+                        }).then((result) => {
+                            if (result.dismiss === Swal.DismissReason.timer) {
+                                // Perform any additional actions if needed
+                                location.reload(); // Reload the page or update the UI accordingly
                             }
+                        });
+                    },
+                    error: function(response) {
+                        console.error('Error:', response); // Log error response
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan saat menyimpan data.',
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 2000 // Alert will auto-close after 2 seconds
                         });
                     }
                 });
+            }
+
+            document.getElementById('formTambahNilai').addEventListener('submit', submitFormTambahNilai);
+
+            function showFileName(inputId, labelId, previewId) {
+                var input = document.getElementById(inputId);
+                var label = document.getElementById(labelId);
+                var preview = document.getElementById(previewId);
+
+                if (input.files && input.files.length > 0) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(input.files[0]);
+
+                    label.innerText = input.files[0].name;
+                }
+            }
+
+            function showFileName2(inputId, labelId, previewId) {
+                var input = document.getElementById(inputId);
+                var label = document.getElementById(labelId);
+                var preview = document.getElementById(previewId);
+
+                if (input.files && input.files.length > 0) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(input.files[0]);
+
+                    label.innerText = input.files[0].name;
+                }
             }
 
             function showViewSumbangSaranModal(id) {

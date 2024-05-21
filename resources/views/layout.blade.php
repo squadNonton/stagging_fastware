@@ -69,9 +69,6 @@
 
         <div class="d-flex align-items-center justify-content-between">
             <h3 class="fw-bold mt-2 ps-5">DMS Adasi DS8</h3>
-            {{-- <a href="" class="logo d-flex align-items-center">
-                <span class="d-none d-lg-block"></span>
-            </a> --}}
             <i class="bi bi-list toggle-sidebar-btn mx-5"></i>
         </div><!-- End Logo -->
         <nav class="header-nav ms-auto">
@@ -105,11 +102,6 @@
             </form>
             <li class="nav-heading">Dashboard</li>
             <li class="nav-item">
-                {{-- <a class="nav-link collapsed" href="#"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Logout</span>
-                </a> --}}
             </li><!-- End Logout Nav -->
             @if (Auth::user()->role_id == 1)
                 <li class="nav-item">
@@ -173,7 +165,7 @@
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="{{ route('showKonfirmasiForeman') }}">
                         <i class="bi bi-clipboard-check-fill"></i>
-                        <span>Konfirmasi SS by Foreman</span>
+                        <span>Konfirmasi SS by Sec. Head</span>
                     </a>
                 </li><!-- End Profile Page Nav -->
                 @endif @if (Auth::user()->role_id == 1 ||
@@ -190,9 +182,15 @@
                     </li><!-- End Profile Page Nav -->
                 @endif
                 <li class="nav-item">
-                    <a class="nav-link collapsed" href="">
-                        <i class="bi bi-person"></i>
-                        <span>PIC Penilai | Komite</span>
+                    <a class="nav-link collapsed" href="{{route ('showKonfirmasiKomite')}}">
+                        <i class="bi-person-lines-fill"></i>
+                        <span>PIC Penilai SS | Komite</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{route ('showKonfirmasiHRGA')}}">
+                        <i class="bi-person-lines-fill"></i>
+                        <span>PIC Penilai SS | HRGA</span>
                     </a>
                 </li><!-- End Profile Page Nav -->
                 <li class="nav-heading">Safety Patrol</li>
