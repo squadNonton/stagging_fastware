@@ -166,14 +166,15 @@
                                             <label for="qty" class="form-label">QTY (Kg):<span
                                                     style="color: red;">*</span></label>
                                             <input type="text" class="form-control input-sm" id="qty"
-                                                name="qty" style="max-width: 80%;" required pattern="[0-9]+"
-                                                required onkeypress="hanyaAngka(event)">
+                                                name="qty" style="max-width: 80%;" required pattern="[0-9]+" required
+                                                onkeypress="hanyaAngka(event)">
                                         </div>
                                         <div class="col-md-3">
                                             <label for="pcs" class="form-label">Unit (Pcs):<span
                                                     style="color: red;">*</span></label>
                                             <input type="text" class="form-control input-sm" id="pcs"
-                                                name="pcs" style="max-width: 80%" required onkeypress="hanyaAngka(event)">
+                                                name="pcs" style="max-width: 80%" required
+                                                onkeypress="hanyaAngka(event)">
                                         </div>
                                     </div>
                                     <br>
@@ -272,13 +273,12 @@
                                     <div class="col lg-6">
                                         <div class="row">
                                             <div class="col-lg-6">
-                                                <label for="image_upload" class="col-sm-5 col-form-label">Unggah
-                                                    Gambar:<span style="color: red;">*</span></label>
+                                                <label for="image_upload">Unggah Gambar: (Jika Ada)</span></label>
                                             </div>
                                             <div class="col-lg-6">
                                                 <input class="form-control" type="file" id="formFile" name="image[]"
                                                     accept="image/*" style="width: 100%" onchange="viewImage(event);"
-                                                    required multiple>
+                                                    multiple>
                                             </div>
                                             <small id="fileError" class="text-danger" style="display:none;">Format berkas
                                                 tidak sesuai. Silakan unggah gambar.</small>
@@ -407,7 +407,6 @@
                 event.preventDefault();
 
                 var no_wo = document.getElementById('no_wo').value.trim();
-                var image = document.getElementById('formFile').value.trim();
                 var customerCode = document.getElementById('customer_id').value.trim();
                 var customerName = document.getElementById('name_customer').value.trim();
                 var area = document.getElementById('area').value.trim();
@@ -418,7 +417,7 @@
                 var type_1 = document.getElementById('type_1').value.trim();
 
                 // Memeriksa apakah ada input yang kosong
-                if (!no_wo || !image || !customerName || !customerCode || !area || !qty || !pcs || !category || !process_type ||
+                if (!no_wo || !customerName || !customerCode || !area || !qty || !pcs || !category || !process_type ||
                     type_1.length === 0) {
                     // Menampilkan sweet alert error jika ada input yang kosong
                     Swal.fire({

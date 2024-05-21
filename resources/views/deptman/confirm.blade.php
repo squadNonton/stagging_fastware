@@ -290,8 +290,7 @@
                                 <div class="col-lg-6">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar:<span
-                                                    style="color: red;">*</span></label>
+                                            <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar: (Jika ada)</span></label>
                                         </div>
                                         <div class="col-lg-6">
                                             <input class="form-control @error('image') is-invalid @enderror"

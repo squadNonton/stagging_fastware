@@ -300,8 +300,7 @@
                                 <div class="col-lg-6">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar:<span
-                                                    style="color: red;">*</span></label>
+                                            <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar: (Jika Ada)</label>
                                         </div>
                                         <div class="col-lg-6">
                                             <input class="form-control @error('image') is-invalid @enderror"
@@ -393,15 +392,6 @@
                 updateCustomerInfo();
             });
 
-            // function updateCustomerInfo() {
-            //     var customerIdCodeSelect = document.getElementById('customer_id_code');
-            //     var customerIdNameSelect = document.getElementById('customer_id_name');
-            //     var customerIdAreaSelect = document.getElementById('customer_id_area');
-
-            //     var selectedOption = customerIdCodeSelect.options[customerIdCodeSelect.selectedIndex];
-            //     customerIdNameSelect.value = selectedOption.getAttribute('data-name_customer');
-            //     customerIdAreaSelect.value = selectedOption.getAttribute('data-area');
-            // }
 
             var imageError = document.getElementById('imageError');
             imageError.style.display = 'none';
