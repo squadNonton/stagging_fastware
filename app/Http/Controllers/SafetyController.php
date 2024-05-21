@@ -29,7 +29,79 @@ class SafetyController extends Controller
     {
         $patrols = SafetyPatrol::orderBy('updated_at', 'desc')->get();
 
-        return view('safety_patrol.report', compact('patrols'))->with('i', (request()->input('page', 1) - 1) * 5);
+        // Fetch data for area patrol chart
+        $areaPatrolsData = SafetyPatrol::select('area_patrol', DB::raw('COUNT(*) as area_patrols'))
+            ->groupBy('area_patrol')
+            ->get();
+
+        $areaPatrolLabels = $areaPatrolsData->pluck('area_patrol');
+        $areaPatrolCounts = $areaPatrolsData->pluck('area_patrols');
+
+        // Fetch data for PIC area chart
+        $picAreasData = SafetyPatrol::select('pic_area', DB::raw('COUNT(*) as total_entries'))
+            ->groupBy('pic_area')
+            ->get();
+
+        $picAreaLabels = $picAreasData->pluck('pic_area');
+        $picAreaCounts = $picAreasData->pluck('total_entries');
+
+        // Fetch and prepare data for kategori patrol chart
+        $kategoriLabels = [
+            'Kelengkapan Alat 5S / 5R' => 'kategori_1',
+            'Kerapihan Area Kerja' => 'kategori_2',
+            'Kondisi Lingkungan Kerja' => 'kategori_3',
+            'Penempatan Alat / Barang' => 'kategori_4',
+            'Praktik 5S / 5R Oleh Pekerja' => 'kategori_5'
+        ];
+
+        $kategoriCounts = [];
+        foreach ($kategoriLabels as $label => $kategori) {
+            for ($i = 1; $i <= 5; $i++) {
+                $kategoriCounts[$label][$i] = SafetyPatrol::where($kategori, $i)->count();
+            }
+        }
+
+        // Fetch and prepare data for safety patrol chart
+        $safetyLabels = [
+            'Checksheet APAR' => 'safety_1',
+            'Penggunaan APD' => 'safety_2',
+            'Potensi Bahaya' => 'safety_3',
+            'Pemeliharaan APD' => 'safety_4',
+            'Kelengkapan APD' => 'safety_5'
+        ];
+
+        $safetyCounts = [];
+        foreach ($safetyLabels as $label => $safety) {
+            for ($i = 1; $i <= 5; $i++) {
+                $safetyCounts[$label][$i] = SafetyPatrol::where($safety, $i)->count();
+            }
+        }
+
+        // Fetch and prepare data for lingkungan patrol chart
+        $lingkunganLabels = [
+            'Pengelolaan Jenis & Kriteria Limbah' => 'lingkungan_1',
+            'Kebersihan Lingkungan' => 'lingkungan_2',
+            'Penyimpanan Limbah' => 'lingkungan_3',
+            'Tempat Sampah' => 'lingkungan_4',
+        ];
+
+        $lingkunganCounts = [];
+        foreach ($lingkunganLabels as $label => $lingkungan) {
+            for ($i = 1; $i <= 5; $i++) {
+                $lingkunganCounts[$label][$i] = SafetyPatrol::where($lingkungan, $i)->count();
+            }
+        }
+
+        return view('safety_patrol.report', compact(
+            'patrols',
+            'areaPatrolLabels',
+            'areaPatrolCounts',
+            'picAreaLabels',
+            'picAreaCounts',
+            'kategoriCounts',
+            'safetyCounts',
+            'lingkunganCounts'
+        ));
     }
 
     public function getAreaPatrol()
