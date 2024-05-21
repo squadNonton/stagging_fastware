@@ -116,18 +116,18 @@
                     type: 'column'
                 },
                 title: {
-                    text: 'Total Kategori Patrol'
+                    text: 'Kategori 5R/5S'
                 },
                 xAxis: {
                     categories: Object.keys(@json($kategoriCounts)),
                     title: {
-                        text: 'Kategori'
+                        text: 'Kategori 5R/5S'
                     }
                 },
                 yAxis: {
                     min: 0,
                     title: {
-                        text: 'Jumlah Kategori Patrol'
+                        text: 'Jumlah Nilai'
                     }
                 },
                 series: Object.keys(@json($kategoriCounts)).map((key, index) => ({
@@ -142,18 +142,18 @@
                     type: 'column'
                 },
                 title: {
-                    text: 'Total Safety Patrol'
+                    text: 'Kategori Safety'
                 },
                 xAxis: {
                     categories: Object.keys(@json($safetyCounts)),
                     title: {
-                        text: 'Safety'
+                        text: 'Kategori Safety'
                     }
                 },
                 yAxis: {
                     min: 0,
                     title: {
-                        text: 'Jumlah Safety Patrol'
+                        text: 'Jumlah Nilai'
                     }
                 },
                 series: Object.keys(@json($safetyCounts)).map((key, index) => ({
@@ -168,18 +168,18 @@
                     type: 'column'
                 },
                 title: {
-                    text: 'Total Lingkungan Patrol'
+                    text: 'Kategori Lingkungan'
                 },
                 xAxis: {
                     categories: Object.keys(@json($lingkunganCounts)),
                     title: {
-                        text: 'Lingkungan'
+                        text: 'Kategori Lingkungan'
                     }
                 },
                 yAxis: {
                     min: 0,
                     title: {
-                        text: 'Jumlah Lingkungan Patrol'
+                        text: 'Jumlah Nilai'
                     }
                 },
                 series: Object.keys(@json($lingkunganCounts)).map((key, index) => ({
