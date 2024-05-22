@@ -72,32 +72,31 @@
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">SS sudah dinilai</span>
                                                     @endif
-                                        @endif
-                                        </td>
-                                        <td class="text-center">
-                                            @if ($data->status != 2 && $data->status != 3 && $data->status != 4)
-                                                <button class="btn btn-primary btn-sm"
-                                                    onclick="openEditModal({{ $data->id }})"
-                                                    data-id="{{ $data->id }}" title="Edit">
-                                                    <i class="fa-solid fa-edit fa-1x"></i>
-                                                </button>
-                                                <button class="btn btn-danger btn-sm"
-                                                    onclick="confirmDelete('{{ $data->id }}')" title="Hapus">
-                                                    <i class="fas fa-trash fa-1x"></i>
-                                                </button>
-                                                <button class="btn btn-primary btn-sm"
-                                                    onclick="confirmKirim({{ $data->id }})"
-                                                    data-id="{{ $data->id }}" title="Kirim">
-                                                    <i class="fa-solid fa fa-paper-plane fa-1x"></i>
-                                                </button>
-                                            @endif
-                                            <button class="btn btn-success btn-sm"
-                                                onclick="showViewSumbangSaranModal({{ $data->id }})"
-                                                data-id="{{ $data->id }}" title="lihat">
-                                                <i class="fa-solid fa-eye fa-1x"></i>
-                                            </button>
-                                        </td>
-                                        </tr>
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($data->status != 2 && $data->status != 3 && $data->status != 4 && $data->status != 5 && $data->status != 6)
+                                                        <button class="btn btn-primary btn-sm"
+                                                            onclick="openEditModal({{ $data->id }})"
+                                                            data-id="{{ $data->id }}" title="Edit">
+                                                            <i class="fa-solid fa-edit fa-1x"></i>
+                                                        </button>
+                                                        <button class="btn btn-danger btn-sm"
+                                                            onclick="confirmDelete('{{ $data->id }}')" title="Hapus">
+                                                            <i class="fas fa-trash fa-1x"></i>
+                                                        </button>
+                                                        <button class="btn btn-primary btn-sm"
+                                                            onclick="confirmKirim({{ $data->id }})"
+                                                            data-id="{{ $data->id }}" title="Kirim">
+                                                            <i class="fa-solid fa fa-paper-plane fa-1x"></i>
+                                                        </button>
+                                                    @endif
+                                                    <button class="btn btn-success btn-sm"
+                                                        onclick="showViewSumbangSaranModal({{ $data->id }})"
+                                                        data-id="{{ $data->id }}" title="lihat">
+                                                        <i class="fa-solid fa-eye fa-1x"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -359,7 +358,7 @@
                                     <label for="viewImage" class="col-sm-2 col-form-label">File Upload 1</label>
                                     <div class="col-sm-10">
                                         <input class="form-control" type="file" id="viewImage" name="view_image"
-                                            onchange="showFileName2('viewImage', 'viewImageLabel', 'viewImagePreview')">
+                                            onchange="showFileName2('viewImage', 'viewImageLabel', 'viewImagePreview')" disabled>
                                         <label id="viewImageLabel" class="form-label"></label>
                                         <input type="hidden" id="viewImageUrl" name="edit_image_url">
                                         <img id="viewImagePreview" class="image-popup" src="#" alt="Preview"
@@ -375,10 +374,10 @@
                                 </div>
                                 <!-- Input File Upload 2 -->
                                 <div class="row mb-3">
-                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload 1</label>
+                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload 2</label>
                                     <div class="col-sm-10">
                                         <input class="form-control" type="file" id="viewImage2" name="view_image2"
-                                            onchange="showFileName2('viewImage2', 'viewImage2Label', 'viewImage2Preview')">
+                                            onchange="showFileName2('viewImage2', 'viewImage2Label', 'viewImage2Preview')" disabled>
                                         <label id="viewImage2Label" class="form-label"></label>
                                         <input type="hidden" id="viewImage2Url" name="view_image_url">
                                         <img id="viewImage2Preview" class="image-popup" src="#" alt="Preview"
@@ -503,15 +502,20 @@
                 var label = document.getElementById(labelId);
                 var preview = document.getElementById(previewId);
 
-                if (input.files && input.files.length > 0) {
+                if (input.files && input.files[0]) {
                     var reader = new FileReader();
+
                     reader.onload = function(e) {
                         preview.src = e.target.result;
                         preview.style.display = 'block';
-                    };
+                    }
+
                     reader.readAsDataURL(input.files[0]);
 
-                    label.innerText = input.files[0].name;
+                    label.textContent = input.files[0].name;
+                } else {
+                    preview.style.display = 'none';
+                    label.textContent = '';
                 }
             }
 
@@ -670,13 +674,12 @@
             }
 
             function showViewSumbangSaranModal(id) {
-                // Gunakan AJAX untuk mengambil data berdasarkan ID
                 $.ajax({
-                    url: '{{ route('getSumbangSaran', ['id' => ':id']) }}'.replace(':id',
-                        id), // Endpoint untuk mendapatkan data Sumbang Saran
+                    url: '{{ route('getSumbangSaran', ['id' => ':id']) }}'.replace(':id', id),
                     type: 'GET',
                     success: function(data) {
                         // Isi form dengan data yang diambil
+                        $('#viewSumbangSaranId').val(data.id);
                         $('#viewTglPengajuan').val(data.tgl_pengajuan_ide);
                         $('#viewLokasiIde').val(data.lokasi_ide);
                         $('#viewTglDiterapkan').val(data.tgl_diterapkan);
@@ -686,7 +689,6 @@
                         $('#viewKeuntungan').val(data.keuntungan_ide);
                         $('#viewImageUrl').val(data.image);
                         $('#viewImage2Url').val(data.image_2);
-                        $('#viewSumbangSaranId').val(data.id);
 
                         // Tampilkan preview gambar
                         if (data.image) {
@@ -711,6 +713,7 @@
                     }
                 });
             }
+
         </script>
 
     </main><!-- End #main -->

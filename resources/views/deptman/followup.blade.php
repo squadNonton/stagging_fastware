@@ -25,6 +25,18 @@
                             <div class="col-lg-6">
                                 <div class="row">
                                     <div class="col-lg-6">
+                                        <label for="modified_by" class="col-sm-2 col-form-label">User : <span
+                                                style="color: red;">*</span></label>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="modified_by" name="modified_by"
+                                            maxlength="6" style="width: 100%; max-width: 100%;"
+                                            placeholder="{{ $handlings->users->name}}" disabled>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
                                         <label for="no_wo" class="col-sm-2 col-form-label">No. WO:<span
                                                 style="color: red;">*</span></label>
                                     </div>
@@ -288,7 +300,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar: (Jika ada)</span></label>
+                                        <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar: (Jika
+                                            ada)</span></label>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="row mt-3">
@@ -338,7 +351,7 @@
                                 <br>
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <label for="schedule_visit" class="form-label">PIC:<span
+                                        <label for="schedule_visit" class="form-label">PIC Tindak Lanjut:<span
                                                 style="color: red;">*</span></label>
                                     </div>
                                     <div class="col-lg-6">
@@ -356,7 +369,7 @@
                                         <div class="input-group">
                                             <input class="form-control" type="file" id="upload_file"
                                                 onchange="displayCancelBtn()" name="file" style="margin-top: 10px;"
-                                                accept=".jpg,.jpeg,.png,.pdf,.xlsx,.xls" multiple>
+                                                accept=".jpg,.jpeg,.png,.pdf,.xlsx,.xls,.ppt,.pptx" multiple>
                                         </div>
                                     </div>
                                 </div>

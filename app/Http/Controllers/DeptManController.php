@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Handling;
 use App\Models\ScheduleVisit;
 use App\Models\TypeMaterial;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -106,7 +107,7 @@ class DeptManController extends Controller
     public function showConfirm(string $id): View
     {
         // Mengambil data handling berdasarkan ID
-        $handlings = Handling::with(['customers', 'type_materials'])->findOrFail($id);
+        $handlings = Handling::with(['customers', 'type_materials', 'users'])->findOrFail($id);
 
         // Mengambil semua data pelanggan
         $customers = Customer::all();
@@ -114,32 +115,36 @@ class DeptManController extends Controller
         // Mengambil semua data tipe bahan
         $type_materials = TypeMaterial::all();
 
+        $users = User::all();
+
         // render view with handlings
-        return view('deptman.confirm', compact('handlings', 'customers', 'type_materials'));
+        return view('deptman.confirm', compact('handlings', 'customers', 'type_materials', 'users'));
     }
 
     public function showFollowUp(string $id): View
     {
         // Mengambil data handling berdasarkan ID
-        $handlings = Handling::with(['customers', 'type_materials'])->findOrFail($id);
+        $handlings = Handling::with(['customers', 'type_materials', 'users'])->findOrFail($id);
 
         // Mengambil semua data pelanggan
         $customers = Customer::all();
 
         // Mengambil semua data tipe bahan
         $type_materials = TypeMaterial::all();
+
+        $users = User::all();
 
         // Mengambil data schedule visit berdasarkan handling_id
         $data = ScheduleVisit::where('handling_id', $id)->get();
 
         // render view with handlings
-        return view('deptman.followup', compact('handlings', 'customers', 'type_materials', 'data'));
+        return view('deptman.followup', compact('handlings', 'customers', 'type_materials', 'data', 'users'));
     }
 
     public function showHistoryProgres(string $id): View
     {
         // Mengambil data handling berdasarkan ID
-        $handling = Handling::with(['customers', 'type_materials'])->findOrFail($id);
+        $handling = Handling::with(['customers', 'type_materials', 'users'])->findOrFail($id);
 
         // Mengambil semua data pelanggan
         $customers = Customer::all();
@@ -147,11 +152,13 @@ class DeptManController extends Controller
         // Mengambil semua data tipe bahan
         $type_materials = TypeMaterial::all();
 
+        $users = User::all();
+
         // Mengambil data schedule visit berdasarkan handling_id
         $data = ScheduleVisit::where('handling_id', $id)->get();
 
         // Mengembalikan view 'deptman.historyProgres' dengan data yang dibutuhkan
-        return view('deptman.historyProgres', compact('handling', 'customers', 'type_materials', 'data'));
+        return view('deptman.historyProgres', compact('handling', 'customers', 'type_materials', 'data', 'users'));
     }
 
     public function showCloseProgres(string $id): View

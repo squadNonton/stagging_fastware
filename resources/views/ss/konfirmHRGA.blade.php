@@ -29,64 +29,63 @@
                                             <th class="text-center" width="100px">NPK</th>
                                             <th class="text-center" width="100px">Bagian</th>
                                             <th class="text-center" width="100px">Judul Ide</th>
+                                            <th class="text-center" width="100px">Poin</th>
+                                            <th class="text-center" width="100px">+poin</th>
+                                            <th class="text-center" width="100px">Nilai</th>
+                                            <th class="text-center" width="100px">amount</th>
                                             <th class="text-center" width="90px">Tanggal Pengajuan Ide</th>
                                             <th class="text-center" width="70px">Lokasi</th>
                                             <th class="text-center" width="100px">Tanggal Diterapkan</th>
                                             <th class="text-center" width="100px">Pembaruan Terakhir</th>
                                             <th class="text-center" width="190px">Status</th>
-                                            <th class="text-center" width="100px">Aksi</th>
+                                            <th class="text-center" width="150px">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($data as $data)
-                                            <tr>
-                                                <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                                                <td class="text-center py-3">{{ $data->users->name ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $data->users->npk ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $usersRoles[$data->id_user] ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $data->judul }}</td>
-                                                <td class="text-center py-3">{{ $data->tgl_pengajuan_ide }}</td>
-                                                <td class="text-center py-3">{{ $data->lokasi_ide }}</td>
-                                                <td class="text-center py-3">{{ $data->tgl_diterapkan }}</td>
-                                                <td class="text-center py-3">{{ $data->created_at }}</td>
-                                                <td class="text-center py-4"
-                                                    style="max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
-                                                    title="@if ($data->status == 1) Draf @elseif ($data->status == 2) Menunggu Approve Foreman @elseif($data->status == 3) Menunggu Approve Dept. Head @elseif($data->status == 4) Direksi @endif">
-                                                    @if ($data->status == 1)
-                                                        <span class="badge bg-secondary align-items-center"
-                                                            style="font-size: 18px;">Draf</span>
-                                                    @elseif ($data->status == 2)
-                                                        <span class="badge bg-info align-items-center"
-                                                            style="font-size: 18px;">Menunggu<br>Konfirmasi Foreman</span>
-                                                    @elseif($data->status == 3)
-                                                        <span class="badge bg-info align-items-center"
-                                                            style="font-size: 18px;">Menunggu<br>Konfirmasi Dept.
-                                                            Head</span>
-                                                    @elseif($data->status == 4)
-                                                        <span class="badge bg-info align-items-center"
-                                                            style="font-size: 18px;">Menunggu<br>Konfirmasi Komite</span>
-                                                    @elseif($data->status == 5)
-                                                        <span class="badge bg-info align-items-center"
-                                                            style="font-size: 18px;">SS sudah dinilai</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-primary btn-sm"
-                                                        onclick="openFormTambahNilai({{ $data->id }})"
-                                                        data-id="{{ $data->id }}" title="Tambahan Nilai">
-                                                        <i class="fa-solid fa-tasks fa-1x"></i>
-                                                    </button>
-                                                    <button class="btn btn-success btn-sm"
-                                                        onclick="showViewSumbangSaranModal({{ $data->id }})"
-                                                        data-id="{{ $data->id }}" title="lihat">
-                                                        <i class="fa-solid fa-eye fa-1x"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                        @foreach ($data as $item)
+                                        <tr>
+                                            <th scope="row" class="text-center">{{ $loop->iteration }}</th>
+                                            <td class="text-center py-3" style="height: 50px;">{{ $item->name }}</td>
+                                            <td class="text-center py-3" style="height: 50px;">{{ $item->npk }}</td>
+                                            <td class="text-center py-3" style="height: 50px;">{{ $usersRoles[$item->id_user] ?? 'Unknown' }}</td>
+                                            <td class="text-center py-3" style="height: 50px;">{{ $item->judul }}</td>
+                                            <td class="text-center py-3" style="height: 50px;">{{ $item->nilai }}</td>
+                                            <td class="text-center py-3" style="height: 50px;">{{ $item->tambahan_nilai }}</td>
+                                            <td class="text-center py-3" style="height: 50px;">{{ $item->total_nilai }}</td>
+                                            <td class="text-center py-3" style="height: 50px;">{{ 'Rp ' . number_format($item->hasil_akhir, 0, ',', '.') }}</td>
+                                            <td class="text-center py-3" style="height: 50px;">{{ $item->tgl_pengajuan_ide }}</td>
+                                            <td class="text-center py-3" style="height: 50px;">{{ $item->lokasi_ide }}</td>
+                                            <td class="text-center py-3" style="height: 50px;">{{ $item->tgl_diterapkan }}</td>
+                                            <td class="text-center py-3" style="height: 50px;">{{ $item->created_at }}</td>
+                                            <td class="text-center py-4"
+                                                style="height: 50px; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                                title="@if ($item->status == 1) Draf @elseif ($item->status == 2) Menunggu Approve Foreman @elseif($item->status == 3) Menunggu Approve Dept. Head @elseif($item->status == 4) Direksi @endif">
+                                                @if ($item->status == 1)
+                                                <span class="badge bg-secondary align-items-center" style="font-size: 18px;">Draf</span>
+                                                @elseif ($item->status == 2)
+                                                <span class="badge bg-info align-items-center" style="font-size: 18px;">Menunggu<br>Konfirmasi Foreman</span>
+                                                @elseif($item->status == 3)
+                                                <span class="badge bg-info align-items-center" style="font-size: 18px;">Menunggu<br>Konfirmasi Dept. Head</span>
+                                                @elseif($item->status == 4)
+                                                <span class="badge bg-info align-items-center" style="font-size: 18px;">Menunggu<br>Konfirmasi Komite</span>
+                                                @elseif($item->status == 5)
+                                                <span class="badge bg-info align-items-center" style="font-size: 18px;">SS sudah dinilai</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm" onclick="openFormTambahNilai({{ $item->id }})" data-id="{{ $item->id }}" title="Tambahan Nilai">
+                                                    <i class="fa-solid fa-tasks fa-1x"></i>
+                                                </button>
+                                                <button class="btn btn-success btn-sm" onclick="showViewSumbangSaranModal({{ $item->id }})" data-id="{{ $item->id }}" title="lihat">
+                                                    <i class="fa-solid fa-eye fa-1x"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
                                         @endforeach
                                     </tbody>
-                                </table>
+                                </table>                                
                             </div>
+                            
                             <!-- End Table with stripped rows -->
                         </div>
                     </div>

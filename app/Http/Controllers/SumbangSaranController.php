@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\SumbangSaran;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -94,14 +95,45 @@ class SumbangSaranController extends Controller
 
     public function showKonfirmasiHRGA()
     {
-        $data = SumbangSaran::with('users')
-    ->whereIn('sumbang_sarans.status', [5, 6]) // Tambahkan alias untuk kolom status
-    ->orderByRaw('FIELD(sumbang_sarans.status, 6, 5)') // Tambahkan alias untuk kolom status
-    ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
-    ->paginate();
+        // Query MySQL untuk gabungkan data SumbangSaran, Penilaians, dan Users
+        $data = DB::select('
+            SELECT 
+                sumbang_sarans.id,
+                sumbang_sarans.id_user,
+                sumbang_sarans.tgl_pengajuan_ide,
+                sumbang_sarans.lokasi_ide,
+                sumbang_sarans.tgl_diterapkan,
+                sumbang_sarans.judul,
+                sumbang_sarans.keadaan_sebelumnya,
+                sumbang_sarans.image,
+                sumbang_sarans.usulan_ide,
+                sumbang_sarans.image_2,
+                sumbang_sarans.keuntungan_ide,
+                sumbang_sarans.status,
+                sumbang_sarans.created_at,
+                penilaians.id_users,
+                penilaians.ss_id,
+                penilaians.nilai,
+                penilaians.tambahan_nilai,
+                ((penilaians.nilai + penilaians.tambahan_nilai) * 2.5) AS total_nilai,
+                (((penilaians.nilai + penilaians.tambahan_nilai) * 2.5) * 2000) AS hasil_akhir,
+                users.name,
+                users.npk
+            FROM 
+                sumbang_sarans
+            JOIN 
+                penilaians ON sumbang_sarans.id = penilaians.ss_id
+            JOIN 
+                users ON sumbang_sarans.id_user = users.id
+            WHERE 
+                sumbang_sarans.status IN (5, 6)
+            ORDER BY 
+                FIELD(sumbang_sarans.status, 6, 5),
+                sumbang_sarans.created_at DESC
+        ');
 
         // Ambil hanya id user untuk menghindari "N + 1" query
-        $userIds = $data->pluck('id_user')->unique()->toArray();
+        $userIds = collect($data)->pluck('id_user')->unique()->toArray();
 
         // Ambil data peran (role) berdasarkan user ids
         $usersRoles = User::whereIn('users.id', $userIds)
