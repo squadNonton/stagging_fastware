@@ -572,19 +572,21 @@
                     var endDate = endDateInput.value;
 
                     // Mengirim permintaan AJAX untuk mendapatkan data dari controller
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/getChartData?start_date=' + startDate + '&end_date=' + endDate, true);
-                    xhr.onreadystatechange = function() {
-                        if (xhr.readyState === XMLHttpRequest.DONE) {
-                            if (xhr.status === 200) {
-                                var responseData = JSON.parse(xhr.responseText);
-                                renderChart(responseData);
-                            } else {
-                                console.error('Error saat memuat data:', xhr.statusText);
-                            }
+                    $.ajax({
+                        url: '{{ route('getChartData') }}',
+                        method: 'GET',
+                        data: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
+                        success: function(response) {
+                            var responseData = response;
+                            renderChart(responseData);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error saat memuat data:', xhr.statusText);
                         }
-                    };
-                    xhr.send();
+                    });
                 }
 
                 function renderChart(data) {
@@ -640,7 +642,7 @@
                 var selectedYear = this.value; // Mendapatkan tahun yang dipilih dari dropdown
                 // Buat permintaan AJAX ke server dengan tahun yang dipilih
                 $.ajax({
-                    url: '/get-data-by-year', // Ganti dengan URL yang sesuai
+                    url: '{{ route('getDataByYear') }}',
                     type: 'GET',
                     data: {
                         year: selectedYear
@@ -1384,7 +1386,6 @@
                 }
             });
         </script>
-
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('tipe2').addEventListener('change', updatePieChart);
@@ -1537,7 +1538,6 @@
                 }
             });
 
-
             document.addEventListener('DOMContentLoaded', function() {
                 var chartData = {!! json_encode($pieProses) !!};
                 console.log(chartData); // Pastikan untuk memeriksa data yang tercetak di konsol
@@ -1570,9 +1570,6 @@
                 });
             });
         </script>
-
-
-
         <script>
             // Inisialisasi chart dengan data default
             var repairMaintenanceChart;

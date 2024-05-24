@@ -131,8 +131,8 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('download-excel/{tindaklanjut}', [FormFPPController::class, 'downloadAttachment'])->name('download.attachment');
     // DashboardforALL
     Route::get('/dashboardHandling', 'App\Http\Controllers\DsController@dashboardHandling')->name('dashboardHandling');
-    Route::get('/getChartData', 'App\Http\Controllers\HandlingController@getChartData');
-    Route::get('/get-data-by-year', 'App\Http\Controllers\HandlingController@getDataByYear');
+    Route::get('/getChartData', 'App\Http\Controllers\HandlingController@getChartData')->name('getChartData');
+    Route::get('/get-data-by-year', 'App\Http\Controllers\HandlingController@getDataByYear')->name('getDataByYear');
     Route::get('/getRepairMaintenance', 'App\Http\Controllers\MaintenanceController@getRepairMaintenance');
     Route::get('/getRepairAlatBantu', 'App\Http\Controllers\MaintenanceController@getRepairAlatBantu');
     Route::get('/getPeriodeWaktuPengerjaan', 'App\Http\Controllers\MaintenanceController@getPeriodeWaktuPengerjaan');
