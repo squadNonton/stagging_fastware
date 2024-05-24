@@ -1216,8 +1216,8 @@
                         type: 'pie'
                     },
                     credits: {
-        enabled: false
-    },
+                        enabled: false
+                    },
                     title: {
                         text: 'Total Tipe Material'
                     },
@@ -1240,7 +1240,6 @@
                         data: pieData
                     }]
                 });
-
 
                 document.getElementById('type').addEventListener('change', FilterPieChartTipe);
 
@@ -1282,18 +1281,22 @@
                     var startMonth = document.getElementById('start_month').value;
                     var endMonth = document.getElementById('end_month').value;
 
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/api/filter-pie-chart-tipe?jenis=' + jenis + '&type=' + typeSelected +
-                        '&kategori=' + encodeURIComponent(kategori) + '&start_month=' + startMonth + '&end_month=' +
-                        endMonth, true);
-                    xhr.onreadystatechange = function() {
-                        if (xhr.readyState == 4 && xhr.status == 200) {
-                            var data = JSON.parse(xhr.responseText);
+                    $.ajax({
+                        url: '{{ route('FilterPieChartTipe') }}',
+                        method: 'GET',
+                        data: {
+                            jenis: jenis,
+                            type: typeSelected,
+                            kategori: kategori,
+                            start_month: startMonth,
+                            end_month: endMonth
+                        },
+                        success: function(response) {
+                            var data = response;
                             renderChart(data, filterType, jenis, kategori);
+                            console.log("kategori masuk1: ", data);
                         }
-                        console.log("kategori masuk1: ", data);
-                    };
-                    xhr.send();
+                    });
                 }
 
                 function renderChart(data, filterType, jenis, kategori) {
@@ -1379,8 +1382,6 @@
                         }]
                     });
                 }
-
-
             });
         </script>
 
@@ -1425,19 +1426,22 @@
                     var startMonth3 = document.getElementById('start_month3').value;
                     var endMonth3 = document.getElementById('end_month3').value;
 
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('GET', '/api/FilterPieChartProses?jenis2=' + jenis2 + '&tipe2=' + typeSelected2 +
-                        '&kategori_2=' + encodeURIComponent(kategori_2) + '&start_month3=' + startMonth3 +
-                        '&end_month3=' + endMonth3, true);
-
-                    xhr.onreadystatechange = function() {
-                        if (xhr.readyState == 4 && xhr.status == 200) {
-                            var data = JSON.parse(xhr.responseText);
+                    $.ajax({
+                        url: '{{ route('FilterPieChartProses') }}',
+                        method: 'GET',
+                        data: {
+                            jenis2: jenis2,
+                            tipe2: typeSelected2,
+                            kategori_2: kategori_2,
+                            start_month3: startMonth3,
+                            end_month3: endMonth3
+                        },
+                        success: function(response) {
+                            var data = response;
                             renderPieChart(data, filterType2, jenis2, kategori_2);
+                            console.log("kategori masuk1: ", data);
                         }
-                        console.log("kategori masuk1: ", data);
-                    };
-                    xhr.send();
+                    });
                 }
 
                 function renderPieChart(data, filterType2, jenis2, kategori_2) {
@@ -1472,8 +1476,8 @@
                             type: 'pie'
                         },
                         credits: {
-        enabled: false
-    },
+                            enabled: false
+                        },
                         title: {
                             text: 'Total Proses'
                         },
@@ -1543,8 +1547,8 @@
                         type: 'pie'
                     },
                     credits: {
-        enabled: false
-    },
+                        enabled: false
+                    },
                     title: {
                         text: 'Total Proses'
                     },
