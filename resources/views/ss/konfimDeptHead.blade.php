@@ -64,28 +64,27 @@
                                                             Head</span>
                                                     @elseif($data->status == 4)
                                                         <span class="badge bg-info align-items-center"
-                                                            style="font-size: 18px;">Menunggur<br>Konfirmasi Komite</span>
+                                                            style="font-size: 18px;">Menunggu<br>Konfirmasi Komite</span>
                                                     @elseif($data->status == 5)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">SS sudah dinilai</span>
                                                     @endif
-                                                @endif
-                                        </td>
-                                        <td class="text-center">
-                                            @if ($data->status != 4)
-                                                <button class="btn btn-primary btn-sm"
-                                                    onclick="openFormPenilaian({{ $data->id }})"
-                                                    data-id="{{ $data->id }}" title="Kirim">
-                                                    <i class="fa-solid fa fa-check-square fa-1x"></i>
-                                                </button>
-                                            @endif
-                                            <button class="btn btn-success btn-sm"
-                                                onclick="showViewSumbangSaranModal({{ $data->id }})"
-                                                data-id="{{ $data->id }}" title="lihat">
-                                                <i class="fa-solid fa-eye fa-1x"></i>
-                                            </button>
-                                        </td>
-                                        </tr>
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($data->status != 4)
+                                                        <button class="btn btn-primary btn-sm"
+                                                            onclick="openFormPenilaian({{ $data->id }})"
+                                                            data-id="{{ $data->id }}" title="Kirim">
+                                                            <i class="fa-solid fa fa-check-square fa-1x"></i>
+                                                        </button>
+                                                    @endif
+                                                    <button class="btn btn-success btn-sm"
+                                                        onclick="showViewSumbangSaranModal({{ $data->id }})"
+                                                        data-id="{{ $data->id }}" title="lihat">
+                                                        <i class="fa-solid fa-eye fa-1x"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -102,7 +101,7 @@
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editSumbangSaranModalLabel">Form Edit SS</h5>
+                            <h5 class="modal-title" id="editSumbangSaranModalLabel">Form SS</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -403,16 +402,15 @@
                             title: 'Berhasil!',
                             text: 'Data berhasil disimpan.',
                             icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Tutup modal
-                                $('#sumbangSaranModal').modal('hide');
-                                // Reset formulir
-                                form.reset();
-                                // Redirect ke showSS
-                                window.location.href = '{{ route('showKonfirmasiDeptHead') }}';
-                            }
+                            timer: 1000, // Waktu dalam milidetik sebelum alert otomatis tertutup
+                            showConfirmButton: false
+                        }).then(() => {
+                            // Tutup modal
+                            $('#sumbangSaranModal').modal('hide');
+                            // Reset formulir
+                            form.reset();
+                            // Redirect ke showSS
+                            window.location.href = '{{ route('showKonfirmasiDeptHead') }}';
                         });
                     }
                 });

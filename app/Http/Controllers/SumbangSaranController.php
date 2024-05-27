@@ -434,6 +434,7 @@ class SumbangSaranController extends Controller
         }
         $penilaian->keterangan = $request->keterangan;
         $penilaian->ss_id = $request->ss_id;
+        $penilaian->modified_by = $request->user()->name;
 
         $penilaian->id_users = $request->user()->id;
         // Simpan data Penilaian
