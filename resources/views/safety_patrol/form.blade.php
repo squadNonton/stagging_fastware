@@ -195,7 +195,7 @@
 
                                     <div class="mb-3">
                                         <label for="kategori_catatan" class="form-label">
-                                            Catatan untuk Kategori 5S/5R <span style="color: red;">*</span>
+                                            Catatan untuk Kategori 5S/5R (Jika Ada)
                                         </label>
                                         <textarea class="form-control" id="kategori_catatan" name="kategori_catatan"></textarea>
                                     </div>
@@ -289,7 +289,7 @@
 
                                     <div class="mb-3">
                                         <label for="safety_catatan" class="form-label">
-                                            Catatan untuk Safety <span style="color: red;">*</span>
+                                            Catatan untuk Safety (Jika Ada)
                                         </label>
                                         <textarea class="form-control" id="safety_catatan" name="safety_catatan"></textarea>
                                     </div>
@@ -366,7 +366,7 @@
 
                                     <div class="mb-3">
                                         <label for="lingkungan_catatan" class="form-label">
-                                            Catatan untuk Lingkungan <span style="color: red;">*</span>
+                                            Catatan untuk Lingkungan (Jika Ada)
                                         </label>
                                         <textarea class="form-control" id="lingkungan_catatan" name="lingkungan_catatan"></textarea>
                                     </div>
@@ -436,9 +436,8 @@
                 var kategori3 = document.querySelector('input[name="kategori_3"]:checked');
                 var kategori4 = document.querySelector('input[name="kategori_4"]:checked');
                 var kategori5 = document.querySelector('input[name="kategori_5"]:checked');
-                var kategoriCatatan = document.getElementById("kategori_catatan").value;
                 if (kategori1 === null || kategori2 === null || kategori3 === null || kategori4 === null || kategori5 ===
-                    null || kategoriCatatan === "") {
+                    null) {
                     isValid = false;
                 }
 
@@ -448,9 +447,8 @@
                 var safety3 = document.querySelector('input[name="safety_3"]:checked');
                 var safety4 = document.querySelector('input[name="safety_4"]:checked');
                 var safety5 = document.querySelector('input[name="safety_5"]:checked');
-                var safetyCatatan = document.getElementById("safety_catatan").value;
-                if (safety1 === null || safety2 === null || safety3 === null || safety4 === null || safety5 === null ||
-                    safetyCatatan === "") {
+
+                if (safety1 === null || safety2 === null || safety3 === null || safety4 === null || safety5 === null) {
                     isValid = false;
                 }
 
@@ -459,9 +457,7 @@
                 var lingkungan2 = document.querySelector('input[name="lingkungan_2"]:checked');
                 var lingkungan3 = document.querySelector('input[name="lingkungan_3"]:checked');
                 var lingkungan4 = document.querySelector('input[name="lingkungan_4"]:checked');
-                var lingkunganCatatan = document.getElementById("lingkungan_catatan").value;
-                if (lingkungan1 === null || lingkungan2 === null || lingkungan3 === null || lingkungan4 === null ||
-                    lingkunganCatatan === "") {
+                if (lingkungan1 === null || lingkungan2 === null || lingkungan3 === null || lingkungan4 === null) {
                     isValid = false;
                 }
 

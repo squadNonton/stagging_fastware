@@ -2,7 +2,7 @@
 @section('content')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.20.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css">
 
 
     <main id="main" class="main">
@@ -31,7 +31,7 @@
 
                             <!-- Table with stripped rows -->
                             <div class="table-responsive">
-                                <table id="" class="datatable table table-bordered">
+                                <table id="example" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th scope="col" rowspan="2">No</th>
@@ -144,6 +144,32 @@
 
             .datatable th[colspan] {
                 text-align: center;
+            }
+        </style>
+
+        <!-- Add jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Add jQuery DataTables -->
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+        <!-- Initialize DataTables -->
+        <script>
+            new DataTable('#example');
+        </script>
+
+        <style>
+            /* Add border to the table */
+            #example {
+                border-collapse: collapse;
+            }
+
+            /* Add border to table cells */
+            #example td,
+            #example th {
+                border: 1px solid whitesmoke;
+                padding: 8px;
+                /* Add some padding for better readability */
             }
         </style>
 

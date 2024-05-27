@@ -2,8 +2,8 @@
 @section('content')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.20.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css">
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
     <main id="main" class="main">
 
@@ -23,25 +23,37 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">List Form Safety Patrol</h5>
-                            <div class="text-right mb-3">
-                                <a class="btn btn-success float-right" href="{{ route('patrols.buatFormSafety') }}">
-                                    <i class="bi bi-plus"></i> Tambah Form Safety Patrol
-                                </a>
-                            </div>
                             {{-- <div class="text-end">
                                 <a class="btn btn-success float-right" href="{{ route('patrol.export') }}">
                                     <i class="bi bi-filetype-xlsx"></i> Export Data
                                     Safety Patrol</a>
                             </div> --}}
-                            <div class="text-end">
-                                <button class="btn btn-success float-right" onclick="downloadExcel()">
-                                    <i class="bi bi-filetype-xlsx"></i> Export Data Safety Patrol
+                            {{-- <div class="text-end mt-3">
+                                <button class="btn btn-success float-right" data-bs-toggle="modal"
+                                    data-bs-target="#areaModal">
+                                    <i class="bi bi-filetype-xlsx"></i> Export Data Row Safety Patrol
                                 </button>
-                            </div>
+                            </div> --}}
+                            <form method="POST" action="{{ url('export-patrol-data') }}">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="area_patrol">Area Patrol:</label>
+                                    <select class="form-control" id="area_patrol" name="area_patrol">
+                                        <option value="All">All</option>
+                                        @foreach ($areas as $area)
+                                            <option value="{{ $area }}">{{ $area }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <button class="btn btn-success float-right" type="submit">
+                                    <i class="bi bi-filetype-xlsx"></i> Export Data
+                                </button>
+                            </form>
+
                             <br>
                             <!-- Table with stripped rows -->
                             <div class="table-responsive">
-                                <table id="tableToExport" class="datatable table table-bordered">
+                                <table id="example" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th scope="col" rowspan="2">No</th>
@@ -157,91 +169,74 @@
             }
         </style>
         <script>
-            document.getElementById("exportButton").addEventListener("click", function() {
-                downloadExcel();
-            });
-
-            function downloadExcel() {
-                // Mengambil tabel berdasarkan ID
+            function exportData() {
+                var selectedArea = document.getElementById("areaSelection").value;
                 var table = document.getElementById("tableToExport");
                 if (!table) {
                     console.error("Tabel dengan ID 'tableToExport' tidak ditemukan.");
                     return;
                 }
-                // Hapus kolom "Aksi" dari tabel
-                var rows = table.rows;
-                for (var i = 0; i < rows.length; i++) {
-                    rows[i].deleteCell(-1); // Menghapus sel terakhir dari setiap baris
-                }
-                // Membuat objek untuk WorkSheet baru
                 var worksheet = XLSX.utils.table_to_sheet(table);
 
-                // Menentukan lebar kolom berdasarkan konten terpanjang di setiap kolom
-                var colWidths = [];
-                var rowHeights = [];
-                var range = XLSX.utils.decode_range(worksheet['!ref']);
-                for (var C = range.s.c; C <= range.e.c; ++C) {
-                    var maxWidth = 10; // Lebar minimum
-                    for (var R = range.s.r; R <= range.e.r; ++R) {
-                        var cellAddress = XLSX.utils.encode_cell({
-                            c: C,
-                            r: R
-                        });
-                        var cell = worksheet[cellAddress];
-                        if (cell && cell.v) {
-                            var cellValue = cell.v.toString();
-                            maxWidth = Math.max(maxWidth, cellValue.length);
-                            // Mengatur wrap text untuk setiap sel
-                            if (!worksheet[cellAddress].s) worksheet[cellAddress].s = {};
-                            worksheet[cellAddress].s.alignment = {
-                                wrapText: true
+                // Filter data berdasarkan area yang dipilih
+                var filteredData = {};
+                if (selectedArea !== "ALL") {
+                    for (var cellAddress in worksheet) {
+                        if (cellAddress[0] === 'A' && worksheet[cellAddress].v === selectedArea) {
+                            var rowNumber = parseInt(cellAddress.substring(1));
+                            filteredData[cellAddress] = worksheet[cellAddress];
+                            var categoryStartRow = rowNumber + 1;
+                            var categoryEndRow = categoryStartRow + 5; // Jumlah kategori
+                            for (var i = categoryStartRow; i < categoryEndRow; i++) {
+                                var categoryCellAddress = 'B' + i;
+                                var categoryName = worksheet[categoryCellAddress].v;
+                                if (!filteredData[categoryCellAddress]) {
+                                    filteredData[categoryCellAddress] = worksheet[categoryCellAddress];
+                                }
+                                for (var j = i + 1; j < categoryEndRow; j++) {
+                                    var itemCellAddress = 'C' + j;
+                                    if (!filteredData[itemCellAddress]) {
+                                        filteredData[itemCellAddress] = worksheet[itemCellAddress];
+                                    }
+                                    var value = worksheet[itemCellAddress].v;
+                                    if (!filteredData[categoryName]) {
+                                        filteredData[categoryName] = {};
+                                        filteredData[categoryName].total = 0;
+                                        filteredData[categoryName].count = 0;
+                                    }
+                                    filteredData[categoryName].total += value;
+                                    filteredData[categoryName].count++;
+                                }
+                            }
+                        }
+                    }
+                    for (var category in filteredData) {
+                        if (filteredData.hasOwnProperty(category) && typeof filteredData[category] === 'object') {
+                            var average = filteredData[category].total / filteredData[category].count;
+                            var averageCellAddress = 'D' + (categoryEndRow + 1); // Setelah data kategori selesai
+                            filteredData[averageCellAddress] = {
+                                v: average
                             };
+                            // Kolom bulan apa saja yang ada sesuai dengan kolom B (kategori)
+                            // Misalnya: Januari, Februari, Maret, dll.
+                            // Hitung rata-rata per section sesuai dengan templatenya
                         }
                     }
-                    colWidths.push({
-                        wch: maxWidth
-                    });
+                    worksheet = filteredData;
                 }
-                worksheet['!cols'] = colWidths;
 
-                // Mengatur tinggi baris berdasarkan konten
-                for (var R = range.s.r; R <= range.e.r; ++R) {
-                    var maxHeight = 15; // Tinggi minimum
-                    for (var C = range.s.c; C <= range.e.c; ++C) {
-                        var cellAddress = XLSX.utils.encode_cell({
-                            c: C,
-                            r: R
-                        });
-                        var cell = worksheet[cellAddress];
-                        if (cell && cell.v) {
-                            var cellValue = cell.v.toString();
-                            // Perkirakan tinggi baris berdasarkan jumlah baris teks dalam sel
-                            var lines = cellValue.split('\n').length;
-                            maxHeight = Math.max(maxHeight, lines * 15); // Misal, 15px per baris teks
-                        }
-                    }
-                    rowHeights.push({
-                        hpx: maxHeight
-                    });
-                }
-                worksheet['!rows'] = rowHeights;
+                // Code untuk menyesuaikan lebar kolom, tinggi baris, dll. tetap seperti sebelumnya
 
-                // Membuat objek WorkBook baru
                 var workbook = XLSX.utils.book_new();
-                // Menambahkan WorkSheet ke dalam WorkBook
                 XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-                // Mengkonversi WorkBook ke dalam format Excel
                 var excelBuffer = XLSX.write(workbook, {
                     bookType: 'xlsx',
                     type: 'array'
                 });
-                // Mengkonversi buffer ke dalam blob Excel
                 var blob = new Blob([excelBuffer], {
                     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
                 });
-                // Menghasilkan URL untuk file Excel
                 var excelFileURL = URL.createObjectURL(blob);
-                // Mendapatkan tanggal saat ini
                 var today = new Date();
                 var day = today.getDate();
                 var month = today.toLocaleString('default', {
@@ -249,18 +244,40 @@
                 });
                 var year = today.getFullYear();
                 var formattedDate = day + ' ' + month + ' ' + year;
-                // Membuat link untuk download dengan nama file plus tanggal saat ini
                 var a = document.createElement("a");
                 a.href = excelFileURL;
                 a.download = "Safety-Patrol-" + formattedDate + ".xlsx";
-                // Menambahkan link ke dalam dokumen
                 document.body.appendChild(a);
-                // Mengklik link untuk mengunduh file
                 a.click();
-                // Membersihkan link setelah di klik
                 document.body.removeChild(a);
             }
         </script>
+        <!-- Add jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Add jQuery DataTables -->
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+        <!-- Initialize DataTables -->
+        <script>
+            new DataTable('#example');
+        </script>
+
+        <style>
+            /* Add border to the table */
+            #example {
+                border-collapse: collapse;
+            }
+
+            /* Add border to table cells */
+            #example td,
+            #example th {
+                border: 1px solid whitesmoke;
+                padding: 8px;
+                /* Add some padding for better readability */
+            }
+        </style>
+
 
 
     </main><!-- End #main -->

@@ -212,7 +212,7 @@
 
                                     <div class="mb-3">
                                         <label for="kategori_catatan" class="form-label">
-                                            Catatan untuk Kategori 5S/5R <span style="color: red;">*</span>
+                                            Catatan untuk Kategori 5S/5R (Jika Ada)
                                         </label>
                                         <textarea class="form-control" id="kategori_catatan" name="kategori_catatan" readonly>{{ $patrol->kategori_catatan }}</textarea>
                                     </div>
@@ -312,7 +312,7 @@
 
                                     <div class="mb-3">
                                         <label for="safety_catatan" class="form-label">
-                                            Catatan untuk Safety <span style="color: red;">*</span>
+                                            Catatan untuk Safety (Jika Ada)
                                         </label>
                                         <textarea class="form-control" id="safety_catatan" name="safety_catatan" readonly>{{ $patrol->safety_catatan }}</textarea>
                                     </div>
@@ -394,7 +394,7 @@
 
                                     <div class="mb-3">
                                         <label for="lingkungan_catatan" class="form-label">
-                                            Catatan untuk Lingkungan <span style="color: red;">*</span>
+                                            Catatan untuk Lingkungan (Jika Ada)
                                         </label>
                                         <textarea class="form-control" id="lingkungan_catatan" name="lingkungan_catatan" readonly>{{ $patrol->lingkungan_catatan }}</textarea>
                                     </div>

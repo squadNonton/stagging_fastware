@@ -8,6 +8,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class SafetyController extends Controller
 {
@@ -22,31 +26,51 @@ class SafetyController extends Controller
     {
         $patrols = SafetyPatrol::orderBy('updated_at', 'desc')->get();
 
-        return view('safety_patrol.piclist', compact('patrols'))->with('i', (request()->input('page', 1) - 1) * 5);
+        // Define the areas of patrol
+        $areas = [
+            'HEAT TREATMENT',
+            'CUTTING PRODUCTIONS',
+            'MACHINING CUSTOM',
+            'MACHINING',
+            'DELIVERY',
+            'MAINTENANCE',
+            'WAREHOUSE'
+        ];
+
+        return view('safety_patrol.piclist', compact('patrols', 'areas'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     public function reportPatrol()
     {
         $patrols = SafetyPatrol::orderBy('updated_at', 'desc')->get();
 
-        // Fetch data for area patrol chart
+        // Query untuk menghitung total entri per PIC Area
         $areaPatrolsData = SafetyPatrol::select('area_patrol', DB::raw('COUNT(*) as area_patrols'))
             ->groupBy('area_patrol')
             ->get();
 
-        $areaPatrolLabels = $areaPatrolsData->pluck('area_patrol');
-        $areaPatrolCounts = $areaPatrolsData->pluck('area_patrols');
-
-        // Fetch data for PIC area chart
+        // Query untuk menghitung total entri per PIC Area
         $picAreasData = SafetyPatrol::select('pic_area', DB::raw('COUNT(*) as total_entries'))
             ->groupBy('pic_area')
             ->get();
 
-        $picAreaLabels = $picAreasData->pluck('pic_area');
-        $picAreaCounts = $picAreasData->pluck('total_entries');
+        // Query untuk menghitung total form berdasarkan area patrol
+        $areaPatrolData = SafetyPatrol::select('pic_area', 'area_patrol', DB::raw('COUNT(*) as total_forms'))
+            ->groupBy('pic_area', 'area_patrol')
+            ->get()
+            ->groupBy('pic_area')
+            ->map(function ($item) {
+                return $item->pluck('total_forms', 'area_patrol');
+            });
 
-        // Fetch and prepare data for kategori patrol chart
-        $kategoriLabels = [
+        // Siapkan data untuk digunakan oleh HighchartsJS
+        $piclabels = $picAreasData->pluck('pic_area');
+        $totalEntries = $picAreasData->pluck('total_entries');
+
+
+
+        // Define category labels
+        $labels = [
             'Kelengkapan Alat 5S / 5R' => 'kategori_1',
             'Kerapihan Area Kerja' => 'kategori_2',
             'Kondisi Lingkungan Kerja' => 'kategori_3',
@@ -54,15 +78,20 @@ class SafetyController extends Controller
             'Praktik 5S / 5R Oleh Pekerja' => 'kategori_5'
         ];
 
+        // Query to get category counts per area
         $kategoriCounts = [];
-        foreach ($kategoriLabels as $label => $kategori) {
+
+        // Loop through labels to get counts for each label
+        foreach ($labels as $label => $kategori) {
+            $counts = [];
             for ($i = 1; $i <= 5; $i++) {
-                $kategoriCounts[$label][$i] = SafetyPatrol::where($kategori, $i)->count();
+                $counts["kategori_$i"] = SafetyPatrol::where($kategori, $i)->count();
             }
+            $kategoriCounts[$label] = $counts;
         }
 
-        // Fetch and prepare data for safety patrol chart
-        $safetyLabels = [
+        // Define category labels
+        $safetylabels = [
             'Checksheet APAR' => 'safety_1',
             'Penggunaan APD' => 'safety_2',
             'Potensi Bahaya' => 'safety_3',
@@ -70,39 +99,50 @@ class SafetyController extends Controller
             'Kelengkapan APD' => 'safety_5'
         ];
 
+        // Query to get category counts per area
         $safetyCounts = [];
-        foreach ($safetyLabels as $label => $safety) {
+
+        // Loop through labels to get counts for each label
+        foreach ($safetylabels as $label => $safety) {
+            $counts = [];
             for ($i = 1; $i <= 5; $i++) {
-                $safetyCounts[$label][$i] = SafetyPatrol::where($safety, $i)->count();
+                $counts["safety_$i"] = SafetyPatrol::where($safety, $i)->count();
             }
+            $safetyCounts[$label] = $counts;
         }
 
-        // Fetch and prepare data for lingkungan patrol chart
-        $lingkunganLabels = [
+        // Define category labels
+        $lingkunganlabels = [
             'Pengelolaan Jenis & Kriteria Limbah' => 'lingkungan_1',
             'Kebersihan Lingkungan' => 'lingkungan_2',
             'Penyimpanan Limbah' => 'lingkungan_3',
             'Tempat Sampah' => 'lingkungan_4',
         ];
 
+        // Query to get category counts per area
         $lingkunganCounts = [];
-        foreach ($lingkunganLabels as $label => $lingkungan) {
+
+        // Loop through labels to get counts for each label
+        foreach ($lingkunganlabels as $label => $lingkungan) {
+            $counts = [];
             for ($i = 1; $i <= 5; $i++) {
-                $lingkunganCounts[$label][$i] = SafetyPatrol::where($lingkungan, $i)->count();
+                $counts["safety_$i"] = SafetyPatrol::where($lingkungan, $i)->count();
             }
+            $lingkunganCounts[$label] = $counts;
         }
 
         return view('safety_patrol.report', compact(
             'patrols',
-            'areaPatrolLabels',
-            'areaPatrolCounts',
-            'picAreaLabels',
-            'picAreaCounts',
+            'areaPatrolsData',
             'kategoriCounts',
             'safetyCounts',
-            'lingkunganCounts'
+            'areaPatrolData',
+            'lingkunganCounts',
+            'piclabels',
+            'totalEntries'
         ));
     }
+
 
     public function getAreaPatrol()
     {
@@ -149,6 +189,7 @@ class SafetyController extends Controller
             'kategori_counts' => $kategoriCounts
         ]);
     }
+
 
     public function getSafetyPatrol()
     {
@@ -274,15 +315,238 @@ class SafetyController extends Controller
         return redirect()->route('listpatrol');
     }
 
-    public function exportPatrol()
+    public function exportData(Request $request)
     {
-        // Set locale for Carbon
-        setlocale(LC_TIME, 'en_US.UTF-8');
+        // Fetch the selected area of patrol from the request
+        $selectedArea = $request->input('area_patrol');
 
-        // Format date as "28 May 2020"
-        $date = Carbon::now()->formatLocalized('%d %B %Y');
-        $filename = "safety-patrol-{$date}.xlsx";
+        // Fetch the patrol data from the database based on the selected area
+        if ($selectedArea !== 'All') {
+            $patrolData = SafetyPatrol::where('area_patrol', $selectedArea)->get();
+        } else {
+            $patrolData = SafetyPatrol::all();
+        }
 
-        return Excel::download(new SafetyExport, $filename);
+        // Structure the data for export
+        $data = [
+            [
+                'AREA PATROL', // Add new column
+                'KATEGORI', 'ITEM CHECK', 'Januari', 'Februari', 'Maret', 'April', 'Mei',
+                'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ]
+        ];
+
+        $categories = [
+            '5R/5S' => [
+                'kategori_1' => 'Kelengkapan Alat 5R / 5S',
+                'kategori_2' => 'Kerapihan Area Kerja',
+                'kategori_3' => 'Kondisi Lingkungan Kerja',
+                'kategori_4' => 'Penempatan Alat / Barang',
+                'kategori_5' => 'Praktik 5S / 5R Oleh Pekerja'
+            ],
+            'SAFETY' => [
+                'safety_1' => 'Checksheet APAR',
+                'safety_2' => 'Penggunaan APD',
+                'safety_3' => 'Potensi Bahaya',
+                'safety_4' => 'Pemeliharaan APD',
+                'safety_5' => 'Kelengkapan APD'
+            ],
+            'LINGKUNGAN' => [
+                'lingkungan_1' => 'Pengelolaan Jenis & Kriteria Limbah',
+                'lingkungan_2' => 'Kebersihan Lingkungan',
+                'lingkungan_3' => 'Penyimpanan Limbah',
+                'lingkungan_4' => 'Tempat Sampah'
+            ]
+        ];
+
+        // Initialize arrays to hold sum and count data for overall averages
+        $overallSums = array_fill(0, 12, 0);
+        $overallCounts = array_fill(0, 12, 0);
+
+        // Fill the data for export
+        if ($patrolData->isNotEmpty()) {
+            $groupedData = [];
+            foreach ($patrolData as $patrol) {
+                $groupedData[$patrol->area_patrol][] = $patrol;
+            }
+
+            foreach ($groupedData as $area => $areaPatrols) {
+                foreach ($categories as $category => $items) {
+                    foreach ($items as $itemKey => $itemName) {
+                        $monthlyData = array_fill(0, 12, 0); // Initialize monthly data for each item
+                        $counts = array_fill(0, 12, 0); // Initialize counts for each month
+
+                        // Calculate sum for each month
+                        foreach ($areaPatrols as $patrol) {
+                            $patrolMonth = Carbon::parse($patrol->tanggal_patrol)->month - 1; // Get month index (0-11)
+                            $itemValue = (int)$patrol->{$itemKey};
+                            if ($itemValue > 0) {
+                                $monthlyData[$patrolMonth] += $itemValue;
+                                $counts[$patrolMonth]++;
+                                $overallSums[$patrolMonth] += $itemValue;
+                                $overallCounts[$patrolMonth]++;
+                            }
+                        }
+
+                        // Calculate the average for each month
+                        for ($monthIndex = 0; $monthIndex < 12; $monthIndex++) {
+                            if ($counts[$monthIndex] > 0) {
+                                $monthlyData[$monthIndex] = $monthlyData[$monthIndex] / $counts[$monthIndex];
+                            }
+                        }
+
+                        // Add the row data for the item
+                        $data[] = array_merge([$area, $category, $itemName], $monthlyData);
+                    }
+                }
+
+                // Calculate area average
+                $areaAverageRow = array_fill(0, 15, ''); // Initialize area average row
+                $areaAverageRow[0] = $area;
+                $areaAverageRow[1] = 'Total Nilai';
+
+                // Calculate averages for each month
+                for ($monthIndex = 0; $monthIndex < 12; $monthIndex++) {
+                    $totalMonthSum = 0;
+                    $totalCount = 0;
+                    foreach ($categories as $category => $items) {
+                        foreach ($items as $itemKey => $itemName) {
+                            foreach ($areaPatrols as $patrol) {
+                                $patrolMonth = Carbon::parse($patrol->tanggal_patrol)->month - 1;
+                                if ($patrolMonth == $monthIndex) {
+                                    $itemValue = (int)$patrol->{$itemKey};
+                                    if ($itemValue > 0) {
+                                        $totalMonthSum += $itemValue;
+                                        $totalCount++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // Calculate the average for the month
+                    $areaAverageRow[$monthIndex + 3] = $totalCount > 0 ? $totalMonthSum / $totalCount : 0;
+                }
+
+                // Add area average row to data
+                $data[] = $areaAverageRow;
+
+                // Insert an empty row for spacing
+                $data[] = array_fill(0, 15, '');
+            }
+
+            // Calculate overall averages if 'All' areas are selected
+            if ($selectedArea === 'All') {
+                $overallAverageRow = array_fill(0, 15, ''); // Initialize overall average row
+                $overallAverageRow[0] = 'Total seluruh Area';
+                $overallAverageRow[1] = 'Total Nilai';
+
+                for ($monthIndex = 0; $monthIndex < 12; $monthIndex++) {
+                    $overallAverageRow[$monthIndex + 3] = $overallCounts[$monthIndex] > 0 ? $overallSums[$monthIndex] / $overallCounts[$monthIndex] : 0;
+                }
+
+                // Add overall average row to data
+                $data[] = $overallAverageRow;
+            }
+        }
+
+        // Create spreadsheet and fill the data
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        foreach ($data as $rowIndex => $rowData) {
+            foreach ($rowData as $colIndex => $cellData) {
+                $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex + 1, $cellData);
+            }
+        }
+
+        // Merge cells for area patrol and categories
+        $areaStartRow = null;
+        $categoryStartRow = null;
+        $previousArea = null;
+        $previousCategory = null;
+
+        for ($rowIndex = 1; $rowIndex < count($data); $rowIndex++) {
+            $area = $data[$rowIndex][0];
+            $category = $data[$rowIndex][1];
+
+            // Handle merging for area patrol
+            if ($area !== $previousArea) {
+                if ($areaStartRow !== null) {
+                    $sheet->mergeCells("A$areaStartRow:A" . ($rowIndex));
+                    $sheet->getStyle("A$areaStartRow:A" . ($rowIndex))->getAlignment()
+                        ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                        ->setVertical(Alignment::VERTICAL_CENTER);
+                }
+                $areaStartRow = $rowIndex + 1;
+                $previousArea = $area;
+            }
+
+            // Handle merging for categories
+            if ($category !== $previousCategory) {
+                if ($categoryStartRow !== null) {
+                    $sheet->mergeCells("B$categoryStartRow:B" . ($rowIndex));
+                    $sheet->getStyle("B$categoryStartRow:B" . ($rowIndex))->getAlignment()
+                        ->setVertical(Alignment::VERTICAL_CENTER);
+                }
+                $categoryStartRow = $rowIndex + 1;
+                $previousCategory = $category;
+            }
+        }
+
+        // Handle the last set of merges
+        if ($areaStartRow !== null) {
+            $sheet->mergeCells("A$areaStartRow:A" . (count($data)));
+            $sheet->getStyle("A$areaStartRow:A" . (count($data)))->getAlignment()
+                ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                ->setVertical(Alignment::VERTICAL_CENTER);
+        }
+        if ($categoryStartRow !== null) {
+            $sheet->mergeCells("B$categoryStartRow:B" . (count($data)));
+            $sheet->getStyle("B$categoryStartRow:B" . (count($data)))->getAlignment()
+                ->setVertical(Alignment::VERTICAL_CENTER);
+        }
+
+        // Apply formatting, auto-size columns, set borders, etc.
+        foreach (range('A', $sheet->getHighestColumn()) as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+        $highestRow = $sheet->getHighestRow();
+        $highestColumn = $sheet->getHighestColumn();
+        $sheet->getStyle("A1:{$highestColumn}{$highestRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+        // Save the spreadsheet to a temporary file
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Safety-Patrol-' . date('d-F-Y') . '.xlsx';
+        $temp_file = tempnam(sys_get_temp_dir(), 'phpspreadsheet');
+        $writer->save($temp_file);
+
+        // Download the file and delete it after sending
+        return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // public function exportPatrol()
+    // {
+    //     // Set locale for Carbon
+    //     setlocale(LC_TIME, 'en_US.UTF-8');
+
+    //     // Format date as "28 May 2020"
+    //     $date = Carbon::now()->formatLocalized('%d %B %Y');
+    //     $filename = "safety-patrol-{$date}.xlsx";
+
+    //     return Excel::download(new SafetyExport, $filename);
+    // }
 }

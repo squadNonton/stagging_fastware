@@ -201,5 +201,5 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/get-kategori-patrol', [SafetyController::class, 'getKategoriPatrol']);
     Route::get('/get-safety-patrol', [SafetyController::class, 'getSafetyPatrol']);
     Route::get('/get-lingkungan-patrol', [SafetyController::class, 'getLingkunganPatrol']);
-    Route::get('/safetypatrol/export/', [SafetyController::class, 'exportPatrol'])->name('patrol.export');
+    Route::post('export-patrol-data', [SafetyController::class, 'exportData'])->name('export-patrol-data');
 });
