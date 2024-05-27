@@ -23,6 +23,7 @@ class SumbangSaran extends Model
         'image_2',
         'keuntungan_ide',
         'status',
+        'modified_by',
     ];
 
     public function user()

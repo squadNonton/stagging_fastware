@@ -150,7 +150,7 @@
             <li class="nav-heading">Suggestion System</li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="">
+                <a class="nav-link collapsed" href="{{route ('dashboardSS')}}">
                     <i class="bi bi-person"></i>
                     <span>Dashboard SS</span>
                 </a>

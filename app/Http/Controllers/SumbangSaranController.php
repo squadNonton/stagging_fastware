@@ -6,13 +6,12 @@ use App\Models\PenilaianSS;
 use App\Models\Role;
 use App\Models\SumbangSaran;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-
-// import Facade "Storage"
 
 class SumbangSaranController extends Controller
 {
@@ -37,6 +36,11 @@ class SumbangSaranController extends Controller
             ->pluck('roles.role', 'users.id');
 
         return view('ss.createSS', compact('data', 'usersRoles'));
+    }
+
+    public function dashboardSS()
+    {
+        return view('ss.dashboardSS');
     }
 
     public function showKonfirmasiForeman()
@@ -144,6 +148,67 @@ class SumbangSaranController extends Controller
             ->pluck('roles.role', 'users.id');
 
         return view('ss.konfirmHRGA', compact('data', 'usersRoles'));
+    }
+
+    public function chartSection(Request $request)
+    {
+        $startPeriode = $request->input('start_periode');
+        $endPeriode = $request->input('end_periode');
+
+        // Default dates if not provided
+        if (!$startPeriode) {
+            $startPeriode = Carbon::now()->startOfYear()->toDateString();
+        }
+        if (!$endPeriode) {
+            $endPeriode = Carbon::now()->endOfYear()->toDateString();
+        }
+
+        // Eksekusi query untuk mengambil data dari database
+        $dataFromSQL = SumbangSaran::whereBetween('created_at', [$startPeriode, $endPeriode])
+            ->whereIn('modified_by', ['DH Finance', 'Engineering', 'DH Sales', 'DH Productions'])
+            ->selectRaw("MONTH(created_at) as month,
+                         CASE 
+                            WHEN modified_by = 'DH Finance' THEN 'FIN ACC HRGA IT'
+                            WHEN modified_by = 'Engineering' THEN 'HT'
+                            WHEN modified_by = 'DH Sales' THEN 'Sales'
+                            WHEN modified_by = 'DH Productions' THEN 'Supply Chain & Productions'
+                            ELSE modified_by
+                         END AS modified_by,
+                         COUNT(*) as jumlah")
+            ->groupBy('month', 'modified_by')
+            ->orderBy('month')
+            ->get();
+
+        // Format hasil query menjadi format yang dapat digunakan oleh Highcharts
+        $categories = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December',
+        ];
+
+        $sections = [
+            'FIN ACC HRGA IT' => array_fill(0, 12, 0),
+            'HT' => array_fill(0, 12, 0),
+            'Sales' => array_fill(0, 12, 0),
+            'Supply Chain & Productions' => array_fill(0, 12, 0),
+        ];
+
+        foreach ($dataFromSQL as $item) {
+            $sections[$item->modified_by][$item->month - 1] = $item->jumlah;
+        }
+
+        $series = [];
+        foreach ($sections as $section => $data) {
+            $series[] = [
+                'name' => $section,
+                'data' => $data,
+            ];
+        }
+
+        // Mengembalikan data dalam format JSON
+        return response()->json([
+            'categories' => $categories,
+            'series' => $series,
+        ]);
     }
 
     public function simpanSS(Request $request)
@@ -446,6 +511,7 @@ class SumbangSaranController extends Controller
         // Set status pada model SumbangSaran menjadi 4
         $sumbangSaran = SumbangSaran::findOrFail($request->ss_id);
         $sumbangSaran->status = 4;
+        $sumbangSaran->modified_by = $request->user()->roles->role;
         $sumbangSaran->save();
 
         // Jika penyimpanan berhasil, kembalikan respons berhasil
