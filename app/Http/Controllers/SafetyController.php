@@ -484,7 +484,7 @@ class SafetyController extends Controller
                 }
 
                 // Calculate grand total of overall averages
-                $grandTotal = array_sum(array_slice($overallAverageRow, 3)); // Summing from index 3 onwards
+                // $grandTotal = array_sum(array_slice($overallAverageRow, 3)); // Summing from index 3 onwards
 
                 // Assign grand total to the row
                 // $overallAverageRow[2] = number_format($grandTotal, 2, '.', ''); // Using number_format for accurate rounding

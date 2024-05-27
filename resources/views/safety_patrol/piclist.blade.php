@@ -38,17 +38,22 @@
                                 @csrf
                                 <div class="form-group">
                                     <label for="area_patrol">Area Patrol:</label>
-                                    <select class="form-control" id="area_patrol" name="area_patrol">
-                                        <option value="All">All</option>
-                                        @foreach ($areas as $area)
-                                            <option value="{{ $area }}">{{ $area }}</option>
-                                        @endforeach
-                                    </select>
+                                    <span>
+                                        <select class="form-control" id="area_patrol" name="area_patrol"
+                                            style="width: auto; display: inline-block;">
+                                            <option value="All">All</option>
+                                            @foreach ($areas as $area)
+                                                <option value="{{ $area }}">{{ $area }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button class="btn btn-success" type="submit"
+                                            style="display: inline-block; margin-left: 10px;">
+                                            <i class="bi bi-filetype-xlsx"></i> Export Data
+                                        </button>
+                                    </span>
                                 </div>
-                                <button class="btn btn-success float-right" type="submit">
-                                    <i class="bi bi-filetype-xlsx"></i> Export Data
-                                </button>
                             </form>
+
 
                             <br>
                             <!-- Table with stripped rows -->
