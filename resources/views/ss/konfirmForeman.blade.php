@@ -41,8 +41,8 @@
                                         @foreach ($data as $data)
                                             <tr>
                                                 <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                                                <td class="text-center py-3">{{ $data->users->name ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $data->users->npk ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $data->user->name ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $data->user->npk ?? '' }}</td>
                                                 <td class="text-center py-3">{{ $usersRoles[$data->id_user] ?? '' }}</td>
                                                 <td class="text-center py-3">{{ $data->judul }}</td>
                                                 <td class="text-center py-3">{{ $data->tgl_pengajuan_ide }}</td>
@@ -65,10 +65,13 @@
                                                     @elseif($data->status == 4)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Komite</span>
+                                                    @elseif($data->status == 5)
+                                                        <span class="badge bg-info align-items-center"
+                                                            style="font-size: 18px;">SS sudah dinilai</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    @if ($data->status != 3 && $data->status != 4)
+                                                    @if ($data->status != 3 && $data->status != 4  && $data->status != 5)
                                                         <button class="btn btn-primary btn-sm"
                                                             onclick="confirmKirim({{ $data->id }})"
                                                             data-id="{{ $data->id }}" title="Kirim">
@@ -92,19 +95,34 @@
                 </div>
             </div>
             <!-- Readonly Modal Form Edit Sumbang Saran -->
-            <div class="modal fade" id="viewSumbangSaranModal" tabindex="-1"
-                aria-labelledby="viewSumbangSaranModalLabel" aria-hidden="true">
+            <div class="modal fade" id="viewSumbangSaranModal" tabindex="-1" aria-labelledby="viewSumbangSaranModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="viewSumbangSaranModalLabel">Form View SS</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <!-- Form View Sumbang Saran -->
                             <form id="viewSumbangSaranForm" enctype="multipart/form-data">
                                 @csrf
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Nama<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewname" name="nama"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Npk<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewnpk" name="npk"
+                                            disabled>
+                                    </div>
+                                </div>
                                 <div class="row mb-3">
                                     <label for="viewTglPengajuan" class="col-sm-2 col-form-label">Tgl. pengajuan Ide <span
                                             style="color: red;">*</span></label>
@@ -190,11 +208,10 @@
                     </div>
                 </div>
             </div>
-            
+
         </section>
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script>
-
             function confirmKirim(id) {
                 Swal.fire({
                     title: 'Apakah anda menyetujui ide?',
@@ -219,7 +236,8 @@
                                         'Data berhasil dikirim.',
                                         'success'
                                     ).then(() => {
-                                        window.location.href = '{{ route('showKonfirmasiForeman') }}';
+                                        window.location.href =
+                                            '{{ route('showKonfirmasiForeman') }}';
                                     });
                                 }
                             }
@@ -236,6 +254,8 @@
                     type: 'GET',
                     success: function(data) {
                         // Isi form dengan data yang diambil
+                        $('#viewname').val(data.user.name); // Set nama
+                        $('#viewnpk').val(data.user.npk); // Set npk
                         $('#viewTglPengajuan').val(data.tgl_pengajuan_ide);
                         $('#viewLokasiIde').val(data.lokasi_ide);
                         $('#viewTglDiterapkan').val(data.tgl_diterapkan);

@@ -41,8 +41,8 @@
                                         @foreach ($data as $data)
                                             <tr>
                                                 <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                                                <td class="text-center py-3">{{ $data->users->name ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $data->users->npk ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $data->user->name ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $data->user->npk ?? '' }}</td>
                                                 <td class="text-center py-3">{{ $usersRoles[$data->id_user] ?? '' }}</td>
                                                 <td class="text-center py-3">{{ $data->judul }}</td>
                                                 <td class="text-center py-3">{{ $data->tgl_pengajuan_ide }}</td>
@@ -127,7 +127,6 @@
                 </div>
             </div>
             <!-- Modal Form nilai Sumbang Saran -->
-            <!-- Modal Form nilai Sumbang Saran -->
             <div class="modal fade" id="editTambahNilai" tabindex="-1" aria-labelledby="editTambahNilai"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
@@ -161,7 +160,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Readonly Modal Form View Sumbang Saran -->
             <div class="modal fade" id="viewSumbangSaranModal" tabindex="-1"
                 aria-labelledby="viewSumbangSaranModalLabel" aria-hidden="true">
@@ -176,6 +174,22 @@
                             <!-- Form View Sumbang Saran -->
                             <form id="viewSumbangSaranForm" enctype="multipart/form-data">
                                 @csrf
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Nama<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewname" name="nama"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Npk<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewnpk" name="npk"
+                                            disabled>
+                                    </div>
+                                </div>
                                 <div class="row mb-3">
                                     <label for="viewTglPengajuan" class="col-sm-2 col-form-label">Tgl. pengajuan Ide <span
                                             style="color: red;">*</span></label>
@@ -371,7 +385,9 @@
                             title: 'Berhasil!',
                             text: 'Data berhasil disimpan.',
                             icon: 'success',
-                            confirmButtonText: 'OK'
+                            icon: 'success',
+                            timer: 1000, // Waktu dalam milidetik sebelum alert otomatis tertutup
+                            showConfirmButton: false
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 // Tutup modal
@@ -497,6 +513,8 @@
                     type: 'GET',
                     success: function(data) {
                         // Isi form dengan data yang diambil
+                        $('#viewname').val(data.user.name); // Set nama
+                        $('#viewnpk').val(data.user.npk); // Set npk
                         $('#viewTglPengajuan').val(data.tgl_pengajuan_ide);
                         $('#viewLokasiIde').val(data.lokasi_ide);
                         $('#viewTglDiterapkan').val(data.tgl_diterapkan);

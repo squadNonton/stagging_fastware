@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\SumbangSaran;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -19,17 +20,19 @@ class SumbangSaranController extends Controller
     // showpage
     public function showSS()
     {
-        $data = SumbangSaran::with('users')
-    ->whereIn('sumbang_sarans.status', [1, 2, 3, 4, 5]) // Tambahkan alias untuk kolom status
-    ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3, 2, 1)') // Tambahkan alias untuk kolom status
-    ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
-    ->paginate();
+        // Ambil ID pengguna yang sedang login
+        $userLogin = Auth::id();
 
-        // Ambil hanya id user untuk menghindari "N + 1" query
-        $userIds = $data->pluck('id_user')->unique()->toArray();
+        // Mengambil data SumbangSaran dengan relasi user untuk pengguna yang sedang login
+        $data = SumbangSaran::with('user') // Pastikan nama relasi benar
+            ->where('sumbang_sarans.id_user', $userLogin) // Tambahkan alias untuk kolom id_user
+            ->whereIn('sumbang_sarans.status', [1, 2, 3, 4, 5]) // Tambahkan alias untuk kolom status
+            ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3, 2, 1)') // Tambahkan alias untuk kolom status
+            ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
+            ->paginate();
 
         // Ambil data peran (role) berdasarkan user ids
-        $usersRoles = User::whereIn('users.id', $userIds)
+        $usersRoles = User::where('users.id', $userLogin) // Tambahkan alias untuk kolom id
             ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
             ->pluck('roles.role', 'users.id');
 
@@ -38,7 +41,7 @@ class SumbangSaranController extends Controller
 
     public function showKonfirmasiForeman()
     {
-        $data = SumbangSaran::with('users')
+        $data = SumbangSaran::with('user')
     ->whereIn('sumbang_sarans.status', [2, 3, 4, 5]) // Tambahkan alias untuk kolom status
     ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3, 2)') // Tambahkan alias untuk kolom status
     ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
@@ -57,7 +60,7 @@ class SumbangSaranController extends Controller
 
     public function showKonfirmasiDeptHead()
     {
-        $data = SumbangSaran::with('users')
+        $data = SumbangSaran::with('user')
     ->whereIn('sumbang_sarans.status', [3, 4, 5]) // Tambahkan alias untuk kolom status
     ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3)') // Tambahkan alias untuk kolom status
     ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
@@ -76,7 +79,7 @@ class SumbangSaranController extends Controller
 
     public function showKonfirmasiKomite()
     {
-        $data = SumbangSaran::with('users')
+        $data = SumbangSaran::with('user')
     ->whereIn('sumbang_sarans.status', [4, 5]) // Tambahkan alias untuk kolom status
     ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4)') // Tambahkan alias untuk kolom status
     ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
@@ -196,7 +199,7 @@ class SumbangSaranController extends Controller
     public function editSS($id)
     {
         // Retrieve the sumbang saran data by ID
-        $sumbangSaran = SumbangSaran::findOrFail($id);
+        $sumbangSaran = SumbangSaran::with('user')->findOrFail($id);
 
         // Include file paths in the response if available
         $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/'.$sumbangSaran->image) : null;
@@ -209,7 +212,7 @@ class SumbangSaranController extends Controller
     public function getSumbangSaran($id)
     {
         // Retrieve the sumbang saran data by ID
-        $sumbangSaran = SumbangSaran::findOrFail($id);
+        $sumbangSaran = SumbangSaran::with('user')->findOrFail($id);
 
         // Include file paths in the response if available
         $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/'.$sumbangSaran->image) : null;
@@ -280,7 +283,7 @@ class SumbangSaranController extends Controller
         Log::info('Fetching sumbang saran with ID:', ['id' => $id]);
 
         // Retrieve the sumbang saran data by ID
-        $sumbangSaran = SumbangSaran::findOrFail($id);
+        $sumbangSaran = SumbangSaran::with('user')->findOrFail($id);
 
         // Retrieve related penilaian
         $penilaian = PenilaianSS::where('ss_id', $id)->first();

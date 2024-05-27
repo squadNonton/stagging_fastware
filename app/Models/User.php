@@ -58,9 +58,9 @@ class User extends Authenticatable
         return $this->hasMany(ScheduleVisit::class);
     }
 
-    public function sumbang_saran(): HasMany
+    public function sumbang_saran()
     {
-        return $this->hasMany(SumbangSaran::class);
+        return $this->hasMany(SumbangSaran::class, 'id_user');
     }
 
     public function penilaians(): HasMany

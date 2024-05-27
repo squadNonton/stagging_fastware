@@ -41,58 +41,58 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($data as $data)
+                                        @foreach ($data as $item)
                                             <tr>
                                                 <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                                                <td class="text-center py-3">{{ $data->users->name ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $data->users->npk ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $usersRoles[$data->id_user] ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $data->judul }}</td>
-                                                <td class="text-center py-3">{{ $data->tgl_pengajuan_ide }}</td>
-                                                <td class="text-center py-3">{{ $data->lokasi_ide }}</td>
-                                                <td class="text-center py-3">{{ $data->tgl_diterapkan }}</td>
-                                                <td class="text-center py-3">{{ $data->created_at }}</td>
+                                                <td class="text-center py-3">{{ $item->user->name ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $item->user->npk ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $usersRoles[$item->id_user] ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $item->judul }}</td>
+                                                <td class="text-center py-3">{{ $item->tgl_pengajuan_ide }}</td>
+                                                <td class="text-center py-3">{{ $item->lokasi_ide }}</td>
+                                                <td class="text-center py-3">{{ $item->tgl_diterapkan }}</td>
+                                                <td class="text-center py-3">{{ $item->updated_at }}</td>
                                                 <td class="text-center py-4"
                                                     style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
-                                                    title="@if ($data->status == 1) Draf @elseif ($data->status == 2) Menunggu Approve Foreman @elseif($data->status == 3) Menunggu Approve Dept. Head @elseif($data->status == 4) Direksi @endif">
-                                                    @if ($data->status == 1)
+                                                    title="@if ($item->status == 1) Draf @elseif ($item->status == 2) Menunggu Approve Foreman @elseif($item->status == 3) Menunggu Approve Dept. Head @elseif($item->status == 4) Direksi @endif">
+                                                    @if ($item->status == 1)
                                                         <span class="badge bg-secondary align-items-center"
                                                             style="font-size: 18px;">Draf</span>
-                                                    @elseif ($data->status == 2)
+                                                    @elseif ($item->status == 2)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>KonfirmasiForeman</span>
-                                                    @elseif($data->status == 3)
+                                                    @elseif($item->status == 3)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Dept.
                                                             Head</span>
-                                                    @elseif($data->status == 4)
+                                                    @elseif($item->status == 4)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">Menunggur<br>Konfirmasi Komite</span>
-                                                    @elseif($data->status == 5)
+                                                    @elseif($item->status == 5)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">SS sudah dinilai</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    @if ($data->status != 2 && $data->status != 3 && $data->status != 4 && $data->status != 5 && $data->status != 6)
+                                                    @if ($item->status != 2 && $item->status != 3 && $item->status != 4 && $item->status != 5 && $item->status != 6)
                                                         <button class="btn btn-primary btn-sm"
-                                                            onclick="openEditModal({{ $data->id }})"
-                                                            data-id="{{ $data->id }}" title="Edit">
+                                                            onclick="openEditModal({{ $item->id }})"
+                                                            data-id="{{ $item->id }}" title="Edit">
                                                             <i class="fa-solid fa-edit fa-1x"></i>
                                                         </button>
                                                         <button class="btn btn-danger btn-sm"
-                                                            onclick="confirmDelete('{{ $data->id }}')" title="Hapus">
+                                                            onclick="confirmDelete('{{ $item->id }}')" title="Hapus">
                                                             <i class="fas fa-trash fa-1x"></i>
                                                         </button>
                                                         <button class="btn btn-primary btn-sm"
-                                                            onclick="confirmKirim({{ $data->id }})"
-                                                            data-id="{{ $data->id }}" title="Kirim">
+                                                            onclick="confirmKirim({{ $item->id }})"
+                                                            data-id="{{ $item->id }}" title="Kirim">
                                                             <i class="fa-solid fa fa-paper-plane fa-1x"></i>
                                                         </button>
                                                     @endif
                                                     <button class="btn btn-success btn-sm"
-                                                        onclick="showViewSumbangSaranModal({{ $data->id }})"
-                                                        data-id="{{ $data->id }}" title="lihat">
+                                                        onclick="showViewSumbangSaranModal({{ $item->id }})"
+                                                        data-id="{{ $item->id }}" title="lihat">
                                                         <i class="fa-solid fa-eye fa-1x"></i>
                                                     </button>
                                                 </td>
@@ -120,13 +120,30 @@
                             <form id="sumbangSaranForm">
                                 @csrf
                                 <div class="row mb-3">
+                                    <label for="inputText" class="col-sm-2 col-form-label">Nama<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="hidden" id="id_user" name="id_user"
+                                            value="{{ Auth::user()->id }}">
+                                        <input type="text" class="form-control" id="" name=""
+                                            maxlength="6" style="width: 100%; max-width: 100%;"
+                                            placeholder="{{ Auth::user()->name }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="inputText" class="col-sm-2 col-form-label">NPK<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="npk" name="npk"
+                                            placeholder="{{ Auth::user()->npk }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
                                     <label for="inputDate" class="col-sm-2 col-form-label">Tgl. pengajuan Ide <span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="tgl_pengajuan_ide"
                                             name="tgl_pengajuan_ide" required>
-                                        <input type="hidden" id="id_user" name="id_user"
-                                            value="{{ Auth::user()->id }}">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -142,7 +159,7 @@
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="tgl_diterapkan"
-                                            name="tgl_diterapkan">
+                                            name="tgl_diterapkan" required>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -210,6 +227,22 @@
                             <!-- Form Edit Sumbang Saran -->
                             <form id="editSumbangSaranForm" enctype="multipart/form-data">
                                 @csrf
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Nama<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="editnama" name="nama"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Npk<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="editnpk" name="npk"
+                                            disabled>
+                                    </div>
+                                </div>
                                 <div class="row mb-3">
                                     <label for="editTglPengajuan" class="col-sm-2 col-form-label">Tgl. pengajuan Ide <span
                                             style="color: red;">*</span></label>
@@ -316,6 +349,22 @@
                             <form id="viewSumbangSaranForm" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Nama<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewname" name="nama"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Npk<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewnpk" name="npk"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
                                     <label for="viewTglPengajuan" class="col-sm-2 col-form-label">Tgl. pengajuan Ide <span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
@@ -358,7 +407,8 @@
                                     <label for="viewImage" class="col-sm-2 col-form-label">File Upload 1</label>
                                     <div class="col-sm-10">
                                         <input class="form-control" type="file" id="viewImage" name="view_image"
-                                            onchange="showFileName2('viewImage', 'viewImageLabel', 'viewImagePreview')" disabled>
+                                            onchange="showFileName2('viewImage', 'viewImageLabel', 'viewImagePreview')"
+                                            disabled>
                                         <label id="viewImageLabel" class="form-label"></label>
                                         <input type="hidden" id="viewImageUrl" name="edit_image_url">
                                         <img id="viewImagePreview" class="image-popup" src="#" alt="Preview"
@@ -377,7 +427,8 @@
                                     <label for="viewImage2" class="col-sm-2 col-form-label">File Upload 2</label>
                                     <div class="col-sm-10">
                                         <input class="form-control" type="file" id="viewImage2" name="view_image2"
-                                            onchange="showFileName2('viewImage2', 'viewImage2Label', 'viewImage2Preview')" disabled>
+                                            onchange="showFileName2('viewImage2', 'viewImage2Label', 'viewImage2Preview')"
+                                            disabled>
                                         <label id="viewImage2Label" class="form-label"></label>
                                         <input type="hidden" id="viewImage2Url" name="view_image_url">
                                         <img id="viewImage2Preview" class="image-popup" src="#" alt="Preview"
@@ -450,7 +501,8 @@
                             title: 'Berhasil!',
                             text: 'Data berhasil disimpan.',
                             icon: 'success',
-                            confirmButtonText: 'OK'
+                            timer: 1000, // Waktu dalam milidetik sebelum alert otomatis tertutup
+                            showConfirmButton: false
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 // Tutup modal
@@ -526,6 +578,8 @@
                     type: 'GET',
                     success: function(response) {
                         // Isi form modal dengan data yang diperoleh
+                        $('#editnama').val(response.user.name); // Set nama
+                        $('#editnpk').val(response.user.npk); // Set npk
                         $('#editTglPengajuan').val(response.tgl_pengajuan_ide);
                         $('#editLokasiIde').val(response.lokasi_ide);
                         $('#editTglDiterapkan').val(response.tgl_diterapkan);
@@ -575,8 +629,8 @@
                         Swal.fire({
                             title: 'Berhasil!',
                             text: 'Data berhasil diperbarui.',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
+                            timer: 1000, // Waktu dalam milidetik sebelum alert otomatis tertutup
+                            showConfirmButton: false
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 // Tutup modal
@@ -679,6 +733,8 @@
                     type: 'GET',
                     success: function(data) {
                         // Isi form dengan data yang diambil
+                        $('#viewname').val(data.user.name); // Set nama
+                        $('#viewnpk').val(data.user.npk); // Set npk
                         $('#viewSumbangSaranId').val(data.id);
                         $('#viewTglPengajuan').val(data.tgl_pengajuan_ide);
                         $('#viewLokasiIde').val(data.lokasi_ide);
@@ -713,7 +769,6 @@
                     }
                 });
             }
-
         </script>
 
     </main><!-- End #main -->

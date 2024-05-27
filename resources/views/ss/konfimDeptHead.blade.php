@@ -41,8 +41,8 @@
                                         @foreach ($data as $data)
                                             <tr>
                                                 <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                                                <td class="text-center py-3">{{ $data->users->name ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $data->users->npk ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $data->user->name ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $data->user->npk ?? '' }}</td>
                                                 <td class="text-center py-3">{{ $usersRoles[$data->id_user] ?? '' }}</td>
                                                 <td class="text-center py-3">{{ $data->judul }}</td>
                                                 <td class="text-center py-3">{{ $data->tgl_pengajuan_ide }}</td>
@@ -71,7 +71,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    @if ($data->status != 4)
+                                                    @if ($data->status != 4 && $data->status != 5)
                                                         <button class="btn btn-primary btn-sm"
                                                             onclick="openFormPenilaian({{ $data->id }})"
                                                             data-id="{{ $data->id }}" title="Kirim">
@@ -110,7 +110,7 @@
                                 @csrf
                                 <input type="hidden" id="editSumbangSaranId" name="id">
                                 <input type="hidden" id="ss_id" name="ss_id">
-
+                                
                                 <div class="mb-3">
                                     <label for="telah_direvisi" class="form-label">Telah Direvisi</label>
                                     <div class="form-check">
@@ -187,6 +187,22 @@
                             <!-- Form View Sumbang Saran -->
                             <form id="viewSumbangSaranForm" enctype="multipart/form-data">
                                 @csrf
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Nama<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewname" name="nama"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Npk<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewnpk" name="npk"
+                                            disabled>
+                                    </div>
+                                </div>
                                 <div class="row mb-3">
                                     <label for="viewTglPengajuan" class="col-sm-2 col-form-label">Tgl. pengajuan Ide <span
                                             style="color: red;">*</span></label>
@@ -424,6 +440,8 @@
                     type: 'GET',
                     success: function(data) {
                         // Isi form dengan data yang diambil
+                        $('#viewname').val(data.user.name); // Set nama
+                        $('#viewnpk').val(data.user.npk); // Set npk
                         $('#viewTglPengajuan').val(data.tgl_pengajuan_ide);
                         $('#viewLokasiIde').val(data.lokasi_ide);
                         $('#viewTglDiterapkan').val(data.tgl_diterapkan);
