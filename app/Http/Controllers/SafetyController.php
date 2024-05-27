@@ -372,77 +372,122 @@ class SafetyController extends Controller
 
             foreach ($groupedData as $area => $areaPatrols) {
                 foreach ($categories as $category => $items) {
-                    foreach ($items as $itemKey => $itemName) {
-                        $monthlyData = array_fill(0, 12, 0); // Initialize monthly data for each item
-                        $counts = array_fill(0, 12, 0); // Initialize counts for each month
+                    $categorySums = array_fill(0, 12, 0);
+                    $categoryCounts = array_fill(0, 12, 0);
 
-                        // Calculate sum for each month
+                    foreach ($items as $itemKey => $itemName) {
+                        $monthlyData = array_fill(0, 12, 0);
+                        $counts = array_fill(0, 12, 0);
+
                         foreach ($areaPatrols as $patrol) {
-                            $patrolMonth = Carbon::parse($patrol->tanggal_patrol)->month - 1; // Get month index (0-11)
+                            $patrolMonth = Carbon::parse($patrol->tanggal_patrol)->month - 1;
                             $itemValue = (int)$patrol->{$itemKey};
                             if ($itemValue > 0) {
                                 $monthlyData[$patrolMonth] += $itemValue;
                                 $counts[$patrolMonth]++;
+                                $categorySums[$patrolMonth] += $itemValue;
+                                $categoryCounts[$patrolMonth]++;
                                 $overallSums[$patrolMonth] += $itemValue;
                                 $overallCounts[$patrolMonth]++;
                             }
                         }
 
-                        // Calculate the average for each month
                         for ($monthIndex = 0; $monthIndex < 12; $monthIndex++) {
                             if ($counts[$monthIndex] > 0) {
-                                $monthlyData[$monthIndex] = $monthlyData[$monthIndex] / $counts[$monthIndex];
+                                $monthlyData[$monthIndex] = round($monthlyData[$monthIndex] / $counts[$monthIndex], 2);
                             }
                         }
 
-                        // Add the row data for the item
                         $data[] = array_merge([$area, $category, $itemName], $monthlyData);
                     }
+
+                    // Calculate category averages
+                    $categoryAverages = [];
+                    for ($monthIndex = 0; $monthIndex < 12; $monthIndex++) {
+                        if ($categoryCounts[$monthIndex] > 0) {
+                            $categoryAverages[$monthIndex] = round($categorySums[$monthIndex] / $categoryCounts[$monthIndex], 2);
+                        } else {
+                            $categoryAverages[$monthIndex] = 0;
+                        }
+                    }
+
+                    $data[] = array_merge([$area, $category, 'Total Kategori'], $categoryAverages);
                 }
 
                 // Calculate area average
-                $areaAverageRow = array_fill(0, 15, ''); // Initialize area average row
+                $areaAverageRow = array_fill(0, 15, '');
                 $areaAverageRow[0] = $area;
                 $areaAverageRow[1] = 'Total Nilai';
 
-                // Calculate averages for each month
                 for ($monthIndex = 0; $monthIndex < 12; $monthIndex++) {
-                    $totalMonthSum = 0;
-                    $totalCount = 0;
+                    $totalCategorySum = 0;
+                    $totalCategoryCount = 3; // Karena kita membagi dengan 3 kategori: 5R/5S, SAFETY, LINGKUNGAN
+
                     foreach ($categories as $category => $items) {
+                        $categorySum = 0;
+                        $categoryCount = 0;
+
                         foreach ($items as $itemKey => $itemName) {
                             foreach ($areaPatrols as $patrol) {
                                 $patrolMonth = Carbon::parse($patrol->tanggal_patrol)->month - 1;
                                 if ($patrolMonth == $monthIndex) {
                                     $itemValue = (int)$patrol->{$itemKey};
                                     if ($itemValue > 0) {
-                                        $totalMonthSum += $itemValue;
-                                        $totalCount++;
+                                        $categorySum += $itemValue;
+                                        $categoryCount++;
                                     }
                                 }
                             }
                         }
+
+                        if ($categoryCount > 0) {
+                            $totalCategorySum += $categorySum / $categoryCount; // Rata-rata per kategori
+                        }
                     }
-                    // Calculate the average for the month
-                    $areaAverageRow[$monthIndex + 3] = $totalCount > 0 ? $totalMonthSum / $totalCount : 0;
+
+                    $areaAverageRow[$monthIndex + 3] = round($totalCategorySum / $totalCategoryCount, 2);
                 }
 
-                // Add area average row to data
                 $data[] = $areaAverageRow;
-
-                // Insert an empty row for spacing
                 $data[] = array_fill(0, 15, '');
             }
 
             // Calculate overall averages if 'All' areas are selected
             if ($selectedArea === 'All') {
                 $overallAverageRow = array_fill(0, 15, ''); // Initialize overall average row
-                $overallAverageRow[0] = 'Total seluruh Area';
-                $overallAverageRow[1] = 'Total Nilai';
+                $overallAverageRow[0] = 'Total Seluruh Area';
+                $overallAverageRow[1] = 'Grand Total';
 
-                for ($monthIndex = 0; $monthIndex < 12; $monthIndex++) {
-                    $overallAverageRow[$monthIndex + 3] = $overallCounts[$monthIndex] > 0 ? $overallSums[$monthIndex] / $overallCounts[$monthIndex] : 0;
+                // Initialize arrays to store total values and counts for each month
+                $monthTotals = array_fill(0, 12, 0);
+                $monthCounts = array_fill(0, 12, 0);
+
+                // Loop through patrol data to calculate totals for each month
+                foreach ($patrolData as $patrol) {
+                    $patrolMonth = Carbon::parse($patrol->tanggal_patrol)->month - 1;
+                    foreach ($categories as $category => $items) {
+                        foreach ($items as $itemKey => $itemName) {
+                            $itemValue = (int)$patrol->{$itemKey};
+                            if ($itemValue > 0) {
+                                $monthTotals[$patrolMonth] += $itemValue;
+                                $monthCounts[$patrolMonth]++;
+                            }
+                        }
+                    }
                 }
+
+                // Calculate the overall average for each month
+                for ($monthIndex = 0; $monthIndex < 12; $monthIndex++) {
+                    if ($monthCounts[$monthIndex] > 0) {
+                        $overallAverageRow[$monthIndex + 3] = number_format($monthTotals[$monthIndex] / $monthCounts[$monthIndex], 2, '.', '');
+                    }
+                }
+
+                // Calculate grand total of overall averages
+                $grandTotal = array_sum(array_slice($overallAverageRow, 3)); // Summing from index 3 onwards
+
+                // Assign grand total to the row
+                // $overallAverageRow[2] = number_format($grandTotal, 2, '.', ''); // Using number_format for accurate rounding
 
                 // Add overall average row to data
                 $data[] = $overallAverageRow;
@@ -522,6 +567,7 @@ class SafetyController extends Controller
         // Download the file and delete it after sending
         return response()->download($temp_file, $filename)->deleteFileAfterSend(true);
     }
+
 
 
 

@@ -1601,7 +1601,7 @@
 
                 // Perform AJAX request to get new data based on selected year and section
                 $.ajax({
-                    url: '/getRepairMaintenance', // Replace with appropriate endpoint URL
+                    url: '{{ route('getRepairMaintenance') }}', // Replace with appropriate endpoint URL
                     method: 'GET',
                     data: {
                         year: selectedYear,
@@ -1709,7 +1709,7 @@
 
                 // Lakukan AJAX request untuk mendapatkan data periode waktu pengerjaan berdasarkan section dan tanggal yang dipilih
                 $.ajax({
-                    url: '/getPeriodeWaktuPengerjaan',
+                    url: '{{ route('getPeriodeWaktuPengerjaan') }}',
                     method: 'GET',
                     data: {
                         year: selectedYear,
@@ -1809,7 +1809,7 @@
 
                 // Perform AJAX request to get new data based on selected year and section
                 $.ajax({
-                    url: '/getRepairAlatBantu', // Replace with appropriate endpoint URL
+                    url: '{{ route('getRepairAlatBantu') }}', // Replace with appropriate endpoint URL
                     method: 'GET',
                     data: {
                         year: selectedYear,
@@ -1920,7 +1920,7 @@
 
                 // Lakukan AJAX request untuk mendapatkan data periode waktu pengerjaan berdasarkan section dan tanggal yang dipilih
                 $.ajax({
-                    url: '/getPeriodeWaktuAlat',
+                    url: '{{ route('getPeriodeWaktuAlat') }}',
                     method: 'GET',
                     data: {
                         year: selectedYear,
@@ -1995,7 +1995,7 @@
                 var endDate_alat = document.getElementById('end_alat').value;
 
                 $.ajax({
-                    url: '/getPeriodeAlat',
+                    url: '{{ route('getPeriodeAlat') }}',
                     type: 'GET',
                     data: {
                         section_alat: section_alat,
@@ -2083,7 +2083,7 @@
 
                 // AJAX request untuk mendapatkan data dari server
                 $.ajax({
-                    url: '/getPeriodeMesin',
+                    url: '{{ route('getPeriodeMesin') }}',
                     type: 'GET',
                     data: {
                         section: section,
@@ -2130,6 +2130,9 @@
                 Highcharts.chart('periodeRepairMesin', {
                     chart: {
                         type: 'column'
+                    },
+                    credits: {
+                        enabled: false
                     },
                     title: {
                         text: 'Detail Linestop / Mesin (Dalam Menit)'

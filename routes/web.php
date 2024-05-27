@@ -133,16 +133,17 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/dashboardHandling', 'App\Http\Controllers\DsController@dashboardHandling')->name('dashboardHandling');
     Route::get('/getChartData', 'App\Http\Controllers\HandlingController@getChartData')->name('getChartData');
     Route::get('/get-data-by-year', 'App\Http\Controllers\HandlingController@getDataByYear')->name('getDataByYear');
-    Route::get('/getRepairMaintenance', 'App\Http\Controllers\MaintenanceController@getRepairMaintenance');
-    Route::get('/getRepairAlatBantu', 'App\Http\Controllers\MaintenanceController@getRepairAlatBantu');
-    Route::get('/getPeriodeWaktuPengerjaan', 'App\Http\Controllers\MaintenanceController@getPeriodeWaktuPengerjaan');
-    Route::get('/getPeriodeWaktuAlat', 'App\Http\Controllers\MaintenanceController@getPeriodeWaktuAlat');
     Route::get('/api/filter-pie-chart-tipe', 'App\Http\Controllers\HandlingController@FilterPieChartTipe')->name('FilterPieChartTipe');
     Route::get('/api/filter-tipe-all', 'App\Http\Controllers\HandlingController@FilterTipeAll');
     Route::get('/api/FilterPieChartProses', 'App\Http\Controllers\HandlingController@FilterPieChartProses')->name('FilterPieChartProses');
 
-    Route::get('/getPeriodeMesin', 'App\Http\Controllers\MaintenanceController@getPeriodeMesin');
-    Route::get('/getPeriodeAlat', 'App\Http\Controllers\MaintenanceController@getPeriodeAlat');
+    // Grafik Repair Maintenance
+    Route::get('/getRepairMaintenance', 'App\Http\Controllers\MaintenanceController@getRepairMaintenance')->name('getRepairMaintenance');
+    Route::get('/getRepairAlatBantu', 'App\Http\Controllers\MaintenanceController@getRepairAlatBantu')->name('getRepairAlatBantu');
+    Route::get('/getPeriodeWaktuPengerjaan', 'App\Http\Controllers\MaintenanceController@getPeriodeWaktuPengerjaan')->name('getPeriodeWaktuPengerjaan');
+    Route::get('/getPeriodeWaktuAlat', 'App\Http\Controllers\MaintenanceController@getPeriodeWaktuAlat')->name('getPeriodeWaktuAlat');
+    Route::get('/getPeriodeMesin', 'App\Http\Controllers\MaintenanceController@getPeriodeMesin')->name('getPeriodeMesin');
+    Route::get('/getPeriodeAlat', 'App\Http\Controllers\MaintenanceController@getPeriodeAlat')->name('getPeriodeAlat');
 
     Route::get('handling', [HandlingController::class, 'index'])->name('index');
     Route::get('create', [HandlingController::class, 'create'])->name('create');
