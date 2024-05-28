@@ -396,7 +396,6 @@
                             {{-- Role ID untuk GA --}}
                             {{-- Tampilkan sidebar untuk Engineering --}}
                             <li class="nav-heading">Engineering</li>
-
                             <li class="nav-item">
                                 <a class="nav-link collapsed" data-bs-target="#dept-maint-nav"
                                     data-bs-toggle="collapse" href="#">

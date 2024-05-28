@@ -65,13 +65,19 @@
                                                     @elseif($data->status == 4)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Komite</span>
-                                                    @elseif($data->status == 5)
+                                                    @elseif($item->status == 5)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">SS sudah dinilai</span>
+                                                    @elseif($item->status == 6)
+                                                        <span class="badge bg-info align-items-center"
+                                                            style="font-size: 18px;">SS sudah Verivikasi</span>
+                                                    @elseif($item->status == 7)
+                                                        <span class="badge bg-success align-items-center"
+                                                            style="font-size: 18px;">SS Terbayar</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    @if ($data->status != 3 && $data->status != 4  && $data->status != 5)
+                                                    @if ($data->status != 3 && $data->status != 4 && $data->status != 5)
                                                         <button class="btn btn-primary btn-sm"
                                                             onclick="confirmKirim({{ $data->id }})"
                                                             data-id="{{ $data->id }}" title="Kirim">

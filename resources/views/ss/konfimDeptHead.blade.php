@@ -65,9 +65,15 @@
                                                     @elseif($data->status == 4)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Komite</span>
-                                                    @elseif($data->status == 5)
+                                                    @elseif($item->status == 5)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">SS sudah dinilai</span>
+                                                    @elseif($item->status == 6)
+                                                        <span class="badge bg-info align-items-center"
+                                                            style="font-size: 18px;">SS sudah Verivikasi</span>
+                                                    @elseif($item->status == 7)
+                                                        <span class="badge bg-success align-items-center"
+                                                            style="font-size: 18px;">SS Terbayar</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
@@ -110,7 +116,7 @@
                                 @csrf
                                 <input type="hidden" id="editSumbangSaranId" name="id">
                                 <input type="hidden" id="ss_id" name="ss_id">
-                                
+
                                 <div class="mb-3">
                                     <label for="telah_direvisi" class="form-label">Telah Direvisi</label>
                                     <div class="form-check">

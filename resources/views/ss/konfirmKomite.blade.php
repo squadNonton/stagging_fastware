@@ -29,6 +29,7 @@
                                             <th class="text-center" width="100px">NPK</th>
                                             <th class="text-center" width="100px">Bagian</th>
                                             <th class="text-center" width="100px">Judul Ide</th>
+                                            <th class="text-center" width="100px">Poin</th>
                                             <th class="text-center" width="90px">Tanggal Pengajuan Ide</th>
                                             <th class="text-center" width="70px">Lokasi</th>
                                             <th class="text-center" width="100px">Tanggal Diterapkan</th>
@@ -41,10 +42,11 @@
                                         @foreach ($data as $data)
                                             <tr>
                                                 <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                                                <td class="text-center py-3">{{ $data->user->name ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $data->user->npk ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $data->name }}</td>
+                                                <td class="text-center py-3">{{ $data->npk }}</td>
                                                 <td class="text-center py-3">{{ $usersRoles[$data->id_user] ?? '' }}</td>
                                                 <td class="text-center py-3">{{ $data->judul }}</td>
+                                                <td class="text-center py-3">{{ $data->nilai }}</td>
                                                 <td class="text-center py-3">{{ $data->tgl_pengajuan_ide }}</td>
                                                 <td class="text-center py-3">{{ $data->lokasi_ide }}</td>
                                                 <td class="text-center py-3">{{ $data->tgl_diterapkan }}</td>
@@ -65,9 +67,15 @@
                                                     @elseif($data->status == 4)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Komite</span>
-                                                    @elseif($data->status == 5)
+                                                    @elseif($item->status == 5)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">SS sudah dinilai</span>
+                                                    @elseif($item->status == 6)
+                                                        <span class="badge bg-info align-items-center"
+                                                            style="font-size: 18px;">SS sudah Verivikasi</span>
+                                                    @elseif($item->status == 7)
+                                                        <span class="badge bg-success align-items-center"
+                                                            style="font-size: 18px;">SS Terbayar</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
@@ -99,7 +107,7 @@
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
                     <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title" id="editSumbangSaranModalLabel">Form Nilai Sumbang Saran</h5>
+                            <h5 class="modal-title" id="editSumbangSaranModalLabel">Form Poin Sumbang Saran</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
@@ -111,7 +119,7 @@
                                 <input type="hidden" id="ss_id" name="ss_id">
 
                                 <div class="mb-3">
-                                    <label for="nilai" class="form-label">Nilai</label>
+                                    <label for="nilai" class="form-label">Poin:</label>
                                     <input type="text" class="form-control" id="nilai" name="nilai" required>
                                 </div>
 
@@ -120,40 +128,6 @@
                                         data-bs-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btn-primary"
                                         onclick="submitFormNilai()">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal Form nilai Sumbang Saran -->
-            <div class="modal fade" id="editTambahNilai" tabindex="-1" aria-labelledby="editTambahNilai"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title" id="editSumbangSaranModalLabel">Form Tambah Nilai Sumbang Saran</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Form Edit Sumbang Saran -->
-                            <form id="formTambahNilai" enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" id="editSumbangSaranId" name="id">
-                                <input type="hidden" id="ss_id" name="ss_id">
-
-                                <div class="mb-3">
-                                    <label for="tambahan_nilai" class="form-label">Tambah Nilai</label>
-                                    <input type="text" class="form-control" id="tambahan_nilai" name="tambahan_nilai"
-                                        required>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary"
-                                        onclick="submitFormTambahNilai()">Save</button>
                                 </div>
                             </form>
                         </div>
@@ -386,7 +360,7 @@
                             text: 'Data berhasil disimpan.',
                             icon: 'success',
                             icon: 'success',
-                            timer: 1000, // Waktu dalam milidetik sebelum alert otomatis tertutup
+                            timer: 2000, // Waktu dalam milidetik sebelum alert otomatis tertutup
                             showConfirmButton: false
                         }).then((result) => {
                             if (result.isConfirmed) {
@@ -394,68 +368,6 @@
                                 $('#editSumbangSaranModal').modal('hide');
                                 // Pilihan: reload halaman atau perbarui tabel untuk mencerminkan perubahan
                                 window.location.href = '{{ route('showKonfirmasiKomite') }}';
-                            }
-                        });
-                    },
-                    error: function(response) {
-                        console.error('Error:', response); // Log error response
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Terjadi kesalahan saat menyimpan data.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                });
-            }
-
-            function submitFormTambahNilai() {
-                var form = document.getElementById('formTambahNilai');
-
-                var requiredFields = form.querySelectorAll('[required]');
-                var valid = true;
-                var firstInvalidField = null;
-                requiredFields.forEach(function(field) {
-                    if (!field.value.trim()) {
-                        valid = false;
-                        if (!firstInvalidField) {
-                            firstInvalidField = field;
-                        }
-                    }
-                });
-
-                if (!valid) {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Harap isi semua field yang wajib diisi.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        if (firstInvalidField) {
-                            firstInvalidField.focus();
-                        }
-                    });
-                    return;
-                }
-
-                var formData = new FormData(form);
-
-                $.ajax({
-                    url: '{{ route('submitTambahNilai') }}',
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        console.log('Response:', response); // Log response
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: 'Data berhasil disimpan.',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Perform any additional actions if needed
                             }
                         });
                     },

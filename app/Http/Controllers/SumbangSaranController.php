@@ -22,16 +22,50 @@ class SumbangSaranController extends Controller
         // Ambil ID pengguna yang sedang login
         $userLogin = Auth::id();
 
-        // Mengambil data SumbangSaran dengan relasi user untuk pengguna yang sedang login
-        $data = SumbangSaran::with('user') // Pastikan nama relasi benar
-            ->where('sumbang_sarans.id_user', $userLogin) // Tambahkan alias untuk kolom id_user
-            ->whereIn('sumbang_sarans.status', [1, 2, 3, 4, 5]) // Tambahkan alias untuk kolom status
-            ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3, 2, 1)') // Tambahkan alias untuk kolom status
-            ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
-            ->paginate();
+        // Query MySQL untuk menggabungkan data dari SumbangSaran, Penilaians, dan Users
+        $data = DB::select('
+            SELECT 
+                sumbang_sarans.id,
+                sumbang_sarans.id_user,
+                sumbang_sarans.tgl_pengajuan_ide,
+                sumbang_sarans.lokasi_ide,
+                sumbang_sarans.tgl_diterapkan,
+                sumbang_sarans.judul,
+                sumbang_sarans.keadaan_sebelumnya,
+                sumbang_sarans.image,
+                sumbang_sarans.usulan_ide,
+                sumbang_sarans.image_2,
+                sumbang_sarans.keuntungan_ide,
+                sumbang_sarans.tgl_verifikasi,
+                sumbang_sarans.status,
+                sumbang_sarans.updated_at,
+                penilaians.id_users,
+                penilaians.ss_id,
+                penilaians.nilai,
+                penilaians.tambahan_nilai,
+                ((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) AS total_nilai,
+                (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000) AS hasil_akhir,
+                users.name,
+                users.npk
+            FROM 
+                sumbang_sarans
+            LEFT JOIN 
+                penilaians ON sumbang_sarans.id = penilaians.ss_id
+            LEFT JOIN 
+                users ON sumbang_sarans.id_user = users.id
+            WHERE 
+                sumbang_sarans.id_user = ? 
+                AND sumbang_sarans.status IN (1, 2, 3, 4, 5, 6, 7)
+            ORDER BY 
+                FIELD(sumbang_sarans.status, 7, 6, 5, 4, 3, 2, 1),
+                sumbang_sarans.updated_at DESC
+        ', [$userLogin]);
+
+        // Ambil hanya id user untuk menghindari "N + 1" query
+        $userIds = collect($data)->pluck('id_user')->unique()->toArray();
 
         // Ambil data peran (role) berdasarkan user ids
-        $usersRoles = User::where('users.id', $userLogin) // Tambahkan alias untuk kolom id
+        $usersRoles = User::whereIn('users.id', $userIds)
             ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
             ->pluck('roles.role', 'users.id');
 
@@ -83,14 +117,41 @@ class SumbangSaranController extends Controller
 
     public function showKonfirmasiKomite()
     {
-        $data = SumbangSaran::with('user')
-    ->whereIn('sumbang_sarans.status', [4, 5]) // Tambahkan alias untuk kolom status
-    ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4)') // Tambahkan alias untuk kolom status
-    ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
-    ->paginate();
+        $data = DB::select('
+            SELECT 
+                sumbang_sarans.id,
+                sumbang_sarans.id_user,
+                sumbang_sarans.tgl_pengajuan_ide,
+                sumbang_sarans.lokasi_ide,
+                sumbang_sarans.tgl_diterapkan,
+                sumbang_sarans.judul,
+                sumbang_sarans.keadaan_sebelumnya,
+                sumbang_sarans.image,
+                sumbang_sarans.usulan_ide,
+                sumbang_sarans.image_2,
+                sumbang_sarans.keuntungan_ide,
+                sumbang_sarans.status,
+                sumbang_sarans.created_at,
+                penilaians.id_users,
+                penilaians.ss_id,
+                penilaians.nilai,
+                users.name,
+                users.npk
+            FROM 
+                sumbang_sarans
+            JOIN 
+                penilaians ON sumbang_sarans.id = penilaians.ss_id
+            JOIN 
+                users ON sumbang_sarans.id_user = users.id
+            WHERE 
+                sumbang_sarans.status IN (4, 5, 6, 7)
+            ORDER BY 
+                FIELD(sumbang_sarans.status, 7, 6, 5, 4),
+                sumbang_sarans.created_at DESC
+        ');
 
         // Ambil hanya id user untuk menghindari "N + 1" query
-        $userIds = $data->pluck('id_user')->unique()->toArray();
+        $userIds = collect($data)->pluck('id_user')->unique()->toArray();
 
         // Ambil data peran (role) berdasarkan user ids
         $usersRoles = User::whereIn('users.id', $userIds)
@@ -116,14 +177,15 @@ class SumbangSaranController extends Controller
                 sumbang_sarans.usulan_ide,
                 sumbang_sarans.image_2,
                 sumbang_sarans.keuntungan_ide,
+                sumbang_sarans.tgl_verifikasi,
                 sumbang_sarans.status,
                 sumbang_sarans.created_at,
                 penilaians.id_users,
                 penilaians.ss_id,
                 penilaians.nilai,
                 penilaians.tambahan_nilai,
-                ((penilaians.nilai + penilaians.tambahan_nilai) * 2.5) AS total_nilai,
-                (((penilaians.nilai + penilaians.tambahan_nilai) * 2.5) * 2000) AS hasil_akhir,
+                ((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) AS total_nilai,
+                (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000) AS hasil_akhir,
                 users.name,
                 users.npk
             FROM 
@@ -133,9 +195,9 @@ class SumbangSaranController extends Controller
             JOIN 
                 users ON sumbang_sarans.id_user = users.id
             WHERE 
-                sumbang_sarans.status IN (5, 6)
+                sumbang_sarans.status IN (5, 6, 7)
             ORDER BY 
-                FIELD(sumbang_sarans.status, 6, 5),
+                FIELD(sumbang_sarans.status, 5, 6, 7),
                 sumbang_sarans.created_at DESC
         ');
 
@@ -561,26 +623,27 @@ class SumbangSaranController extends Controller
         Log::info('submitTambahNilai dipanggil', $request->all()); // Log request data
 
         // Validasi data yang diterima dari formulir
-        $request->validate([
+        $validated = $request->validate([
             'ss_id' => 'required|integer',
             'tambahan_nilai' => 'required|integer',
         ]);
 
         // Cari entri PenilaianSS yang ada berdasarkan ss_id
-        $penilaian = PenilaianSS::where('ss_id', $request->ss_id)->first();
+        $penilaian = PenilaianSS::where('ss_id', $validated['ss_id'])->first();
 
         if ($penilaian) {
             // Jika entri ditemukan, update data
-            $penilaian->tambahan_nilai = $request->tambahan_nilai;
+            $penilaian->tambahan_nilai = $validated['tambahan_nilai'];
             $penilaian->id_users = $request->user()->id;
             $penilaian->modified_by = $request->user()->name;
+
             $penilaian->save();
             Log::info('Penilaian diperbarui', ['penilaian' => $penilaian]);
         } else {
-            // Jika entri tidak ditemukan, buat entri baru (opsional)
+            // Jika entri tidak ditemukan, buat entri baru
             $penilaian = new PenilaianSS();
-            $penilaian->tambahan_nilai = $request->tambahan_nilai;
-            $penilaian->ss_id = $request->ss_id;
+            $penilaian->tambahan_nilai = $validated['tambahan_nilai'];
+            $penilaian->ss_id = $validated['ss_id'];
             $penilaian->id_users = $request->user()->id;
             $penilaian->modified_by = $request->user()->name;
             $penilaian->save();
@@ -588,8 +651,9 @@ class SumbangSaranController extends Controller
         }
 
         // Update status pada model SumbangSaran menjadi 6
-        $sumbangSaran = SumbangSaran::findOrFail($request->ss_id);
-        $sumbangSaran->status = 5;
+        $sumbangSaran = SumbangSaran::findOrFail($validated['ss_id']);
+        $sumbangSaran->tgl_verifikasi = Carbon::now(); // Simpan tanggal verifikasi
+        $sumbangSaran->status = 6;
         $sumbangSaran->save();
 
         Log::info('Status SumbangSaran diperbarui', ['sumbangSaran' => $sumbangSaran]);
@@ -600,5 +664,81 @@ class SumbangSaranController extends Controller
             'tambahan_nilai' => $penilaian->tambahan_nilai,
             'ss_id' => $penilaian->ss_id,
         ], 200);
+    }
+
+    public function updateStatusToBayar(Request $request)
+    {
+        Log::info('updateStatusToBayar dipanggil', $request->all()); // Log request data
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer',
+        ]);
+
+        $ids = $request->ids;
+
+        $updated = SumbangSaran::whereIn('id', $ids)->update(['status' => 7]);
+
+        if ($updated) {
+            Log::info('Status diperbarui', ['ids' => $ids]);
+
+            return response()->json([
+                'message' => 'Status berhasil diperbarui',
+                'updated_ids' => $ids,
+            ], 200);
+        } else {
+            return response()->json(['message' => 'Tidak ada status yang diperbarui'], 400);
+        }
+    }
+
+    // Add this method to your controller
+    public function exportKonfirmasiHRGA(Request $request)
+    {
+        $startPeriode = Carbon::parse($request->input('start_periode'))->format('Y-m-d');
+        $endPeriode = Carbon::parse($request->input('end_periode'))->format('Y-m-d');
+
+        // Query MySQL untuk menggabungkan data dari SumbangSaran, Penilaians, dan Users
+        $data = DB::select('
+        SELECT 
+            sumbang_sarans.id,
+            sumbang_sarans.id_user,
+            sumbang_sarans.tgl_pengajuan_ide,
+            sumbang_sarans.lokasi_ide,
+            sumbang_sarans.tgl_diterapkan,
+            sumbang_sarans.judul,
+            sumbang_sarans.keadaan_sebelumnya,
+            sumbang_sarans.image,
+            sumbang_sarans.usulan_ide,
+            sumbang_sarans.image_2,
+            sumbang_sarans.keuntungan_ide,
+            sumbang_sarans.tgl_verifikasi,
+            sumbang_sarans.status,
+            penilaians.id_users,
+            penilaians.ss_id,
+            penilaians.nilai,
+            penilaians.tambahan_nilai,
+            ((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) AS total_nilai,
+            (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000) AS hasil_akhir,
+            users.name,
+            users.npk,
+            roles.role AS bagian -- Ambil peran (role) dari tabel roles
+        FROM 
+            sumbang_sarans
+        JOIN 
+            penilaians ON sumbang_sarans.id = penilaians.ss_id
+        JOIN 
+            users ON sumbang_sarans.id_user = users.id
+        LEFT JOIN
+            roles ON users.role_id = roles.id -- Gabungkan dengan tabel roles untuk mendapatkan peran (role)
+        WHERE 
+            sumbang_sarans.status IN (5, 6, 7)
+            AND DATE(sumbang_sarans.tgl_verifikasi) BETWEEN ? AND ? 
+        ORDER BY 
+            FIELD(sumbang_sarans.status, 5, 6, 7),
+            sumbang_sarans.tgl_verifikasi DESC
+    ', [$startPeriode, $endPeriode]);
+
+        // Mengembalikan data sebagai respons JSON
+        return response()->json($data);
     }
 }

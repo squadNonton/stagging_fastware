@@ -23,6 +23,7 @@ class SumbangSaran extends Model
         'image_2',
         'keuntungan_ide',
         'status',
+        'tgl_verifikasi',
         'modified_by',
     ];
 

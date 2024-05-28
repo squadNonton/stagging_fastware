@@ -32,6 +32,10 @@
                                             <th class="text-center" width="40px">NPK</th>
                                             <th class="text-center" width="100px">Bagian</th>
                                             <th class="text-center" width="100px">Judul Ide</th>
+                                            <th class="text-center" width="100px">Poin</th>
+                                            <th class="text-center" width="100px">+poin</th>
+                                            <th class="text-center" width="100px">Nilai</th>
+                                            <th class="text-center" width="100px">amount</th>
                                             <th class="text-center" width="90px">Tanggal Pengajuan Ide</th>
                                             <th class="text-center" width="100px">Lokasi</th>
                                             <th class="text-center" width="100px">Tanggal Diterapkan</th>
@@ -44,10 +48,17 @@
                                         @foreach ($data as $item)
                                             <tr>
                                                 <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                                                <td class="text-center py-3">{{ $item->user->name ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $item->user->npk ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $item->name  }}</td>
+                                                <td class="text-center py-3">{{ $item->npk  }}</td>
                                                 <td class="text-center py-3">{{ $usersRoles[$item->id_user] ?? '' }}</td>
                                                 <td class="text-center py-3">{{ $item->judul }}</td>
+                                                <td class="text-center py-3" style="height: 50px;">{{ $item->nilai }}</td>
+                                                <td class="text-center py-3" style="height: 50px;">
+                                                    {{ $item->tambahan_nilai }}</td>
+                                                <td class="text-center py-3" style="height: 50px;">
+                                                    {{ $item->total_nilai }}</td>
+                                                <td class="text-center py-3" style="height: 50px;">
+                                                    {{ 'Rp ' . number_format($item->hasil_akhir, 0, ',', '.') }}</td>
                                                 <td class="text-center py-3">{{ $item->tgl_pengajuan_ide }}</td>
                                                 <td class="text-center py-3">{{ $item->lokasi_ide }}</td>
                                                 <td class="text-center py-3">{{ $item->tgl_diterapkan }}</td>
@@ -71,6 +82,12 @@
                                                     @elseif($item->status == 5)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">SS sudah dinilai</span>
+                                                    @elseif($item->status == 6)
+                                                        <span class="badge bg-info align-items-center"
+                                                            style="font-size: 18px;">SS sudah Verivikasi</span>
+                                                    @elseif($item->status == 7)
+                                                        <span class="badge bg-success align-items-center"
+                                                            style="font-size: 18px;">SS Terbayar</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
@@ -113,7 +130,8 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="sumbangSaranModalLabel">Form Tambah SS</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <!-- Form goes here -->

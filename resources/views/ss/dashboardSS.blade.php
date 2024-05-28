@@ -18,7 +18,7 @@
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Suggestion System / Section<span></span></h5>
+                            <h5 class="card-title">Suggestion System / Departemen<span></span></h5>
                             <div class="container">
                                 <div class="row align-items-center">
                                     <div class="col-lg-3">
@@ -34,9 +34,10 @@
                                         <select id="type" class="form-select form-select-sm"
                                                 aria-label=".form-select-sm example">
                                                 <option selected>--- Pilih Employee ---</option>
-                                                <option value="kategori"></option>
-                                                <option value="type_1"></option>
-                                                <option value="type_2"></option>
+                                                <option value="Sales">Sales</option>
+                                                <option value="HT">HT</option>
+                                                <option value="SupplyChainProduction">Supply Chain & Production</option>
+                                                <option value="FinnAccHrgaIT">Finn Acc Hrga IT</option>
                                             </select>
                                     </div>
                                 </div>
@@ -84,7 +85,7 @@
                                     type: 'column'
                                 },
                                 title: {
-                                    text: 'Jumlah Sumbang Saran berdasarkan Section'
+                                    text: 'Jumlah Sumbang Saran berdasarkan Departemen'
                                 },
                                 xAxis: {
                                     categories: categories,
