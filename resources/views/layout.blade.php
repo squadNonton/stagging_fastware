@@ -147,13 +147,19 @@
                     <span>Profile</span>
                 </a>
             </li><!-- End Profile Page Nav -->
-            @if ( Auth::user()->role_id == 1 &&Auth::user()->role_id == 14)
-            <li class="nav-heading">Suggestion System</li>
 
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 9 || Auth::user()->role_id == 14)
+            <li class="nav-heading">Suggestion System</li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{route ('dashboardSS')}}">
                     <i class="bi bi-person"></i>
                     <span>Dashboard SS</span>
+                </a>
+            </li><!-- End Profile Page Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{{route ('forumSS')}}">
+                    <i class="bi bi-person"></i>
+                    <span>Forum SS</span>
                 </a>
             </li><!-- End Profile Page Nav -->
             <li class="nav-item">
@@ -162,19 +168,12 @@
                     <span>Form SS</span>
                 </a>
             </li><!-- End Profile Page Nav -->
-            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 18)
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="{{ route('showKonfirmasiForeman') }}">
                         <i class="bi bi-clipboard-check-fill"></i>
                         <span>Konfirmasi SS by Sec. Head</span>
                     </a>
                 </li><!-- End Profile Page Nav -->
-                @endif @if (Auth::user()->role_id == 1 ||
-                        Auth::user()->role_id == 2 ||
-                        Auth::user()->role_id == 7 ||
-                        Auth::user()->role_id == 11 ||
-                        Auth::user()->role_id == 14 ||
-                        Auth::user()->role_id == 15)
                     <li class="nav-item">
                         <a class="nav-link collapsed" href="{{ route('showKonfirmasiDeptHead') }}">
                             <i class="bi bi-clipboard-check-fill"></i>
@@ -214,6 +213,7 @@
                     </a>
                 </li><!-- End Profile Page Nav -->
                 @endif
+
                 @if (Auth::check())
                     @if (Auth::user()->role_id == 7 ||
                             Auth::user()->role_id == 8 ||
