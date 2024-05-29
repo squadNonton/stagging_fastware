@@ -80,10 +80,10 @@ class SumbangSaranController extends Controller
     public function showKonfirmasiForeman()
     {
         $data = SumbangSaran::with('user')
-        ->whereIn('sumbang_sarans.status', [2, 3, 4, 5]) // Tambahkan alias untuk kolom status
-        ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3, 2)') // Tambahkan alias untuk kolom status
-        ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
-        ->paginate();
+            ->whereIn('sumbang_sarans.status', [2, 3, 4, 5]) // Tambahkan alias untuk kolom status
+            ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3, 2)') // Tambahkan alias untuk kolom status
+            ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
+            ->paginate();
 
         // Ambil hanya id user untuk menghindari "N + 1" query
         $userIds = $data->pluck('id_user')->unique()->toArray();
@@ -99,10 +99,10 @@ class SumbangSaranController extends Controller
     public function showKonfirmasiDeptHead()
     {
         $data = SumbangSaran::with('user')
-    ->whereIn('sumbang_sarans.status', [3, 4, 5]) // Tambahkan alias untuk kolom status
-    ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3)') // Tambahkan alias untuk kolom status
-    ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
-    ->paginate();
+            ->whereIn('sumbang_sarans.status', [3, 4, 5]) // Tambahkan alias untuk kolom status
+            ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3)') // Tambahkan alias untuk kolom status
+            ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
+            ->paginate();
 
         // Ambil hanya id user untuk menghindari "N + 1" query
         $userIds = $data->pluck('id_user')->unique()->toArray();
@@ -328,6 +328,7 @@ class SumbangSaranController extends Controller
         $sumbangSaran = SumbangSaran::with('user')->findOrFail($id);
 
         return response()->json([
+            'id' => $sumbangSaran->id,
             'user' => $sumbangSaran->user,
             'tgl_pengajuan_ide' => $sumbangSaran->tgl_pengajuan_ide,
             'lokasi_ide' => $sumbangSaran->lokasi_ide,
@@ -353,7 +354,7 @@ class SumbangSaranController extends Controller
             return response()->json($sumbangSaran);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             // Handle the case where no query results are found
-            return response()->json(['error' => 'Sumbang Saran not found for ID: '.$id], 404);
+            return response()->json(['error' => 'Sumbang Saran not found for ID: ' . $id], 404);
         } catch (\Exception $e) {
             // Handle other types of exceptions
             return response()->json(['error' => 'Internal Server Error'], 500);
@@ -369,8 +370,8 @@ class SumbangSaranController extends Controller
         $penilaians = PenilaianSS::where('ss_id', $id)->get();
 
         // Include file paths in the response if available
-        $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/'.$sumbangSaran->image) : null;
-        $sumbangSaran->edit_image_2_url = $sumbangSaran->image_2 ? asset('assets/image/'.$sumbangSaran->image_2) : null;
+        $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/' . $sumbangSaran->image) : null;
+        $sumbangSaran->edit_image_2_url = $sumbangSaran->image_2 ? asset('assets/image/' . $sumbangSaran->image_2) : null;
 
         // Prepare the data to return as JSON
         $response = [
@@ -522,6 +523,7 @@ class SumbangSaranController extends Controller
 
         return response()->json(['success' => 'Data berhasil diperbarui.']);
     }
+
 
     public function kirimSS($id)
     {
@@ -782,7 +784,7 @@ class SumbangSaranController extends Controller
 
     public function download($filename)
     {
-        $filePath = public_path('assets/image/'.$filename);
+        $filePath = public_path('assets/image/' . $filename);
 
         if (!file_exists($filePath)) {
             return abort(404, 'File not found.');
@@ -792,7 +794,7 @@ class SumbangSaranController extends Controller
 
         return Response::make($fileContents, 200, [
             'Content-Type' => mime_content_type($filePath),
-            'Content-Disposition' => 'attachment; filename="'.basename($filePath).'"',
+            'Content-Disposition' => 'attachment; filename="' . basename($filePath) . '"',
         ]);
     }
 }
