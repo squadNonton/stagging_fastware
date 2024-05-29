@@ -25,7 +25,9 @@ class SumbangSaran extends Model
         'file_name_2',
         'keuntungan_ide',
         'status',
+        'tgl_pengajuan',
         'tgl_verifikasi',
+        'suka',
         'modified_by',
     ];
 

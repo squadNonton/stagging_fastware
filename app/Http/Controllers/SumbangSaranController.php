@@ -77,6 +77,15 @@ class SumbangSaranController extends Controller
         return view('ss.dashboardSS');
     }
 
+    public function forumSS()
+    {
+         // Ambil semua data dari tabel sumbang_sarans dengan urutan berdasarkan jumlah like terbanyak
+    $data = SumbangSaran::orderBy('suka', 'desc')->get();
+
+    // Kembalikan data dalam bentuk view
+    return view('ss.forumSS', compact('data'));
+    }
+
     public function showKonfirmasiForeman()
     {
         $data = SumbangSaran::with('user')
@@ -273,6 +282,104 @@ class SumbangSaranController extends Controller
         ]);
     }
 
+    public function chartEmployee(Request $request)
+    {
+        $roles = $request->input('roles');
+
+        // Hitung total data sumbang saran
+        $totalData = DB::table('sumbang_sarans')->count();
+
+        // Query untuk mengambil data peran yang sesuai
+        $data = DB::table('sumbang_sarans')
+            ->join('users', 'sumbang_sarans.id_user', '=', 'users.id')
+            ->join('roles', 'users.role_id', '=', 'roles.id')
+            ->select('roles.role', DB::raw('count(*) as count'))
+            ->when(!empty($roles), function ($query) use ($roles) {
+                return $query->whereIn('roles.role', $roles);
+            })
+            ->groupBy('roles.role')
+            ->get();
+
+        // Format data untuk grafik
+        $formattedData = $data->map(function ($item) {
+            return ['name' => $item->role, 'y' => $item->count];
+        });
+
+        // Jika roles kosong, hanya kembalikan total sumbangsaran
+        if (empty($roles)) {
+            $formattedData = collect([['name' => 'Total Sumbang Saran', 'y' => $totalData]]);
+        } else {
+            // Tambahkan total data ke dalam data yang dikirimkan sebagai respons
+            $formattedData->push(['name' => 'Total Sumbang Saran', 'y' => $totalData]);
+        }
+
+        // Kirim respons JSON dengan data yang diformat
+        return response()->json(['data' => $formattedData]);
+    }
+
+    public function chartUser(Request $request)
+    {
+        $roles = $request->input('roles');
+        $employeeType = $request->input('employeeType');
+        $userId = auth()->user()->id;
+        $selectedMonth = $request->input('month');
+
+        $query = DB::table('sumbang_sarans')
+            ->join('users', 'sumbang_sarans.id_user', '=', 'users.id');
+
+        if ($selectedMonth) {
+            $query->whereMonth('sumbang_sarans.tgl_pengajuan', '=', date('m', strtotime($selectedMonth)))
+                  ->whereYear('sumbang_sarans.tgl_pengajuan', '=', date('Y', strtotime($selectedMonth)));
+        }
+
+        if ($employeeType === 'AllEmployee') {
+            $data = $query->select('users.id as user_id', 'users.name as user_name', DB::raw('count(sumbang_sarans.id) as submission_count'))
+                          ->groupBy('users.id', 'users.name')
+                          ->orderBy('submission_count', 'DESC')
+                          ->havingRaw('count(sumbang_sarans.id) > 0')
+                          ->get();
+        } elseif ($employeeType === 'User') {
+            $data = $query->select('users.id as user_id', 'users.name as user_name', DB::raw('count(sumbang_sarans.id) as submission_count'))
+                          ->where('users.id', $userId)
+                          ->groupBy('users.id', 'users.name')
+                          ->get();
+        }
+
+        $formattedData = $data->map(function ($item) {
+            return ['name' => $item->user_name, 'y' => $item->submission_count];
+        });
+
+        return response()->json(['data' => $formattedData]); // Mengembalikan data dalam format JSON
+    }
+
+    public function chartMountEmployee(Request $request)
+    {
+        $roles = $request->input('roles');
+        $employeeType = $request->input('employeeType');
+        $selectedMonth = $request->input('month');
+
+        $query = DB::table('sumbang_sarans')
+            ->join('users', 'sumbang_sarans.id_user', '=', 'users.id');
+
+        if ($selectedMonth) {
+            $query->whereMonth('sumbang_sarans.tgl_pengajuan', '=', date('m', strtotime($selectedMonth)))
+                  ->whereYear('sumbang_sarans.tgl_pengajuan', '=', date('Y', strtotime($selectedMonth)));
+        }
+
+        // Filter berdasarkan tipe karyawan
+        $data = $query->select('users.id as user_id', 'users.name as user_name', DB::raw('count(sumbang_sarans.id) as submission_count'))
+                      ->groupBy('users.id', 'users.name')
+                      ->orderBy('submission_count', 'DESC')
+                      ->havingRaw('count(sumbang_sarans.id) > 0')
+                      ->get();
+
+        $formattedData = $data->map(function ($item) {
+            return ['name' => $item->user_name, 'y' => $item->submission_count];
+        });
+
+        return response()->json(['data' => $formattedData]); // Mengembalikan data dalam format JSON
+    }
+
     public function simpanSS(Request $request)
     {
         // Validasi data yang diterima dari formulir
@@ -295,6 +402,7 @@ class SumbangSaranController extends Controller
         $sumbangSaran->keadaan_sebelumnya = $request->keadaan_sebelumnya;
         $sumbangSaran->usulan_ide = $request->usulan_ide;
         $sumbangSaran->keuntungan_ide = $request->keuntungan_ide;
+        $sumbangSaran->tgl_pengajuan = Carbon::now();
         $sumbangSaran->status = 1;
 
         // Simpan gambar pertama
@@ -611,6 +719,7 @@ class SumbangSaranController extends Controller
         // Set status pada model SumbangSaran menjadi 4
         $sumbangSaran = SumbangSaran::findOrFail($request->ss_id);
         $sumbangSaran->status = 4;
+        $sumbangSaran->tgl_verifikasi = Carbon::now(); // Simpan tanggal verifikasi
         $sumbangSaran->modified_by = $request->user()->roles->role;
         $sumbangSaran->save();
 
@@ -690,7 +799,6 @@ class SumbangSaranController extends Controller
 
         // Update status pada model SumbangSaran menjadi 6
         $sumbangSaran = SumbangSaran::findOrFail($validated['ss_id']);
-        $sumbangSaran->tgl_verifikasi = Carbon::now(); // Simpan tanggal verifikasi
         $sumbangSaran->status = 6;
         $sumbangSaran->save();
 

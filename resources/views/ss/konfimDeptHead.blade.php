@@ -404,7 +404,6 @@
                     }
                 });
             }
-
             //viewmodal
             function viewFormSS(id) {
                 $.ajax({

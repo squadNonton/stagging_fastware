@@ -168,7 +168,13 @@ Route::middleware(['web', 'auth'])->group(function () {
     // SS
     Route::get('/showSS', 'App\Http\Controllers\SumbangSaranController@showSS')->name('showSS');
     Route::get('/dashboardSS', 'App\Http\Controllers\SumbangSaranController@dashboardSS')->name('dashboardSS');
+    Route::get('/forumSS', 'App\Http\Controllers\SumbangSaranController@forumSS')->name('forumSS');
+
     Route::get('/chartSection', 'App\Http\Controllers\SumbangSaranController@chartSection')->name('chartSection');
+    Route::post('/chartEmployee', 'App\Http\Controllers\SumbangSaranController@chartEmployee')->name('chartEmployee');
+    Route::post('/chartUser', 'App\Http\Controllers\SumbangSaranController@chartUser')->name('chartUser');
+    Route::post('/chartMountEmployee', 'App\Http\Controllers\SumbangSaranController@chartMountEmployee')->name('chartMountEmployee');
+
     Route::post('/export-konfirmasi-hrga', 'App\Http\Controllers\SumbangSaranController@exportKonfirmasiHRGA')->name('export-konfirmasi-hrga');
     Route::post('/update-status-to-bayar', 'App\Http\Controllers\SumbangSaranController@updateStatusToBayar')->name('updateStatusToBayar');
 
