@@ -80,10 +80,10 @@ class SumbangSaranController extends Controller
     public function showKonfirmasiForeman()
     {
         $data = SumbangSaran::with('user')
-    ->whereIn('sumbang_sarans.status', [2, 3, 4, 5]) // Tambahkan alias untuk kolom status
-    ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3, 2)') // Tambahkan alias untuk kolom status
-    ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
-    ->paginate();
+        ->whereIn('sumbang_sarans.status', [2, 3, 4, 5]) // Tambahkan alias untuk kolom status
+        ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3, 2)') // Tambahkan alias untuk kolom status
+        ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
+        ->paginate();
 
         // Ambil hanya id user untuk menghindari "N + 1" query
         $userIds = $data->pluck('id_user')->unique()->toArray();
@@ -325,28 +325,39 @@ class SumbangSaranController extends Controller
 
     public function editSS($id)
     {
-        // Retrieve the sumbang saran data by ID
         $sumbangSaran = SumbangSaran::with('user')->findOrFail($id);
 
-        // Include file paths in the response if available
-        $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/'.$sumbangSaran->image) : null;
-        $sumbangSaran->edit_image_2_url = $sumbangSaran->image_2 ? asset('assets/image/'.$sumbangSaran->image_2) : null;
-
-        // Send data to the view to be displayed in the edit modal
-        return response()->json($sumbangSaran);
+        return response()->json([
+            'user' => $sumbangSaran->user,
+            'tgl_pengajuan_ide' => $sumbangSaran->tgl_pengajuan_ide,
+            'lokasi_ide' => $sumbangSaran->lokasi_ide,
+            'tgl_diterapkan' => $sumbangSaran->tgl_diterapkan,
+            'judul' => $sumbangSaran->judul,
+            'keadaan_sebelumnya' => $sumbangSaran->keadaan_sebelumnya,
+            'usulan_ide' => $sumbangSaran->usulan_ide,
+            'keuntungan_ide' => $sumbangSaran->keuntungan_ide,
+            'file_name' => $sumbangSaran->file_name,
+            'image' => $sumbangSaran->image,
+            'file_name_2' => $sumbangSaran->file_name_2,
+            'image_2' => $sumbangSaran->image_2,
+        ]);
     }
 
     public function getSumbangSaran($id)
     {
-        // Retrieve the sumbang saran data by ID
-        $sumbangSaran = SumbangSaran::with('user')->findOrFail($id);
+        try {
+            // Retrieve the sumbang saran data by ID
+            $sumbangSaran = SumbangSaran::with('user')->findOrFail($id);
 
-        // Include file paths in the response if available
-        $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/'.$sumbangSaran->image) : null;
-        $sumbangSaran->edit_image_2_url = $sumbangSaran->image_2 ? asset('assets/image/'.$sumbangSaran->image_2) : null;
-
-        // Send data to the view to be displayed in the edit modal
-        return response()->json($sumbangSaran);
+            // Send data to the view to be displayed in the edit modal
+            return response()->json($sumbangSaran);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Handle the case where no query results are found
+            return response()->json(['error' => 'Sumbang Saran not found for ID: '.$id], 404);
+        } catch (\Exception $e) {
+            // Handle other types of exceptions
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
     }
 
     public function getPenilaians($id)
@@ -369,6 +380,31 @@ class SumbangSaranController extends Controller
 
         // Return the data as JSON
         return response()->json($response);
+    }
+
+    public function showSecHead($id)
+    {
+        $data = SumbangSaran::with('user')->findOrFail($id);
+
+        if ($data) {
+            return response()->json([
+                'user' => $data->user,
+                'tgl_pengajuan_ide' => $data->tgl_pengajuan_ide,
+                'lokasi_ide' => $data->lokasi_ide,
+                'tgl_diterapkan' => $data->tgl_diterapkan,
+                'judul' => $data->judul,
+                'keadaan_sebelumnya' => $data->keadaan_sebelumnya,
+                'usulan_ide' => $data->usulan_ide,
+                'keuntungan_ide' => $data->keuntungan_ide,
+                'file_name' => $data->file_name,
+                'image' => $data->image,
+                'file_name_2' => $data->file_name_2,
+                'image_2' => $data->image_2,
+                'id' => $data->id,
+            ]);
+        }
+
+        return response()->json(['message' => 'Data not found'], 404);
     }
 
     public function getNilai($id)
@@ -439,50 +475,52 @@ class SumbangSaranController extends Controller
 
     public function updateSS(Request $request)
     {
-        $id = $request->input('id');
-        $sumbangSaran = SumbangSaran::findOrFail($id);
+        $request->validate([
+            'id' => 'required|exists:sumbang_sarans,id',
+            'tgl_pengajuan_ide' => 'required|date',
+            'lokasi_ide' => 'required|string|max:255',
+            'tgl_diterapkan' => 'nullable|date',
+            'judul' => 'required|string|max:255',
+            'keadaan_sebelumnya' => 'required|string',
+            'usulan_ide' => 'required|string',
+            'keuntungan_ide' => 'nullable|string',
+            'edit_image' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx',
+            'edit_image_2' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx',
+        ]);
 
-        // Handle the first image upload
+        $sumbangSaran = SumbangSaran::find($request->id);
+
+        if (!$sumbangSaran) {
+            return response()->json(['error' => 'Data tidak ditemukan.'], 404);
+        }
+
+        $sumbangSaran->tgl_pengajuan_ide = $request->tgl_pengajuan_ide;
+        $sumbangSaran->lokasi_ide = $request->lokasi_ide;
+        $sumbangSaran->tgl_diterapkan = $request->tgl_diterapkan;
+        $sumbangSaran->judul = $request->judul;
+        $sumbangSaran->keadaan_sebelumnya = $request->keadaan_sebelumnya;
+        $sumbangSaran->usulan_ide = $request->usulan_ide;
+        $sumbangSaran->keuntungan_ide = $request->keuntungan_ide;
+
         if ($request->hasFile('edit_image')) {
-            $image = $request->file('edit_image');
-            $imagePath = $image->hashName(); // Get hashed filename for storage
-            $imageOriginalName = $image->getClientOriginalName(); // Get original filename
-            $image->move(public_path('assets/image'), $imagePath);
-            $sumbangSaran->image = $imagePath;
-            $sumbangSaran->file_name = $imageOriginalName;
-        } elseif ($request->input('edit_image_url')) {
-            // Use the existing file if no new file is uploaded
-            $sumbangSaran->image = basename($request->input('edit_image_url'));
-            $sumbangSaran->file_name = basename($request->input('edit_image_url'));
+            if ($sumbangSaran->image) {
+                Storage::delete($sumbangSaran->image);
+            }
+            $path = $request->file('edit_image')->store('uploads');
+            $sumbangSaran->image = $path;
         }
 
-        // Handle the second image upload
         if ($request->hasFile('edit_image_2')) {
-            $image2 = $request->file('edit_image_2');
-            $imagePath2 = $image2->hashName(); // Get hashed filename for storage
-            $imageOriginalName2 = $image2->getClientOriginalName(); // Get original filename
-            $image2->move(public_path('assets/image'), $imagePath2);
-            $sumbangSaran->image_2 = $imagePath2;
-            $sumbangSaran->file_name_2 = $imageOriginalName2;
-        } elseif ($request->input('edit_image_2_url')) {
-            // Use the existing file if no new file is uploaded
-            $sumbangSaran->image_2 = basename($request->input('edit_image_2_url'));
-            $sumbangSaran->file_name_2 = basename($request->input('edit_image_2_url'));
+            if ($sumbangSaran->image_2) {
+                Storage::delete($sumbangSaran->image_2);
+            }
+            $path2 = $request->file('edit_image_2')->store('uploads');
+            $sumbangSaran->image_2 = $path2;
         }
-
-        // Save other fields as usual
-        $sumbangSaran->tgl_pengajuan_ide = $request->input('tgl_pengajuan_ide');
-        $sumbangSaran->lokasi_ide = $request->input('lokasi_ide');
-        $sumbangSaran->tgl_diterapkan = $request->input('tgl_diterapkan');
-        $sumbangSaran->judul = $request->input('judul');
-        $sumbangSaran->keadaan_sebelumnya = $request->input('keadaan_sebelumnya');
-        $sumbangSaran->usulan_ide = $request->input('usulan_ide');
-        $sumbangSaran->keuntungan_ide = $request->input('keuntungan_ide');
 
         $sumbangSaran->save();
 
-        // Return a success response
-        return response()->json(['success' => 'Data updated successfully']);
+        return response()->json(['success' => 'Data berhasil diperbarui.']);
     }
 
     public function kirimSS($id)
@@ -740,5 +778,21 @@ class SumbangSaranController extends Controller
 
         // Mengembalikan data sebagai respons JSON
         return response()->json($data);
+    }
+
+    public function download($filename)
+    {
+        $filePath = public_path('assets/image/'.$filename);
+
+        if (!file_exists($filePath)) {
+            return abort(404, 'File not found.');
+        }
+
+        $fileContents = file_get_contents($filePath);
+
+        return Response::make($fileContents, 200, [
+            'Content-Type' => mime_content_type($filePath),
+            'Content-Disposition' => 'attachment; filename="'.basename($filePath).'"',
+        ]);
     }
 }

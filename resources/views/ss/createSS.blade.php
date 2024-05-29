@@ -48,8 +48,8 @@
                                         @foreach ($data as $item)
                                             <tr>
                                                 <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                                                <td class="text-center py-3">{{ $item->name  }}</td>
-                                                <td class="text-center py-3">{{ $item->npk  }}</td>
+                                                <td class="text-center py-3">{{ $item->name }}</td>
+                                                <td class="text-center py-3">{{ $item->npk }}</td>
                                                 <td class="text-center py-3">{{ $usersRoles[$item->id_user] ?? '' }}</td>
                                                 <td class="text-center py-3">{{ $item->judul }}</td>
                                                 <td class="text-center py-3" style="height: 50px;">{{ $item->nilai }}</td>
@@ -93,8 +93,7 @@
                                                 <td class="text-center">
                                                     @if ($item->status != 2 && $item->status != 3 && $item->status != 4 && $item->status != 5 && $item->status != 6)
                                                         <button class="btn btn-primary btn-sm"
-                                                            onclick="openEditModal({{ $item->id }})"
-                                                            data-id="{{ $item->id }}" title="Edit">
+                                                            onclick="openEditModal({{ $item->id }})" title="Edit">
                                                             <i class="fa-solid fa-edit fa-1x"></i>
                                                         </button>
                                                         <button class="btn btn-danger btn-sm"
@@ -107,11 +106,11 @@
                                                             <i class="fa-solid fa fa-paper-plane fa-1x"></i>
                                                         </button>
                                                     @endif
-                                                    <button class="btn btn-success btn-sm"
-                                                        onclick="showViewSumbangSaranModal({{ $item->id }})"
-                                                        data-id="{{ $item->id }}" title="lihat">
+                                                    <button class="btn btn-success btn-sm" id="fetchDataButton"
+                                                        onclick="openViewSS({{ $item->id }})" title="lihat">
                                                         <i class="fa-solid fa-eye fa-1x"></i>
                                                     </button>
+
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -134,8 +133,7 @@
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <!-- Form goes here -->
-                            <form id="sumbangSaranForm">
+                            <form id="sumbangSaranForm" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row mb-3">
                                     <label for="inputText" class="col-sm-2 col-form-label">Nama<span
@@ -143,8 +141,7 @@
                                     <div class="col-sm-10">
                                         <input type="hidden" id="id_user" name="id_user"
                                             value="{{ Auth::user()->id }}">
-                                        <input type="text" class="form-control" id="" name=""
-                                            maxlength="6" style="width: 100%; max-width: 100%;"
+                                        <input type="text" class="form-control"
                                             placeholder="{{ Auth::user()->name }}" disabled>
                                     </div>
                                 </div>
@@ -157,7 +154,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="inputDate" class="col-sm-2 col-form-label">Tgl. pengajuan Ide <span
+                                    <label for="inputDate" class="col-sm-2 col-form-label">Tgl. Pengajuan Ide <span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="tgl_pengajuan_ide"
@@ -196,9 +193,11 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="inputNumber" class="col-sm-2 col-form-label">File Upload</label>
+                                    <label for="inputNumber" class="col-sm-2 col-form-label">File Upload (Sebelum)</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="image" name="image">
+                                        <input class="form-control" type="file" id="image" name="image"
+                                            accept="*/*">
+                                        <div id="image-preview" style="display:none; margin-top: 10px;"></div>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -209,9 +208,11 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="inputNumber" class="col-sm-2 col-form-label">File Upload</label>
+                                    <label for="inputNumber" class="col-sm-2 col-form-label">File Upload (Sesudah)</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="image_2" name="image_2">
+                                        <input class="form-control" type="file" id="image_2" name="image_2"
+                                            accept="*/*">
+                                        <div id="image_2-preview" style="display:none; margin-top: 10px;"></div>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -222,7 +223,25 @@
                                     </div>
                                 </div>
                             </form>
+
+                            <!-- Modal for Image Popup -->
+                            <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="imageModalLabel">Preview Gambar</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <img id="modalImage" src="" alt="Image Preview" class="img-fluid">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary" onclick="submitForm()">Save</button>
@@ -243,8 +262,10 @@
                         </div>
                         <div class="modal-body">
                             <!-- Form Edit Sumbang Saran -->
-                            <form id="editSumbangSaranForm" enctype="multipart/form-data">
+                            <form id="editSumbangSaranForm" action="{{ route('updateSS') }}"
+                                enctype="multipart/form-data" method="POST">
                                 @csrf
+                                <input type="hidden" id="editSumbangSaranId" name="id">
                                 <div class="row mb-3">
                                     <label for="editLokasiIde" class="col-sm-2 col-form-label">Nama<span
                                             style="color: red;">*</span></label>
@@ -302,14 +323,14 @@
                                 </div>
                                 <!-- Input File Upload 1 -->
                                 <div class="row mb-3">
-                                    <label for="editImage" class="col-sm-2 col-form-label">File Upload 1</label>
+                                    <label for="editImage" class="col-sm-2 col-form-label">File Upload (Sebelum)</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="editImage" name="edit_image"
-                                            onchange="showFileName('editImage', 'editImageLabel', 'editImagePreview')">
-                                        <label id="editImageLabel" class="form-label"></label>
-                                        <input type="hidden" id="editImageUrl" name="edit_image_url">
-                                        <img id="editImagePreview" class="image-popup" src="#" alt="Preview"
-                                            style="max-width: 100px; display: none;">
+                                        <input type="file" class="form-control mt-2" id="editImage"
+                                            name="edit_image">
+                                        <img id="editImagePreview" class="img-fluid rounded mt-2" style="display: none;">
+                                        <a id="editFilePreview" class="btn btn-primary mt-2" style="display: none;"
+                                            target="_blank">Download</a>
+                                        <span id="editFileName"></span>
                                     </div>
                                 </div>
 
@@ -322,14 +343,15 @@
                                 </div>
                                 <!-- Input File Upload 2 -->
                                 <div class="row mb-3">
-                                    <label for="editImage2" class="col-sm-2 col-form-label">File Upload 2</label>
+                                    <label for="editImage2" class="col-sm-2 col-form-label">File Upload (Sesudah)</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="editImage2" name="edit_image_2"
-                                            onchange="showFileName('editImage2', 'editImage2Label', 'editImage2Preview')">
-                                        <label id="editImage2Label" class="form-label"></label>
-                                        <input type="hidden" id="editImage2Url" name="edit_image_2_url">
-                                        <img id="editImage2Preview" class="image-popup" src="#" alt="Preview"
-                                            style="max-width: 100px; display: none;">
+                                        <input type="file" class="form-control mt-2" id="editImage2"
+                                            name="edit_image_2">
+                                        <img id="editImage2Preview" class="img-fluid rounded mt-2"
+                                            style="display: none;">
+                                        <a id="editFile2Preview" class="btn btn-primary mt-2" style="display: none;"
+                                            target="_blank">Download</a>
+                                        <span id="editFile2Name"></span>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -339,7 +361,7 @@
                                         <textarea class="form-control" style="height: 100px" id="editKeuntungan" name="keuntungan_ide"></textarea>
                                     </div>
                                 </div>
-                                <input type="hidden" id="editSumbangSaranId" name="id">
+
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Close</button>
@@ -349,6 +371,27 @@
                             </form>
                         </div>
 
+                    </div>
+                </div>
+            </div>
+            <!-- Modal untuk menampilkan gambar secara besar -->
+            <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <img src="" class="img-fluid" alt="Large Image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="editImageModal" tabindex="-1" role="dialog"
+                aria-labelledby="editImageModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <img src="" class="img-fluid" alt="Large Image">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -387,7 +430,7 @@
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="viewTglPengajuan"
-                                            name="tgl_pengajuan_ide" readonly>
+                                            name="tgl_pengajuan_ide" disabled>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -395,7 +438,7 @@
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="viewLokasiIde" name="lokasi_ide"
-                                            readonly>
+                                            disabled>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -403,7 +446,7 @@
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="viewTglDiterapkan"
-                                            name="tgl_diterapkan" readonly>
+                                            name="tgl_diterapkan" disabled>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -411,57 +454,62 @@
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="viewJudulIde" name="judul"
-                                            readonly>
+                                            disabled>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="viewKeadaanSebelumnya" class="col-sm-2 col-form-label">Keadaan Sebelumnya
                                         (Permasalahan) <span style="color: red;">*</span></label>
                                     <div class="col-sm-10">
-                                        <textarea class="form-control" style="height: 100px" id="viewKeadaanSebelumnya" name="keadaan_sebelumnya" readonly></textarea>
+                                        <textarea class="form-control" style="height: 100px" id="viewKeadaanSebelumnya" name="keadaan_sebelumnya" disabled></textarea>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="viewImage" class="col-sm-2 col-form-label">File Upload 1</label>
+                                    <label for="viewImage" class="col-sm-2 col-form-label">File Upload
+                                        (Sebelumnya)</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="viewImage" name="view_image"
-                                            onchange="showFileName2('viewImage', 'viewImageLabel', 'viewImagePreview')"
-                                            disabled>
-                                        <label id="viewImageLabel" class="form-label"></label>
-                                        <input type="hidden" id="viewImageUrl" name="edit_image_url">
-                                        <img id="viewImagePreview" class="image-popup" src="#" alt="Preview"
-                                            style="max-width: 100px; display: none;">
+                                        <div id="view-image-preview" style="margin-top: 10px;"></div>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="viewUsulanIde" class="col-sm-2 col-form-label">Usulan Ide <span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
-                                        <textarea class="form-control" style="height: 100px" id="viewUsulanIde" name="usulan_ide" readonly></textarea>
+                                        <textarea class="form-control" style="height: 100px" id="viewUsulanIde" name="usulan_ide" disabled></textarea>
                                     </div>
                                 </div>
                                 <!-- Input File Upload 2 -->
                                 <div class="row mb-3">
-                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload 2</label>
+                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload (Sesudah)</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="viewImage2" name="view_image2"
-                                            onchange="showFileName2('viewImage2', 'viewImage2Label', 'viewImage2Preview')"
-                                            disabled>
-                                        <label id="viewImage2Label" class="form-label"></label>
-                                        <input type="hidden" id="viewImage2Url" name="view_image_url">
-                                        <img id="viewImage2Preview" class="image-popup" src="#" alt="Preview"
-                                            style="max-width: 100px; display: none;">
+                                        <div id="view-image2-preview" style="margin-top: 10px;"></div>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="viewKeuntungan" class="col-sm-2 col-form-label">Keuntungan Dari Penerapan
                                         Ide</label>
                                     <div class="col-sm-10">
-                                        <textarea class="form-control" style="height: 100px" id="viewKeuntungan" name="keuntungan_ide" readonly></textarea>
+                                        <textarea class="form-control" style="height: 100px" id="viewKeuntungan" name="keuntungan_ide" disabled></textarea>
                                     </div>
                                 </div>
                                 <input type="hidden" id="viewSumbangSaranId" name="id">
                             </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Gambar -->
+            <div class="modal fade" id="viewImageModal" tabindex="-1" aria-labelledby="viewImageModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewImageModalLabel">Gambar</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img id="viewModalImage" src="" class="img-fluid">
                         </div>
                     </div>
                 </div>
@@ -521,15 +569,23 @@
                             icon: 'success',
                             timer: 1000, // Waktu dalam milidetik sebelum alert otomatis tertutup
                             showConfirmButton: false
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Tutup modal
-                                $('#sumbangSaranModal').modal('hide');
-                                // Reset formulir
-                                form.reset();
-                                // Redirect ke showSS
-                                window.location.href = '{{ route('showSS') }}';
-                            }
+                        }).then(() => {
+                            // Tutup modal
+                            $('#sumbangSaranModal').modal('hide');
+                            // Reset formulir
+                            form.reset();
+                            // Redirect ke showSS
+                            window.location.href = '{{ route('showSS') }}';
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error
+                        console.log(xhr.responseText);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
                         });
                     }
                 });
@@ -550,43 +606,9 @@
                 });
             });
 
-            function showFileName(inputId, labelId, previewId) {
-                var input = document.getElementById(inputId);
-                var label = document.getElementById(labelId);
-                var preview = document.getElementById(previewId);
-
-                if (input.files && input.files.length > 0) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.src = e.target.result;
-                        preview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(input.files[0]);
-
-                    label.innerText = input.files[0].name;
-                }
-            }
-
-            function showFileName2(inputId, labelId, previewId) {
-                var input = document.getElementById(inputId);
-                var label = document.getElementById(labelId);
-                var preview = document.getElementById(previewId);
-
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        preview.src = e.target.result;
-                        preview.style.display = 'block';
-                    }
-
-                    reader.readAsDataURL(input.files[0]);
-
-                    label.textContent = input.files[0].name;
-                } else {
-                    preview.style.display = 'none';
-                    label.textContent = '';
-                }
+            function showImageInModal(imageLink) {
+                $('#editImageModal').modal('show');
+                $('#editImageModal img').attr('src', imageLink);
             }
 
             function openEditModal(id) {
@@ -607,18 +629,42 @@
                         $('#editSumbangSaranId').val(response.id);
                         $('#editKeuntungan').val(response.keuntungan_ide);
 
-                        // Atur label file dan input tersembunyi jika file ada
-                        if (response.edit_image_url) {
-                            $('#editImagePreview').attr('src', response.edit_image_url)
-                                .show(); // Atur src gambar dan tampilkan
+                        // Menampilkan file pertama
+                        var fileExtension1 = response.file_name.split('.').pop().toLowerCase();
+                        var fileLink1 = '{{ asset('assets/image/') }}/' + response.image;
+
+                        if (['jpg', 'jpeg', 'png'].includes(fileExtension1)) {
+                            $('#editImagePreview').attr('src', fileLink1).attr('width', '150').attr('height', '150')
+                                .show();
+                            $('#editFilePreview').hide();
+                            $('#editFileName').text('');
+                            $('#editImagePreview').click(function() {
+                                showImageInModal(fileLink1);
+                            });
                         } else {
-                            $('#editImagePreview').attr('src', '').hide(); // Kosongkan src gambar dan sembunyikan
+                            $('#editImagePreview').hide();
+                            $('#editFilePreview').attr('href', fileLink1).attr('download', response.file_name)
+                                .show();
+                            $('#editFileName').text(response.file_name);
                         }
-                        if (response.edit_image_2_url) {
-                            $('#editImage2Preview').attr('src', response.edit_image_2_url)
-                                .show(); // Atur src gambar dan tampilkan
+
+                        // Menampilkan file kedua
+                        var fileExtension2 = response.file_name_2.split('.').pop().toLowerCase();
+                        var fileLink2 = '{{ asset('assets/image/') }}/' + response.image_2;
+
+                        if (['jpg', 'jpeg', 'png'].includes(fileExtension2)) {
+                            $('#editImage2Preview').attr('src', fileLink2).attr('width', '150').attr('height',
+                                '150').show();
+                            $('#editFile2Preview').hide();
+                            $('#editFile2Name').text('');
+                            $('#editImage2Preview').click(function() {
+                                showImageInModal(fileLink2);
+                            });
                         } else {
-                            $('#editImage2Preview').attr('src', '').hide(); // Kosongkan src gambar dan sembunyikan
+                            $('#editImage2Preview').hide();
+                            $('#editFile2Preview').attr('href', fileLink2).attr('download', response.file_name_2)
+                                .show();
+                            $('#editFile2Name').text(response.file_name_2);
                         }
 
                         // Tampilkan modal
@@ -632,34 +678,26 @@
             }
 
             function submitEditForm() {
-                // Dapatkan data dari form
                 var formData = new FormData($('#editSumbangSaranForm')[0]);
 
-                // Kirim data form menggunakan AJAX
                 $.ajax({
                     url: '{{ route('updateSS') }}',
-                    type: 'POST', // Gunakan metode POST untuk mensimulasikan PUT
+                    type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        // Tampilkan pesan sukses menggunakan SweetAlert
                         Swal.fire({
                             title: 'Berhasil!',
                             text: 'Data berhasil diperbarui.',
-                            timer: 1000, // Waktu dalam milidetik sebelum alert otomatis tertutup
+                            timer: 1000,
                             showConfirmButton: false
                         }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Tutup modal
-                                $('#editSumbangSaranModal').modal('hide');
-                                // Pilihan: reload halaman atau perbarui tabel untuk mencerminkan perubahan
-                                window.location.href = '{{ route('showSS') }}';
-                            }
+                            $('#editSumbangSaranModal').modal('hide');
+                            window.location.href = '{{ route('showSS') }}';
                         });
                     },
                     error: function(xhr) {
-                        // Tangani kesalahan jika ada
                         console.log(xhr.responseText);
                     }
                 });
@@ -744,49 +782,106 @@
                     }
                 });
             }
+        </script>
 
-            function showViewSumbangSaranModal(id) {
+        <script>
+            //viewadd
+            function previewFile(input, previewElementId) {
+                const previewElement = document.getElementById(previewElementId);
+                const file = input.files[0];
+                const reader = new FileReader();
+
+                reader.addEventListener('load', function() {
+                    let content = '';
+                    if (file.type.startsWith('image/')) {
+                        content =
+                            `<img src="${reader.result}" alt="File Preview" style="max-height: 200px; cursor: pointer;" onclick="openImageModal('${reader.result}')">`;
+                    } else {
+                        content = `<a href="${reader.result}" download="${file.name}">Download ${file.name}</a>`;
+                    }
+                    previewElement.innerHTML = content;
+                    previewElement.style.display = 'block';
+                });
+
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            function openImageModal(imageSrc) {
+                const modalImage = document.getElementById('modalImage');
+                modalImage.src = imageSrc;
+                const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+                imageModal.show();
+            }
+
+            document.getElementById('image').addEventListener('change', function() {
+                previewFile(this, 'image-preview');
+            });
+
+            document.getElementById('image_2').addEventListener('change', function() {
+                previewFile(this, 'image_2-preview');
+            });
+
+            //viewmodal
+            function openViewSS(id) {
                 $.ajax({
-                    url: '{{ route('getSumbangSaran', ['id' => ':id']) }}'.replace(':id', id),
+                    url: '{{ route('sumbangsaran.show', ':id') }}'.replace(':id', id),
                     type: 'GET',
-                    success: function(data) {
-                        // Isi form dengan data yang diambil
-                        $('#viewname').val(data.user.name); // Set nama
-                        $('#viewnpk').val(data.user.npk); // Set npk
-                        $('#viewSumbangSaranId').val(data.id);
-                        $('#viewTglPengajuan').val(data.tgl_pengajuan_ide);
-                        $('#viewLokasiIde').val(data.lokasi_ide);
-                        $('#viewTglDiterapkan').val(data.tgl_diterapkan);
-                        $('#viewJudulIde').val(data.judul);
-                        $('#viewKeadaanSebelumnya').val(data.keadaan_sebelumnya);
-                        $('#viewUsulanIde').val(data.usulan_ide);
-                        $('#viewKeuntungan').val(data.keuntungan_ide);
-                        $('#viewImageUrl').val(data.image);
-                        $('#viewImage2Url').val(data.image_2);
+                    success: function(response) {
+                        // Mengisi data ke dalam form modal
+                        $('#viewname').val(response.user.name);
+                        $('#viewnpk').val(response.user.npk);
+                        $('#viewTglPengajuan').val(response.tgl_pengajuan_ide);
+                        $('#viewLokasiIde').val(response.lokasi_ide);
+                        $('#viewTglDiterapkan').val(response.tgl_diterapkan);
+                        $('#viewJudulIde').val(response.judul);
+                        $('#viewKeadaanSebelumnya').val(response.keadaan_sebelumnya);
+                        $('#viewUsulanIde').val(response.usulan_ide);
+                        $('#viewKeuntungan').val(response.keuntungan_ide);
+                        $('#viewSumbangSaranId').val(response.id);
 
-                        // Tampilkan preview gambar
-                        if (data.image) {
-                            $('#viewImagePreview').attr('src', '/assets/image/' + data.image).show();
+                        // Menampilkan file pertama
+                        var fileExtension1 = response.file_name.split('.').pop().toLowerCase();
+                        var fileLink1 = '{{ asset('assets/image/') }}/' + response.image;
+
+                        if (['jpg', 'jpeg', 'png'].includes(fileExtension1)) {
+                            $('#view-image-preview').html('<img src="' + fileLink1 +
+                                '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
+                                fileLink1 + '">');
                         } else {
-                            $('#viewImagePreview').hide();
+                            $('#view-image-preview').html('<a href="' + fileLink1 + '" download="' + response
+                                .file_name + '">' + response.file_name + '</a>');
                         }
 
-                        if (data.image_2) {
-                            $('#viewImage2Preview').attr('src', '/assets/image/' + data.image_2).show();
+                        // Menampilkan file kedua
+                        var fileExtension2 = response.file_name_2.split('.').pop().toLowerCase();
+                        var fileLink2 = '{{ asset('assets/image/') }}/' + response.image_2;
+
+                        if (['jpg', 'jpeg', 'png'].includes(fileExtension2)) {
+                            $('#view-image2-preview').html('<img src="' + fileLink2 +
+                                '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
+                                fileLink2 + '">');
                         } else {
-                            $('#viewImage2Preview').hide();
+                            $('#view-image2-preview').html('<a href="' + fileLink2 + '" download="' + response
+                                .file_name_2 + '">' + response.file_name_2 + '</a>');
                         }
 
-                        // Tampilkan modal
+                        // Menampilkan modal
                         $('#viewSumbangSaranModal').modal('show');
                     },
                     error: function(xhr, status, error) {
-                        // Tampilkan pesan kesalahan jika terjadi masalah
-                        alert('Terjadi kesalahan saat mengambil data. Silakan coba lagi.');
-                        console.log(xhr.responseText);
+                        console.error(xhr.responseText);
                     }
                 });
             }
+
+            // Event listener untuk gambar yang diklik
+            $(document).on('click', '.clickable-view-image', function() {
+                var imgSrc = $(this).data('img-src');
+                $('#viewModalImage').attr('src', imgSrc);
+                $('#viewImageModal').modal('show');
+            });
         </script>
 
     </main><!-- End #main -->

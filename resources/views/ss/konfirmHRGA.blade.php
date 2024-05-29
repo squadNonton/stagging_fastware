@@ -143,7 +143,7 @@
                                                         </button>
                                                     @endif
                                                     <button class="btn btn-success btn-sm"
-                                                        onclick="showViewSumbangSaranModal({{ $item->id }})"
+                                                        onclick="viewFormSS({{ $item->id }})"
                                                         data-id="{{ $item->id }}" title="lihat">
                                                         <i class="fa-solid fa-eye fa-1x"></i>
                                                     </button>
@@ -188,8 +188,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Readonly Modal Form View Sumbang Saran -->
             <div class="modal fade" id="viewSumbangSaranModal" tabindex="-1"
                 aria-labelledby="viewSumbangSaranModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
@@ -204,11 +202,27 @@
                             <form id="viewSumbangSaranForm" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Nama<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewname" name="nama"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Npk<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewnpk" name="npk"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
                                     <label for="viewTglPengajuan" class="col-sm-2 col-form-label">Tgl. pengajuan Ide <span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="viewTglPengajuan"
-                                            name="tgl_pengajuan_ide" readonly>
+                                            name="tgl_pengajuan_ide" disabled>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -216,7 +230,7 @@
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="viewLokasiIde" name="lokasi_ide"
-                                            readonly>
+                                            disabled>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -224,7 +238,7 @@
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="viewTglDiterapkan"
-                                            name="tgl_diterapkan" readonly>
+                                            name="tgl_diterapkan" disabled>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -232,55 +246,42 @@
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="viewJudulIde" name="judul"
-                                            readonly>
+                                            disabled>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="viewKeadaanSebelumnya" class="col-sm-2 col-form-label">Keadaan Sebelumnya
                                         (Permasalahan) <span style="color: red;">*</span></label>
                                     <div class="col-sm-10">
-                                        <textarea class="form-control" style="height: 100px" id="viewKeadaanSebelumnya" name="keadaan_sebelumnya" readonly></textarea>
+                                        <textarea class="form-control" style="height: 100px" id="viewKeadaanSebelumnya" name="keadaan_sebelumnya" disabled></textarea>
                                     </div>
                                 </div>
-
-                                <!-- Input File Upload 1 -->
                                 <div class="row mb-3">
-                                    <label for="viewImage" class="col-sm-2 col-form-label">File Upload 1</label>
+                                    <label for="viewImage" class="col-sm-2 col-form-label">File Upload
+                                        (Sebelumnya)</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="viewImage" name="edit_image"
-                                            readonly>
-                                        <label id="viewImageLabel" class="form-label"></label>
-                                        <input type="hidden" id="viewImageUrl" name="edit_image_url">
-                                        <img id="viewImagePreview" class="image-popup" src="#" alt="Preview"
-                                            style="max-width: 100px; display: none;">
+                                        <div id="view-image-preview" style="margin-top: 10px;"></div>
                                     </div>
                                 </div>
-
                                 <div class="row mb-3">
                                     <label for="viewUsulanIde" class="col-sm-2 col-form-label">Usulan Ide <span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
-                                        <textarea class="form-control" style="height: 100px" id="viewUsulanIde" name="usulan_ide" readonly></textarea>
+                                        <textarea class="form-control" style="height: 100px" id="viewUsulanIde" name="usulan_ide" disabled></textarea>
                                     </div>
                                 </div>
-
                                 <!-- Input File Upload 2 -->
                                 <div class="row mb-3">
-                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload 2</label>
+                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload (Sesudah)</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" id="viewImage2" name="edit_image_2"
-                                            readonly>
-                                        <label id="viewImage2Label" class="form-label"></label>
-                                        <input type="hidden" id="viewImage2Url" name="edit_image_2_url">
-                                        <img id="viewImage2Preview" class="image-popup" src="#" alt="Preview"
-                                            style="max-width: 100px; display: none;">
+                                        <div id="view-image2-preview" style="margin-top: 10px;"></div>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="viewKeuntungan" class="col-sm-2 col-form-label">Keuntungan Dari Penerapan
                                         Ide</label>
                                     <div class="col-sm-10">
-                                        <textarea class="form-control" style="height: 100px" id="viewKeuntungan" name="keuntungan_ide" readonly></textarea>
+                                        <textarea class="form-control" style="height: 100px" id="viewKeuntungan" name="keuntungan_ide" disabled></textarea>
                                     </div>
                                 </div>
                                 <input type="hidden" id="viewSumbangSaranId" name="id">
@@ -289,7 +290,22 @@
                     </div>
                 </div>
             </div>
-
+            <!-- Modal Gambar -->
+            <div class="modal fade" id="viewImageModal" tabindex="-1" aria-labelledby="viewImageModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewImageModalLabel">Gambar</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img id="viewModalImage" src="" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
@@ -484,82 +500,72 @@
             });
 
 
-            function showFileName(inputId, labelId, previewId) {
-                var input = document.getElementById(inputId);
-                var label = document.getElementById(labelId);
-                var preview = document.getElementById(previewId);
-
-                if (input.files && input.files.length > 0) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.src = e.target.result;
-                        preview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(input.files[0]);
-
-                    label.innerText = input.files[0].name;
-                }
-            }
-
-            function showFileName2(inputId, labelId, previewId) {
-                var input = document.getElementById(inputId);
-                var label = document.getElementById(labelId);
-                var preview = document.getElementById(previewId);
-
-                if (input.files && input.files.length > 0) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.src = e.target.result;
-                        preview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(input.files[0]);
-
-                    label.innerText = input.files[0].name;
-                }
-            }
-
-            function showViewSumbangSaranModal(id) {
-                // Gunakan AJAX untuk mengambil data berdasarkan ID
+             //viewmodal
+             function viewFormSS(id) {
                 $.ajax({
-                    url: '{{ route('getSumbangSaran', ['id' => ':id']) }}'.replace(':id',
-                        id), // Endpoint untuk mendapatkan data Sumbang Saran
+                    url: '{{ route('sechead.show', ':id') }}'.replace(':id', id),
                     type: 'GET',
-                    success: function(data) {
-                        // Isi form dengan data yang diambil
-                        $('#viewTglPengajuan').val(data.tgl_pengajuan_ide);
-                        $('#viewLokasiIde').val(data.lokasi_ide);
-                        $('#viewTglDiterapkan').val(data.tgl_diterapkan);
-                        $('#viewJudulIde').val(data.judul);
-                        $('#viewKeadaanSebelumnya').val(data.keadaan_sebelumnya);
-                        $('#viewUsulanIde').val(data.usulan_ide);
-                        $('#viewKeuntungan').val(data.keuntungan_ide);
-                        $('#viewImageUrl').val(data.image);
-                        $('#viewImage2Url').val(data.image_2);
-                        $('#viewSumbangSaranId').val(data.id);
+                    success: function(response) {
+                        console.log(response); // Tambahkan ini untuk debug
+                        if (response) {
+                            $('#viewname').val(response.user.name);
+                            $('#viewnpk').val(response.user.npk);
+                            $('#viewTglPengajuan').val(response.tgl_pengajuan_ide);
+                            $('#viewLokasiIde').val(response.lokasi_ide);
+                            $('#viewTglDiterapkan').val(response.tgl_diterapkan);
+                            $('#viewJudulIde').val(response.judul);
+                            $('#viewKeadaanSebelumnya').val(response.keadaan_sebelumnya);
+                            $('#viewUsulanIde').val(response.usulan_ide);
+                            $('#viewKeuntungan').val(response.keuntungan_ide);
+                            $('#viewSumbangSaranId').val(response.id);
 
-                        // Tampilkan preview gambar
-                        if (data.image) {
-                            $('#viewImagePreview').attr('src', '/assets/image/' + data.image).show();
+                            if (response.file_name && response.image) {
+                                var fileExtension1 = response.file_name.split('.').pop().toLowerCase();
+                                var fileLink1 = '{{ asset('assets/image/') }}/' + response.image;
+                                if (['jpg', 'jpeg', 'png'].includes(fileExtension1)) {
+                                    $('#view-image-preview').html('<img src="' + fileLink1 +
+                                        '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
+                                        fileLink1 + '">');
+                                } else {
+                                    $('#view-image-preview').html('<a href="' + fileLink1 + '" download="' +
+                                        response.file_name + '">' + response.file_name + '</a>');
+                                }
+                            } else {
+                                $('#view-image-preview').html('');
+                            }
+
+                            if (response.file_name_2 && response.image_2) {
+                                var fileExtension2 = response.file_name_2.split('.').pop().toLowerCase();
+                                var fileLink2 = '{{ asset('assets/image/') }}/' + response.image_2;
+                                if (['jpg', 'jpeg', 'png'].includes(fileExtension2)) {
+                                    $('#view-image2-preview').html('<img src="' + fileLink2 +
+                                        '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
+                                        fileLink2 + '">');
+                                } else {
+                                    $('#view-image2-preview').html('<a href="' + fileLink2 + '" download="' +
+                                        response.file_name_2 + '">' + response.file_name_2 + '</a>');
+                                }
+                            } else {
+                                $('#view-image2-preview').html('');
+                            }
+
+                            $('#viewSumbangSaranModal').modal('show');
                         } else {
-                            $('#viewImagePreview').hide();
+                            console.error('No response data');
                         }
-
-                        if (data.image_2) {
-                            $('#viewImage2Preview').attr('src', '/assets/image/' + data.image_2).show();
-                        } else {
-                            $('#viewImage2Preview').hide();
-                        }
-
-                        // Tampilkan modal
-                        $('#viewSumbangSaranModal').modal('show');
                     },
                     error: function(xhr, status, error) {
-                        // Tampilkan pesan kesalahan jika terjadi masalah
-                        alert('Terjadi kesalahan saat mengambil data. Silakan coba lagi.');
-                        console.log(xhr.responseText);
+                        console.error(xhr.responseText);
                     }
                 });
             }
+
+            // Event listener untuk gambar yang diklik
+            $(document).on('click', '.clickable-view-image', function() {
+                var imgSrc = $(this).data('img-src');
+                $('#viewModalImage').attr('src', imgSrc);
+                $('#viewImageModal').modal('show');
+            });
 
             //export excel
             function exportTable() {

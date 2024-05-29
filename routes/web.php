@@ -169,7 +169,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/showSS', 'App\Http\Controllers\SumbangSaranController@showSS')->name('showSS');
     Route::get('/dashboardSS', 'App\Http\Controllers\SumbangSaranController@dashboardSS')->name('dashboardSS');
     Route::get('/chartSection', 'App\Http\Controllers\SumbangSaranController@chartSection')->name('chartSection');
-    Route::post('/export-konfirmasi-hrga','App\Http\Controllers\SumbangSaranController@exportKonfirmasiHRGA')->name('export-konfirmasi-hrga');
+    Route::post('/export-konfirmasi-hrga', 'App\Http\Controllers\SumbangSaranController@exportKonfirmasiHRGA')->name('export-konfirmasi-hrga');
     Route::post('/update-status-to-bayar', 'App\Http\Controllers\SumbangSaranController@updateStatusToBayar')->name('updateStatusToBayar');
 
     Route::get('/showKonfirmasiForeman', 'App\Http\Controllers\SumbangSaranController@showKonfirmasiForeman')->name('showKonfirmasiForeman');
@@ -188,12 +188,14 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/getPenilaians/{id}', [SumbangSaranController::class, 'getPenilaians'])->name('getPenilaians');
     Route::get('/getNilai/{id}', [SumbangSaranController::class, 'getNilai'])->name('getNilai');
     Route::get('/getTambahNilai/{id}', [SumbangSaranController::class, 'getTambahNilai'])->name('getTambahNilai');
+    Route::get('/file/download/{filename}', [SumbangSaranController::class, 'downloadFile'])->name('file.download');
 
     Route::post('/updateSS', [SumbangSaranController::class, 'updateSS'])->name('updateSS');
     Route::delete('/delete-ss/{id}', [SumbangSaranController::class, 'deleteSS'])->name('deleteSS');
     Route::post('/kirim-ss/{id}', [SumbangSaranController::class, 'kirimSS'])->name('kirimSS');
     Route::post('/kirim-ss2/{id}', [SumbangSaranController::class, 'kirimSS2'])->name('kirimSS2');
-    Route::get('/getSumbangSaran/{id}', [SumbangSaranController::class, 'getSumbangSaran'])->name('getSumbangSaran');
+    Route::get('/sumbangsaran/{id}', 'App\Http\Controllers\SumbangSaranController@getSumbangSaran')->name('sumbangsaran.show');
+    Route::get('/secHead/{id}', 'App\Http\Controllers\SumbangSaranController@showSecHead')->name('sechead.show');
 
     // Safety Patrol
     Route::get('listpatrol', [SafetyController::class, 'listSafetyPatrol'])->name('listpatrol');
