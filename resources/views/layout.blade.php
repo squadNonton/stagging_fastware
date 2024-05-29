@@ -147,6 +147,7 @@
                     <span>Profile</span>
                 </a>
             </li><!-- End Profile Page Nav -->
+            @if ( Auth::user()->role_id == 1 &&Auth::user()->role_id == 14)
             <li class="nav-heading">Suggestion System</li>
 
             <li class="nav-item">
@@ -212,6 +213,7 @@
                         <span>Report Form Safety Patrol</span>
                     </a>
                 </li><!-- End Profile Page Nav -->
+                @endif
                 @if (Auth::check())
                     @if (Auth::user()->role_id == 7 ||
                             Auth::user()->role_id == 8 ||
