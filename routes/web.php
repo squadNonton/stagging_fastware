@@ -168,7 +168,13 @@ Route::middleware(['web', 'auth'])->group(function () {
     // SS
     Route::get('/showSS', 'App\Http\Controllers\SumbangSaranController@showSS')->name('showSS');
     Route::get('/dashboardSS', 'App\Http\Controllers\SumbangSaranController@dashboardSS')->name('dashboardSS');
+    Route::get('/forumSS', 'App\Http\Controllers\SumbangSaranController@forumSS')->name('forumSS');
+
     Route::get('/chartSection', 'App\Http\Controllers\SumbangSaranController@chartSection')->name('chartSection');
+    Route::post('/chartEmployee', 'App\Http\Controllers\SumbangSaranController@chartEmployee')->name('chartEmployee');
+    Route::post('/chartUser', 'App\Http\Controllers\SumbangSaranController@chartUser')->name('chartUser');
+    Route::post('/chartMountEmployee', 'App\Http\Controllers\SumbangSaranController@chartMountEmployee')->name('chartMountEmployee');
+
     Route::post('/export-konfirmasi-hrga', 'App\Http\Controllers\SumbangSaranController@exportKonfirmasiHRGA')->name('export-konfirmasi-hrga');
     Route::post('/update-status-to-bayar', 'App\Http\Controllers\SumbangSaranController@updateStatusToBayar')->name('updateStatusToBayar');
 
@@ -181,6 +187,8 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/simpanPenilaian', 'App\Http\Controllers\SumbangSaranController@simpanPenilaian')->name('simpanPenilaian');
     Route::post('/submitnilai', 'App\Http\Controllers\SumbangSaranController@submitNilai')->name('submitnilai');
     Route::post('/submitTambahNilai', 'App\Http\Controllers\SumbangSaranController@submitTambahNilai')->name('submitTambahNilai');
+    Route::post('/sumbangsaran/like/{id}', 'App\Http\Controllers\SumbangSaranController@like')->name('sumbangsaran.like');
+    Route::post('/sumbangsaran/unlike/{id}', 'App\Http\Controllers\SumbangSaranController@unlike')->name('sumbangsaran.unlike');
 
     Route::get('/editSS/{id}', [SumbangSaranController::class, 'editSS'])->name('editSS');
     Route::post('/updateSS', [SumbangSaranController::class, 'updateSS'])->name('updateSS');

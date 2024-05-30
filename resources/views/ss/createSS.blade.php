@@ -110,7 +110,6 @@
                                                         onclick="openViewSS({{ $item->id }})" title="lihat">
                                                         <i class="fa-solid fa-eye fa-1x"></i>
                                                     </button>
-
                                                 </td>
                                             </tr>
                                         @endforeach
