@@ -77,13 +77,43 @@ class SumbangSaranController extends Controller
         return view('ss.dashboardSS');
     }
 
-    public function forumSS()
+    public function forumSS(Request $request)
     {
-         // Ambil semua data dari tabel sumbang_sarans dengan urutan berdasarkan jumlah like terbanyak
-    $data = SumbangSaran::orderBy('suka', 'desc')->get();
+        // Mulai dengan membangun kueri dasar
+        $query = SumbangSaran::with('user');
 
-    // Kembalikan data dalam bentuk view
-    return view('ss.forumSS', compact('data'));
+        // Menangani pencarian jika ada
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('judul', 'like', '%'.$search.'%')
+                ->orWhereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', '%'.$search.'%');
+                });
+        }
+
+        // Menangani pengurutan
+        if ($request->has('sort')) {
+            if ($request->input('sort') === 'likesLow') {
+                $query->orderByRaw('CAST(suka AS UNSIGNED) ASC');
+            } elseif ($request->input('sort') === 'likesHigh') {
+                $query->orderByRaw('CAST(suka AS UNSIGNED) DESC');
+            } elseif ($request->input('sort') === 'newest') {
+                $query->orderBy('tgl_pengajuan', 'desc');
+            } elseif ($request->input('sort') === 'oldest') {
+                $query->orderBy('tgl_pengajuan', 'asc');
+            }
+        } else {
+            // Jika tidak ada parameter sort yang diberikan, urutkan berdasarkan like terbanyak secara default
+            $query->orderByRaw('CAST(suka AS UNSIGNED) DESC');
+        }
+
+        // Tambahkan kondisi untuk memastikan tgl_pengajuan tidak kosong
+        $query->whereNotNull('tgl_pengajuan');
+
+        // Ambil data berdasarkan query yang telah dibuat
+        $data = $query->get();
+
+        return view('ss.forumSS', compact('data'));
     }
 
     public function showKonfirmasiForeman()
@@ -223,32 +253,20 @@ class SumbangSaranController extends Controller
 
     public function chartSection(Request $request)
     {
-        $startPeriode = $request->input('start_periode');
-        $endPeriode = $request->input('end_periode');
-
-        // Default dates if not provided
-        if (!$startPeriode) {
-            $startPeriode = Carbon::now()->startOfYear()->toDateString();
-        }
-        if (!$endPeriode) {
-            $endPeriode = Carbon::now()->endOfYear()->toDateString();
-        }
-
         // Eksekusi query untuk mengambil data dari database
-        $dataFromSQL = SumbangSaran::whereBetween('created_at', [$startPeriode, $endPeriode])
-            ->whereIn('modified_by', ['DH Finance', 'Engineering', 'DH Sales', 'DH Productions'])
-            ->selectRaw("MONTH(created_at) as month,
-                         CASE 
-                            WHEN modified_by = 'DH Finance' THEN 'FIN ACC HRGA IT'
-                            WHEN modified_by = 'Engineering' THEN 'HT'
-                            WHEN modified_by = 'DH Sales' THEN 'Sales'
-                            WHEN modified_by = 'DH Productions' THEN 'Supply Chain & Productions'
-                            ELSE modified_by
-                         END AS modified_by,
-                         COUNT(*) as jumlah")
-            ->groupBy('month', 'modified_by')
-            ->orderBy('month')
-            ->get();
+        $dataFromSQL = SumbangSaran::whereIn('modified_by', ['DH Finance', 'Engineering', 'DH Sales', 'DH Productions'])
+        ->selectRaw("MONTH(tgl_pengajuan) as month,
+                 CASE 
+                    WHEN modified_by = 'DH Finance' THEN 'FIN ACC HRGA IT'
+                    WHEN modified_by = 'Engineering' THEN 'HT'
+                    WHEN modified_by = 'DH Sales' THEN 'Sales'
+                    WHEN modified_by = 'DH Productions' THEN 'Supply Chain & Productions'
+                    ELSE modified_by
+                 END AS modified_by,
+                 COUNT(*) as jumlah")
+        ->groupBy('month', 'modified_by')
+        ->orderBy('month')
+        ->get();
 
         // Format hasil query menjadi format yang dapat digunakan oleh Highcharts
         $categories = [
@@ -293,44 +311,79 @@ class SumbangSaranController extends Controller
         $data = DB::table('sumbang_sarans')
             ->join('users', 'sumbang_sarans.id_user', '=', 'users.id')
             ->join('roles', 'users.role_id', '=', 'roles.id')
-            ->select('roles.role', DB::raw('count(*) as count'))
+            ->selectRaw('MONTH(tgl_pengajuan) as month, roles.role, COUNT(*) as count')
             ->when(!empty($roles), function ($query) use ($roles) {
                 return $query->whereIn('roles.role', $roles);
             })
-            ->groupBy('roles.role')
+            ->groupBy('roles.role', 'month')
             ->get();
 
         // Format data untuk grafik
-        $formattedData = $data->map(function ($item) {
-            return ['name' => $item->role, 'y' => $item->count];
-        });
+        $categories = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December',
+        ];
 
-        // Jika roles kosong, hanya kembalikan total sumbangsaran
-        if (empty($roles)) {
-            $formattedData = collect([['name' => 'Total Sumbang Saran', 'y' => $totalData]]);
-        } else {
-            // Tambahkan total data ke dalam data yang dikirimkan sebagai respons
-            $formattedData->push(['name' => 'Total Sumbang Saran', 'y' => $totalData]);
+        $monthlyData = [];
+        $totalMonthlyData = array_fill(0, 12, 0);
+
+        foreach ($data as $item) {
+            $role = $item->role;
+            $month = $item->month - 1; // Karena index bulan dimulai dari 0
+            $count = $item->count;
+
+            if (!isset($monthlyData[$role])) {
+                $monthlyData[$role] = array_fill(0, 12, 0);
+            }
+
+            $monthlyData[$role][$month] = $count;
+            $totalMonthlyData[$month] += $count;
         }
 
-        // Kirim respons JSON dengan data yang diformat
-        return response()->json(['data' => $formattedData]);
+        $series = [];
+
+        foreach ($monthlyData as $role => $data) {
+            $series[] = [
+                'name' => $role,
+                'type' => 'column',
+                'data' => $data,
+            ];
+        }
+
+        $series[] = [
+            'name' => 'Total Sumbang Saran',
+            'type' => 'line',
+            'data' => $totalMonthlyData,
+        ];
+
+        return response()->json([
+            'categories' => $categories,
+            'series' => $series,
+        ]);
     }
 
     public function chartUser(Request $request)
     {
-        $roles = $request->input('roles');
         $employeeType = $request->input('employeeType');
         $userId = auth()->user()->id;
-        $selectedMonth = $request->input('month');
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+
+        // Debugging: Log input yang diterima
+        \Log::info("Employee Type: $employeeType, User ID: $userId, Start Date: $startDate, End Date: $endDate");
 
         $query = DB::table('sumbang_sarans')
             ->join('users', 'sumbang_sarans.id_user', '=', 'users.id');
 
-        if ($selectedMonth) {
-            $query->whereMonth('sumbang_sarans.tgl_pengajuan', '=', date('m', strtotime($selectedMonth)))
-                  ->whereYear('sumbang_sarans.tgl_pengajuan', '=', date('Y', strtotime($selectedMonth)));
+        if ($startDate && $endDate) {
+            $query->whereBetween('sumbang_sarans.tgl_pengajuan', [
+                date('Y-m-01', strtotime($startDate)),
+                date('Y-m-t', strtotime($endDate)),
+            ]);
         }
+
+        // Debugging: Log query yang akan dieksekusi
+        \Log::info('SQL Query: '.$query->toSql());
 
         if ($employeeType === 'AllEmployee') {
             $data = $query->select('users.id as user_id', 'users.name as user_name', DB::raw('count(sumbang_sarans.id) as submission_count'))
@@ -343,41 +396,74 @@ class SumbangSaranController extends Controller
                           ->where('users.id', $userId)
                           ->groupBy('users.id', 'users.name')
                           ->get();
+        } else {
+            $data = collect(); // Pastikan $data selalu terdefinisi sebagai collection kosong jika tidak ada kondisi yang terpenuhi
         }
+
+        // Debugging: Log hasil query
+        \Log::info('Query Result: '.json_encode($data));
 
         $formattedData = $data->map(function ($item) {
             return ['name' => $item->user_name, 'y' => $item->submission_count];
         });
 
-        return response()->json(['data' => $formattedData]); // Mengembalikan data dalam format JSON
+        return response()->json(['data' => $formattedData]);
     }
 
     public function chartMountEmployee(Request $request)
     {
-        $roles = $request->input('roles');
-        $employeeType = $request->input('employeeType');
-        $selectedMonth = $request->input('month');
+        $startMonth = $request->input('start_periode');
+        $endMonth = $request->input('end_periode');
+
+        // Define categories
+        $categories = [
+            'Sales' => ['DH Sales', 'SC Sales', 'UR Sales'],
+            'HT' => ['Engineering', 'UR Maintenance'],
+            'SupplyChainProduction' => ['UR Productions', 'SC Productions'],
+            'FinnAccHrgaIT' => ['DH Finance', 'UR Finance', 'SC Finance', 'SC HRGA', 'UR HRGA'],
+        ];
 
         $query = DB::table('sumbang_sarans')
-            ->join('users', 'sumbang_sarans.id_user', '=', 'users.id');
+            ->select('modified_by', DB::raw('count(id) as submission_count'))
+            ->groupBy('modified_by');
 
-        if ($selectedMonth) {
-            $query->whereMonth('sumbang_sarans.tgl_pengajuan', '=', date('m', strtotime($selectedMonth)))
-                  ->whereYear('sumbang_sarans.tgl_pengajuan', '=', date('Y', strtotime($selectedMonth)));
+        if ($startMonth && $endMonth) {
+            $query->whereBetween('tgl_pengajuan', [
+                date('Y-m-d', strtotime($startMonth.'-01')),
+                date('Y-m-t', strtotime($endMonth)),
+            ]);
         }
 
-        // Filter berdasarkan tipe karyawan
-        $data = $query->select('users.id as user_id', 'users.name as user_name', DB::raw('count(sumbang_sarans.id) as submission_count'))
-                      ->groupBy('users.id', 'users.name')
-                      ->orderBy('submission_count', 'DESC')
-                      ->havingRaw('count(sumbang_sarans.id) > 0')
-                      ->get();
+        $data = $query->get();
 
-        $formattedData = $data->map(function ($item) {
-            return ['name' => $item->user_name, 'y' => $item->submission_count];
-        });
+        // Initialize counts for each category
+        $groupedData = [];
+        foreach ($categories as $category => $values) {
+            $groupedData[$category] = 0;
+        }
 
-        return response()->json(['data' => $formattedData]); // Mengembalikan data dalam format JSON
+        // Group data by categories
+        foreach ($data as $item) {
+            foreach ($categories as $category => $values) {
+                if (in_array($item->modified_by, $values)) {
+                    $groupedData[$category] += $item->submission_count;
+                    break;
+                }
+            }
+        }
+
+        $totalCount = array_sum($groupedData);
+
+        // Format data for Highcharts
+        $formattedData = [];
+        foreach ($groupedData as $category => $count) {
+            $formattedData[] = ['name' => $category, 'y' => $count];
+        }
+
+        return response()->json([
+            'total' => $totalCount,
+            'data' => $formattedData,
+        ]);
     }
 
     public function simpanSS(Request $request)
@@ -835,6 +921,28 @@ class SumbangSaranController extends Controller
         } else {
             return response()->json(['message' => 'Tidak ada status yang diperbarui'], 400);
         }
+    }
+
+    public function like($id)
+    {
+        $post = SumbangSaran::findOrFail($id);
+        ++$post->suka;
+        $post->save();
+
+        return response()->json(['suka' => $post->suka]);
+    }
+
+    public function unlike($id)
+    {
+        $post = SumbangSaran::findOrFail($id);
+
+        // Pastikan suka tidak negatif
+        if ($post->suka > 0) {
+            --$post->suka;
+            $post->save();
+        }
+
+        return response()->json(['suka' => $post->suka]);
     }
 
     // Add this method to your controller

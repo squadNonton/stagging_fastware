@@ -22,19 +22,11 @@
                             <div class="container">
                                 <div class="row align-items-center">
                                     <div class="col-lg-3">
-                                        <label for="start_periode">Bulan Mulai:</label>
-                                        <input type="date" id="start_periode" name="start_periode" class="form-control">
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label for="end_periode">Bulan Akhir:</label>
-                                        <input type="date" id="end_periode" name="end_periode" class="form-control">
-                                    </div>
-                                    <div class="col-lg-3">
                                         <label for="end_periode">Bagian:</label>
                                         <select id="type" class="form-select form-select-sm"
                                             aria-label=".form-select-sm example" onclick="handleSelectChange()">
                                             <option selected>--- Pilih Bagian ---</option>
-                                            <option value="TotalSS">Total SS</option>
+                                            <option value="TotalSS">Total Company</option>
                                             <option value="Sales">Sales</option>
                                             <option value="HT">HT</option>
                                             <option value="SupplyChainProduction">Supply Chain & Production</option>
@@ -55,14 +47,43 @@
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
+                            <h5 class="card-title">Suggestion System / All Employee</h5>
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="col-lg-3">
+                                        <label for="start_periode">Pilih Bulan Awal:</label>
+                                        <input type="month" id="start_periode" name="start_periode" class="form-control">
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label for="end_periode">Pilih Bulan Akhir:</label>
+                                        <input type="month" id="end_periode" name="end_periode" class="form-control">
+                                    </div>
+                                    <div class="row" style="margin-top: 10%">
+                                        <div class="col-lg-12">
+                                            <div id="chartBarMountEmployee"
+                                                style="min-width: 310px; height: 500px; margin: 0 auto"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
                             <h5 class="card-title">Suggestion System / Employee</h5>
                             <div class="container">
                                 <div class="row align-items-center">
                                     <div class="col-lg-3">
-                                        <label for="tgl_pengajuan">Pilih Bulan:</label>
-                                        <input type="month" id="tgl_pengajuan" name="tgl_pengajuan" class="form-control">
+                                        <label for="startDate">Pilih Bulan Awal:</label>
+                                        <input type="month" id="startDate" name="startDate" class="form-control">
                                     </div>
-
+                                    <div class="col-lg-3">
+                                        <label for="endDate">Pilih Bulan Akhir:</label>
+                                        <input type="month" id="endDate" name="endDate" class="form-control">
+                                    </div>
                                     <div class="col-lg-3">
                                         <label for="employeeType">Employee</label>
                                         <select id="employeeType" class="form-select form-select-sm"
@@ -72,33 +93,9 @@
                                             <option value="User">{{ Auth::user()->name }}</option>
                                         </select>
                                     </div>
-
                                     <div class="row" style="margin-top: 10%">
                                         <div class="col-lg-12">
                                             <div id="chartBarAllEmployee"
-                                                style="min-width: 310px; height: 500px; margin: 0 auto"></div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Suggestion System / All Employee</h5>
-                            <div class="container">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-3">
-                                        <label for="tgl_pengajuan">Pilih Bulan:</label>
-                                        <input type="month" id="tgl_pengajuan_2" name="tgl_pengajuan_2"
-                                            class="form-control">
-                                    </div>
-                                    <div class="row" style="margin-top: 10%">
-                                        <div class="col-lg-12">
-                                            <div id="chartBarMountEmployee"
                                                 style="min-width: 310px; height: 500px; margin: 0 auto"></div>
                                         </div>
                                     </div>
@@ -118,14 +115,10 @@
         <script type="text/javascript">
             //chart 1
             $(document).ready(function() {
-                function fetchChartData(startPeriode, endPeriode) {
+                function fetchChartData() {
                     $.ajax({
                         url: '{{ route('chartSection') }}', // Sesuaikan dengan route Anda
                         method: 'GET',
-                        data: {
-                            start_periode: startPeriode,
-                            end_periode: endPeriode
-                        },
                         success: function(response) {
                             var categories = response.categories;
                             var series = response.series;
@@ -155,18 +148,9 @@
                         }
                     });
                 }
-
-                // Event listeners untuk input tanggal
-                $('#start_periode, #end_periode').on('change', function() {
-                    var startPeriode = $('#start_periode').val();
-                    var endPeriode = $('#end_periode').val();
-                    fetchChartData(startPeriode, endPeriode);
-                });
-
                 // Ambil data dan tampilkan chart saat halaman dimuat
                 fetchChartData();
             });
-
 
             const roleData = {
                 'Sales': ['SC Sales', 'UR Sales'],
@@ -199,7 +183,7 @@
                         'X-CSRF-TOKEN': window.csrfToken
                     },
                     success: function(response) {
-                        renderChart(response.data);
+                        renderChart(response.categories, response.series);
                     },
                     error: function(error) {
                         console.error('Error fetching data', error);
@@ -218,7 +202,7 @@
                         'X-CSRF-TOKEN': window.csrfToken
                     },
                     success: function(response) {
-                        renderTotalSumbangSaranChart(response.data);
+                        renderChart(response.categories, response.series);
                     },
                     error: function(error) {
                         console.error('Error fetching data', error);
@@ -226,57 +210,68 @@
                 });
             }
 
-            function renderTotalSumbangSaranChart(data) {
+            function renderChart(categories, series) {
                 Highcharts.chart('chartBarSection', {
                     chart: {
-                        type: 'bar'
+                        zoomType: 'xy'
                     },
                     title: {
-                        text: 'Total Sumbang Saran Data'
+                        text: 'Jumlah Sumbang Saran berdasarkan Departemen'
                     },
-                    xAxis: {
-                        type: 'category',
+                    xAxis: [{
+                        categories: categories,
+                        crosshair: true
+                    }],
+                    yAxis: [{ // Primary yAxis
+                        labels: {
+                            format: '{value}',
+                            style: {
+                                color: Highcharts.getOptions().colors[1]
+                            }
+                        },
                         title: {
-                            text: 'Bagian'
+                            text: 'Jumlah Sumbang Saran',
+                            style: {
+                                color: Highcharts.getOptions().colors[1]
+                            }
                         }
-                    },
-                    yAxis: {
+                    }, { // Secondary yAxis
                         title: {
-                            text: 'Count'
-                        }
+                            text: 'Total Sumbang Saran',
+                            style: {
+                                color: Highcharts.getOptions().colors[0]
+                            }
+                        },
+                        labels: {
+                            format: '{value}',
+                            style: {
+                                color: Highcharts.getOptions().colors[0]
+                            }
+                        },
+                        opposite: true
+                    }],
+                    tooltip: {
+                        shared: true
                     },
-                    series: [{
-                        name: 'Total Sumbang Saran',
-                        data: data
-                    }]
+                    legend: {
+                        layout: 'vertical',
+                        align: 'left',
+                        x: 80,
+                        verticalAlign: 'top',
+                        y: 55,
+                        floating: true,
+                        backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || 'rgba(255,255,255,0.25)'
+                    },
+                    series: series
                 });
             }
 
-            function renderChart(data) {
-                Highcharts.chart('chartBarSection', {
-                    chart: {
-                        type: 'bar'
-                    },
-                    title: {
-                        text: 'Chart Per Bagian'
-                    },
-                    xAxis: {
-                        type: 'category',
-                        title: {
-                            text: 'Bagian'
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Count'
-                        }
-                    },
-                    series: [{
-                        name: 'Roles',
-                        data: data
-                    }]
-                });
-            }
+            $(document).ready(function() {
+                $('#type').on('change', handleSelectChange);
+
+                // Ambil data dan tampilkan chart saat halaman dimuat
+                fetchTotalSumbangSaranData();
+            });
 
             // chart2
             const employeeData = {
@@ -284,19 +279,21 @@
                 'User': 'User'
             };
 
-            function handleEmployeeTypeChange() {
-                const selectedValue = $('#employeeType').val();
-                const selectedMonth = $('#tgl_pengajuan').val();
-                fetchEmployeeChartData(selectedValue, selectedMonth);
+            function handleFilterChange() {
+                const employeeType = $('#employeeType').val();
+                const startDate = $('#startDate').val();
+                const endDate = $('#endDate').val();
+                fetchEmployeeChartData(employeeType, startDate, endDate);
             }
 
-            function fetchEmployeeChartData(employeeType, selectedMonth) {
+            function fetchEmployeeChartData(employeeType, startDate, endDate) {
                 $.ajax({
                     url: '{{ route('chartUser') }}',
                     method: 'POST',
                     data: {
                         employeeType: employeeType,
-                        month: selectedMonth
+                        startDate: startDate,
+                        endDate: endDate
                     },
                     headers: {
                         'X-CSRF-TOKEN': window.csrfToken
@@ -326,7 +323,7 @@
                     },
                     yAxis: {
                         title: {
-                            text: 'Jumalah SS'
+                            text: 'Jumlah SS'
                         }
                     },
                     series: [{
@@ -337,33 +334,29 @@
             }
 
             $(document).ready(function() {
-                // $('#tgl_pengajuan').on('change', handleEmployeeTypeChange);
-                $('#employeeType').on('change', handleEmployeeTypeChange);
+                $('#endDate, #employeeType').on('change', handleFilterChange);
             });
 
             $(document).ready(function() {
-                $('#tgl_pengajuan_2').on('change', function() {
-                    handleFilterChange();
-                });
-
                 function handleFilterChange() {
-                    const selectedMonth = $('#tgl_pengajuan_2').val();
-                    fetchChartData(selectedMonth);
+                    const startMonth = $('#start_periode').val();
+                    const endMonth = $('#end_periode').val();
+                    fetchChartData(startMonth, endMonth);
                 }
 
-                function fetchChartData(selectedMonth) {
-                    console.log('Selected Month:', selectedMonth); // Cek apakah bulan yang dipilih tercetak di konsol
+                function fetchChartData(startMonth, endMonth) {
                     $.ajax({
                         url: '{{ route('chartMountEmployee') }}',
                         method: 'POST',
                         data: {
-                            month: selectedMonth
+                            start_periode: startMonth,
+                            end_periode: endMonth
                         },
                         headers: {
                             'X-CSRF-TOKEN': window.csrfToken
                         },
                         success: function(response) {
-                            renderChart(response.data);
+                            renderChart(response.total, response.data);
                         },
                         error: function(error) {
                             console.error('Error fetching data', error);
@@ -371,34 +364,64 @@
                     });
                 }
 
-                function renderChart(chartData) {
+                function renderChart(total, chartData) {
+                    const seriesData = [{
+                            name: 'Total SS',
+                            data: [{
+                                name: 'Total',
+                                y: total
+                            }]
+                        },
+                        {
+                            name: 'Company',
+                            data: chartData
+                        }
+                    ];
+
                     Highcharts.chart('chartBarMountEmployee', {
                         chart: {
-                            type: 'bar'
+                            type: 'column'
                         },
                         title: {
-                            text: 'Chart Per Employee'
+                            text: 'SS perCompany'
                         },
                         xAxis: {
                             type: 'category',
                             title: {
-                                text: 'Employee'
+                                text: 'Company'
                             }
                         },
                         yAxis: {
                             title: {
-                                text: 'Submission Count'
+                                text: 'Jumlah SS'
                             }
                         },
-                        series: [{
-                            name: 'Submissions',
-                            data: chartData
-                        }]
+                        series: seriesData,
+                        tooltip: {
+                            shared: true,
+                            formatter: function() {
+                                let s = '<b>' + this.x + '</b>';
+
+                                this.points.forEach(function(point) {
+                                    s += '<br/>' + point.series.name + ': ' + point.y;
+                                });
+
+                                return s;
+                            }
+                        },
+                        plotOptions: {
+                            column: {
+                                stacking: 'normal'
+                            }
+                        }
                     });
                 }
 
-                // Panggil fungsi fetchChartData saat halaman dimuat untuk pertama kali
-                fetchChartData($('#tgl_pengajuan_2').val());
+                // Event listeners for the date input changes
+                $('#start_periode, #end_periode').on('change', handleFilterChange);
+
+                // Initial fetch
+                handleFilterChange();
             });
         </script>
     </main><!-- End #main -->

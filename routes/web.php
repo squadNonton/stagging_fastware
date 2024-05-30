@@ -187,6 +187,8 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/simpanPenilaian', 'App\Http\Controllers\SumbangSaranController@simpanPenilaian')->name('simpanPenilaian');
     Route::post('/submitnilai', 'App\Http\Controllers\SumbangSaranController@submitNilai')->name('submitnilai');
     Route::post('/submitTambahNilai', 'App\Http\Controllers\SumbangSaranController@submitTambahNilai')->name('submitTambahNilai');
+    Route::post('/sumbangsaran/like/{id}', 'App\Http\Controllers\SumbangSaranController@like')->name('sumbangsaran.like');
+    Route::post('/sumbangsaran/unlike/{id}', 'App\Http\Controllers\SumbangSaranController@unlike')->name('sumbangsaran.unlike');
 
     Route::get('/editSS/{id}', [SumbangSaranController::class, 'editSS'])->name('editSS');
     Route::post('/updateSS', [SumbangSaranController::class, 'updateSS'])->name('updateSS');
