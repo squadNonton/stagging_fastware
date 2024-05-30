@@ -248,8 +248,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Edit Form -->
-            <!-- Modal Form Edit Sumbang Saran -->
             <div class="modal fade" id="editSumbangSaranModal" tabindex="-1"
                 aria-labelledby="editSumbangSaranModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
