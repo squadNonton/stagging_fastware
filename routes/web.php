@@ -7,6 +7,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\FormFPPController;
 use App\Http\Controllers\HandlingController;
 use App\Http\Controllers\MesinController;
+use App\Http\Controllers\HeatTreatmentController;
 use App\Http\Controllers\PreventiveController;
 use App\Http\Controllers\SafetyController;
 use App\Http\Controllers\SparepartController;
@@ -191,14 +192,13 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/sumbangsaran/unlike/{id}', 'App\Http\Controllers\SumbangSaranController@unlike')->name('sumbangsaran.unlike');
 
     Route::get('/editSS/{id}', [SumbangSaranController::class, 'editSS'])->name('editSS');
-    Route::post('/updateSS', [SumbangSaranController::class, 'updateSS'])->name('updateSS');
+    Route::post('/updateSS/{id}', [SumbangSaranController::class, 'updateSS']);
 
     Route::get('/getPenilaians/{id}', [SumbangSaranController::class, 'getPenilaians'])->name('getPenilaians');
     Route::get('/getNilai/{id}', [SumbangSaranController::class, 'getNilai'])->name('getNilai');
     Route::get('/getTambahNilai/{id}', [SumbangSaranController::class, 'getTambahNilai'])->name('getTambahNilai');
     Route::get('/file/download/{filename}', [SumbangSaranController::class, 'downloadFile'])->name('file.download');
 
-    Route::post('/updateSS', [SumbangSaranController::class, 'updateSS'])->name('updateSS');
     Route::delete('/delete-ss/{id}', [SumbangSaranController::class, 'deleteSS'])->name('deleteSS');
     Route::post('/kirim-ss/{id}', [SumbangSaranController::class, 'kirimSS'])->name('kirimSS');
     Route::post('/kirim-ss2/{id}', [SumbangSaranController::class, 'kirimSS2'])->name('kirimSS2');
@@ -218,4 +218,10 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/get-safety-patrol', [SafetyController::class, 'getSafetyPatrol']);
     Route::get('/get-lingkungan-patrol', [SafetyController::class, 'getLingkunganPatrol']);
     Route::post('export-patrol-data', [SafetyController::class, 'exportData'])->name('export-patrol-data');
+
+    //WO Heat Treatment
+    Route::get('dashboardImportWO', [HeatTreatmentController::class, 'dashboardImportWO'])
+        ->name('dashboardImportWO');
+    Route::get('dashboardTracingWO', [HeatTreatmentController::class, 'dashboardTracingWO'])
+        ->name('dashboardTracingWO');
 });

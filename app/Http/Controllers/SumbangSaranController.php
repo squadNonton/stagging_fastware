@@ -85,9 +85,9 @@ class SumbangSaranController extends Controller
         // Menangani pencarian jika ada
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('judul', 'like', '%'.$search.'%')
+            $query->where('judul', 'like', '%' . $search . '%')
                 ->orWhereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', '%'.$search.'%');
+                    $q->where('name', 'like', '%' . $search . '%');
                 });
         }
 
@@ -255,7 +255,7 @@ class SumbangSaranController extends Controller
     {
         // Eksekusi query untuk mengambil data dari database
         $dataFromSQL = SumbangSaran::whereIn('modified_by', ['DH Finance', 'Engineering', 'DH Sales', 'DH Productions'])
-        ->selectRaw("MONTH(tgl_pengajuan) as month,
+            ->selectRaw("MONTH(tgl_pengajuan) as month,
                  CASE 
                     WHEN modified_by = 'DH Finance' THEN 'FIN ACC HRGA IT'
                     WHEN modified_by = 'Engineering' THEN 'HT'
@@ -264,9 +264,9 @@ class SumbangSaranController extends Controller
                     ELSE modified_by
                  END AS modified_by,
                  COUNT(*) as jumlah")
-        ->groupBy('month', 'modified_by')
-        ->orderBy('month')
-        ->get();
+            ->groupBy('month', 'modified_by')
+            ->orderBy('month')
+            ->get();
 
         // Format hasil query menjadi format yang dapat digunakan oleh Highcharts
         $categories = [
@@ -383,25 +383,25 @@ class SumbangSaranController extends Controller
         }
 
         // Debugging: Log query yang akan dieksekusi
-        \Log::info('SQL Query: '.$query->toSql());
+        \Log::info('SQL Query: ' . $query->toSql());
 
         if ($employeeType === 'AllEmployee') {
             $data = $query->select('users.id as user_id', 'users.name as user_name', DB::raw('count(sumbang_sarans.id) as submission_count'))
-                          ->groupBy('users.id', 'users.name')
-                          ->orderBy('submission_count', 'DESC')
-                          ->havingRaw('count(sumbang_sarans.id) > 0')
-                          ->get();
+                ->groupBy('users.id', 'users.name')
+                ->orderBy('submission_count', 'DESC')
+                ->havingRaw('count(sumbang_sarans.id) > 0')
+                ->get();
         } elseif ($employeeType === 'User') {
             $data = $query->select('users.id as user_id', 'users.name as user_name', DB::raw('count(sumbang_sarans.id) as submission_count'))
-                          ->where('users.id', $userId)
-                          ->groupBy('users.id', 'users.name')
-                          ->get();
+                ->where('users.id', $userId)
+                ->groupBy('users.id', 'users.name')
+                ->get();
         } else {
             $data = collect(); // Pastikan $data selalu terdefinisi sebagai collection kosong jika tidak ada kondisi yang terpenuhi
         }
 
         // Debugging: Log hasil query
-        \Log::info('Query Result: '.json_encode($data));
+        \Log::info('Query Result: ' . json_encode($data));
 
         $formattedData = $data->map(function ($item) {
             return ['name' => $item->user_name, 'y' => $item->submission_count];
@@ -429,7 +429,7 @@ class SumbangSaranController extends Controller
 
         if ($startMonth && $endMonth) {
             $query->whereBetween('tgl_pengajuan', [
-                date('Y-m-d', strtotime($startMonth.'-01')),
+                date('Y-m-d', strtotime($startMonth . '-01')),
                 date('Y-m-t', strtotime($endMonth)),
             ]);
         }
@@ -699,18 +699,34 @@ class SumbangSaranController extends Controller
 
         if ($request->hasFile('edit_image')) {
             if ($sumbangSaran->image) {
-                Storage::delete($sumbangSaran->image);
+                // Menghapus gambar yang lama
+                if (file_exists(public_path('assets/image/' . $sumbangSaran->image))) {
+                    unlink(public_path('assets/image/' . $sumbangSaran->image));
+                }
             }
-            $path = $request->file('edit_image')->store('uploads');
-            $sumbangSaran->image = $path;
+            // Simpan gambar yang baru diunggah
+            $image = $request->file('edit_image');
+            $imagePath = $image->hashName();
+            $imageOriginalName = $image->getClientOriginalName();
+            $image->move(public_path('assets/image'), $imagePath);
+            $sumbangSaran->image = $imagePath;
+            $sumbangSaran->file_name = $imageOriginalName; // Simpan nama file
         }
 
         if ($request->hasFile('edit_image_2')) {
             if ($sumbangSaran->image_2) {
-                Storage::delete($sumbangSaran->image_2);
+                // Menghapus gambar yang lama
+                if (file_exists(public_path('assets/image/' . $sumbangSaran->image_2))) {
+                    unlink(public_path('assets/image/' . $sumbangSaran->image_2));
+                }
             }
-            $path2 = $request->file('edit_image_2')->store('uploads');
-            $sumbangSaran->image_2 = $path2;
+            // Simpan gambar yang baru diunggah
+            $image2 = $request->file('edit_image_2');
+            $imagePath2 = $image2->hashName();
+            $imageOriginalName2 = $image2->getClientOriginalName();
+            $image2->move(public_path('assets/image'), $imagePath2);
+            $sumbangSaran->image_2 = $imagePath2;
+            $sumbangSaran->file_name_2 = $imageOriginalName2; // Simpan nama file
         }
 
         $sumbangSaran->save();

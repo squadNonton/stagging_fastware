@@ -261,8 +261,7 @@
                         </div>
                         <div class="modal-body">
                             <!-- Form Edit Sumbang Saran -->
-                            <form id="editSumbangSaranForm" action="{{ route('updateSS') }}"
-                                enctype="multipart/form-data" method="POST">
+                            <form id="editSumbangSaranForm" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" id="editSumbangSaranId" name="id">
                                 <div class="row mb-3">
@@ -678,9 +677,9 @@
 
             function submitEditForm() {
                 var formData = new FormData($('#editSumbangSaranForm')[0]);
-
+                var id = $('#editSumbangSaranId').val();
                 $.ajax({
-                    url: '{{ route('updateSS') }}',
+                    url: 'updateSS/' + id,
                     type: 'POST',
                     data: formData,
                     processData: false,
