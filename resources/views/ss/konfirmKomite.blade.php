@@ -79,10 +79,12 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    <button class="btn btn-primary btn-sm"
-                                                        onclick="openFormPenilaian({{ $data->id }})"
-                                                        data-id="{{ $data->id }}" title="Nilai">
-                                                        <i class="fa-solid fa-tasks fa-1x"></i>
+                                                    @if (Auth::user()->role_id != 14 && Auth::user()->role_id != 20)
+                                                        <button class="btn btn-primary btn-sm"
+                                                            onclick="openFormPenilaian({{ $data->id }})"
+                                                            data-id="{{ $data->id }}" title="Nilai">
+                                                            <i class="fa-solid fa-tasks fa-1x"></i>
+                                                    @endif
                                                     </button>
                                                     <button class="btn btn-success btn-sm"
                                                         onclick="viewFormSS({{ $data->id }})"
@@ -384,8 +386,8 @@
                 });
             }
 
-             //viewmodal
-             function viewFormSS(id) {
+            //viewmodal
+            function viewFormSS(id) {
                 $.ajax({
                     url: '{{ route('sechead.show', ':id') }}'.replace(':id', id),
                     type: 'GET',

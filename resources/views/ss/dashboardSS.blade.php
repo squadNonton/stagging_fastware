@@ -151,12 +151,12 @@
                 // Ambil data dan tampilkan chart saat halaman dimuat
                 fetchChartData();
             });
-
+            //filter chart 1
             const roleData = {
-                'Sales': ['SC Sales', 'UR Sales'],
-                'HT': ['Engineering', 'UR Maintenance'],
-                'SupplyChainProduction': ['UR Productions', 'SC Productions'],
-                'FinnAccHrgaIT': ['UR Finance', 'SC Finance', 'SC HRGA', 'UR HRGA'],
+                'Sales': ['DH Sales'],
+                'HT': ['Engineering'],
+                'SupplyChainProduction': ['DH Productions'],
+                'FinnAccHrgaIT': ['DH Finance', 'IT'],
                 'TotalSS': [] // Tambahkan opsi TotalSS dengan array kosong
             };
 
@@ -268,7 +268,6 @@
 
             $(document).ready(function() {
                 $('#type').on('change', handleSelectChange);
-
                 // Ambil data dan tampilkan chart saat halaman dimuat
                 fetchTotalSumbangSaranData();
             });

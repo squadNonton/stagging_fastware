@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class SumbangSaranController extends Controller
 {
@@ -22,44 +21,60 @@ class SumbangSaranController extends Controller
         // Ambil ID pengguna yang sedang login
         $userLogin = Auth::id();
 
+        // Ambil role dari pengguna yang sedang login
+        $userRole = Auth::user()->role_id;
+
+        // Tentukan apakah pengguna memiliki role 1 atau 14
+        $isAdmin = in_array($userRole, [1, 14, 20]);
+
         // Query MySQL untuk menggabungkan data dari SumbangSaran, Penilaians, dan Users
-        $data = DB::select('
-            SELECT 
-                sumbang_sarans.id,
-                sumbang_sarans.id_user,
-                sumbang_sarans.tgl_pengajuan_ide,
-                sumbang_sarans.lokasi_ide,
-                sumbang_sarans.tgl_diterapkan,
-                sumbang_sarans.judul,
-                sumbang_sarans.keadaan_sebelumnya,
-                sumbang_sarans.image,
-                sumbang_sarans.usulan_ide,
-                sumbang_sarans.image_2,
-                sumbang_sarans.keuntungan_ide,
-                sumbang_sarans.tgl_verifikasi,
-                sumbang_sarans.status,
-                sumbang_sarans.updated_at,
-                penilaians.id_users,
-                penilaians.ss_id,
-                penilaians.nilai,
-                penilaians.tambahan_nilai,
-                ((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) AS total_nilai,
-                (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000) AS hasil_akhir,
-                users.name,
-                users.npk
-            FROM 
-                sumbang_sarans
-            LEFT JOIN 
-                penilaians ON sumbang_sarans.id = penilaians.ss_id
-            LEFT JOIN 
-                users ON sumbang_sarans.id_user = users.id
-            WHERE 
-                sumbang_sarans.id_user = ? 
-                AND sumbang_sarans.status IN (1, 2, 3, 4, 5, 6, 7)
-            ORDER BY 
-                FIELD(sumbang_sarans.status, 7, 6, 5, 4, 3, 2, 1),
-                sumbang_sarans.updated_at DESC
-        ', [$userLogin]);
+        $dataQuery = '
+        SELECT 
+            sumbang_sarans.id,
+            sumbang_sarans.id_user,
+            sumbang_sarans.tgl_pengajuan_ide,
+            sumbang_sarans.lokasi_ide,
+            sumbang_sarans.tgl_diterapkan,
+            sumbang_sarans.plant,
+            sumbang_sarans.judul,
+            sumbang_sarans.keadaan_sebelumnya,
+            sumbang_sarans.image,
+            sumbang_sarans.usulan_ide,
+            sumbang_sarans.image_2,
+            sumbang_sarans.keuntungan_ide,
+            sumbang_sarans.tgl_verifikasi,
+            sumbang_sarans.status,
+            sumbang_sarans.updated_at,
+            penilaians.id_users,
+            penilaians.ss_id,
+            penilaians.nilai,
+            penilaians.tambahan_nilai,
+            ((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) AS total_nilai,
+            (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000) AS hasil_akhir,
+            users.name,
+            users.npk
+        FROM 
+            sumbang_sarans
+        LEFT JOIN 
+            penilaians ON sumbang_sarans.id = penilaians.ss_id
+        LEFT JOIN 
+            users ON sumbang_sarans.id_user = users.id
+        WHERE 
+            sumbang_sarans.status IN (1, 2, 3, 4, 5, 6, 7) ';
+
+        if (!$isAdmin) {
+            // Tambahkan filter ID pengguna jika bukan admin
+            $dataQuery .= 'AND sumbang_sarans.id_user = ? ';
+        }
+
+        $dataQuery .= '
+        ORDER BY 
+            FIELD(sumbang_sarans.status, 7, 6, 5, 4, 3, 2, 1),
+            sumbang_sarans.updated_at DESC
+    ';
+
+        // Eksekusi query dengan parameter
+        $data = !$isAdmin ? DB::select($dataQuery, [$userLogin]) : DB::select($dataQuery);
 
         // Ambil hanya id user untuk menghindari "N + 1" query
         $userIds = collect($data)->pluck('id_user')->unique()->toArray();
@@ -85,9 +100,9 @@ class SumbangSaranController extends Controller
         // Menangani pencarian jika ada
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('judul', 'like', '%' . $search . '%')
+            $query->where('judul', 'like', '%'.$search.'%')
                 ->orWhereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%');
+                    $q->where('name', 'like', '%'.$search.'%');
                 });
         }
 
@@ -118,14 +133,89 @@ class SumbangSaranController extends Controller
 
     public function showKonfirmasiForeman()
     {
-        $data = SumbangSaran::with('user')
-            ->whereIn('sumbang_sarans.status', [2, 3, 4, 5]) // Tambahkan alias untuk kolom status
-            ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3, 2)') // Tambahkan alias untuk kolom status
-            ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
-            ->paginate();
+        // Ambil ID pengguna yang sedang login
+        $userLogin = Auth::id();
+
+        // Ambil role dari pengguna yang sedang login
+        $userRole = Auth::user()->role_id;
+
+        // Tentukan apakah pengguna memiliki role 1 atau 14
+        $isAdmin = in_array($userRole, [1, 14, 20]);
+
+        // Tentukan role yang bisa dilihat berdasarkan role pengguna yang sedang login
+        $rolesToView = [];
+        switch ($userRole) {
+            case 2:
+            case 3:
+                $rolesToView = [3, 4, 16];
+                break;
+            case 5:
+                $rolesToView = [6, 18];
+                break;
+            case 7:
+            case 9:
+            case 21:
+            case 22:
+                $rolesToView = [8, 21, 22, 26];
+                break;
+            case 11:
+            case 12:
+                $rolesToView = [13, 15, 20];
+                break;
+                // Tidak perlu menambahkan case untuk 1 dan 14 karena $isAdmin sudah menghandle
+        }
+
+        // Query MySQL untuk menggabungkan data dari SumbangSaran, Penilaians, dan Users
+        $dataQuery = '
+    SELECT 
+        sumbang_sarans.id,
+        sumbang_sarans.id_user,
+        sumbang_sarans.tgl_pengajuan_ide,
+        sumbang_sarans.lokasi_ide,
+        sumbang_sarans.tgl_diterapkan,
+        sumbang_sarans.plant,
+        sumbang_sarans.judul,
+        sumbang_sarans.keadaan_sebelumnya,
+        sumbang_sarans.image,
+        sumbang_sarans.usulan_ide,
+        sumbang_sarans.image_2,
+        sumbang_sarans.keuntungan_ide,
+        sumbang_sarans.tgl_verifikasi,
+        sumbang_sarans.status,
+        sumbang_sarans.created_at,
+        penilaians.id_users,
+        penilaians.ss_id,
+        penilaians.nilai,
+        penilaians.tambahan_nilai,
+        ((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) AS total_nilai,
+        (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000) AS hasil_akhir,
+        users.name,
+        users.npk
+    FROM 
+        sumbang_sarans
+    LEFT JOIN 
+        penilaians ON sumbang_sarans.id = penilaians.ss_id
+    LEFT JOIN 
+        users ON sumbang_sarans.id_user = users.id
+    WHERE 
+        sumbang_sarans.status IN (2, 3, 4, 5) '; // Sesuaikan status dengan yang Anda butuhkan
+
+        if (!$isAdmin && !empty($rolesToView)) {
+            // Tambahkan filter role pengguna yang dapat dilihat
+            $dataQuery .= 'AND users.role_id IN ('.implode(',', $rolesToView).') ';
+        }
+
+        $dataQuery .= '
+    ORDER BY 
+        FIELD(sumbang_sarans.status, 5, 4, 3, 2),
+        sumbang_sarans.created_at DESC
+    ';
+
+        // Eksekusi query
+        $data = DB::select($dataQuery);
 
         // Ambil hanya id user untuk menghindari "N + 1" query
-        $userIds = $data->pluck('id_user')->unique()->toArray();
+        $userIds = collect($data)->pluck('id_user')->unique()->toArray();
 
         // Ambil data peran (role) berdasarkan user ids
         $usersRoles = User::whereIn('users.id', $userIds)
@@ -137,14 +227,84 @@ class SumbangSaranController extends Controller
 
     public function showKonfirmasiDeptHead()
     {
-        $data = SumbangSaran::with('user')
-            ->whereIn('sumbang_sarans.status', [3, 4, 5]) // Tambahkan alias untuk kolom status
-            ->orderByRaw('FIELD(sumbang_sarans.status, 5, 4, 3)') // Tambahkan alias untuk kolom status
-            ->orderByDesc('sumbang_sarans.created_at') // Tambahkan alias untuk kolom created_at
-            ->paginate();
+        // Ambil ID pengguna yang sedang login
+        $userLogin = Auth::id();
+
+        // Ambil role dari pengguna yang sedang login
+        $userRole = Auth::user()->role_id;
+
+        // Tentukan apakah pengguna memiliki role 1 atau 14
+        $isAdmin = in_array($userRole, [1, 14, 20]);
+
+        // Tentukan role yang bisa dilihat berdasarkan role pengguna yang sedang login
+        $rolesToView = [];
+        switch ($userRole) {
+            case 2:
+                $rolesToView = [3, 4, 16];
+                break;
+            case 5:
+                $rolesToView = [6, 18];
+                break;
+            case 7:
+                $rolesToView = [8, 9, 18, 21, 22, 26];
+                break;
+            case 11:
+                $rolesToView = [12, 13, 15, 20];
+                break;
+                // Tidak perlu menambahkan case untuk 1 dan 14 karena $isAdmin sudah menghandle
+        }
+
+        // Query MySQL untuk menggabungkan data dari SumbangSaran, Penilaians, dan Users
+        $dataQuery = '
+    SELECT 
+        sumbang_sarans.id,
+        sumbang_sarans.id_user,
+        sumbang_sarans.tgl_pengajuan_ide,
+        sumbang_sarans.lokasi_ide,
+        sumbang_sarans.tgl_diterapkan,
+        sumbang_sarans.plant,
+        sumbang_sarans.judul,
+        sumbang_sarans.keadaan_sebelumnya,
+        sumbang_sarans.image,
+        sumbang_sarans.usulan_ide,
+        sumbang_sarans.image_2,
+        sumbang_sarans.keuntungan_ide,
+        sumbang_sarans.tgl_verifikasi,
+        sumbang_sarans.status,
+        sumbang_sarans.created_at,
+        penilaians.id_users,
+        penilaians.ss_id,
+        penilaians.nilai,
+        penilaians.tambahan_nilai,
+        ((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) AS total_nilai,
+        (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000) AS hasil_akhir,
+        users.name,
+        users.npk
+    FROM 
+        sumbang_sarans
+    LEFT JOIN 
+        penilaians ON sumbang_sarans.id = penilaians.ss_id
+    LEFT JOIN 
+        users ON sumbang_sarans.id_user = users.id
+    WHERE 
+        sumbang_sarans.status IN ( 3, 4, 5, 6, 7) ';
+
+        if (!$isAdmin) {
+            // Tambahkan filter role pengguna yang dapat dilihat
+            $dataQuery .= 'AND users.role_id IN ('.implode(',', $rolesToView).') ';
+        }
+
+        $dataQuery .= '
+    ORDER BY 
+        FIELD(sumbang_sarans.status, 7, 6, 5, 4, 3),
+        sumbang_sarans.updated_at DESC
+    ';
+
+        // Eksekusi query
+        $data = DB::select($dataQuery);
 
         // Ambil hanya id user untuk menghindari "N + 1" query
-        $userIds = $data->pluck('id_user')->unique()->toArray();
+        $userIds = collect($data)->pluck('id_user')->unique()->toArray();
 
         // Ambil data peran (role) berdasarkan user ids
         $usersRoles = User::whereIn('users.id', $userIds)
@@ -208,6 +368,7 @@ class SumbangSaranController extends Controller
                 sumbang_sarans.id,
                 sumbang_sarans.id_user,
                 sumbang_sarans.tgl_pengajuan_ide,
+                sumbang_sarans.plant,
                 sumbang_sarans.lokasi_ide,
                 sumbang_sarans.tgl_diterapkan,
                 sumbang_sarans.judul,
@@ -304,22 +465,27 @@ class SumbangSaranController extends Controller
     {
         $roles = $request->input('roles');
 
-        // Hitung total data sumbang saran
-        $totalData = DB::table('sumbang_sarans')->count();
-
-        // Query untuk mengambil data peran yang sesuai
-        $data = DB::table('sumbang_sarans')
-            ->join('users', 'sumbang_sarans.id_user', '=', 'users.id')
-            ->join('roles', 'users.role_id', '=', 'roles.id')
-            ->selectRaw('MONTH(tgl_pengajuan) as month, roles.role, COUNT(*) as count')
-            ->when(!empty($roles), function ($query) use ($roles) {
-                return $query->whereIn('roles.role', $roles);
-            })
-            ->groupBy('roles.role', 'month')
-            ->get();
-
-        // Format data untuk grafik
+        // Define categories
         $categories = [
+            'Sales' => ['DH Sales', 'SC Sales', 'UR Sales'],
+            'HT' => ['Engineering', 'UR Maintenance', 'SC HT', 'UR HT'],
+            'SupplyChainProduction' => ['DH Productions', 'UR Productions', 'SC Productions', 'FM Productions', 'SC Cut-Mac', 'UR Cut-Mac'],
+            'FinnAccHrgaIT' => ['DH Finance', 'UR Finance', 'SC Finance', 'SC HRGA', 'UR HRGA', 'IT'],
+        ];
+
+        $query = DB::table('sumbang_sarans')
+            ->join('users', 'sumbang_sarans.id_user', '=', 'users.id')
+            ->selectRaw('MONTH(tgl_pengajuan) as month, modified_by, COUNT(*) as count')
+            ->groupBy('modified_by', 'month');
+
+        if (!empty($roles)) {
+            $query->whereIn('modified_by', $roles);
+        }
+
+        $data = $query->get();
+
+        // Format data for chart
+        $categoriesMonth = [
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December',
         ];
@@ -327,24 +493,29 @@ class SumbangSaranController extends Controller
         $monthlyData = [];
         $totalMonthlyData = array_fill(0, 12, 0);
 
+        // Initialize counts for each category
+        foreach ($categories as $category => $values) {
+            $monthlyData[$category] = array_fill(0, 12, 0);
+        }
+
         foreach ($data as $item) {
-            $role = $item->role;
-            $month = $item->month - 1; // Karena index bulan dimulai dari 0
+            $month = $item->month - 1; // Convert month to 0-index
             $count = $item->count;
 
-            if (!isset($monthlyData[$role])) {
-                $monthlyData[$role] = array_fill(0, 12, 0);
+            foreach ($categories as $category => $values) {
+                if (in_array($item->modified_by, $values)) {
+                    $monthlyData[$category][$month] += $count;
+                    $totalMonthlyData[$month] += $count;
+                    break;
+                }
             }
-
-            $monthlyData[$role][$month] = $count;
-            $totalMonthlyData[$month] += $count;
         }
 
         $series = [];
 
-        foreach ($monthlyData as $role => $data) {
+        foreach ($monthlyData as $category => $data) {
             $series[] = [
-                'name' => $role,
+                'name' => $category,
                 'type' => 'column',
                 'data' => $data,
             ];
@@ -357,7 +528,7 @@ class SumbangSaranController extends Controller
         ];
 
         return response()->json([
-            'categories' => $categories,
+            'categories' => $categoriesMonth,
             'series' => $series,
         ]);
     }
@@ -383,7 +554,7 @@ class SumbangSaranController extends Controller
         }
 
         // Debugging: Log query yang akan dieksekusi
-        \Log::info('SQL Query: ' . $query->toSql());
+        \Log::info('SQL Query: '.$query->toSql());
 
         if ($employeeType === 'AllEmployee') {
             $data = $query->select('users.id as user_id', 'users.name as user_name', DB::raw('count(sumbang_sarans.id) as submission_count'))
@@ -401,7 +572,7 @@ class SumbangSaranController extends Controller
         }
 
         // Debugging: Log hasil query
-        \Log::info('Query Result: ' . json_encode($data));
+        \Log::info('Query Result: '.json_encode($data));
 
         $formattedData = $data->map(function ($item) {
             return ['name' => $item->user_name, 'y' => $item->submission_count];
@@ -418,8 +589,8 @@ class SumbangSaranController extends Controller
         // Define categories
         $categories = [
             'Sales' => ['DH Sales', 'SC Sales', 'UR Sales'],
-            'HT' => ['Engineering', 'UR Maintenance'],
-            'SupplyChainProduction' => ['UR Productions', 'SC Productions'],
+            'HT' => ['Engineering', 'UR Maintenance', 'SC HT', 'UR HT'],
+            'SupplyChainProduction' => ['DH Productions', 'UR Productions', 'SC Productions', 'FM Productions', 'SC Cut-Mac', 'UR Cut-Mac'],
             'FinnAccHrgaIT' => ['DH Finance', 'UR Finance', 'SC Finance', 'SC HRGA', 'UR HRGA'],
         ];
 
@@ -429,7 +600,7 @@ class SumbangSaranController extends Controller
 
         if ($startMonth && $endMonth) {
             $query->whereBetween('tgl_pengajuan', [
-                date('Y-m-d', strtotime($startMonth . '-01')),
+                date('Y-m-d', strtotime($startMonth.'-01')),
                 date('Y-m-t', strtotime($endMonth)),
             ]);
         }
@@ -471,6 +642,7 @@ class SumbangSaranController extends Controller
         // Validasi data yang diterima dari formulir
         $request->validate([
             'tgl_pengajuan_ide' => 'required|date',
+            'plant' => 'required|string',
             'lokasi_ide' => 'required|string',
             'tgl_diterapkan' => 'nullable|date',
             'judul' => 'required|string',
@@ -482,6 +654,7 @@ class SumbangSaranController extends Controller
         $sumbangSaran = new SumbangSaran();
         $sumbangSaran->id_user = $request->user()->id;
         $sumbangSaran->tgl_pengajuan_ide = $request->tgl_pengajuan_ide;
+        $sumbangSaran->plant = $request->plant;
         $sumbangSaran->lokasi_ide = $request->lokasi_ide;
         $sumbangSaran->tgl_diterapkan = $request->tgl_diterapkan;
         $sumbangSaran->judul = $request->judul;
@@ -525,6 +698,7 @@ class SumbangSaranController extends Controller
             'id' => $sumbangSaran->id,
             'user' => $sumbangSaran->user,
             'tgl_pengajuan_ide' => $sumbangSaran->tgl_pengajuan_ide,
+            'plant' => $sumbangSaran->plant,
             'lokasi_ide' => $sumbangSaran->lokasi_ide,
             'tgl_diterapkan' => $sumbangSaran->tgl_diterapkan,
             'judul' => $sumbangSaran->judul,
@@ -548,7 +722,7 @@ class SumbangSaranController extends Controller
             return response()->json($sumbangSaran);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             // Handle the case where no query results are found
-            return response()->json(['error' => 'Sumbang Saran not found for ID: ' . $id], 404);
+            return response()->json(['error' => 'Sumbang Saran not found for ID: '.$id], 404);
         } catch (\Exception $e) {
             // Handle other types of exceptions
             return response()->json(['error' => 'Internal Server Error'], 500);
@@ -564,8 +738,8 @@ class SumbangSaranController extends Controller
         $penilaians = PenilaianSS::where('ss_id', $id)->get();
 
         // Include file paths in the response if available
-        $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/' . $sumbangSaran->image) : null;
-        $sumbangSaran->edit_image_2_url = $sumbangSaran->image_2 ? asset('assets/image/' . $sumbangSaran->image_2) : null;
+        $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/'.$sumbangSaran->image) : null;
+        $sumbangSaran->edit_image_2_url = $sumbangSaran->image_2 ? asset('assets/image/'.$sumbangSaran->image_2) : null;
 
         // Prepare the data to return as JSON
         $response = [
@@ -586,6 +760,7 @@ class SumbangSaranController extends Controller
                 'user' => $data->user,
                 'tgl_pengajuan_ide' => $data->tgl_pengajuan_ide,
                 'lokasi_ide' => $data->lokasi_ide,
+                'plant' => $data->plant,
                 'tgl_diterapkan' => $data->tgl_diterapkan,
                 'judul' => $data->judul,
                 'keadaan_sebelumnya' => $data->keadaan_sebelumnya,
@@ -673,6 +848,7 @@ class SumbangSaranController extends Controller
         $request->validate([
             'id' => 'required|exists:sumbang_sarans,id',
             'tgl_pengajuan_ide' => 'required|date',
+            'plant' => 'required|string',
             'lokasi_ide' => 'required|string|max:255',
             'tgl_diterapkan' => 'nullable|date',
             'judul' => 'required|string|max:255',
@@ -690,6 +866,7 @@ class SumbangSaranController extends Controller
         }
 
         $sumbangSaran->tgl_pengajuan_ide = $request->tgl_pengajuan_ide;
+        $sumbangSaran->plant = $request->plant;
         $sumbangSaran->lokasi_ide = $request->lokasi_ide;
         $sumbangSaran->tgl_diterapkan = $request->tgl_diterapkan;
         $sumbangSaran->judul = $request->judul;
@@ -700,8 +877,8 @@ class SumbangSaranController extends Controller
         if ($request->hasFile('edit_image')) {
             if ($sumbangSaran->image) {
                 // Menghapus gambar yang lama
-                if (file_exists(public_path('assets/image/' . $sumbangSaran->image))) {
-                    unlink(public_path('assets/image/' . $sumbangSaran->image));
+                if (file_exists(public_path('assets/image/'.$sumbangSaran->image))) {
+                    unlink(public_path('assets/image/'.$sumbangSaran->image));
                 }
             }
             // Simpan gambar yang baru diunggah
@@ -716,8 +893,8 @@ class SumbangSaranController extends Controller
         if ($request->hasFile('edit_image_2')) {
             if ($sumbangSaran->image_2) {
                 // Menghapus gambar yang lama
-                if (file_exists(public_path('assets/image/' . $sumbangSaran->image_2))) {
-                    unlink(public_path('assets/image/' . $sumbangSaran->image_2));
+                if (file_exists(public_path('assets/image/'.$sumbangSaran->image_2))) {
+                    unlink(public_path('assets/image/'.$sumbangSaran->image_2));
                 }
             }
             // Simpan gambar yang baru diunggah
@@ -733,7 +910,6 @@ class SumbangSaranController extends Controller
 
         return response()->json(['success' => 'Data berhasil diperbarui.']);
     }
-
 
     public function kirimSS($id)
     {
@@ -785,11 +961,6 @@ class SumbangSaranController extends Controller
         // Validasi data yang diterima dari formulir
         $request->validate([
             'ss_id' => 'required|integer',
-            'telah_direvisi' => 'nullable|boolean',
-            'belum_diterapkan' => 'nullable|boolean',
-            'sedang_diterapkan' => 'nullable|boolean',
-            'sudah_diterapkan' => 'nullable|boolean',
-            'tidak_bisa_diterapkan' => 'nullable|boolean',
             'keterangan' => 'nullable|string',
         ]);
 
@@ -797,26 +968,32 @@ class SumbangSaranController extends Controller
         $penilaian = new PenilaianSS();
 
         // Atur atribut berdasarkan data yang diterima dari permintaan
-        if (isset($request->telah_direvisi)) {
-            $penilaian->telah_direvisi = $request->telah_direvisi;
-        }
-        if (isset($request->belum_diterapkan)) {
-            $penilaian->belum_diterapkan = $request->belum_diterapkan;
-        }
-        if (isset($request->sedang_diterapkan)) {
-            $penilaian->sedang_diterapkan = $request->sedang_diterapkan;
-        }
-        if (isset($request->sudah_diterapkan)) {
-            $penilaian->sudah_diterapkan = $request->sudah_diterapkan;
-        }
-        if (isset($request->tidak_bisa_diterapkan)) {
-            $penilaian->tidak_bisa_diterapkan = $request->tidak_bisa_diterapkan;
-        }
-        $penilaian->keterangan = $request->keterangan;
         $penilaian->ss_id = $request->ss_id;
+        $penilaian->keterangan = $request->keterangan;
+        $penilaian->nilai = $request->nilai;
+        $penilaian->tambahan_nilai = $request->tambahan_nilai;
         $penilaian->modified_by = $request->user()->name;
-
         $penilaian->id_users = $request->user()->id;
+
+        // Set status sesuai dengan radio button yang dipilih
+        switch ($request->status) {
+            case 'telah_direvisi':
+                $penilaian->telah_direvisi = true;
+                break;
+            case 'belum_diterapkan':
+                $penilaian->belum_diterapkan = true;
+                break;
+            case 'sedang_diterapkan':
+                $penilaian->sedang_diterapkan = true;
+                break;
+            case 'sudah_diterapkan':
+                $penilaian->sudah_diterapkan = true;
+                break;
+            case 'tidak_bisa_diterapkan':
+                $penilaian->tidak_bisa_diterapkan = true;
+                break;
+        }
+
         // Simpan data Penilaian
         $penilaian->save();
 
@@ -975,6 +1152,7 @@ class SumbangSaranController extends Controller
             sumbang_sarans.id,
             sumbang_sarans.id_user,
             sumbang_sarans.tgl_pengajuan_ide,
+            sumbang_sarans.plant,
             sumbang_sarans.lokasi_ide,
             sumbang_sarans.tgl_diterapkan,
             sumbang_sarans.judul,
@@ -1016,7 +1194,7 @@ class SumbangSaranController extends Controller
 
     public function download($filename)
     {
-        $filePath = public_path('assets/image/' . $filename);
+        $filePath = public_path('assets/image/'.$filename);
 
         if (!file_exists($filePath)) {
             return abort(404, 'File not found.');
@@ -1026,7 +1204,7 @@ class SumbangSaranController extends Controller
 
         return Response::make($fileContents, 200, [
             'Content-Type' => mime_content_type($filePath),
-            'Content-Disposition' => 'attachment; filename="' . basename($filePath) . '"',
+            'Content-Disposition' => 'attachment; filename="'.basename($filePath).'"',
         ]);
     }
 }

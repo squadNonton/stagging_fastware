@@ -31,6 +31,7 @@
                                             <th class="text-center" width="100px">Nama</th>
                                             <th class="text-center" width="40px">NPK</th>
                                             <th class="text-center" width="100px">Bagian</th>
+                                            <th class="text-center" width="100px">Plant</th>
                                             <th class="text-center" width="100px">Judul Ide</th>
                                             <th class="text-center" width="100px">Poin</th>
                                             <th class="text-center" width="100px">+poin</th>
@@ -51,6 +52,7 @@
                                                 <td class="text-center py-3">{{ $item->name }}</td>
                                                 <td class="text-center py-3">{{ $item->npk }}</td>
                                                 <td class="text-center py-3">{{ $usersRoles[$item->id_user] ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $item->plant }}</td>
                                                 <td class="text-center py-3">{{ $item->judul }}</td>
                                                 <td class="text-center py-3" style="height: 50px;">{{ $item->nilai }}</td>
                                                 <td class="text-center py-3" style="height: 50px;">
@@ -91,20 +93,30 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    @if ($item->status != 2 && $item->status != 3 && $item->status != 4 && $item->status != 5 && $item->status != 6)
-                                                        <button class="btn btn-primary btn-sm"
-                                                            onclick="openEditModal({{ $item->id }})" title="Edit">
-                                                            <i class="fa-solid fa-edit fa-1x"></i>
-                                                        </button>
-                                                        <button class="btn btn-danger btn-sm"
-                                                            onclick="confirmDelete('{{ $item->id }}')" title="Hapus">
-                                                            <i class="fas fa-trash fa-1x"></i>
-                                                        </button>
-                                                        <button class="btn btn-primary btn-sm"
-                                                            onclick="confirmKirim({{ $item->id }})"
-                                                            data-id="{{ $item->id }}" title="Kirim">
-                                                            <i class="fa-solid fa fa-paper-plane fa-1x"></i>
-                                                        </button>
+                                                    @if (
+                                                        $item->status != 2 &&
+                                                            $item->status != 3 &&
+                                                            $item->status != 4 &&
+                                                            $item->status != 5 &&
+                                                            $item->status != 6 &&
+                                                            $item->status != 7)
+                                                        @if (Auth::user()->role_id != 14 && Auth::user()->role_id != 20)
+                                                            <button class="btn btn-primary btn-sm"
+                                                                onclick="openEditModal({{ $item->id }})"
+                                                                title="Edit">
+                                                                <i class="fa-solid fa-edit fa-1x"></i>
+                                                            </button>
+                                                            <button class="btn btn-danger btn-sm"
+                                                                onclick="confirmDelete('{{ $item->id }}')"
+                                                                title="Hapus">
+                                                                <i class="fas fa-trash fa-1x"></i>
+                                                            </button>
+                                                            <button class="btn btn-primary btn-sm"
+                                                                onclick="confirmKirim({{ $item->id }})"
+                                                                data-id="{{ $item->id }}" title="Kirim">
+                                                                <i class="fa-solid fa fa-paper-plane fa-1x"></i>
+                                                            </button>
+                                                        @endif
                                                     @endif
                                                     <button class="btn btn-success btn-sm" id="fetchDataButton"
                                                         onclick="openViewSS({{ $item->id }})" title="lihat">
@@ -161,6 +173,21 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Plant<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="plant" name="plant" required>
+                                            <option value=""> ----- Pilih Plant -----</option>
+                                            <option value="DS8">DS8</option>
+                                            <option value="Deltamas">Deltamas</option>
+                                            <option value="Tangerang">Tangerang</option>
+                                            <option value="Semarang">Semarang</option>
+                                            <option value="Surabaya">Surabaya</option>
+                                            <option value="Bandung">Bandung</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
                                     <label for="inputText" class="col-sm-2 col-form-label">Lokasi Ide <span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
@@ -169,11 +196,10 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="inputDate" class="col-sm-2 col-form-label">Tgl. Diterapkan<span
-                                            style="color: red;">*</span></label>
+                                    <label for="inputDate" class="col-sm-2 col-form-label">Tgl. Diterapkan</label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="tgl_diterapkan"
-                                            name="tgl_diterapkan" required>
+                                            name="tgl_diterapkan">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -192,10 +218,11 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="inputNumber" class="col-sm-2 col-form-label">File Upload (Sebelum)</label>
+                                    <label for="inputNumber" class="col-sm-2 col-form-label">File Upload (Sebelum) <span
+                                            style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input class="form-control" type="file" id="image" name="image"
-                                            accept="*/*">
+                                            accept="*/*" required>
                                         <div id="image-preview" style="display:none; margin-top: 10px;"></div>
                                     </div>
                                 </div>
@@ -207,18 +234,19 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="inputNumber" class="col-sm-2 col-form-label">File Upload (Sesudah)</label>
+                                    <label for="inputNumber" class="col-sm-2 col-form-label">File Upload (Sesudah)<span
+                                            style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input class="form-control" type="file" id="image_2" name="image_2"
-                                            accept="*/*">
+                                            accept="*/*" required>
                                         <div id="image_2-preview" style="display:none; margin-top: 10px;"></div>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="inputPassword" class="col-sm-2 col-form-label">Keuntungan Dari Penerapan
-                                        Ide</label>
+                                        Ide <span style="color: red;">*</span></label>
                                     <div class="col-sm-10">
-                                        <textarea class="form-control" style="height: 100px" id="keuntungan_ide" name="keuntungan_ide"></textarea>
+                                        <textarea class="form-control" style="height: 100px" id="keuntungan_ide" name="keuntungan_ide" required></textarea>
                                     </div>
                                 </div>
                             </form>
@@ -287,6 +315,21 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
+                                    <label for="editPlant" class="col-sm-2 col-form-label">Plant<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="editPlant" name="plant" required>
+                                            <option value="">----- Pilih Plant -----</option>
+                                            <option value="DS8">DS8</option>
+                                            <option value="Deltamas">Deltamas</option>
+                                            <option value="Tangerang">Tangerang</option>
+                                            <option value="Semarang">Semarang</option>
+                                            <option value="Surabaya">Surabaya</option>
+                                            <option value="Bandung">Bandung</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
                                     <label for="editLokasiIde" class="col-sm-2 col-form-label">Lokasi Ide <span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
@@ -295,8 +338,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="editTglDiterapkan" class="col-sm-2 col-form-label">Tgl. Diterapkan<span
-                                            style="color: red;">*</span></label>
+                                    <label for="editTglDiterapkan" class="col-sm-2 col-form-label">Tgl. Diterapkan</label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="editTglDiterapkan"
                                             name="tgl_diterapkan">
@@ -319,7 +361,8 @@
                                 </div>
                                 <!-- Input File Upload 1 -->
                                 <div class="row mb-3">
-                                    <label for="editImage" class="col-sm-2 col-form-label">File Upload (Sebelum)</label>
+                                    <label for="editImage" class="col-sm-2 col-form-label">File Upload (Sebelum) <span
+                                            style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="file" class="form-control mt-2" id="editImage"
                                             name="edit_image">
@@ -339,7 +382,8 @@
                                 </div>
                                 <!-- Input File Upload 2 -->
                                 <div class="row mb-3">
-                                    <label for="editImage2" class="col-sm-2 col-form-label">File Upload (Sesudah)</label>
+                                    <label for="editImage2" class="col-sm-2 col-form-label">File Upload (Sesudah) <span
+                                            style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="file" class="form-control mt-2" id="editImage2"
                                             name="edit_image_2">
@@ -352,7 +396,7 @@
                                 </div>
                                 <div class="row mb-3">
                                     <label for="editKeuntungan" class="col-sm-2 col-form-label">Keuntungan Dari Penerapan
-                                        Ide</label>
+                                        Ide <span style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <textarea class="form-control" style="height: 100px" id="editKeuntungan" name="keuntungan_ide"></textarea>
                                     </div>
@@ -430,6 +474,21 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
+                                    <label for="editPlant" class="col-sm-2 col-form-label">Plant<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="viewPlant" name="plant" disabled required>
+                                            <option value="">----- Pilih Plant -----</option>
+                                            <option value="DS8">DS8</option>
+                                            <option value="Deltamas">Deltamas</option>
+                                            <option value="Tangerang">Tangerang</option>
+                                            <option value="Semarang">Semarang</option>
+                                            <option value="Surabaya">Surabaya</option>
+                                            <option value="Bandung">Bandung</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
                                     <label for="viewLokasiIde" class="col-sm-2 col-form-label">Lokasi Ide <span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
@@ -438,8 +497,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="viewTglDiterapkan" class="col-sm-2 col-form-label">Tgl. Diterapkan<span
-                                            style="color: red;">*</span></label>
+                                    <label for="viewTglDiterapkan" class="col-sm-2 col-form-label">Tgl. Diterapkan</label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="viewTglDiterapkan"
                                             name="tgl_diterapkan" disabled>
@@ -462,7 +520,7 @@
                                 </div>
                                 <div class="row mb-3">
                                     <label for="viewImage" class="col-sm-2 col-form-label">File Upload
-                                        (Sebelumnya)</label>
+                                        (Sebelumnya) <span style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <div id="view-image-preview" style="margin-top: 10px;"></div>
                                     </div>
@@ -476,14 +534,15 @@
                                 </div>
                                 <!-- Input File Upload 2 -->
                                 <div class="row mb-3">
-                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload (Sesudah)</label>
+                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload (Sesudah) <span
+                                            style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <div id="view-image2-preview" style="margin-top: 10px;"></div>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="viewKeuntungan" class="col-sm-2 col-form-label">Keuntungan Dari Penerapan
-                                        Ide</label>
+                                        Ide <span style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <textarea class="form-control" style="height: 100px" id="viewKeuntungan" name="keuntungan_ide" disabled></textarea>
                                     </div>
@@ -619,6 +678,7 @@
                         $('#editTglPengajuan').val(response.tgl_pengajuan_ide);
                         $('#editLokasiIde').val(response.lokasi_ide);
                         $('#editTglDiterapkan').val(response.tgl_diterapkan);
+                        $('#editPlant').val(response.plant); // Set plant
                         $('#editJudulIde').val(response.judul);
                         $('#editKeadaanSebelumnya').val(response.keadaan_sebelumnya);
                         $('#editUsulanIde').val(response.usulan_ide);
@@ -672,6 +732,7 @@
                     }
                 });
             }
+
 
             function submitEditForm() {
                 var formData = new FormData($('#editSumbangSaranForm')[0]);
@@ -830,6 +891,7 @@
                         $('#viewnpk').val(response.user.npk);
                         $('#viewTglPengajuan').val(response.tgl_pengajuan_ide);
                         $('#viewLokasiIde').val(response.lokasi_ide);
+                        $('#viewPlant').val(response.plant);
                         $('#viewTglDiterapkan').val(response.tgl_diterapkan);
                         $('#viewJudulIde').val(response.judul);
                         $('#viewKeadaanSebelumnya').val(response.keadaan_sebelumnya);

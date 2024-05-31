@@ -16,6 +16,7 @@ class SumbangSaran extends Model
         'tgl_pengajuan_ide',
         'lokasi_ide',
         'tgl_diterapkan',
+        'plant',
         'judul',
         'keadaan_sebelumnya',
         'image',

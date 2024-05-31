@@ -17,164 +17,281 @@
                 <input type="text" id="searchInput" class="form-control me-2" placeholder="Cari postingan..."
                     value="{{ request()->input('search') }}">
                 <button class="btn btn-secondary me-2" id="filterLikesHigh" title="Like Terbanyak">
-                    <i class="fas fa-thumbs-up"></i>
-                </button>
-                <button class="btn btn-secondary me-2" id="filterLikesLow" title="Like Terendah">
-                    <i class="fas fa-thumbs-down"></i>
+                    <i class="fas fa-crown"></i>
                 </button>
                 <button class="btn btn-secondary me-2" id="filterNewest" title="SS Terbaru">
                     <i class="fas fa-sort-amount-down"></i>
                 </button>
-                <button class="btn btn-secondary" id="filterOldest" title=" SS Terlama">
+                <button class="btn btn-secondary" id="filterOldest" title="SS Terlama">
                     <i class="fas fa-sort-amount-up"></i>
                 </button>
             </div>
             <div class="row" id="postsContainer">
-                @foreach ($data as $post)
-                    <div class="col-3 mb-4 post-item" data-likes="{{ $post->suka }}"
-                        data-date="{{ $post->tgl_pengajuan }}" data-title="{{ strtolower($post->judul) }}"
-                        data-user="{{ strtolower($post->user->name) }}">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <img src="assets/img/user.png" alt="User Avatar" class="rounded-circle me-2"
-                                        style="width: 50px; height: 50px;">
-                                    <div>
-                                        <h6 class="mb-0">{{ $post->user->name }}</h6>
-                                        <small
-                                            class="text-muted">{{ \Carbon\Carbon::parse($post->tgl_pengajuan)->diffForHumans() }}</small>
+                <div class="container">
+                    <div class="row">
+                        <!-- First Place -->
+                        @if ($data->count() > 0)
+                            <div class="col-12 mb-4 post-item" data-likes="{{ $data[0]->suka }}"
+                                data-date="{{ $data[0]->tgl_pengajuan }}" data-title="{{ strtolower($data[0]->judul) }}"
+                                data-user="{{ strtolower($data[0]->user->name) }}">
+                                <div class="card position-relative" style="background: linear-gradient(to right, #FFD700, #FFA500);">
+                                    <div class="position-absolute top-0 end-0 m-2 badge rounded-pill text-warning" style="background-color: #333; font-size: 1.5rem; padding: 1rem;">
+                                        🥇 1st Place
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3 d-flex">
+                                            <img src="assets/img/user.png" alt="User Avatar" class="rounded-circle me-2" style="width: 50px; height: 50px;">
+                                            <div>
+                                                <h6 class="mb-0">{{ $data[0]->user->name }}</h6>
+                                                <small class="text-muted">{{ \Carbon\Carbon::parse($data[0]->tgl_pengajuan)->diffForHumans() }}</small>
+                                            </div>
+                                        </div>
+                                        <p class="mb-4">{{ $data[0]->judul }}</p>
+                                        <div class="">
+                                            <button class="btn btn-primary btn-sm like-button" data-id="{{ $data[0]->id }}">
+                                                <i class="fas fa-thumbs-up"></i> <span class="like-count">{{ $data[0]->suka }}</span>
+                                            </button>
+                                            <span class="ms-2" id="likeEmote">{{ $data[0]->suka > 9 ? '🔥' : '' }}</span>
+                                            <button class="btn btn-success btn-sm" id="fetchDataButton" onclick="viewFormSS({{ $data[0]->id }})" title="Lihat">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <p class="mb-4">{{ $post->judul }}</p>
-                                <div class="">
-                                    <button class="btn btn-primary btn-sm like-button" data-id="{{ $post->id }}">
-                                        <i class="fas fa-thumbs-up"></i> <span
-                                            class="like-count">{{ $post->suka }}</span>
-                                    </button>
-                                    <span class="ms-2" id="likeEmote">{{ $post->suka > 9 ? '🔥' : '' }}</span>
-                                    <!-- Display fire emoji if likes > 10 -->
-                                    <button class="btn btn-success btn-sm" id="fetchDataButton"
-                                        onclick="openViewSS({{ $post->id }})" title="Lihat">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
+                            </div>
+                        @endif
+                        
+                        <!-- Second Place -->
+                        @if ($data->count() > 1)
+                            <div class="col-6 mb-4 post-item" data-likes="{{ $data[1]->suka }}"
+                                data-date="{{ $data[1]->tgl_pengajuan }}" data-title="{{ strtolower($data[1]->judul) }}"
+                                data-user="{{ strtolower($data[1]->user->name) }}">
+                                <div class="card position-relative" style="background: linear-gradient(to right, #C0C0C0, #A9A9A9);">
+                                    <div class="position-absolute top-0 end-0 m-2 badge rounded-pill text-secondary" style="background-color: #333; font-size: 1.5rem; padding: 1rem;">
+                                        🥈 2nd Place
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3 d-flex">
+                                            <img src="assets/img/user.png" alt="User Avatar" class="rounded-circle me-2" style="width: 50px; height: 50px;">
+                                            <div>
+                                                <h6 class="mb-0">{{ $data[1]->user->name }}</h6>
+                                                <small class="text-muted">{{ \Carbon\Carbon::parse($data[1]->tgl_pengajuan)->diffForHumans() }}</small>
+                                            </div>
+                                        </div>
+                                        <p class="mb-4">{{ $data[1]->judul }}</p>
+                                        <div class="">
+                                            <button class="btn btn-primary btn-sm like-button" data-id="{{ $data[1]->id }}">
+                                                <i class="fas fa-thumbs-up"></i> <span class="like-count">{{ $data[1]->suka }}</span>
+                                            </button>
+                                            <span class="ms-2" id="likeEmote">{{ $data[1]->suka > 9 ? '🔥' : '' }}</span>
+                                            <button class="btn btn-success btn-sm" id="fetchDataButton" onclick="viewFormSS({{ $data[1]->id }})" title="Lihat">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+                        @endif
+                        
+                        <!-- Third Place -->
+                        @if ($data->count() > 2)
+                            <div class="col-6 mb-4 post-item" data-likes="{{ $data[2]->suka }}"
+                                data-date="{{ $data[2]->tgl_pengajuan }}" data-title="{{ strtolower($data[2]->judul) }}"
+                                data-user="{{ strtolower($data[2]->user->name) }}">
+                                <div class="card position-relative" style="background: linear-gradient(to right, #cd7f32, #dbaa3f);">
+                                    <div class="position-absolute top-0 end-0 m-2 badge rounded-pill text-info" style="background-color: #333; font-size: 1.5rem; padding: 1rem;">
+                                        🥉 3rd Place
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3 d-flex">
+                                            <img src="assets/img/user.png" alt="User Avatar" class="rounded-circle me-2" style="width: 50px; height: 50px;">
+                                            <div>
+                                                <h6 class="mb-0">{{ $data[2]->user->name }}</h6>
+                                                <small class="text-muted">{{ \Carbon\Carbon::parse($data[2]->tgl_pengajuan)->diffForHumans() }}</small>
+                                            </div>
+                                        </div>
+                                        <p class="mb-4">{{ $data[2]->judul }}</p>
+                                        <div class="">
+                                            <button class="btn btn-primary btn-sm like-button" data-id="{{ $data[2]->id }}">
+                                                <i class="fas fa-thumbs-up"></i> <span class="like-count">{{ $data[2]->suka }}</span>
+                                            </button>
+                                            <span class="ms-2" id="likeEmote">{{ $data[2]->suka > 9 ? '🔥' : '' }}</span>
+                                            <button class="btn btn-success btn-sm" id="fetchDataButton" onclick="viewFormSS({{ $data[2]->id }})" title="Lihat">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                
+                        <!-- Other Posts -->
+                        @foreach ($data as $index => $post)
+                            @if ($index > 2)
+                                <div class="col-3 mb-4 post-item" data-likes="{{ $post->suka }}"
+                                    data-date="{{ $post->tgl_pengajuan }}" data-title="{{ strtolower($post->judul) }}"
+                                    data-user="{{ strtolower($post->user->name) }}">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="mb-3 d-flex">
+                                                <img src="assets/img/user.png" alt="User Avatar" class="rounded-circle me-2" style="width: 50px; height: 50px;">
+                                                <div>
+                                                    <h6 class="mb-0">{{ $post->user->name }}</h6>
+                                                    <small class="text-muted">{{ \Carbon\Carbon::parse($post->tgl_pengajuan)->diffForHumans() }}</small>
+                                                </div>
+                                            </div>
+                                            <p class="mb-4">{{ $post->judul }}</p>
+                                            <div class="">
+                                                <button class="btn btn-primary btn-sm like-button" data-id="{{ $post->id }}">
+                                                    <i class="fas fa-thumbs-up"></i> <span class="like-count">{{ $post->suka }}</span>
+                                                </button>
+                                                <span class="ms-2" id="likeEmote">{{ $post->suka > 9 ? '🔥' : '' }}</span>
+                                                <button class="btn btn-success btn-sm" id="fetchDataButton" onclick="viewFormSS({{ $post->id }})" title="Lihat">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+                
+                <!-- Readonly Modal Form View Sumbang Saran -->
+                <div class="modal fade" id="viewSumbangSaranModal" tabindex="-1"
+                    aria-labelledby="viewSumbangSaranModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="viewSumbangSaranModalLabel">Form View SS</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form View Sumbang Saran -->
+                                <form id="viewSumbangSaranForm" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="row mb-3">
+                                        <label for="editLokasiIde" class="col-sm-2 col-form-label">Nama<span
+                                                style="color: red;">*</span></label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="viewname" name="nama"
+                                                disabled>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="editLokasiIde" class="col-sm-2 col-form-label">Npk<span
+                                                style="color: red;">*</span></label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="viewnpk" name="npk"
+                                                disabled>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="viewTglPengajuan" class="col-sm-2 col-form-label">Tgl. pengajuan Ide
+                                            <span style="color: red;">*</span></label>
+                                        <div class="col-sm-10">
+                                            <input type="date" class="form-control" id="viewTglPengajuan"
+                                                name="tgl_pengajuan_ide" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="editPlant" class="col-sm-2 col-form-label">Plant<span
+                                                style="color: red;">*</span></label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control" id="viewPlant" name="plant" disabled required>
+                                                <option value="">----- Pilih Plant -----</option>
+                                                <option value="DS8">DS8</option>
+                                                <option value="Deltamas">Deltamas</option>
+                                                <option value="Tangerang">Tangerang</option>
+                                                <option value="Semarang">Semarang</option>
+                                                <option value="Surabaya">Surabaya</option>
+                                                <option value="Bandung">Bandung</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="viewLokasiIde" class="col-sm-2 col-form-label">Lokasi Ide <span
+                                                style="color: red;">*</span></label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="viewLokasiIde"
+                                                name="lokasi_ide" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="viewTglDiterapkan" class="col-sm-2 col-form-label">Tgl.
+                                            Diterapkan</label>
+                                        <div class="col-sm-10">
+                                            <input type="date" class="form-control" id="viewTglDiterapkan"
+                                                name="tgl_diterapkan" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="viewJudulIde" class="col-sm-2 col-form-label">Judul Ide <span
+                                                style="color: red;">*</span></label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="viewJudulIde" name="judul"
+                                                disabled>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="viewKeadaanSebelumnya" class="col-sm-2 col-form-label">Keadaan
+                                            Sebelumnya
+                                            (Permasalahan) <span style="color: red;">*</span></label>
+                                        <div class="col-sm-10">
+                                            <textarea class="form-control" style="height: 100px" id="viewKeadaanSebelumnya" name="keadaan_sebelumnya" disabled></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="viewImage" class="col-sm-2 col-form-label">File Upload
+                                            (Sebelumnya) <span style="color: red;">*</span></label>
+                                        <div class="col-sm-10">
+                                            <div id="view-image-preview" style="margin-top: 10px;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="viewUsulanIde" class="col-sm-2 col-form-label">Usulan Ide <span
+                                                style="color: red;">*</span></label>
+                                        <div class="col-sm-10">
+                                            <textarea class="form-control" style="height: 100px" id="viewUsulanIde" name="usulan_ide" disabled></textarea>
+                                        </div>
+                                    </div>
+                                    <!-- Input File Upload 2 -->
+                                    <div class="row mb-3">
+                                        <label for="viewImage2" class="col-sm-2 col-form-label">File Upload (Sesudah)
+                                            <span style="color: red;">*</span></label>
+                                        <div class="col-sm-10">
+                                            <div id="view-image2-preview" style="margin-top: 10px;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="viewKeuntungan" class="col-sm-2 col-form-label">Keuntungan Dari
+                                            Penerapan
+                                            Ide <span style="color: red;">*</span></label>
+                                        <div class="col-sm-10">
+                                            <textarea class="form-control" style="height: 100px" id="viewKeuntungan" name="keuntungan_ide" disabled></textarea>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="viewSumbangSaranId" name="id">
+                                </form>
                             </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
-            <!-- Readonly Modal Form View Sumbang Saran -->
-            <div class="modal fade" id="viewSumbangSaranModal" tabindex="-1" aria-labelledby="viewSumbangSaranModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="viewSumbangSaranModalLabel">Form View SS</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Form View Sumbang Saran -->
-                            <form id="viewSumbangSaranForm" enctype="multipart/form-data">
-                                @csrf
-                                <div class="row mb-3">
-                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Nama<span
-                                            style="color: red;">*</span></label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="viewname" name="nama" disabled>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Npk<span
-                                            style="color: red;">*</span></label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="viewnpk" name="npk" disabled>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="viewTglPengajuan" class="col-sm-2 col-form-label">Tgl. pengajuan Ide <span
-                                            style="color: red;">*</span></label>
-                                    <div class="col-sm-10">
-                                        <input type="date" class="form-control" id="viewTglPengajuan"
-                                            name="tgl_pengajuan_ide" disabled>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="viewLokasiIde" class="col-sm-2 col-form-label">Lokasi Ide <span
-                                            style="color: red;">*</span></label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="viewLokasiIde" name="lokasi_ide"
-                                            disabled>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="viewTglDiterapkan" class="col-sm-2 col-form-label">Tgl. Diterapkan<span
-                                            style="color: red;">*</span></label>
-                                    <div class="col-sm-10">
-                                        <input type="date" class="form-control" id="viewTglDiterapkan"
-                                            name="tgl_diterapkan" disabled>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="viewJudulIde" class="col-sm-2 col-form-label">Judul Ide <span
-                                            style="color: red;">*</span></label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="viewJudulIde" name="judul"
-                                            disabled>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="viewKeadaanSebelumnya" class="col-sm-2 col-form-label">Keadaan Sebelumnya
-                                        (Permasalahan) <span style="color: red;">*</span></label>
-                                    <div class="col-sm-10">
-                                        <textarea class="form-control" style="height: 100px" id="viewKeadaanSebelumnya" name="keadaan_sebelumnya" disabled></textarea>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="viewImage" class="col-sm-2 col-form-label">File Upload
-                                        (Sebelumnya)</label>
-                                    <div class="col-sm-10">
-                                        <div id="view-image-preview" style="margin-top: 10px;"></div>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="viewUsulanIde" class="col-sm-2 col-form-label">Usulan Ide <span
-                                            style="color: red;">*</span></label>
-                                    <div class="col-sm-10">
-                                        <textarea class="form-control" style="height: 100px" id="viewUsulanIde" name="usulan_ide" disabled></textarea>
-                                    </div>
-                                </div>
-                                <!-- Input File Upload 2 -->
-                                <div class="row mb-3">
-                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload (Sesudah)</label>
-                                    <div class="col-sm-10">
-                                        <div id="view-image2-preview" style="margin-top: 10px;"></div>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="viewKeuntungan" class="col-sm-2 col-form-label">Keuntungan Dari Penerapan
-                                        Ide</label>
-                                    <div class="col-sm-10">
-                                        <textarea class="form-control" style="height: 100px" id="viewKeuntungan" name="keuntungan_ide" disabled></textarea>
-                                    </div>
-                                </div>
-                                <input type="hidden" id="viewSumbangSaranId" name="id">
-                            </form>
-                        </div>
-                    </div>
                 </div>
-            </div>
-            <!-- Modal Gambar -->
-            <div class="modal fade" id="viewImageModal" tabindex="-1" aria-labelledby="viewImageModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="viewImageModalLabel">Gambar</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <img id="viewModalImage" src="" class="img-fluid">
+                <!-- Modal Gambar -->
+                <div class="modal fade" id="viewImageModal" tabindex="-1" aria-labelledby="viewImageModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="viewImageModalLabel">Gambar</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <img id="viewModalImage" src="" class="img-fluid">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -188,12 +305,6 @@
                 params.set('search', searchQuery);
                 window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
                 filterPosts();
-            });
-
-            document.getElementById('filterLikesLow').addEventListener('click', function() {
-                let params = new URLSearchParams(window.location.search);
-                params.set('sort', 'likesLow');
-                window.location.search = params.toString();
             });
 
             document.getElementById('filterLikesHigh').addEventListener('click', function() {
@@ -263,66 +374,66 @@
                 });
             });
 
-            function openViewSS(id) {
+            //viewmodal
+            function viewFormSS(id) {
                 $.ajax({
-                    url: '{{ route('sumbangsaran.show', ':id') }}'.replace(':id', id),
+                    url: '{{ route('sechead.show', ':id') }}'.replace(':id', id),
                     type: 'GET',
                     success: function(response) {
-                        // Mengisi data ke dalam form modal
-                        $('#viewname').val(response.user.name);
-                        $('#viewnpk').val(response.user.npk);
-                        $('#viewTglPengajuan').val(response.tgl_pengajuan_ide);
-                        $('#viewLokasiIde').val(response.lokasi_ide);
-                        $('#viewTglDiterapkan').val(response.tgl_diterapkan);
-                        $('#viewJudulIde').val(response.judul);
-                        $('#viewKeadaanSebelumnya').val(response.keadaan_sebelumnya);
-                        $('#viewUsulanIde').val(response.usulan_ide);
-                        $('#viewKeuntungan').val(response.keuntungan_ide);
-                        $('#viewSumbangSaranId').val(response.id);
+                        console.log(response); // Tambahkan ini untuk debug
+                        if (response) {
+                            $('#viewname').val(response.user.name);
+                            $('#viewnpk').val(response.user.npk);
+                            $('#viewTglPengajuan').val(response.tgl_pengajuan_ide);
+                            $('#viewPlant').val(response.plant);
+                            $('#viewLokasiIde').val(response.lokasi_ide);
+                            $('#viewTglDiterapkan').val(response.tgl_diterapkan);
+                            $('#viewJudulIde').val(response.judul);
+                            $('#viewKeadaanSebelumnya').val(response.keadaan_sebelumnya);
+                            $('#viewUsulanIde').val(response.usulan_ide);
+                            $('#viewKeuntungan').val(response.keuntungan_ide);
+                            $('#viewSumbangSaranId').val(response.id);
 
-                        // Menampilkan file pertama
-                        if (response.file_name && response.image) {
-                            var fileExtension1 = response.file_name.split('.').pop().toLowerCase();
-                            var fileLink1 = '{{ asset('assets/image/') }}/' + response.image;
-
-                            if (['jpg', 'jpeg', 'png'].includes(fileExtension1)) {
-                                $('#view-image-preview').html('<img src="' + fileLink1 +
-                                    '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
-                                    fileLink1 + '">');
+                            if (response.file_name && response.image) {
+                                var fileExtension1 = response.file_name.split('.').pop().toLowerCase();
+                                var fileLink1 = '{{ asset('assets/image/') }}/' + response.image;
+                                if (['jpg', 'jpeg', 'png'].includes(fileExtension1)) {
+                                    $('#view-image-preview').html('<img src="' + fileLink1 +
+                                        '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
+                                        fileLink1 + '">');
+                                } else {
+                                    $('#view-image-preview').html('<a href="' + fileLink1 + '" download="' +
+                                        response.file_name + '">' + response.file_name + '</a>');
+                                }
                             } else {
-                                $('#view-image-preview').html('<a href="' + fileLink1 + '" download="' + response
-                                    .file_name + '">' + response.file_name + '</a>');
+                                $('#view-image-preview').html('');
                             }
-                        } else {
-                            $('#view-image-preview').html('<p>No file uploaded</p>');
-                        }
 
-                        // Menampilkan file kedua
-                        if (response.file_name_2 && response.image_2) {
-                            var fileExtension2 = response.file_name_2.split('.').pop().toLowerCase();
-                            var fileLink2 = '{{ asset('assets/image/') }}/' + response.image_2;
-
-                            if (['jpg', 'jpeg', 'png'].includes(fileExtension2)) {
-                                $('#view-image2-preview').html('<img src="' + fileLink2 +
-                                    '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
-                                    fileLink2 + '">');
+                            if (response.file_name_2 && response.image_2) {
+                                var fileExtension2 = response.file_name_2.split('.').pop().toLowerCase();
+                                var fileLink2 = '{{ asset('assets/image/') }}/' + response.image_2;
+                                if (['jpg', 'jpeg', 'png'].includes(fileExtension2)) {
+                                    $('#view-image2-preview').html('<img src="' + fileLink2 +
+                                        '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
+                                        fileLink2 + '">');
+                                } else {
+                                    $('#view-image2-preview').html('<a href="' + fileLink2 + '" download="' +
+                                        response.file_name_2 + '">' + response.file_name_2 + '</a>');
+                                }
                             } else {
-                                $('#view-image2-preview').html('<a href="' + fileLink2 + '" download="' + response
-                                    .file_name_2 + '">' + response.file_name_2 + '</a>');
+                                $('#view-image2-preview').html('');
                             }
-                        } else {
-                            $('#view-image2-preview').html('<p>No file uploaded</p>');
-                        }
 
-                        // Menampilkan modal
-                        $('#viewSumbangSaranModal').modal('show');
+                            $('#viewSumbangSaranModal').modal('show');
+                        } else {
+                            console.error('No response data');
+                        }
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText);
                     }
                 });
             }
-
             // Event listener untuk gambar yang diklik
             $(document).on('click', '.clickable-view-image', function() {
                 var imgSrc = $(this).data('img-src');

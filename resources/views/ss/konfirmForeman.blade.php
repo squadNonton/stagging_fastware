@@ -30,6 +30,7 @@
                                             <th class="text-center" width="100px">Bagian</th>
                                             <th class="text-center" width="100px">Judul Ide</th>
                                             <th class="text-center" width="90px">Tanggal Pengajuan Ide</th>
+                                            <th class="text-center" width="90px">Plant</th>
                                             <th class="text-center" width="70px">Lokasi</th>
                                             <th class="text-center" width="100px">Tanggal Diterapkan</th>
                                             <th class="text-center" width="100px">Pembaruan Terakhir</th>
@@ -41,11 +42,12 @@
                                         @foreach ($data as $data)
                                             <tr>
                                                 <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                                                <td class="text-center py-3">{{ $data->user->name ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $data->user->npk ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $data->name }}</td>
+                                                <td class="text-center py-3">{{ $data->npk }}</td>
                                                 <td class="text-center py-3">{{ $usersRoles[$data->id_user] ?? '' }}</td>
                                                 <td class="text-center py-3">{{ $data->judul }}</td>
                                                 <td class="text-center py-3">{{ $data->tgl_pengajuan_ide }}</td>
+                                                <td class="text-center py-3">{{ $data->plant }}</td>
                                                 <td class="text-center py-3">{{ $data->lokasi_ide }}</td>
                                                 <td class="text-center py-3">{{ $data->tgl_diterapkan }}</td>
                                                 <td class="text-center py-3">{{ $data->created_at }}</td>
@@ -77,12 +79,14 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    @if ($data->status != 3 && $data->status != 4 && $data->status != 5)
-                                                        <button class="btn btn-primary btn-sm"
-                                                            onclick="confirmKirim({{ $data->id }})"
-                                                            data-id="{{ $data->id }}" title="Kirim">
-                                                            <i class="fa-solid fa fa-paper-plane fa-1x"></i>
-                                                        </button>
+                                                    @if ($data->status != 3 && $data->status != 4 && $data->status != 5 && $data->status != 6 && $data->status != 7)
+                                                    @if (Auth::user()->role_id != 14 && Auth::user()->role_id != 20)
+                                                            <button class="btn btn-primary btn-sm"
+                                                                onclick="confirmKirim({{ $data->id }})"
+                                                                data-id="{{ $data->id }}" title="Kirim">
+                                                                <i class="fa-solid fa fa-paper-plane fa-1x"></i>
+                                                            </button>
+                                                        @endif
                                                     @endif
                                                     <button class="btn btn-success btn-sm"
                                                         onclick="viewFormSS({{ $data->id }})" title="lihat">
@@ -116,7 +120,8 @@
                                     <label for="editLokasiIde" class="col-sm-2 col-form-label">Nama<span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="viewname" name="nama" disabled>
+                                        <input type="text" class="form-control" id="viewname" name="nama"
+                                            disabled>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -136,6 +141,21 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
+                                    <label for="editPlant" class="col-sm-2 col-form-label">Plant<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="viewPlant" name="plant" disabled required>
+                                            <option value="">----- Pilih Plant -----</option>
+                                            <option value="DS8">DS8</option>
+                                            <option value="Deltamas">Deltamas</option>
+                                            <option value="Tangerang">Tangerang</option>
+                                            <option value="Semarang">Semarang</option>
+                                            <option value="Surabaya">Surabaya</option>
+                                            <option value="Bandung">Bandung</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
                                     <label for="viewLokasiIde" class="col-sm-2 col-form-label">Lokasi Ide <span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
@@ -144,8 +164,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="viewTglDiterapkan" class="col-sm-2 col-form-label">Tgl. Diterapkan<span
-                                            style="color: red;">*</span></label>
+                                    <label for="viewTglDiterapkan" class="col-sm-2 col-form-label">Tgl. Diterapkan</label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="viewTglDiterapkan"
                                             name="tgl_diterapkan" disabled>
@@ -168,7 +187,7 @@
                                 </div>
                                 <div class="row mb-3">
                                     <label for="viewImage" class="col-sm-2 col-form-label">File Upload
-                                        (Sebelumnya)</label>
+                                        (Sebelumnya) <span style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <div id="view-image-preview" style="margin-top: 10px;"></div>
                                     </div>
@@ -182,14 +201,15 @@
                                 </div>
                                 <!-- Input File Upload 2 -->
                                 <div class="row mb-3">
-                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload (Sesudah)</label>
+                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload (Sesudah) <span
+                                            style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <div id="view-image2-preview" style="margin-top: 10px;"></div>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="viewKeuntungan" class="col-sm-2 col-form-label">Keuntungan Dari Penerapan
-                                        Ide</label>
+                                        Ide <span style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <textarea class="form-control" style="height: 100px" id="viewKeuntungan" name="keuntungan_ide" disabled></textarea>
                                     </div>
@@ -265,6 +285,7 @@
                             $('#viewnpk').val(response.user.npk);
                             $('#viewTglPengajuan').val(response.tgl_pengajuan_ide);
                             $('#viewLokasiIde').val(response.lokasi_ide);
+                            $('#viewPlant').val(response.plant);
                             $('#viewTglDiterapkan').val(response.tgl_diterapkan);
                             $('#viewJudulIde').val(response.judul);
                             $('#viewKeadaanSebelumnya').val(response.keadaan_sebelumnya);

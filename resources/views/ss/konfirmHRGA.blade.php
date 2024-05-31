@@ -58,6 +58,7 @@
                                             <th class="text-center" width="100px">Nama</th>
                                             <th class="text-center" width="100px">NPK</th>
                                             <th class="text-center" width="100px">Bagian</th>
+                                            <th class="text-center" width="100px">Plant</th>
                                             <th class="text-center" width="100px">Judul Ide</th>
                                             <th class="text-center" width="100px">Poin</th>
                                             <th class="text-center" width="100px">+poin</th>
@@ -87,8 +88,11 @@
                                                 <td class="text-center py-3" style="height: 50px;">{{ $item->npk }}</td>
                                                 <td class="text-center py-3" style="height: 50px;">
                                                     {{ $usersRoles[$item->id_user] ?? '' }}</td>
-                                                <td class="text-center py-3" style="height: 50px;">{{ $item->judul }}</td>
-                                                <td class="text-center py-3" style="height: 50px;">{{ $item->nilai }}</td>
+                                                <td class="text-center py-3" style="height: 50px;">{{ $item->plant }}</td>
+                                                <td class="text-center py-3" style="height: 50px;">{{ $item->judul }}
+                                                </td>
+                                                <td class="text-center py-3" style="height: 50px;">{{ $item->nilai }}
+                                                </td>
                                                 <td class="text-center py-3" style="height: 50px;">
                                                     {{ $item->tambahan_nilai }}</td>
                                                 <td class="text-center py-3" style="height: 50px;">
@@ -499,9 +503,8 @@
                 });
             });
 
-
-             //viewmodal
-             function viewFormSS(id) {
+            //viewmodal
+            function viewFormSS(id) {
                 $.ajax({
                     url: '{{ route('sechead.show', ':id') }}'.replace(':id', id),
                     type: 'GET',
@@ -567,7 +570,6 @@
                 $('#viewImageModal').modal('show');
             });
 
-            //export excel
             function exportTable() {
                 let startPeriode = $('#start_periode').val();
                 let endPeriode = $('#end_periode').val();
@@ -601,11 +603,38 @@
 
                         let headers = ['NO', 'Nama', 'NPK', 'Bagian', 'Judul Ide', 'Poin', '+poin', 'Nilai',
                             'Amount', 'Tanggal Pengajuan Ide', 'Lokasi', 'Tanggal Diterapkan',
-                            'Tanggal Verifikasi'
+                            'Tanggal Verifikasi', 'Status'
                         ];
                         let worksheetData = [headers];
 
                         data.forEach((row, index) => {
+                            let status = '';
+                            switch (row.status) {
+                                case 1:
+                                    status = 'Draf';
+                                    break;
+                                case 2:
+                                    status = 'Menunggu Konfirmasi Foreman';
+                                    break;
+                                case 3:
+                                    status = 'Menunggu Konfirmasi Dept. Head';
+                                    break;
+                                case 4:
+                                    status = 'Menunggu Konfirmasi Komite';
+                                    break;
+                                case 5:
+                                    status = 'SS sudah dinilai';
+                                    break;
+                                case 6:
+                                    status = 'SS sudah Verifikasi';
+                                    break;
+                                case 7:
+                                    status = 'SS Terbayar';
+                                    break;
+                                default:
+                                    status = '';
+                            }
+
                             worksheetData.push([
                                 index + 1,
                                 row.name,
@@ -619,7 +648,8 @@
                                 row.tgl_pengajuan_ide,
                                 row.lokasi_ide,
                                 row.tgl_diterapkan,
-                                row.tgl_verifikasi
+                                row.tgl_verifikasi,
+                                status // Menambahkan kolom status
                             ]);
                         });
 
@@ -664,16 +694,33 @@
                             }, // Lebar kolom Tanggal Diterapkan
                             {
                                 wch: 20
-                            } // Lebar kolom Tanggal Verifikasi
+                            }, // Lebar kolom Tanggal Verifikasi
+                            {
+                                wch: 15
+                            } // Lebar kolom Status
                         ];
 
                         // Terapkan konfigurasi lebar kolom
                         ws['!cols'] = columnWidths;
 
+                        // Tambahkan filter ke semua header
+                        ws['!autofilter'] = {
+                            ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws['!ref']))
+                        };
+
                         let wb = XLSX.utils.book_new();
                         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
                         XLSX.writeFile(wb, 'Reporting_SS.xlsx');
+
+                        // Tampilkan pesan sukses
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sukses',
+                            text: 'Data berhasil diekspor.',
+                            timer: 2000, // Tampilan pesan sukses akan otomatis tertutup dalam 2 detik
+                            showConfirmButton: false
+                        });
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);

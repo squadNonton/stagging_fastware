@@ -41,8 +41,8 @@
                                         @foreach ($data as $data)
                                             <tr>
                                                 <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                                                <td class="text-center py-3">{{ $data->user->name ?? '' }}</td>
-                                                <td class="text-center py-3">{{ $data->user->npk ?? '' }}</td>
+                                                <td class="text-center py-3">{{ $data->name }}</td>
+                                                <td class="text-center py-3">{{ $data->npk }}</td>
                                                 <td class="text-center py-3">{{ $usersRoles[$data->id_user] ?? '' }}</td>
                                                 <td class="text-center py-3">{{ $data->judul }}</td>
                                                 <td class="text-center py-3">{{ $data->tgl_pengajuan_ide }}</td>
@@ -77,12 +77,14 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    @if ($data->status != 4 && $data->status != 5)
-                                                        <button class="btn btn-primary btn-sm"
-                                                            onclick="openFormPenilaian({{ $data->id }})"
-                                                            data-id="{{ $data->id }}" title="Kirim">
-                                                            <i class="fa-solid fa fa-check-square fa-1x"></i>
-                                                        </button>
+                                                    @if ($data->status != 4 && $data->status != 5 && $data->status != 6 && $data->status != 7)
+                                                    @if (Auth::user()->role_id != 14 && Auth::user()->role_id != 20)
+                                                            <button class="btn btn-primary btn-sm"
+                                                                onclick="openFormPenilaian({{ $data->id }})"
+                                                                data-id="{{ $data->id }}" title="Kirim">
+                                                                <i class="fa-solid fa fa-check-square fa-1x"></i>
+                                                            </button>
+                                                        @endif
                                                     @endif
                                                     <button class="btn btn-success btn-sm"
                                                         onclick="viewFormSS({{ $data->id }})"
@@ -117,51 +119,32 @@
                                 <input type="hidden" id="editSumbangSaranId" name="id">
                                 <input type="hidden" id="ss_id" name="ss_id">
 
-                                <div class="mb-3">
-                                    <label for="telah_direvisi" class="form-label">Telah Direvisi</label>
-                                    <div class="form-check">
-                                        <input type="hidden" name="telah_direvisi" value="0">
-                                        <input type="checkbox" class="form-check-input" id="telah_direvisi"
-                                            name="telah_direvisi" value="1">
-                                    </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="telah_direvisi" name="status"
+                                        value="telah_direvisi">
+                                    <label class="form-check-label" for="telah_direvisi">Telah Direvisi</label>
                                 </div>
-
-                                <div class="mb-3">
-                                    <label for="belum_diterapkan" class="form-label">Belum Diterapkan</label>
-                                    <div class="form-check">
-                                        <input type="hidden" name="belum_diterapkan" value="0">
-                                        <input type="checkbox" class="form-check-input" id="belum_diterapkan"
-                                            name="belum_diterapkan" value="1">
-                                    </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="belum_diterapkan" name="status"
+                                        value="belum_diterapkan">
+                                    <label class="form-check-label" for="belum_diterapkan">Belum Diterapkan</label>
                                 </div>
-
-                                <div class="mb-3">
-                                    <label for="sedang_diterapkan" class="form-label">Sedang Diterapkan</label>
-                                    <div class="form-check">
-                                        <input type="hidden" name="sedang_diterapkan" value="0">
-                                        <input type="checkbox" class="form-check-input" id="sedang_diterapkan"
-                                            name="sedang_diterapkan" value="1">
-                                    </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="sedang_diterapkan" name="status"
+                                        value="sedang_diterapkan">
+                                    <label class="form-check-label" for="sedang_diterapkan">Sedang Diterapkan</label>
                                 </div>
-
-                                <div class="mb-3">
-                                    <label for="sudah_diterapkan" class="form-label">Sudah Diterapkan</label>
-                                    <div class="form-check">
-                                        <input type="hidden" name="sudah_diterapkan" value="0">
-                                        <input type="checkbox" class="form-check-input" id="sudah_diterapkan"
-                                            name="sudah_diterapkan" value="1">
-                                    </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="sudah_diterapkan" name="status"
+                                        value="sudah_diterapkan">
+                                    <label class="form-check-label" for="sudah_diterapkan">Sudah Diterapkan</label>
                                 </div>
-
-                                <div class="mb-3">
-                                    <label for="tidak_bisa_diterapkan" class="form-label">Tidak Bisa Diterapkan</label>
-                                    <div class="form-check">
-                                        <input type="hidden" name="tidak_bisa_diterapkan" value="0">
-                                        <input type="checkbox" class="form-check-input" id="tidak_bisa_diterapkan"
-                                            name="tidak_bisa_diterapkan" value="1">
-                                    </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="tidak_bisa_diterapkan"
+                                        name="status" value="tidak_bisa_diterapkan">
+                                    <label class="form-check-label" for="tidak_bisa_diterapkan">Tidak Bisa
+                                        Diterapkan</label>
                                 </div>
-
                                 <div class="mb-3">
                                     <label for="keterangan" class="form-label">Keterangan SS</label>
                                     <textarea class="form-control" id="keterangan" name="keterangan" style="height: 100px; width: 100%;"></textarea>
@@ -213,6 +196,21 @@
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="viewTglPengajuan"
                                             name="tgl_pengajuan_ide" disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="viewPlant" class="col-sm-2 col-form-label">Plant<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="viewPlant" name="plant" disabled required>
+                                            <option value="">----- Pilih Plant -----</option>
+                                            <option value="DS8">DS8</option>
+                                            <option value="Deltamas">Deltamas</option>
+                                            <option value="Tangerang">Tangerang</option>
+                                            <option value="Semarang">Semarang</option>
+                                            <option value="Surabaya">Surabaya</option>
+                                            <option value="Bandung">Bandung</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -343,8 +341,9 @@
             }
 
             function submitFormPenilaian() {
-                // Ambil elemen formulir
                 var form = document.getElementById('editSumbangSaranForm');
+                var tidakBisaDiterapkan = document.getElementById('tidak_bisa_diterapkan').checked;
+                var keterangan = document.getElementById('keterangan').value.trim();
 
                 // Periksa field yang required
                 var requiredFields = form.querySelectorAll('[required]');
@@ -359,7 +358,23 @@
                     }
                 });
 
+                if (tidakBisaDiterapkan && keterangan === '') {
+                    // Tampilkan pesan kesalahan menggunakan SweetAlert jika keterangan kosong dan opsi "Tidak Bisa Diterapkan" dipilih
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Keterangan wajib diisi!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        if (firstInvalidField) {
+                            firstInvalidField.focus();
+                        }
+                    });
+                    return; // Stop pengiriman formulir
+                }
+
                 if (!valid) {
+                    // Tampilkan pesan kesalahan menggunakan SweetAlert jika field yang wajib diisi kosong
                     Swal.fire({
                         title: 'Error!',
                         text: 'Harap isi semua field yang wajib diisi.',
@@ -370,7 +385,7 @@
                             firstInvalidField.focus();
                         }
                     });
-                    return;
+                    return; // Stop pengiriman formulir
                 }
 
                 // Buat objek formData
@@ -404,6 +419,7 @@
                     }
                 });
             }
+
             //viewmodal
             function viewFormSS(id) {
                 $.ajax({
@@ -415,6 +431,7 @@
                             $('#viewname').val(response.user.name);
                             $('#viewnpk').val(response.user.npk);
                             $('#viewTglPengajuan').val(response.tgl_pengajuan_ide);
+                            $('#viewPlant').val(response.plant);
                             $('#viewLokasiIde').val(response.lokasi_ide);
                             $('#viewTglDiterapkan').val(response.tgl_diterapkan);
                             $('#viewJudulIde').val(response.judul);
@@ -463,7 +480,6 @@
                     }
                 });
             }
-
             // Event listener untuk gambar yang diklik
             $(document).on('click', '.clickable-view-image', function() {
                 var imgSrc = $(this).data('img-src');
