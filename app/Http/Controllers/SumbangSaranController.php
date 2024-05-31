@@ -50,7 +50,10 @@ class SumbangSaranController extends Controller
             penilaians.nilai,
             penilaians.tambahan_nilai,
             ((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) AS total_nilai,
-            (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000) AS hasil_akhir,
+        CASE 
+            WHEN penilaians.nilai = 1 THEN (1 * 2.5 * 2000)
+            ELSE (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000)
+        END AS hasil_akhir,
             users.name,
             users.npk
         FROM 
@@ -385,7 +388,10 @@ class SumbangSaranController extends Controller
                 penilaians.nilai,
                 penilaians.tambahan_nilai,
                 ((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) AS total_nilai,
-                (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000) AS hasil_akhir,
+        CASE 
+            WHEN penilaians.nilai = 1 THEN (1 * 2.5 * 2000)
+            ELSE (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000)
+        END AS hasil_akhir,
                 users.name,
                 users.npk
             FROM 
@@ -970,7 +976,7 @@ class SumbangSaranController extends Controller
         // Atur atribut berdasarkan data yang diterima dari permintaan
         $penilaian->ss_id = $request->ss_id;
         $penilaian->keterangan = $request->keterangan;
-        $penilaian->nilai = $request->nilai;
+
         $penilaian->tambahan_nilai = $request->tambahan_nilai;
         $penilaian->modified_by = $request->user()->name;
         $penilaian->id_users = $request->user()->id;
@@ -981,6 +987,7 @@ class SumbangSaranController extends Controller
                 $penilaian->telah_direvisi = true;
                 break;
             case 'belum_diterapkan':
+                $penilaian->nilai = 1;
                 $penilaian->belum_diterapkan = true;
                 break;
             case 'sedang_diterapkan':
@@ -1168,7 +1175,10 @@ class SumbangSaranController extends Controller
             penilaians.nilai,
             penilaians.tambahan_nilai,
             ((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) AS total_nilai,
-            (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000) AS hasil_akhir,
+        CASE 
+            WHEN penilaians.nilai = 1 THEN (1 * 2.5 * 2000)
+            ELSE (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000)
+        END AS hasil_akhir,
             users.name,
             users.npk,
             roles.role AS bagian -- Ambil peran (role) dari tabel roles

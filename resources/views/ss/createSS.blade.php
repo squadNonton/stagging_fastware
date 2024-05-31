@@ -72,15 +72,15 @@
                                                         <span class="badge bg-secondary align-items-center"
                                                             style="font-size: 18px;">Draf</span>
                                                     @elseif ($item->status == 2)
-                                                        <span class="badge bg-info align-items-center"
+                                                        <span class="badge bg-warning align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>KonfirmasiForeman</span>
                                                     @elseif($item->status == 3)
-                                                        <span class="badge bg-info align-items-center"
+                                                        <span class="badge bg-warning align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Dept.
                                                             Head</span>
                                                     @elseif($item->status == 4)
-                                                        <span class="badge bg-info align-items-center"
-                                                            style="font-size: 18px;">Menunggur<br>Konfirmasi Komite</span>
+                                                        <span class="badge bg-warning align-items-center"
+                                                            style="font-size: 18px;">Menunggu<br>Konfirmasi Komite</span>
                                                     @elseif($item->status == 5)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">SS sudah dinilai</span>
