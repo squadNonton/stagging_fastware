@@ -4,23 +4,19 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
     <title>Astra Daido Steel Indonesia</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
     <meta name="csrf-token">
-
     <!-- Favicons -->
     <link href="{{ asset('assets/img/logo-menu.png') }}" rel="icon">
     <link href="{{ asset('assets/img/logo-menu.png') }}" rel="apple-touch-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
     <link
         href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
         rel="stylesheet">
-
     <!-- Vendor CSS Files -->
     <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
@@ -29,43 +25,97 @@
     <link href="{{ asset('assets/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
-
     <!-- Template Main CSS File -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    {{-- datatable --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    {{-- sweet alert --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+    <!-- *Note: You must have internet connection on your laptop or pc other wise below code is not working -->
+    <!-- CSS for full calender -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css" rel="stylesheet" />
+    {{-- DatePicker --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    {{-- Excel --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    {{-- PDF --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    {{-- ChartJS --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{-- Select Search --}}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+        integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+        integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
 
 <body>
-
     <!-- Buat Header -->
-    <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
-
+        <!-- Start Logo -->
         <div class="d-flex align-items-center justify-content-between">
-            <h3 class="fw-bold mt-2 ps-5">DMS Adasi DS8</h3>
-            <i class="bi bi-list toggle-sidebar-btn mx-5"></i>
-        </div><!-- End Logo -->
+            <a href="#" class="logo d-flex align-items-center">
+                <img src="{{ asset('assets/foto/logo-adasi.png') }}" alt="">
+                <span class="d-none d-lg-block mt-2 ps-3">DMS Astra Daido</span>
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div>
+        <!-- End Logo -->
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
-                <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li><!-- End Search Icon-->
-
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                         data-bs-toggle="dropdown">
                         <img src="assets/img/user.png" alt="Profile" class="rounded-circle">
-                        <span class="d-none d-md-block ps-2">{{ Auth::user()->name }} <br>
-                            {{ Auth::user()->roles->role }}</span>
-                    </a><!-- End Profile Image Icon -->
-                </li><!-- End Profile Nav -->
+                        <span class="d-none d-md-block ps-2">{{ Auth::user()->name }}
+                            <br>{{ Auth::user()->roles->role }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li class="dropdown-header">
+                            <h6>{{ Auth::user()->name }}</h6>
+                            <span>{{ Auth::user()->roles->role }}</span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        {{-- Test Akun --}}
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ route('showDataDiri') }}">
+                                <i class="bi bi-person"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
-        </nav><!-- End Icons Navigation -->
-
-    </header><!-- End Header -->
+        </nav>
+    </header>
+    <!-- End Logo -->
+    <nav class="header-nav ms-auto">
+        <ul class="d-flex align-items-center">
+            <li class="nav-item dropdown pe-3">
+                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    <img src="assets/img/user.png" alt="Profile" class="rounded-circle">
+                    <span class="d-none d-md-block ps-2">{{ Auth::user()->name }} <br>
+                        {{ Auth::user()->roles->role }}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    </header>
 
     <!-- ======= Sidebar ======= -->
-    <aside id="sidebar" class="sidebar">
+    <aside id="sidebar" class="sidebar closed">
         <ul class="sidebar-nav" id="sidebar-nav">
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                 @csrf
@@ -117,6 +167,12 @@
                             <span>Handling Klaim & Komplain</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('dashboardSS') }}">
+                            <i class="bi bi-person fs-6"></i>
+                            <span>Sumbang Saran</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
@@ -138,13 +194,13 @@
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.index') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Data Form FPP</span>
+                                    <span>Buat Form Perbaikan</span>
                                 </a>
                             </li>
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat FPP</span>
+                                    <span>Riwayat Form Perbaikan</span>
                                 </a>
                             </li>
                         </ul>
@@ -162,13 +218,13 @@
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('sales.index') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Data Form FPP</span>
+                                    <span>Buat Form</span>
                                 </a>
                             </li>
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat FPP</span>
+                                    <span>Riwayat Form Perbaikan</span>
                                 </a>
                             </li>
                         </ul>
@@ -177,28 +233,35 @@
                 @if (Auth::user()->role_id == 6 || Auth::user()->role_id == 1)
                     <li class="nav-heading">Maintenance</li>
                     <li class="nav-item">
-                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                        <a class="nav-link collapsed" data-bs-target="#maint-korektif-nav" data-bs-toggle="collapse"
                             href="#">
-                            <i class="bi bi-journal-text"></i><span>Received FPP & Jadwal Preventive</span><i
+                            <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
                                 class="bi bi-chevron-down ms-auto"></i>
                         </a>
-                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <ul id="maint-korektif-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ asset('dashboardmaintenance') }}">
                                     <i class="bi bi-file-earmark-text-fill fs-6"></i>
-                                    <span>Data Received FPP</span>
+                                    <span>Terima Form Perbaikan</span>
                                 </a>
                             </li>
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat FPP</span>
+                                    <span>Riwayat Form Perbaikan</span>
                                 </a>
                             </li>
+                        </ul>
+                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenance') }}">
                                     <i class="bi bi-check2 fs-6"></i>
-                                    <span>Tabel Preventif</span>
+                                    <span>Tindakan Preventif</span>
                                 </a>
                             </li>
                         </ul>
@@ -209,26 +272,33 @@
                     <li class="nav-item">
                         <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
                             href="#">
-                            <i class="bi bi-journal-text"></i><span>Received FPP & Jadwal Preventive</span><i
+                            <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
                                 class="bi bi-chevron-down ms-auto"></i>
                         </a>
                         <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ route('ga.dashboardga') }}">
                                     <i class="bi bi-file-earmark-text-fill fs-6"></i>
-                                    <span>Data Received FPP</span>
+                                    <span>Terima Form Perbaikan</span>
                                 </a>
                             </li>
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat FPP</span>
+                                    <span>Riwayat Form Perbaikan</span>
                                 </a>
                             </li>
+                        </ul>
+                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenanceGA') }}">
                                     <i class="bi bi-check2 fs-6"></i>
-                                    <span>Tabel Preventif</span>
+                                    <span>Tindakan Preventif</span>
                                 </a>
                             </li>
                         </ul>
@@ -239,31 +309,30 @@
                     @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1)
                         {{-- Role ID untuk Maintenance --}}
                         {{-- Tampilkan sidebar untuk Maintenance --}}
-                        <li class="nav-heading">Engineering</li>
-
+                        <li class="nav-heading">Productions & Engineering</li>
                         <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
+                            <a class="nav-link collapsed" data-bs-target="#dept-maint1-nav" data-bs-toggle="collapse"
                                 href="#">
-                                <i class="bi bi-journal-text"></i><span>Mesin & Approve FPP</span><i
+                                <i class="bi bi-journal-text"></i><span>Bag. Maintenance</span><i
                                     class="bi bi-chevron-down ms-auto"></i>
                             </a>
-                            <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <ul id="dept-maint1-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                                 <li class="nav-item">
                                     <a class="nav-link collapsed" href="{{ route('dashboardmesins') }}">
                                         <i class="bi bi-gear fs-6"></i>
-                                        <span>Data Mesin</span>
+                                        <span>Kelola Data Mesin</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link collapsed" href="{{ route('deptmtce.index') }}">
                                         <i class="bi bi-check2 fs-6"></i>
-                                        <span>Data Approved FPP</span>
+                                        <span>Approve Form Perbaikan</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                         <i class="bi bi-list-check fs-6"></i>
-                                        <span>Riwayat FPP</span>
+                                        <span>Riwayat Form Perbaikan</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -273,17 +342,17 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li><!-- End Dept Maint Nav -->
+
                         <li class="nav-item">
                             <a class="nav-link collapsed" data-bs-target="#dept-complain-nav"
                                 data-bs-toggle="collapse" href="#">
-                                <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
+                                <i class="bi bi-journal-text"></i><span>Bag. Engineering</span><i
                                     class="bi bi-chevron-down ms-auto"></i>
                             </a>
                             <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                                 <li>
                                     <a href="{{ route('submission') }}">
-                                        <i class="bi bi-list-check fs-6"></i><span>Form Tindak Lanjut</span>
+                                        <i class="bi bi-list-check fs-6"></i><span>Tindak Lanjut Form</span>
                                     </a>
                                 </li>
                                 <li>
@@ -324,7 +393,7 @@
                                 <li>
                                     <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                         <i class="bi bi-list-check fs-6"></i>
-                                        <span>Riwayat FPP</span>
+                                        <span>Riwayat Form Perbaikan</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -381,32 +450,31 @@
                                 <li class="nav-item">
                                     <a class="nav-link collapsed" href="{{ route('sales.index') }}">
                                         <i class="bi bi-list-check fs-6"></i>
-                                        <span>Data Form FPP</span>
+                                        <span>Data Form Perbaikan</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                         <i class="bi bi-list-check fs-6"></i>
-                                        <span>Riwayat FPP</span>
+                                        <span>Riwayat Form Perbaikan</span>
                                     </a>
                                 </li>
                             </ul>
                         </li><!-- End Sales FPP Nav -->
                         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse"
                             href="#">
-                            <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
+                            <i class="bi bi-journal-text"></i><span>Form Komplain dan Klaim</span><i
                                 class="bi bi-chevron-down ms-auto"></i>
                         </a>
                         <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                             <li>
                                 <a href="{{ route('index') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Form Pengajuan Klaim dan
-                                        Komplain</span>
+                                    <i class="bi bi-list-check fs-6"></i><span>Buat Form Komplain dan Klaim</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('showHistoryCLaimComplain') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim dan Komplain</span>
+                                    <i class="bi bi-list-check fs-6"></i><span>Riwayat Komplain dan Klaim</span>
                                 </a>
                             </li>
                             <li>
@@ -419,100 +487,99 @@
                     @endif
             @endif
 
-            {{-- Tables Sample --}}
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="tables-general.html">
-                            <i class="bi bi-circle"></i><span>General Tables</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="tables-data.html">
-                            <i class="bi bi-circle"></i><span>Data Tables</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
-
             {{-- SS, Safety Patrol dan Trace WO --}}
 
             <li class="nav-heading">Suggestion System</li>
+            {{-- Form Sumbang Saran --}}
             <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('dashboardSS') }}">
-                    <i class="bi bi-person"></i>
-                    <span>Dashboard SS</span>
+                <a class="nav-link collapsed" data-bs-target="#nav-ss" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-text-window-reverse"></i><span>Form Sumbang Saran</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End Profile Page Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('forumSS') }}">
-                    <i class="bi bi-person"></i>
-                    <span>Forum SS</span>
+                <ul id="nav-ss" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('showSS') }}">
+                            <i class="bi bi-journal-text fs-6"></i>
+                            <span>Buat Form</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('forumSS') }}">
+                            <i class="bi bi-person fs-6"></i>
+                            <span>Overview Sumbang Saran</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <a class="nav-link collapsed" data-bs-target="#nav-conf" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-wtf"></i><span>Persetujuan</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End Profile Page Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('showSS') }}">
-                    <i class="bi bi-journal-text fs-6"></i>
-                    <span>Form SS</span>
+                <ul id="nav-conf" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 2 ||
+                            Auth::user()->role_id == 3 ||
+                            Auth::user()->role_id == 7 ||
+                            Auth::user()->role_id == 9 ||
+                            Auth::user()->role_id == 21 ||
+                            Auth::user()->role_id == 22 ||
+                            Auth::user()->role_id == 12 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiForeman') }}">
+                                <i class="bi bi-kanban fs-6"></i>
+                                <span>By Sect. Head</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 2 ||
+                            Auth::user()->role_id == 5 ||
+                            Auth::user()->role_id == 7 ||
+                            Auth::user()->role_id == 11 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiDeptHead') }}">
+                                <i class="bi bi-kanban-fill fs-6"></i>
+                                <span>By Dept. Head</span>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+
+                <a class="nav-link collapsed" data-bs-target="#nav-pic" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-wtf"></i><span>PIC Penilaian</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End Profile Page Nav -->
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 2 ||
-                    Auth::user()->role_id == 3 ||
-                    Auth::user()->role_id == 7 ||
-                    Auth::user()->role_id == 9 ||
-                    Auth::user()->role_id == 21 ||
-                    Auth::user()->role_id == 22 ||
-                    Auth::user()->role_id == 12 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 20)
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="{{ route('showKonfirmasiForeman') }}">
-                        <i class="bi bi-clipboard-check-fill"></i>
-                        <span>Konfirmasi SS by Sec. Head</span>
-                    </a>
-                </li><!-- End Profile Page Nav -->
-            @endif
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 2 ||
-                    Auth::user()->role_id == 5 ||
-                    Auth::user()->role_id == 7 ||
-                    Auth::user()->role_id == 11 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 20)
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="{{ route('showKonfirmasiDeptHead') }}">
-                        <i class="bi bi-clipboard-check-fill"></i>
-                        <span>Konfirmasi SS by Dept. Head</span>
-                    </a>
-                </li><!-- End Profile Page Nav -->
-            @endif
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 5 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 20)
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="{{ route('showKonfirmasiKomite') }}">
-                        <i class="bi-person-lines-fill"></i>
-                        <span>PIC Penilai SS | Komite</span>
-                    </a>
-                </li><!-- End Profile Page Nav -->
-            @endif
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 15 ||
-                    Auth::user()->role_id == 20)
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="{{ route('showKonfirmasiHRGA') }}">
-                        <i class="bi-person-lines-fill"></i>
-                        <span>PIC Penilai SS | HRGA</span>
-                    </a>
-                </li><!-- End Profile Page Nav -->
-            @endif
+                <ul id="nav-pic" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 5 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiKomite') }}">
+                                <i class="bi-person-lines-fill fs-6"></i>
+                                <span>PIC Penilai SS | Komite</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 15 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiHRGA') }}">
+                                <i class="bi-person-lines-fill fs-6"></i>
+                                <span>PIC Penilai SS | HRGA</span>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+            </li><!-- End Form Sumbang Saran -->
+
+
             <li class="nav-heading">Safety Patrol</li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ route('listpatrol') }}">
@@ -547,23 +614,22 @@
             </li><!-- End Profile Page Nav -->
             {{-- @endif --}}
 
-
-            <hr>
             {{-- Pengaturan --}}
-            <li class="nav-heading">Pengaturan</li>
+            {{-- <li class="nav-heading">Pengaturan</li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ route('showDataDiri') }}">
                     <i class="bi bi-person"></i>
                     <span>Profile</span>
                 </a>
-            </li><!-- End Profile Page Nav -->
+            </li>
             <li class="nav-item mb-5">
                 <a class="nav-link collapsed" href="#"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="bi bi-box-arrow-in-right"></i>
                     <span>Keluar</span>
                 </a>
-            </li><!-- End Profile Page Nav -->
+            </li> --}}
+            {{-- End Pengaturan --}}
         </ul>
         </ul>
         <!-- Footer Sidebar -->
@@ -577,53 +643,16 @@
 
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
-        <div class="copyright">
-            &copy; Copyright <strong><span>ADASI</span></strong>. All Rights Reserved
-        </div>
+        <marquee behavior="scroll" direction="left" scrollamount="15">
+            <div class="copyright">
+                &copy; Copyright <strong><span>PT. Astra Daido Steel Indonesia</span></strong>. All Rights Reserved
+            </div>
+        </marquee>
     </footer><!-- End Footer -->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
 
-    <!-- Vendor JS Files -->
-    <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/chart.js/chart.umd.js') }}"></script>
-    <script src="{{ asset('assets/vendor/echarts/echarts.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/quill/quill.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
-    <script src="{{ asset('assets/vendor/tinymce/tinymce.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
-
-    <!-- Template Main JS File -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
-
-    {{-- JS Search DropDown --}}
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
-    {{-- datatable --}}
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-
-    {{-- searchdropdownJS --}}
-    <!-- Tambahkan library Select2 -->
-    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script> --}}
-    {{-- JSSweetAlert --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    {{-- Datatble --}}
-    <script src="js/datatables-simple-demo.js"></script>
-
-    {{-- DateRangePicker --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- JS for jQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!-- JS for full calender -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
-
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <!-- Menghubungkan ke jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
@@ -1042,21 +1071,58 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get all the accordion elements
-            var accordions = document.querySelectorAll('.accordion');
+            const toggleButton = document.querySelector(".toggle-sidebar-btn");
+            const sidebar = document.querySelector(".sidebar");
 
-            // Add click event listener to each accordion
-            accordions.forEach(function(accordion) {
-                // Toggle the 'show' class on collapse element when the accordion title is clicked
-                accordion.querySelector('.card-title').addEventListener('click', function() {
-                    accordion.querySelector('.collapse').classList.toggle('show');
-                });
+            toggleButton.addEventListener("click", function() {
+                sidebar.classList.toggle("closed");
             });
         });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
+
+<!-- Vendor JS Files -->
+<script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/chart.js/chart.umd.js') }}"></script>
+<script src="{{ asset('assets/vendor/echarts/echarts.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/quill/quill.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
+<script src="{{ asset('assets/vendor/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+
+{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> --}}
+
+{{-- DateRangePicker == Error Dropdown --}}
+{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> --}}
+
+<!-- Template Main JS File -->
+<script src="assets/js/main.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+{{-- Datatble --}}
+<script src="js/datatables-simple-demo.js"></script>
+
+{{-- JS Search DropDown --}}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+{{-- datatable --}}
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<!-- JS for jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- JS for full calender -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+{{-- searchdropdownJS --}}
+<!-- Tambahkan library Select2 -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+{{-- JSSweetAlert --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </html>

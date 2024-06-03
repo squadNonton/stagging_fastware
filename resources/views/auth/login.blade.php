@@ -43,7 +43,6 @@
 <body>
     <main>
         <div class="container">
-
             <section
                 class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
                 <div class="container">
@@ -53,24 +52,27 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-center pt-3">
                                         <img src="{{ asset('assets/img/logo-login.png') }}" alt=""
-                                            style="height: 50px;">
+                                            style="height: 50px; animation: fadeIn 1s ease-in-out;">
                                         <a href="" class="logo d-flex align-items-center w-auto">
                                             <span class="d-none d-lg-block"></span>
                                         </a>
                                     </div>
                                     <div class="pt-1 pb-2">
-                                        <h5 class="card-title text-center pb-0 fs-4">Selamat Datang</h5>
-                                        <p class="text-center small">Masukan Username dan Pasword</p>
+                                        <h5 class="card-title text-center pb-0 fs-4"
+                                            style="animation: slideInDown 1s ease-in-out;">Selamat Datang</h5>
+                                        <p class="text-center small" style="animation: slideInDown 1.5s ease-in-out;">
+                                            Masukan Username dan Password</p>
                                     </div>
                                     @if (session('error'))
-                                        <p style="color: red;">{{ session('error') }}</p>
+                                        <p style="color: red; animation: shake 0.5s;">{{ session('error') }}</p>
                                     @endif
                                     <form class="row g-3 needs-validation" method="POST"
                                         action="{{ route('login_post') }}" novalidate>
                                         @csrf
                                         <div class="col-12">
                                             <label for="username" class="form-label">Username</label>
-                                            <div class="input-group has-validation">
+                                            <div class="input-group has-validation"
+                                                style="animation: fadeIn 2s ease-in-out;">
                                                 <span class="input-group-text" id="inputGroupPrepend">@</span>
                                                 <input type="text" name="username" class="form-control"
                                                     id="username" required>
@@ -80,14 +82,75 @@
                                         <div class="col-12">
                                             <label for="password" class="form-label">Password</label>
                                             <input type="password" name="password" class="form-control" id="password"
-                                                required>
+                                                required style="animation: fadeIn 2.5s ease-in-out;">
                                             <div class="invalid-feedback">Please enter your password!</div>
                                         </div>
                                         <div class="col-12">
-                                            <button class="btn btn-primary w-100" type="submit">Login</button>
+                                            <button class="btn btn-primary w-100" type="submit"
+                                                style="animation: bounceIn 3s ease-in-out;">Login</button>
                                         </div>
                                     </form>
                                 </div>
+
+                                <style>
+                                    @keyframes bounceIn {
+
+                                        from,
+                                        20%,
+                                        40%,
+                                        60%,
+                                        80%,
+                                        to {
+                                            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+                                        }
+
+                                        0% {
+                                            opacity: 0;
+                                            transform: scale3d(.3, .3, .3);
+                                        }
+
+                                        20% {
+                                            transform: scale3d(1.1, 1.1, 1.1);
+                                        }
+
+                                        40% {
+                                            transform: scale3d(.9, .9, .9);
+                                        }
+
+                                        60% {
+                                            opacity: 1;
+                                            transform: scale3d(1.03, 1.03, 1.03);
+                                        }
+
+                                        80% {
+                                            transform: scale3d(.97, .97, .97);
+                                        }
+
+                                        to {
+                                            opacity: 1;
+                                            transform: scale3d(1, 1, 1);
+                                        }
+                                    }
+
+                                    input.form-control {
+                                        transition: all 0.3s ease;
+                                    }
+
+                                    input.form-control:focus {
+                                        border-color: #5cabf5;
+                                        box-shadow: 0 0 10px rgba(0, 167, 245, 0.5);
+                                    }
+
+                                    button.btn-primary {
+                                        transition: background-color 0.3s ease, transform 0.3s ease;
+                                    }
+
+                                    button.btn-primary:hover {
+                                        background-color: #00c2fd;
+                                        transform: scale(1.05);
+                                    }
+                                </style>
+
                             </div>
                         </div>
                     </div>
