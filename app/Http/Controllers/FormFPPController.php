@@ -5,8 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\FormFPP;
 use App\Models\TindakLanjut;
 use App\Models\Mesin;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\User;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -399,5 +405,142 @@ class FormFPPController extends Controller
             // Handle case when no file is attached
             return redirect()->back()->with('error', 'No file attached.');
         }
+    }
+
+    public function downtimeExport()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set judul di atas tabel
+        $sheet->setCellValue('A1', 'DOWNTIME REPAIR MAINTENANCE'); // Judul
+        $sheet->mergeCells('A1:M1'); // Gabung sel untuk judul
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal('left'); // Pusatkan judul
+        $sheet->getStyle('A1')->getFont()->setBold(true); // Jadikan tebal judul
+
+        // Set judul kolom
+        $sheet->setCellValue('A2', 'NO');
+        $sheet->setCellValue('B2', 'TIKET FPP');
+        $sheet->setCellValue('C2', 'USER REQ');
+        $sheet->setCellValue('D2', 'PIC. MTCN');
+        $sheet->setCellValue('E2', 'LOCATION');
+        $sheet->setCellValue('F2', 'SECTION');
+        $sheet->setCellValue('G2', 'MESIN');
+        $sheet->setCellValue('H2', 'ISSUE');
+        $sheet->setCellValue('I2', 'START');
+        $sheet->setCellValue('J2', 'DUE DATE');
+        $sheet->setCellValue('K2', 'DOWNTIME');
+
+        // Gunakan join untuk menggabungkan data dari FormFPP dan TindakLanjut
+        $formFPPData = FormFPP::select(
+            'form_f_p_p_s.id_fpp',
+            'form_f_p_p_s.pemohon',
+            'form_f_p_p_s.lokasi',
+            'form_f_p_p_s.section',
+            'form_f_p_p_s.mesin',
+            'form_f_p_p_s.kendala',
+            'form_f_p_p_s.created_at',
+            'form_f_p_p_s.updated_at',
+            'form_f_p_p_s.status',
+            DB::raw('GROUP_CONCAT(DISTINCT 
+                CASE
+                    WHEN tindak_lanjuts.status = 1 THEN tindak_lanjuts.pic
+                    WHEN tindak_lanjuts.status = 2 AND tindak_lanjuts.note = "Disubmit Maintenance" THEN tindak_lanjuts.pic
+                    ELSE NULL
+                END SEPARATOR ", ") AS pic')
+        )
+            ->leftJoin('tindak_lanjuts', 'form_f_p_p_s.id_fpp', '=', 'tindak_lanjuts.id_fpp')
+            ->groupBy(
+                'form_f_p_p_s.id_fpp',
+                'form_f_p_p_s.pemohon',
+                'form_f_p_p_s.lokasi',
+                'form_f_p_p_s.section',
+                'form_f_p_p_s.mesin',
+                'form_f_p_p_s.kendala',
+                'form_f_p_p_s.created_at',
+                'form_f_p_p_s.updated_at',
+                'form_f_p_p_s.status'
+            )
+            ->get();
+
+        $row = 3; // Mulai dari baris ketiga karena baris kedua sudah diisi dengan judul kolom
+
+        foreach ($formFPPData as $data) {
+            // Hilangkan karakter '|' dari tanggal
+            $createdAt = str_replace('|', '', $data->created_at);
+            $updatedAt = str_replace('|', '', $data->updated_at);
+
+            // Hitung downtime jika status sudah 3
+            if ($data->status == 3) {
+                $start = Carbon::parse($createdAt);
+                $due_date = Carbon::parse($updatedAt);
+                $downtimeMinutes = $start->diffInMinutes($due_date);
+                $hours = intdiv($downtimeMinutes, 60);
+                $minutes = $downtimeMinutes % 60;
+                $downtime = "{$hours} Jam {$minutes} Menit";
+            } else {
+                $start = Carbon::parse($createdAt);
+                $due_date = null;
+                $downtime = '-'; // Atau nilai default lain yang Anda inginkan
+            }
+
+            $sheet->setCellValue('A' . $row, $row - 2); // Nomor berurutan dimulai dari 1
+            $sheet->setCellValue('B' . $row, $data->id_fpp);
+            $sheet->setCellValue('C' . $row, $data->pemohon);
+            $sheet->setCellValue('D' . $row, $data->pic ? $data->pic : '-');
+            $sheet->setCellValue('E' . $row, $data->lokasi);
+            $sheet->setCellValue('F' . $row, $data->section);
+            $sheet->setCellValue('G' . $row, $data->mesin);
+            $sheet->setCellValue('H' . $row, $data->kendala);
+            $sheet->setCellValue('I' . $row, $start->format('Y-m-d'));
+            $sheet->setCellValue('J' . $row, $due_date ? $due_date->format('Y-m-d') : '-');
+            $sheet->setCellValue('K' . $row, $downtime);
+
+            $row++;
+        }
+
+        // Menambahkan keterangan di bawah tabel
+        $lastRow = $row;
+        $sheet->setCellValue('A' . ($lastRow + 1), 'Note :');
+        $sheet->setCellValue('A' . ($lastRow + 2), 'PIC.MTCH');
+        $sheet->setCellValue('B' . ($lastRow + 2), 'User maintenance yang melakukan perbaikan'); // Menyesuaikan dengan kolom PIC Maintenance
+        $sheet->setCellValue('A' . ($lastRow + 3), 'NPK');
+        $sheet->setCellValue('B' . ($lastRow + 3), 'NPK karyawan'); // Menyesuaikan dengan kolom NPK
+        $sheet->setCellValue('A' . ($lastRow + 4), 'LOCATION');
+        $sheet->setCellValue('B' . ($lastRow + 4), 'Lokasi mesin diperbaiki'); // Menyesuaikan dengan kolom Lokasi
+        $sheet->setCellValue('A' . ($lastRow + 5), 'SECTION');
+        $sheet->setCellValue('B' . ($lastRow + 5), 'Section yang mengajukan perbaikan'); // Menyesuaikan dengan kolom Section
+        $sheet->setCellValue('A' . ($lastRow + 6), 'MESIN');
+        $sheet->setCellValue('B' . ($lastRow + 6), 'Nomor dan Nama Mesin'); // Menyesuaikan dengan kolom Mesin
+        $sheet->setCellValue('A' . ($lastRow + 7), 'ISSUE');
+        $sheet->setCellValue('B' . ($lastRow + 7), 'Masalah yang ditemukan'); // Menyesuaikan dengan kolom Kendala
+        $sheet->setCellValue('A' . ($lastRow + 8), 'START');
+        $sheet->setCellValue('B' . ($lastRow + 8), 'Tgl dimulai repair'); // Menyesuaikan dengan kolom Start
+        $sheet->setCellValue('A' . ($lastRow + 9), 'DUE DATE');
+        $sheet->setCellValue('B' . ($lastRow + 9), 'Tgl selesai repair'); // Menyesuaikan dengan kolom Due Date
+
+        // Menyesuaikan ukuran kolom secara otomatis
+        foreach (range('A', 'K') as $column) {
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
+
+        // Membuat border untuk seluruh tabel
+        $styleArray = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle('A2:K' . ($row - 1))->applyFromArray($styleArray);
+
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'downtime_maintenance.xlsx';
+        $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+        $writer->save($temp_file);
+
+        return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
     }
 }

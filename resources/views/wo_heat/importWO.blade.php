@@ -24,33 +24,93 @@
                         <div class="card-body">
                             <h5 class="card-title text-center">Import WO Heat Treatment</h5>
 
-                            <button class="btn btn-danger" style="display: inline-block; margin-left: 10px;">
-                                <i class="bi bi-upload"></i></i> Import Data
-                            </button>
+                            <form action="{{ route('importWO') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <input type="file" name="excelFile" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-danger mt-3">
+                                    <i class="bi bi-upload"></i> Import Data
+                                </button>
+                            </form>
 
+                            @if (isset($data))
+                                <!-- Table for imported data -->
+                                <div class="table-responsive mt-4">
+                                    <table class="table datatables">
+                                        <thead>
+                                            <tr>
+                                                @foreach ($data[0] as $cell)
+                                                    <th scope="col">{{ $cell['value'] }}</th>
+                                                @endforeach
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($data as $rowIndex => $row)
+                                                @if ($rowIndex > 0)
+                                                    <tr>
+                                                        @foreach ($row as $cell)
+                                                            <td colspan="{{ $cell['colspan'] }}"
+                                                                rowspan="{{ $cell['rowspan'] }}">
+                                                                {{ $cell['value'] }}
+                                                            </td>
+                                                        @endforeach
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @endif
 
-                            <!-- Table -->
-                            <div class="table-responsive">
-                                <table class="table">
+                            <!-- Table for heat treatments -->
+                            <div class="table-responsive mt-4">
+                                <table class="table datatables">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Customer</th>
+                                            <th scope="col">No</th>
+                                            <th scope="col">No.WO</th>
+                                            <th scope="col">No.SO</th>
                                             <th scope="col">Tgl. WO</th>
-                                            <th scope="col">Status WO</th>
-                                            <th scope="col">Status DO</th>
+                                            <th scope="col">Area</th>
+                                            <th scope="col">Kode</th>
+                                            <th scope="col">Cust</th>
                                             <th scope="col">Proses</th>
-                                            <th scope="col">Batch</th>
-                                            <th scope="col">Mesin</th>
-                                            <th scope="col">Tanggal</th>
-                                            <th scope="col">No. DO</th>
-                                            <th scope="col">Tgl. ST</th>
-                                            <th scope="col">Pengirim</th>
-                                            <th scope="col">Tgl. Terima</th>
+                                            <th scope="col">Pcs</th>
+                                            <th scope="col">Kg</th>
+                                            <th scope="col">Status WO</th>
+                                            <th scope="col">No.DO</th>
+                                            <th scope="col">Status DO</th>
+                                            <th scope="col">Tgl.ST</th>
+                                            <th scope="col">Supir</th>
                                             <th scope="col">Penerima</th>
+                                            <th scope="col">Tgl.Terima</th>
+                                            <th scope="col">Modifikasi Terakhir</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- Data will be populated here -->
+                                        @foreach ($heattreatments as $index => $data)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $data->no_wo }}</td>
+                                                <td>{{ $data->no_so }}</td>
+                                                <td>{{ $data->tgl_wo }}</td>
+                                                <td>{{ $data->area }}</td>
+                                                <td>{{ $data->kode }}</td>
+                                                <td>{{ $data->cust }}</td>
+                                                <td>{{ $data->proses }}</td>
+                                                <td>{{ $data->pcs }}</td>
+                                                <td>{{ $data->kg }}</td>
+                                                <td>{{ $data->status_wo }}</td>
+                                                <td>{{ $data->no_do }}</td>
+                                                <td>{{ $data->status_do }}</td>
+                                                <td>{{ $data->tgl_st }}</td>
+                                                <td>{{ $data->supir }}</td>
+                                                <td>{{ $data->penerima }}</td>
+                                                <td>{{ $data->tgl_terima }}</td>
+                                                <td>{{ $data->updated_at }}</td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -60,6 +120,9 @@
                 </div>
             </div>
         </section>
+
+
+
 
 
 
