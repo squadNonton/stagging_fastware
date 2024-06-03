@@ -6,8 +6,8 @@ use App\Http\Controllers\DetailPreventiveController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FormFPPController;
 use App\Http\Controllers\HandlingController;
-use App\Http\Controllers\MesinController;
 use App\Http\Controllers\HeatTreatmentController;
+use App\Http\Controllers\MesinController;
 use App\Http\Controllers\PreventiveController;
 use App\Http\Controllers\SafetyController;
 use App\Http\Controllers\SparepartController;
@@ -137,6 +137,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/api/filter-pie-chart-tipe', 'App\Http\Controllers\HandlingController@FilterPieChartTipe')->name('FilterPieChartTipe');
     Route::get('/api/filter-tipe-all', 'App\Http\Controllers\HandlingController@FilterTipeAll');
     Route::get('/api/FilterPieChartProses', 'App\Http\Controllers\HandlingController@FilterPieChartProses')->name('FilterPieChartProses');
+    Route::get('/api/filterPieChartNG', [HandlingController::class, 'filterPieChartNG'])->name('filterPieChartNG');
 
     // Grafik Repair Maintenance
     Route::get('/getRepairMaintenance', 'App\Http\Controllers\MaintenanceController@getRepairMaintenance')->name('getRepairMaintenance');
@@ -219,7 +220,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/get-lingkungan-patrol', [SafetyController::class, 'getLingkunganPatrol']);
     Route::post('export-patrol-data', [SafetyController::class, 'exportData'])->name('export-patrol-data');
 
-    //WO Heat Treatment
+    // WO Heat Treatment
     Route::get('dashboardImportWO', [HeatTreatmentController::class, 'dashboardImportWO'])
         ->name('dashboardImportWO');
     Route::get('dashboardTracingWO', [HeatTreatmentController::class, 'dashboardTracingWO'])
