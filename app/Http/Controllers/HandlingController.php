@@ -31,6 +31,33 @@ class HandlingController extends Controller
         return view('sales.handling', compact('data'));
     }
 
+    public function getChartStatusHandling(Request $request)
+    {
+        $year = date('Y');
+        $data = Handling::select(
+            DB::raw('COUNT(CASE WHEN status_2 = 0 THEN 1 END) as total_status_2_0'),
+            DB::raw('COUNT(CASE WHEN status = 3 THEN 1 END) as total_status_3'),
+            DB::raw('MONTH(created_at) as month')
+        )
+        ->whereYear('created_at', $year)
+        ->groupBy('month')
+        ->orderBy('month')
+        ->get()
+        ->keyBy('month')
+        ->toArray();
+
+        $fullData = [];
+        for ($i = 1; $i <= 12; ++$i) {
+            $fullData[] = [
+                'month' => $i,
+                'total_status_2_0' => $data[$i]['total_status_2_0'] ?? 0,
+                'total_status_3' => $data[$i]['total_status_3'] ?? 0,
+            ];
+        }
+
+        return response()->json($fullData);
+    }
+
     public function getChartData(Request $request)
     {
         $startDate = $request->input('start_date');
@@ -200,6 +227,41 @@ class HandlingController extends Controller
         }
 
         $data = $query2->get();
+
+        return response()->json($data);
+    }
+
+    public function filterPieChartNG(Request $request)
+    {
+        $category = $request->input('category');
+        $jenis = $request->input('jenis3');
+        $tipe = $request->input('tipe3');
+        $start_month = $request->input('start_month4');
+        $end_month = $request->input('end_month4');
+
+        $query = DB::table('handlings')
+            ->select(
+                'handlings.category AS category',
+                DB::raw('SUM(CASE WHEN handlings.type_1 = "Komplain" THEN 1 ELSE 0 END) AS total_komplain'),
+                DB::raw('SUM(CASE WHEN handlings.type_2 = "Klaim" THEN 1 ELSE 0 END) AS total_klaim'),
+                DB::raw('SUM(CASE WHEN handlings.type_1 = "Komplain" OR handlings.type_2 = "Klaim" THEN 1 ELSE 0 END) AS total_all')
+            )
+            ->when($tipe == 'type_1', function ($query) {
+                return $query->where('handlings.type_1', 'Komplain');
+            })
+            ->when($tipe == 'type_2', function ($query) {
+                return $query->where('handlings.type_2', 'Klaim');
+            })
+            ->when($jenis, function ($query, $jenis) {
+                return $query->where('handlings.category', $jenis);
+            })
+            ->groupBy('handlings.category');
+
+        if (!empty($start_month) && !empty($end_month)) {
+            $query->whereBetween('handlings.created_at', [$start_month, $end_month]);
+        }
+
+        $data = $query->get();
 
         return response()->json($data);
     }

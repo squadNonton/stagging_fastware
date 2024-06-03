@@ -111,6 +111,12 @@
                             <span>Maintenance</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="nav-link collapsed" href="{{ route('dshandling') }}">
+                            <i class="bi bi-list-check fs-6"></i>
+                            <span>Handling Klaim & Komplain</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 

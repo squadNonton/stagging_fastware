@@ -8,7 +8,6 @@ use App\Models\Mesin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
 
 class DsController extends Controller
 {
@@ -36,49 +35,6 @@ class DsController extends Controller
         $onProgressCount = $formperbaikans->where('status', 1)->count();
         $finishCount = $formperbaikans->where('status', 2)->count();
         $closedCount = $formperbaikans->where('status', 3)->count();
-
-        // Mendapatkan data dari database berdasarkan tahun ini pada kolom created_at dan status 3
-        $claimData = Handling::whereYear('created_at', date('Y'))
-            ->where('type_1', 'Claim')
-            ->where('status', 3) // Menambahkan kondisi untuk status bernilai 3
-            ->get(['created_at'])
-            ->groupBy(function ($date) {
-                return Carbon::parse($date->created_at)->format('m');
-            })
-            ->map(function ($item) {
-                return count($item);
-            })
-            ->toArray();
-
-        $complainData = Handling::whereYear('created_at', date('Y'))
-            ->where('type_1', 'Complain')
-            ->where('status', 3) // Menambahkan kondisi untuk status bernilai 3
-            ->get(['created_at'])
-            ->groupBy(function ($date) {
-                return Carbon::parse($date->created_at)->format('m');
-            })
-            ->map(function ($item) {
-                return count($item);
-            })
-            ->toArray();
-
-        $data = Handling::select(
-            DB::raw('COUNT(CASE WHEN status_2 = 0 THEN 1 END) as total_status_2_0'),
-            DB::raw('COUNT(CASE WHEN status = 3 THEN 1 END) as total_status_3'),
-            DB::raw('MONTH(created_at) as month')
-        )
-            ->whereYear('created_at', date('Y')) // Menambahkan filter tahun
-            ->groupBy('month')
-            ->get();
-
-        $countPeriode = Handling::select(
-            DB::raw('COUNT(CASE WHEN status_2 = 0 THEN 1 END) as total_status_2_0'),
-            DB::raw('COUNT(CASE WHEN status = 3 THEN 1 END) as total_status_3'),
-            DB::raw('MONTH(created_at) as month'),
-            DB::raw('YEAR(created_at) as years') // Menggunakan YEAR() untuk mengambil tahun
-        )
-            ->groupBy('years', 'month') // Mengelompokkan berdasarkan years (tahun)
-            ->get();
 
         $chartCutting = FormFPP::join('mesin', 'form_f_p_p_s.mesin', '=', 'mesin.no_mesin')
             ->select(
@@ -184,11 +140,71 @@ class DsController extends Controller
         // Inisialisasi array kosong untuk data
         $data2 = array_fill(0, 12, 0);
 
+        return view(
+            'dashboard.dashboardHandling',
+            compact(
+                'formperbaikans',
+                'openCount',
+                'onProgressCount',
+                'finishCount',
+                'closedCount',
+                'chartCutting',
+                'summaryData',
+                'summaryData2',
+                'periodeWaktuAlat',
+                'chartCutting',
+                'chartMachining',
+                'chartMachiningCustom',
+                'chartHeatTreatment',
+                'data2',
+                'periodeWaktuPengerjaan',
+                'sections',
+                'years2',
+            )
+        );
+    }
+
+    public function dsHandling(Request $request)
+    {
+        // Mendapatkan data dari database berdasarkan tahun ini pada kolom created_at dan status 3
+        $claimData = Handling::whereYear('created_at', date('Y'))
+            ->where('type_1', 'Claim')
+            ->where('status', 3) // Menambahkan kondisi untuk status bernilai 3
+            ->get(['created_at'])
+            ->groupBy(function ($date) {
+                return Carbon::parse($date->created_at)->format('m');
+            })
+            ->map(function ($item) {
+                return count($item);
+            })
+            ->toArray();
+
+        $complainData = Handling::whereYear('created_at', date('Y'))
+            ->where('type_1', 'Complain')
+            ->where('status', 3) // Menambahkan kondisi untuk status bernilai 3
+            ->get(['created_at'])
+            ->groupBy(function ($date) {
+                return Carbon::parse($date->created_at)->format('m');
+            })
+            ->map(function ($item) {
+                return count($item);
+            })
+            ->toArray();
+
+        $countPeriode = Handling::select(
+            DB::raw('COUNT(CASE WHEN status_2 = 0 THEN 1 END) as total_status_2_0'),
+            DB::raw('COUNT(CASE WHEN status = 3 THEN 1 END) as total_status_3'),
+            DB::raw('MONTH(created_at) as month'),
+            DB::raw('YEAR(created_at) as years') // Menggunakan YEAR() untuk mengambil tahun
+        )
+            ->groupBy('years', 'month') // Mengelompokkan berdasarkan years (tahun)
+            ->get();
+
         // Mengambil data dari database
         $tipematerialDS = Handling::join('type_materials', 'handlings.type_id', '=', 'type_materials.id')
-            ->select('type_materials.id', 'type_materials.type_name', \DB::raw('COUNT(*) as total_type_materials'))
-            ->groupBy('type_materials.id', 'type_materials.type_name')
-            ->get();
+        ->select('type_materials.id', 'type_materials.type_name', \DB::raw('COUNT(*) as total_type_materials'))
+        ->groupBy('type_materials.id', 'type_materials.type_name')
+        ->get();
 
         // Memformat data agar sesuai dengan format yang dibutuhkan oleh Highcharts
         $formattedData = [];
@@ -223,32 +239,16 @@ class DsController extends Controller
             ],
         ];
 
-        return view(
-            'dashboard.dashboardHandling',
+        // Inisialisasi array kosong untuk data
+        $data2 = array_fill(0, 12, 0);
+
+        return view('dashboard.dsHandling',
             compact(
                 'complainData',
-                'formperbaikans',
-                'openCount',
-                'onProgressCount',
-                'finishCount',
-                'closedCount',
-                'data',
-                'chartCutting',
-                'summaryData',
-                'summaryData2',
-                'periodeWaktuAlat',
-                'chartCutting',
-                'chartMachining',
-                'chartMachiningCustom',
-                'chartHeatTreatment',
                 'countPeriode',
                 'data2',
-                'periodeWaktuPengerjaan',
-                'sections',
-                'years2',
                 'formattedData',
                 'pieProses'
-            )
-        );
+            ));
     }
 }
