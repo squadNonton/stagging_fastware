@@ -33,7 +33,7 @@
                     <div class="row">
                         <!-- First Place -->
                         @if ($data->count() > 0)
-                            <div class="col-12 mb-4 post-item" data-likes="{{ $data[0]->suka }}"
+                            <div class="col-12 col-md-4 mb-4 post-item" data-likes="{{ $data[0]->suka }}"
                                 data-date="{{ $data[0]->tgl_pengajuan }}" data-title="{{ strtolower($data[0]->judul) }}"
                                 data-user="{{ strtolower($data[0]->user->name) }}">
                                 <div class="card position-relative"
@@ -72,7 +72,7 @@
 
                         <!-- Second Place -->
                         @if ($data->count() > 1)
-                            <div class="col-12 col-md-6 mb-4 post-item" data-likes="{{ $data[1]->suka }}"
+                            <div class="col-12 col-md-4 mb-4 post-item" data-likes="{{ $data[1]->suka }}"
                                 data-date="{{ $data[1]->tgl_pengajuan }}" data-title="{{ strtolower($data[1]->judul) }}"
                                 data-user="{{ strtolower($data[1]->user->name) }}">
                                 <div class="card position-relative"
@@ -111,7 +111,7 @@
 
                         <!-- Third Place -->
                         @if ($data->count() > 2)
-                            <div class="col-12 col-md-6 mb-4 post-item" data-likes="{{ $data[2]->suka }}"
+                            <div class="col-12 col-md-4 mb-4 post-item" data-likes="{{ $data[2]->suka }}"
                                 data-date="{{ $data[2]->tgl_pengajuan }}" data-title="{{ strtolower($data[2]->judul) }}"
                                 data-user="{{ strtolower($data[2]->user->name) }}">
                                 <div class="card position-relative"
@@ -152,7 +152,7 @@
                         <!-- Other Posts -->
                         @foreach ($data as $index => $post)
                             @if ($index > 2)
-                                <div class="col-6 col-md-3 mb-4 post-item" data-likes="{{ $post->suka }}"
+                                <div class="col-12 col-md-6 col-lg-3 mb-4 post-item" data-likes="{{ $post->suka }}"
                                     data-date="{{ $post->tgl_pengajuan }}" data-title="{{ strtolower($post->judul) }}"
                                     data-user="{{ strtolower($post->user->name) }}">
                                     <div class="card">
@@ -188,12 +188,147 @@
                     </div>
                 </div>
             </div>
+            <!-- Readonly Modal Form View Sumbang Saran -->
+            <div class="modal fade" id="viewSumbangSaranModal" tabindex="-1"
+                aria-labelledby="viewSumbangSaranModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewSumbangSaranModalLabel">Form View SS</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form View Sumbang Saran -->
+                            <form id="viewSumbangSaranForm" enctype="multipart/form-data">
+                                @csrf
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Nama<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewname" name="nama"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editLokasiIde" class="col-sm-2 col-form-label">Npk<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewnpk" name="npk"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="viewTglPengajuan" class="col-sm-2 col-form-label">Tgl. pengajuan Ide <span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="date" class="form-control" id="viewTglPengajuan"
+                                            name="tgl_pengajuan_ide" disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="editPlant" class="col-sm-2 col-form-label">Plant<span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="viewPlant" name="plant" disabled required>
+                                            <option value="">----- Pilih Plant -----</option>
+                                            <option value="DS8">DS8</option>
+                                            <option value="Deltamas">Deltamas</option>
+                                            <option value="Tangerang">Tangerang</option>
+                                            <option value="Semarang">Semarang</option>
+                                            <option value="Surabaya">Surabaya</option>
+                                            <option value="Bandung">Bandung</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="viewLokasiIde" class="col-sm-2 col-form-label">Lokasi Ide <span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewLokasiIde" name="lokasi_ide"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="viewTglDiterapkan" class="col-sm-2 col-form-label">Tgl. Diterapkan</label>
+                                    <div class="col-sm-10">
+                                        <input type="date" class="form-control" id="viewTglDiterapkan"
+                                            name="tgl_diterapkan" disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="viewJudulIde" class="col-sm-2 col-form-label">Judul Ide <span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="viewJudulIde" name="judul"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="viewKeadaanSebelumnya" class="col-sm-2 col-form-label">Keadaan Sebelumnya
+                                        (Permasalahan) <span style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control" style="height: 100px" id="viewKeadaanSebelumnya" name="keadaan_sebelumnya" disabled></textarea>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="viewImage" class="col-sm-2 col-form-label">File Upload
+                                        (Sebelumnya) <span style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <div id="view-image-preview" style="margin-top: 10px;"></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="viewUsulanIde" class="col-sm-2 col-form-label">Usulan Ide <span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control" style="height: 100px" id="viewUsulanIde" name="usulan_ide" disabled></textarea>
+                                    </div>
+                                </div>
+                                <!-- Input File Upload 2 -->
+                                <div class="row mb-3">
+                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload (Sesudah) <span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <div id="view-image2-preview" style="margin-top: 10px;"></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="viewKeuntungan" class="col-sm-2 col-form-label">Keuntungan Dari Penerapan
+                                        Ide <span style="color: red;">*</span></label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control" style="height: 100px" id="viewKeuntungan" name="keuntungan_ide" disabled></textarea>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="viewSumbangSaranId" name="id">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Gambar -->
+            <div class="modal fade" id="viewImageModal" tabindex="-1" aria-labelledby="viewImageModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewImageModalLabel">Gambar</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img id="viewModalImage" src="" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <style>
             .btn-group.flex-md-grow-1 .btn {
                 flex-grow: 1;
             }
+
             @media (max-width: 768px) {
                 .btn-group.flex-md-grow-1 .btn {
                     margin-bottom: 5px;
