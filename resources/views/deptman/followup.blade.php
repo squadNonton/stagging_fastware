@@ -31,7 +31,7 @@
                                     <div class="col-lg-6">
                                         <input type="text" class="form-control" id="modified_by" name="modified_by"
                                             maxlength="6" style="width: 100%; max-width: 100%;"
-                                            placeholder="{{ $handlings->user->name}}" disabled>
+                                            placeholder="{{ $handlings->user->name }}" disabled>
                                     </div>
                                 </div>
                                 <br>
@@ -113,8 +113,8 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <label for="t" class="form-label">T:</label>
-                                        <input type="text" class="form-control input-sm" id="thickness" name="thickness"
-                                            placeholder="Thickness" style="max-width: 80%;"
+                                        <input type="text" class="form-control input-sm" id="thickness"
+                                            name="thickness" placeholder="Thickness" style="max-width: 80%;"
                                             value="{{ $handlings->thickness }}" disabled>
                                     </div>
                                     <div class="col-md-3">
@@ -259,7 +259,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <select name="process_type" class="form-control" id="process_type"
-                                            style="width: 25%" required disabled>
+                                            style="width: 100%" required disabled>
                                             <option value="">------------------- Jenis Proses -----------------
                                             </option>
                                             <option value="Heat Treatment"
