@@ -52,26 +52,26 @@
                                                 <td class="text-center py-4"
                                                     style="max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
                                                     title="@if ($data->status == 1) Draf @elseif ($data->status == 2) Menunggu Approve Foreman @elseif($data->status == 3) Menunggu Approve Dept. Head @elseif($data->status == 4) Direksi @endif">
-                                                    @if ($item->status == 1)
+                                                    @if ($data->status == 1)
                                                         <span class="badge bg-secondary align-items-center"
                                                             style="font-size: 18px;">Draf</span>
-                                                    @elseif ($item->status == 2)
+                                                    @elseif ($data->status == 2)
                                                         <span class="badge bg-warning align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Sec. Head</span>
-                                                    @elseif($item->status == 3)
+                                                    @elseif($data->status == 3)
                                                         <span class="badge bg-warning align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Dept.
                                                             Head</span>
-                                                    @elseif($item->status == 4)
+                                                    @elseif($data->status == 4)
                                                         <span class="badge bg-warning align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Komite</span>
-                                                    @elseif($item->status == 5)
+                                                    @elseif($data->status == 5)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">SS sudah dinilai</span>
-                                                    @elseif($item->status == 6)
+                                                    @elseif($data->status == 6)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">SS sudah Verivikasi</span>
-                                                    @elseif($item->status == 7)
+                                                    @elseif($data->status == 7)
                                                         <span class="badge bg-success align-items-center"
                                                             style="font-size: 18px;">SS Terbayar</span>
                                                     @endif
