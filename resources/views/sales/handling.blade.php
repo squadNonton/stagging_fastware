@@ -18,7 +18,6 @@
         <section class="section">
             <div class="row">
                 <div class="col-lg-12">
-
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Tampilan Data Handling</h5>
@@ -42,7 +41,7 @@
                                     Auth::user()->role_id == 14)
                                 <!-- Table with stripped rows -->
                                 <div class="table-responsive" style="height: 100%; overflow-y: auto;">
-                                    <table id="viewSales" class="table table-striped" style="table-layout: fixed;">
+                                    <table class="datatable table">
                                         <thead>
                                             <tr>
                                                 <th class="text-center" width="50px">NO</th>
@@ -73,7 +72,7 @@
                                                 <tr>
                                                     <td class="text-center py-3">{{ $loop->iteration }}</td>
                                                     <td class="text-center py-3">{{ $row->no_wo }}</td>
-                                                    <td class="text-center py-3">{{ $row->users->name ?? '' }}</td>
+                                                    <td class="text-center py-3">{{ $row->user->name ?? '' }}</td>
                                                     <td class="text-center py-3">{{ $row->customers->customer_code ?? '' }}
                                                     </td>
                                                     <td class="text-center py-3">{{ $row->customers->name_customer ?? '' }}
