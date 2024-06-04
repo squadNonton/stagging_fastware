@@ -118,7 +118,7 @@
                                                             style="font-size: 18px;">Draf</span>
                                                     @elseif ($item->status == 2)
                                                         <span class="badge bg-warning align-items-center"
-                                                            style="font-size: 18px;">Menunggu<br>KonfirmasiForeman</span>
+                                                            style="font-size: 18px;">Menunggu<br>Konfirmasi Sec. Head</span>
                                                     @elseif($item->status == 3)
                                                         <span class="badge bg-warning align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Dept.

@@ -58,8 +58,8 @@
                                                         <span class="badge bg-secondary align-items-center"
                                                             style="font-size: 18px;">Draf</span>
                                                     @elseif ($data->status == 2)
-                                                        <span class="badge bg-info align-items-center"
-                                                            style="font-size: 18px;">Menunggu<br>Konfirmasi Foreman</span>
+                                                        <span class="badge bg-warning align-items-center"
+                                                            style="font-size: 18px;">Menunggu<br>Konfirmasi Sec. Head</span>
                                                     @elseif($data->status == 3)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">Menunggu<br>Konfirmasi Dept.
