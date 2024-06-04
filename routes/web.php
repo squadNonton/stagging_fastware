@@ -227,4 +227,8 @@ Route::middleware(['web', 'auth'])->group(function () {
         ->name('dashboardImportWO');
     Route::get('dashboardTracingWO', [HeatTreatmentController::class, 'dashboardTracingWO'])
         ->name('dashboardTracingWO');
+    Route::post('/dashboard/import-wo', [HeatTreatmentController::class, 'importWO'])->name('importWO');
+    Route::get('/searchWO', [HeatTreatmentController::class, 'searchWO'])->name('searchWO');
+    Route::get('/filter-by-mesin', [HeatTreatmentController::class, 'filterByMesin'])->name('filterByMesin');
+    Route::get('downtimeExport', [FormFPPController::class, 'downtimeExport']);
 });
