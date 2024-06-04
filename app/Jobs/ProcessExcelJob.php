@@ -31,98 +31,92 @@ class ProcessExcelJob implements ShouldQueue
 
     public function handle()
     {
-        try {
-            // Load the spreadsheet file
-            $spreadsheet = IOFactory::load($this->filePath);
-            $sheet = $spreadsheet->getActiveSheet();
-            $data = [];
-            $mergeCells = $sheet->getMergeCells();
+        $spreadsheet = IOFactory::load($this->filePath);
+        $sheet = $spreadsheet->getActiveSheet();
 
-            foreach ($sheet->getRowIterator() as $row) {
-                $rowData = [];
-                $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(false);
+        $data = [];
+        $mergeCells = $sheet->getMergeCells();
 
-                foreach ($cellIterator as $cell) {
-                    $cellValue = $cell->getValue();
+        foreach ($sheet->getRowIterator() as $row) {
+            $rowData = [];
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
 
-                    // Skip merged cells
-                    foreach ($mergeCells as $mergeRange) {
-                        $range = Coordinate::extractAllCellReferencesInRange($mergeRange);
-                        if (in_array($cell->getCoordinate(), $range)) {
-                            continue 2; // Skip to the next cell
-                        }
+            foreach ($cellIterator as $cell) {
+                $cellValue = $cell->getValue();
+
+                // Skip merged cells
+                foreach ($mergeCells as $mergeRange) {
+                    $range = Coordinate::extractAllCellReferencesInRange($mergeRange);
+                    if (in_array($cell->getCoordinate(), $range)) {
+                        continue 2; // Skip to the next cell
                     }
-
-                    $rowData[] = $cellValue;
                 }
 
-                // Check if the row data is not empty
-                if (!empty($rowData)) {
-                    $data[] = $rowData;
-                }
+                $rowData[] = $cellValue;
             }
 
-            // Assuming each row of data represents a record in your HeatTreatment model
-            foreach ($data as $rowData) {
-                // Check if the row data has enough elements
-                if (count($rowData) >= 28) {
-                    $existingRecord = HeatTreatment::where('no_wo', $rowData[0])
-                        ->where('no_so', $rowData[1])
-                        ->first();
+            // Check if the row data is not empty
+            if (!empty($rowData)) {
+                $data[] = $rowData;
+            }
+        }
 
-                    $recordData = [
-                        'tgl_wo' => $rowData[2],
-                        'area' => $rowData[3],
-                        'kode' => $rowData[4],
-                        'cust' => $rowData[5],
-                        'proses' => $rowData[6],
-                        'pcs' => $rowData[7],
-                        'kg' => $rowData[8],
-                        'batch_heating' => $rowData[9],
-                        'mesin_heating' => $rowData[10],
-                        'tgl_heating' => $rowData[11],
-                        'batch_temper1' => $rowData[12],
-                        'mesin_temper1' => $rowData[13],
-                        'tgl_temper1' => $rowData[14],
-                        'batch_temper2' => $rowData[15],
-                        'mesin_temper2' => $rowData[16],
-                        'tgl_temper2' => $rowData[17],
-                        'batch_temper3' => $rowData[18],
-                        'mesin_temper3' => $rowData[19],
-                        'tgl_temper3' => $rowData[20],
-                        'status_wo' => $rowData[21],
-                        'no_do' => $rowData[22],
-                        'status_do' => $rowData[23],
-                        'tgl_st' => $rowData[24],
-                        'supir' => $rowData[25],
-                        'penerima' => $rowData[26],
-                        'tgl_terima' => $rowData[27],
-                    ];
+        // Assuming each row of data represents a record in your HeatTreatment model
+        foreach ($data as $rowData) {
+            // Check if the row data has enough elements
+            if (count($rowData) >= 28) {
+                $existingRecord = HeatTreatment::where('no_wo', $rowData[0])
+                    ->where('no_so', $rowData[1])
+                    ->first();
 
-                    if ($existingRecord) {
-                        // Log update attempt
-                        Log::info("Updating record: no_wo={$rowData[0]}, no_so={$rowData[1]}");
-                        // Update the existing record
-                        $existingRecord->update($recordData);
-                    } else {
-                        // Log creation attempt
-                        Log::info("Creating new record: no_wo={$rowData[0]}, no_so={$rowData[1]}");
-                        // Create a new record
-                        HeatTreatment::create(array_merge([
-                            'no_wo' => $rowData[0],
-                            'no_so' => $rowData[1]
-                        ], $recordData));
-                    }
+                $recordData = [
+                    'tgl_wo' => $rowData[2],
+                    'area' => $rowData[3],
+                    'kode' => $rowData[4],
+                    'cust' => $rowData[5],
+                    'proses' => $rowData[6],
+                    'pcs' => $rowData[7],
+                    'kg' => $rowData[8],
+                    'batch_heating' => $rowData[9],
+                    'mesin_heating' => $rowData[10],
+                    'tgl_heating' => $rowData[11],
+                    'batch_temper1' => $rowData[12],
+                    'mesin_temper1' => $rowData[13],
+                    'tgl_temper1' => $rowData[14],
+                    'batch_temper2' => $rowData[15],
+                    'mesin_temper2' => $rowData[16],
+                    'tgl_temper2' => $rowData[17],
+                    'batch_temper3' => $rowData[18],
+                    'mesin_temper3' => $rowData[19],
+                    'tgl_temper3' => $rowData[20],
+                    'status_wo' => $rowData[21],
+                    'no_do' => $rowData[22],
+                    'status_do' => $rowData[23],
+                    'tgl_st' => $rowData[24],
+                    'supir' => $rowData[25],
+                    'penerima' => $rowData[26],
+                    'tgl_terima' => $rowData[27],
+                ];
+
+                if ($existingRecord) {
+                    // Log update attempt
+                    Log::info("Updating record: no_wo={$rowData[0]}, no_so={$rowData[1]}");
+                    // Update the existing record
+                    $existingRecord->update($recordData);
                 } else {
-                    // Log row data issue
-                    Log::warning("Row data does not have enough elements: " . json_encode($rowData));
+                    // Log creation attempt
+                    Log::info("Creating new record: no_wo={$rowData[0]}, no_so={$rowData[1]}");
+                    // Create a new record
+                    HeatTreatment::create(array_merge([
+                        'no_wo' => $rowData[0],
+                        'no_so' => $rowData[1]
+                    ], $recordData));
                 }
+            } else {
+                // Log row data issue
+                Log::warning("Row data does not have enough elements: " . json_encode($rowData));
             }
-        } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
-            Log::error("Error loading file: " . $e->getMessage());
-        } catch (\Exception $e) {
-            Log::error("An error occurred: " . $e->getMessage());
         }
     }
 }

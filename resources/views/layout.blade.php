@@ -1079,6 +1079,21 @@
             });
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all the accordion elements
+            var accordions = document.querySelectorAll('.accordion');
+
+            // Add click event listener to each accordion
+            accordions.forEach(function(accordion) {
+                // Toggle the 'show' class on collapse element when the accordion title is clicked
+                accordion.querySelector('.card-title').addEventListener('click', function() {
+                    accordion.querySelector('.collapse').classList.toggle('show');
+                });
+            });
+        });
+    </script>
 </body>
 
 <!-- Vendor JS Files -->

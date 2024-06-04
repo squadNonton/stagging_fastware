@@ -27,12 +27,15 @@ class HeatTreatmentController extends Controller
             'excelFile' => 'required|mimes:xlsx,xls',
         ]);
 
-        $filePath = $request->file('excelFile')->store('temp');
+        // Dapatkan jalur file sementara
+        $temporaryFilePath = $request->file('excelFile')->getPathname();
 
-        ProcessExcelJob::dispatch(storage_path('app/' . $filePath));
+        // Kirim pekerjaan pemrosesan dengan menggunakan jalur sementara
+        ProcessExcelJob::dispatch($temporaryFilePath);
 
         return back()->with('success', 'File is being processed.');
     }
+
 
     public function searchWO(Request $request)
     {
