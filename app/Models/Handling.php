@@ -17,6 +17,7 @@ class Handling extends Model
         'no_wo',
         'user_id',
         'customer_id',
+        'name',
         'type_id',
         'thickness',
         'weight',
@@ -46,7 +47,7 @@ class Handling extends Model
 
     public function users(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'name');
     }
 
     public function customers(): BelongsTo
