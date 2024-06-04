@@ -60,7 +60,7 @@ class DeptManController extends Controller
         return view('deptman.scheduleVisit', compact('scheduleVisits'));
     }
 
-    public function showHistoryCLaimComplain()
+    public function showHistoryClaimComplain()
     {
         $data2 = Handling::select(
             'handlings.id',
@@ -91,11 +91,10 @@ class DeptManController extends Controller
         ->join('schedule_visits', 'handlings.id', '=', 'schedule_visits.handling_id')
         ->join('customers', 'handlings.customer_id', '=', 'customers.id')
         ->join('type_materials', 'handlings.type_id', '=', 'type_materials.id')
-        ->where('schedule_visits.status', 3)
+        ->where('handlings.status', 3)
         ->orderByDesc('handlings.created_at')
         ->get();
 
-        // dd($data2);
         return view('deptman.historyClaimComplain', compact('data2'));
     }
 
@@ -107,7 +106,7 @@ class DeptManController extends Controller
     public function showConfirm(string $id): View
     {
         // Mengambil data handling berdasarkan ID
-        $handlings = Handling::with(['customers', 'type_materials', 'users'])->findOrFail($id);
+        $handlings = Handling::with(['customers', 'type_materials', 'user'])->findOrFail($id);
 
         // Mengambil semua data pelanggan
         $customers = Customer::all();
@@ -115,16 +114,16 @@ class DeptManController extends Controller
         // Mengambil semua data tipe bahan
         $type_materials = TypeMaterial::all();
 
-        $users = User::all();
+        $user = User::all();
 
         // render view with handlings
-        return view('deptman.confirm', compact('handlings', 'customers', 'type_materials', 'users'));
+        return view('deptman.confirm', compact('handlings', 'customers', 'type_materials', 'user'));
     }
 
     public function showFollowUp(string $id): View
     {
         // Mengambil data handling berdasarkan ID
-        $handlings = Handling::with(['customers', 'type_materials', 'users'])->findOrFail($id);
+        $handlings = Handling::with(['customers', 'type_materials', 'user'])->findOrFail($id);
 
         // Mengambil semua data pelanggan
         $customers = Customer::all();
@@ -132,19 +131,19 @@ class DeptManController extends Controller
         // Mengambil semua data tipe bahan
         $type_materials = TypeMaterial::all();
 
-        $users = User::all();
+        $user = User::all();
 
         // Mengambil data schedule visit berdasarkan handling_id
         $data = ScheduleVisit::where('handling_id', $id)->get();
 
         // render view with handlings
-        return view('deptman.followup', compact('handlings', 'customers', 'type_materials', 'data', 'users'));
+        return view('deptman.followup', compact('handlings', 'customers', 'type_materials', 'data', 'user'));
     }
 
     public function showHistoryProgres(string $id): View
     {
         // Mengambil data handling berdasarkan ID
-        $handling = Handling::with(['customers', 'type_materials', 'users'])->findOrFail($id);
+        $handling = Handling::with(['customers', 'type_materials', 'user'])->findOrFail($id);
 
         // Mengambil semua data pelanggan
         $customers = Customer::all();
@@ -152,13 +151,13 @@ class DeptManController extends Controller
         // Mengambil semua data tipe bahan
         $type_materials = TypeMaterial::all();
 
-        $users = User::all();
+        $user = User::all();
 
         // Mengambil data schedule visit berdasarkan handling_id
         $data = ScheduleVisit::where('handling_id', $id)->get();
 
         // Mengembalikan view 'deptman.historyProgres' dengan data yang dibutuhkan
-        return view('deptman.historyProgres', compact('handling', 'customers', 'type_materials', 'data', 'users'));
+        return view('deptman.historyProgres', compact('handling', 'customers', 'type_materials', 'data', 'user'));
     }
 
     public function showCloseProgres(string $id): View

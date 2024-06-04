@@ -32,7 +32,7 @@
                                         <div class="col-lg-6">
                                             <input type="text" class="form-control" id="modified_by" name="modified_by"
                                                 maxlength="6" style="width: 100%; max-width: 100%;"
-                                                placeholder="{{ $handlings->users->name}}" disabled>
+                                                placeholder="{{ $handlings->user->name }}" disabled>
                                         </div>
                                     </div>
                                     <br>
@@ -54,7 +54,7 @@
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
-                                            <select name="customer_id" id="customer_id_code" class="select2"
+                                            <select name="customer_id" id="customer_id_code"
                                                 style="width: 100%" onchange="updateCustomerInfo()" disabled>
                                                 <option value="">Pilih Kode Pelanggan</option>
                                                 @foreach ($customers as $customer)
@@ -97,7 +97,7 @@
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
-                                            <select name="type_id" id="type_id" class="select2" style="width: 100%">
+                                            <select name="type_id" id="type_id" style="width: 100%" disabled>
                                                 @foreach ($type_materials as $typeMaterial)
                                                     <option value="{{ $typeMaterial->id }}"
                                                         @if ($typeMaterial->id == $handlings->type_id) selected @endif>
@@ -300,7 +300,8 @@
                                 <div class="col-lg-6">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar: (Jika ada)</span></label>
+                                            <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar: (Jika
+                                                ada)</span></label>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="row mt-3">

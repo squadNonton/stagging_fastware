@@ -45,9 +45,9 @@ class Handling extends Model
             ->count();
     }
 
-    public function users(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'name');
+        return $this->belongsTo(User::class, 'user_id'); // Sesuaikan dengan nama kolom foreign key di tabel Handling
     }
 
     public function customers(): BelongsTo

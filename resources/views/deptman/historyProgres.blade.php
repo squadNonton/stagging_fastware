@@ -32,7 +32,7 @@
                                         <div class="col-lg-6">
                                             <input type="text" class="form-control" id="modified_by" name="modified_by"
                                                 maxlength="6" style="width: 100%; max-width: 100%;"
-                                                placeholder="{{ $handling->users->name}}" disabled>
+                                                placeholder="{{ $handling->user->name}}" disabled>
                                         </div>
                                     </div>
                                     <br>

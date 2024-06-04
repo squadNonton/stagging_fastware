@@ -22,7 +22,7 @@ class HandlingController extends Controller
 
     public function index()
     {
-        $data = Handling::with(['customers', 'type_materials', 'users'])
+        $data = Handling::with(['customers', 'type_materials', 'user'])
         ->whereIn('status', [2, 1, 0, 3])
         ->orderByRaw('FIELD(status, 2, 1, 0, 3)') // Urutkan berdasarkan urutan status yang diinginkan
         ->orderByDesc('created_at') // Urutkan berdasarkan created_at dalam setiap status
