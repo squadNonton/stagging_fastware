@@ -25,12 +25,12 @@ class DeptManController extends Controller
     // viewSubmission
     public function submission()
     {
-        $view1 = Handling::with(['customers', 'type_materials', 'user']) // Menggunakan array untuk parameter with
+        $view1 = Handling::with(['customers', 'type_materials']) // Menggunakan array untuk parameter with
             ->where('status', 0) // Menggunakan operator default '=' secara implisit
             ->orderBy('created_at', 'desc') // Urutkan secara descending berdasarkan kolom 'created_at'
             ->paginate();
 
-        $view2 = Handling::with('customers', 'type_materials', 'user')
+        $view2 = Handling::with('customers', 'type_materials')
         ->whereIn('status', [1, 2, 3]) // Filter berdasarkan status 1, 2, dan 3
         ->orderByRaw('FIELD(status, 1, 2, 3)') // Urutkan berdasarkan urutan status yang diinginkan
         ->orderByDesc('created_at') // Jika perlu, urutkan secara descending berdasarkan kolom 'created_at' atau sesuaikan dengan kolom yang sesuai
@@ -86,13 +86,11 @@ class DeptManController extends Controller
             'schedule_visits.due_date',
             'schedule_visits.pic',
             'handlings.status',
-            'handlings.created_at',
-            'users.name'
+            'handlings.created_at'
         )
         ->join('schedule_visits', 'handlings.id', '=', 'schedule_visits.handling_id')
         ->join('customers', 'handlings.customer_id', '=', 'customers.id')
         ->join('type_materials', 'handlings.type_id', '=', 'type_materials.id')
-        ->join('users', 'users.id', '=', 'handlings.user_id')
         ->where('handlings.status', 3)
         ->orderByDesc('handlings.created_at')
         ->get();

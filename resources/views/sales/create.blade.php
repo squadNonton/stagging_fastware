@@ -43,7 +43,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="no_wo" class="col-sm-5 col-form-label">No. WO:<span
+                                            <label for="no_wo" class="col-sm-2 col-form-label">No. WO:<span
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
@@ -52,7 +52,7 @@
                                         </div>
                                     </div>
                                     <br>
-
+                                    
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <label for="customer_code" class="col-sm-5 col-form-label">Kode Pelanggan:<span
@@ -327,6 +327,8 @@
             var imageError = document.getElementById('imageError');
             imageError.style.display = 'none';
 
+            // Fungsi untuk menampilkan modal saat gambar di klik
+            // Fungsi untuk menampilkan modal saat gambar di klik
             function showModal(imageSrc) {
                 var modal = document.getElementById("imageModal");
                 var modalImg = document.getElementById("modalImage");
