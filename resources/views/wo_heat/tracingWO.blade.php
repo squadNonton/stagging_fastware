@@ -3,8 +3,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.20.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css">
-
-
     <main id="main" class="main">
 
         <div class="pagetitle">
@@ -22,7 +20,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Trace No. WO</h5>
+                            <h5 class="card-title text-center">Trace By Customer</h5>
 
                             <!-- No. WO Search Textbox -->
                             <div class="form-group">
@@ -30,40 +28,9 @@
                                 <input type="text" class="form-control" id="searchWO"
                                     placeholder="Cari Nama Customer....">
                             </div>
+                            <br>
 
-                            <!-- Table 1 (Trace No.WO) -->
-                            <div class="table-responsive">
-                                <table class="table" id="table1">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Detail</th>
-                                            <th scope="col">Value</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>No. WO</td>
-                                            <td id="noWO"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Tgl. WO</td>
-                                            <td id="tglWO"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Status WO</td>
-                                            <td id="statusWO"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Status DO</td>
-                                            <td id="statusDO"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Proses</td>
-                                            <td id="proses"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <div id="tableContainer"></div> <!-- Kontainer untuk tabel -->
 
                             <hr>
 
@@ -116,10 +83,6 @@
                             <div class="table-responsive">
                                 <table class="table" id="table3">
                                     <thead>
-                                        <tr>
-                                            <th scope="col">Detail</th>
-                                            <th scope="col">Value</th>
-                                        </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
@@ -146,6 +109,8 @@
                                 </table>
                             </div>
                         </div>
+
+
                     </div>
                 </div>
             </div>
@@ -157,16 +122,15 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title text-center">Detail Proses</h5>
-
                             <!-- Mesin (Search Textbox Readonly) -->
                             <div class="form-group row">
                                 <label for="searchMesin" class="col-sm-2 col-form-label">Mesin</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="searchMesin" placeholder="Search..."
+                                    <input type="text" class="form-control" name="searchMesin" placeholder="Search..."
                                         readonly>
                                 </div>
                             </div>
-
+                            <br>
                             <!-- Tabel -->
                             <div class="table-responsive">
                                 <table class="table" id="detailProsesTable">
@@ -180,7 +144,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td id="detailWO">
+                                            <td>
                                                 <div id="detailTglWO"></div>
                                                 <div id="detailStatusWO"></div>
                                                 <div id="detailStatusDO"></div>
@@ -193,16 +157,15 @@
                                     </tbody>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-
-
         <script>
+            var globalData = {};
+
             $(document).ready(function() {
                 $('#searchWO').on('keyup', function() {
                     var searchWO = $(this).val();
@@ -214,9 +177,8 @@
                             'searchWO': searchWO
                         },
                         success: function(data) {
+                            globalData = data;
                             populateTables(data);
-                            populateDetailProses(data);
-                            populateDetailStatusDO(data);
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
@@ -224,180 +186,174 @@
                     });
                 });
 
-                $('#table2').on('click', '.clickable-cell', function() {
-                    var clickedCell = $(this);
-                    var row = clickedCell.closest('tr'); // Dapatkan baris terdekat dari sel yang diklik
-
-                    // Ambil nilai dari kolom "Mesin" yang sesuai dengan kolom "Batch" yang diklik
-                    var mesin = row.find('#mesin' + clickedCell.attr('id').substr(5)).text();
-
-                    $('#searchMesin').val(mesin);
-                    $('#searchMesin').trigger('keyup');
-                });
-
-
                 function populateTables(data) {
                     populateTable1(data);
-                    populateTable2(data);
-                    populateTable3(data);
+                    if (data.length > 0) {
+                        populateTable2(data[0]); // Initialize with the first record if available
+                        populateTable3(data[0]); // Initialize with the first record if available
+                    }
                 }
 
                 function populateTable1(data) {
-                    let no_wo = [],
-                        cust = [],
-                        tgl_wo = [],
-                        status_wo = [],
-                        status_do = [],
-                        proses = [];
-                    $.each(data, function(index, value) {
-                        no_wo.push(value.no_wo);
-                        cust.push(value.cust);
-                        tgl_wo.push(value.tgl_wo);
-                        status_wo.push(value.status_wo);
-                        status_do.push(value.status_do);
-                        proses.push(value.proses);
+                    $('#tableContainer').empty();
+
+                    let tableHtml = `
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>No. WO</th>
+                                        <th>Customer</th>
+                                        <th>Tgl. WO</th>
+                                        <th>Status WO</th>
+                                        <th>Status DO</th>
+                                        <th>Proses</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+
+                    $('#tableContainer').append(tableHtml);
+
+                    let $tableBody = $('#tableBody');
+
+                    $.each(data, function(customer, workOrders) {
+                        workOrders.forEach(wo => {
+                            let rowHtml = `
+                                <tr data-no-wo="${wo.no_wo}">
+                                    <td class="no-wo clickable-cell">${wo.no_wo}</td>
+                                    <td>${wo.cust}</td>
+                                    <td>${wo.tgl_wo}</td>
+                                    <td>${wo.status_wo}</td>
+                                    <td>${wo.status_do}</td>
+                                    <td>${wo.proses}</td>
+                                </tr>
+                            `;
+                            $tableBody.append(rowHtml);
+                        });
                     });
-                    $('#noWO').text(no_wo.join(', '));
-                    $('#customer').text(cust.join(', '));
-                    $('#tglWO').text(tgl_wo.join(', '));
-                    $('#statusWO').text(status_wo.join(', '));
-                    $('#statusDO').text(status_do.join(', '));
-                    $('#proses').text(proses.join(', '));
+
+                    $('#tableBody').on('click', '.clickable-cell', function() {
+                        let no_wo = $(this).text();
+                        let selectedWO = null;
+
+                        $.each(globalData, function(customer, workOrders) {
+                            workOrders.forEach(wo => {
+                                if (wo.no_wo === no_wo) {
+                                    selectedWO = wo;
+                                    return false;
+                                }
+                            });
+                            if (selectedWO) {
+                                return false;
+                            }
+                        });
+
+                        if (selectedWO) {
+                            populateTable2(selectedWO);
+                            populateTable3(selectedWO);
+                        }
+                    });
                 }
 
                 function populateTable2(data) {
-                    let batch = [],
-                        mesin = [],
-                        tgl_heating = [],
-                        batch_temper1 = [],
-                        mesin_temper1 = [],
-                        tgl_temper1 = [];
-                    let batch_temper2 = [],
-                        mesin_temper2 = [],
-                        tgl_temper2 = [],
-                        batch_temper3 = [],
-                        mesin_temper3 = [],
-                        tgl_temper3 = [];
-                    $.each(data, function(index, value) {
-                        batch.push(value.batch);
-                        mesin.push(value.mesin);
-                        tgl_heating.push(value.tgl_heating);
-                        batch_temper1.push(value.batch_temper1);
-                        mesin_temper1.push(value.mesin_temper1);
-                        tgl_temper1.push(value.tgl_temper1);
-                        batch_temper2.push(value.batch_temper2);
-                        mesin_temper2.push(value.mesin_temper2);
-                        tgl_temper2.push(value.tgl_temper2);
-                        batch_temper3.push(value.batch_temper3);
-                        mesin_temper3.push(value.mesin_temper3);
-                        tgl_temper3.push(value.tgl_temper3);
-                    });
-                    $('#batchHeating').text(batch.join(', '));
-                    $('#mesinHeating').text(mesin.join(', '));
-                    $('#tanggalHeating').text(tgl_heating.join(', '));
-                    $('#batchTemper1').text(batch_temper1.join(', '));
-                    $('#mesinTemper1').text(mesin_temper1.join(', '));
-                    $('#tanggalTemper1').text(tgl_temper1.join(', '));
-                    $('#batchTemper2').text(batch_temper2.join(', '));
-                    $('#mesinTemper2').text(mesin_temper2.join(', '));
-                    $('#tanggalTemper2').text(tgl_temper2.join(', '));
-                    $('#batchTemper3').text(batch_temper3.join(', '));
-                    $('#mesinTemper3').text(mesin_temper3.join(', '));
-                    $('#tanggalTemper3').text(tgl_temper3.join(', '));
+                    $('#batchHeating').text(data.batch || '');
+                    $('#mesinHeating').text(data.mesin_heating || '');
+                    $('#tanggalHeating').text(data.tgl_heating || '');
+                    $('#batchTemper1').text(data.batch_temper1 || '');
+                    $('#mesinTemper1').text(data.mesin_temper1 || '');
+                    $('#tanggalTemper1').text(data.tgl_temper1 || '');
+                    $('#batchTemper2').text(data.batch_temper2 || '');
+                    $('#mesinTemper2').text(data.mesin_temper2 || '');
+                    $('#tanggalTemper2').text(data.tgl_temper2 || '');
+                    $('#batchTemper3').text(data.batch_temper3 || '');
+                    $('#mesinTemper3').text(data.mesin_temper3 || '');
+                    $('#tanggalTemper3').text(data.tgl_temper3 || '');
                 }
 
                 function populateTable3(data) {
-                    let no_do = [],
-                        tgl_st = [],
-                        supir = [],
-                        penerima = [],
-                        tgl_terima = [];
-                    $.each(data, function(index, value) {
-                        no_do.push(value.no_do);
-                        tgl_st.push(value.tgl_st);
-                        supir.push(value.supir);
-                        penerima.push(value.penerima);
-                        tgl_terima.push(value.tgl_terima);
-                    });
-                    $('#detailNoDO').html(no_do.map(no => `<div>${no}</div>`).join(''));
-                    $('#detailTglST').html(tgl_st.map(tgl => `<div>${tgl}</div>`).join(''));
-                    $('#detailSupir').html(supir.map(sup => `<div>${sup}</div>`).join(''));
-                    $('#detailPenerima').html(penerima.map(pen => `<div>${pen}</div>`).join(''));
-                    $('#detailTglTerima').html(tgl_terima.map(tgl => `<div>${tgl}</div>`).join(''));
+                    $('#detailNoDO').text(data.no_do || '');
+                    $('#detailTglST').text(data.tgl_st || '');
+                    $('#detailSupir').text(data.supir || '');
+                    $('#detailPenerima').text(data.penerima || '');
+                    $('#detailTglTerima').text(data.tgl_terima || '');
                 }
 
-                function populateDetailProses(data) {
-                    let wo = [],
-                        nama_customer = [],
-                        pcs = [],
-                        tonase = [],
-                        tgl_wo = [],
-                        status_wo = [],
-                        status_do = [],
-                        proses = [],
-                        mesin = [];
-                    $.each(data, function(index, value) {
-                        wo.push(index);
-                        nama_customer.push(value.cust);
-                        pcs.push(value.pcs);
-                        tonase.push(value.kg);
-                        tgl_wo.push(value.tgl_wo);
-                        status_wo.push(value.status_wo);
-                        status_do.push(value.status_do);
-                        proses.push(value.proses);
-                        mesin.push(value.mesin);
-                    });
-                    if (wo.length > 0) {
-                        $('#detailTglWO').text('Tgl.WO: ' + tgl_wo.join(', '));
-                        $('#detailStatusWO').text('Status WO: ' + status_wo.join(', '));
-                        $('#detailStatusDO').text('Status DO: ' + status_do.join(', '));
-                        $('#detailProses').text('Proses: ' + proses.join(', '));
-                        $('#detailCustomer').text(nama_customer.join(', '));
-                        $('#detailPCS').text(pcs.join(', '));
-                        $('#detailTonase').text(tonase.join(', '));
-                    } else {
-                        $('#detailTglWO').text('Tgl.WO:');
-                        $('#detailStatusWO').text('Status WO:');
-                        $('#detailStatusDO').text('Status DO:');
-                        $('#detailProses').text('Proses:');
-                        $('#detailCustomer').text('');
-                        $('#detailPCS').text('');
-                        $('#detailTonase').text('');
-                        $('#searchMesin').val(mesin.join(', '));
-                    }
-                }
+                // Event handler for clickable cells in the batch columns
+                $('#table2').on('click', '.clickable-cell', function() {
+                    let batch = $(this).text().trim();
+                    let selectedWO = null;
 
-                function populateDetailStatusDO(data) {
-                    let no_do = [],
-                        tgl_st = [],
-                        supir = [],
-                        penerima = [],
-                        tgl_terima = [];
-                    $.each(data, function(index, value) {
-                        no_do.push(value.no_do);
-                        tgl_st.push(value.tgl_st);
-                        supir.push(value.supir);
-                        penerima.push(value.penerima);
-                        tgl_terima.push(value.tgl_terima);
+                    console.log('Clicked batch:', batch); // Log the clicked batch
+
+                    // Find the corresponding work order in the global data
+                    $.each(globalData, function(customer, workOrders) {
+                        workOrders.forEach(wo => {
+                            if (wo.batch === batch || wo.batch_temper1 === batch || wo
+                                .batch_temper2 === batch || wo.batch_temper3 === batch) {
+                                selectedWO = wo;
+                                return false; // Exit loop
+                            }
+                        });
+                        if (selectedWO) {
+                            return false; // Exit loop
+                        }
                     });
-                    if (no_do.length > 0) {
-                        $('#detailNoDO').html(no_do.map(no => `<div>${no}</div>`).join(''));
-                        $('#detailTglST').html(tgl_st.map(tgl => `<div>${tgl}</div>`).join(''));
-                        $('#detailSupir').html(supir.map(sup => `<div>${sup}</div>`).join(''));
-                        $('#detailPenerima').html(penerima.map(pen => `<div>${pen}</div>`).join(''));
-                        $('#detailTglTerima').html(tgl_terima.map(tgl => `<div>${tgl}</div>`).join(''));
+
+                    if (selectedWO) {
+                        console.log('Selected work order:', selectedWO); // Log the selected work order
+                        populateDetailProses(selectedWO, batch);
                     } else {
-                        $('#detailNoDO').text('');
-                        $('#detailTglST').text('');
-                        $('#detailSupir').text('');
-                        $('#detailPenerima').text('');
-                        $('#detailTglTerima').text('');
+                        console.log('No matching work order found for batch:', batch);
                     }
+                });
+
+                function populateDetailProses(data, batch) {
+                    console.log('Populating details with data:',
+                        data); // Log the data being used to populate the details
+
+                    // Determine the machine type based on the batch
+                    let mesin = null;
+                    if (data.batch === batch) {
+                        mesin = data.mesin_heating;
+                    } else if (data.batch_temper1 === batch) {
+                        mesin = data.mesin_temper1;
+                    } else if (data.batch_temper2 === batch) {
+                        mesin = data.mesin_temper2;
+                    } else if (data.batch_temper3 === batch) {
+                        mesin = data.mesin_temper3;
+                    }
+
+                    console.log('Mesin value determined:', mesin); // Log the determined machine value
+
+                    if (mesin !== null) {
+                        $('input[name="searchMesin"]').val(mesin); // Use attribute selector for input fields
+                    } else {
+                        console.log('No matching mesin found for batch:', batch);
+                    }
+
+                    $('#detailTglWO').text(data.tgl_wo);
+                    $('#detailStatusWO').text(data.status_wo);
+                    $('#detailStatusDO').text(data.status_do);
+                    $('#detailProses').text(data.proses);
+                    $('#detailCustomer').text(data.cust);
+                    $('#detailPCS').text(data.pcs);
+                    $('#detailTonase').text(data.kg);
                 }
             });
         </script>
 
         <style>
+            #detailProcessTable td {
+                padding: 8px;
+                border: 1px solid #ccc;
+                text-align: center;
+                vertical-align: middle;
+            }
+
             #table3 td div {
                 border-bottom: 1px solid #dee2e6;
                 padding: 8px 0;
@@ -406,8 +362,22 @@
             #table3 td div:last-child {
                 border-bottom: none;
             }
-        </style>
 
+            .table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            .table th,
+            .table td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+            .table th {
+                background-color: #f2f2f2;
+            }
+        </style>
     </main>
-    < !-- End #main -->
-    @endsection
+@endsection

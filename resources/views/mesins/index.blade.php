@@ -32,7 +32,7 @@
 
                         <!-- Table with stripped rows -->
                         <div class="table-responsive">
-                            <table id="" class="display" style="table-layout: fixed;">
+                            <table class="datatables datatable" style="table-layout: responsive;">
                                 <thead>
                                     <tr>
                                         <th scope="col">No</th>

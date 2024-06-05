@@ -58,7 +58,7 @@
                             <br>
                             <!-- Table with stripped rows -->
                             <div class="table-responsive">
-                                <table id="example" style="width:100%">
+                                <table class="datatables datatable" style="table-layout: responsive;">
                                     <thead>
                                         <tr>
                                             <th scope="col" rowspan="2">No</th>
@@ -144,35 +144,6 @@
             </div>
         </section>
 
-        <style>
-            .table-bordered th,
-            .table-bordered td {
-                border: 1px solid #dee2e6;
-            }
-
-            .table thead th {
-                vertical-align: bottom;
-                border-bottom: 2px solid #dee2e6;
-            }
-
-            .table tbody+tbody {
-                border-top: 2px solid #dee2e6;
-            }
-
-            .table-bordered {
-                border: 1px solid #dee2e6;
-            }
-
-            .datatable th,
-            .datatable td {
-                text-align: center;
-                vertical-align: middle;
-            }
-
-            .datatable th[colspan] {
-                text-align: center;
-            }
-        </style>
         <script>
             function exportData() {
                 var selectedArea = document.getElementById("areaSelection").value;
@@ -263,26 +234,30 @@
         <!-- Add jQuery DataTables -->
         <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
-        <!-- Initialize DataTables -->
-        <script>
-            new DataTable('#example');
-        </script>
 
         <style>
-            /* Add border to the table */
-            #example {
+            .datatables.datatable {
                 border-collapse: collapse;
+                /* Pastikan border tidak menggandakan diri */
+                width: 100%;
+                /* Sesuaikan lebar tabel */
             }
 
-            /* Add border to table cells */
-            #example td,
-            #example th {
-                border: 1px solid whitesmoke;
+            .datatables.datatable th,
+            .datatables.datatable td {
+                border: 1px solid #000;
+                /* Ubah warna border sesuai kebutuhan */
                 padding: 8px;
-                /* Add some padding for better readability */
+                /* Tambahkan padding untuk membuat teks lebih mudah dibaca */
+                text-align: left;
+                /* Sesuaikan alignment teks sesuai kebutuhan */
+            }
+
+            .datatables.datatable th {
+                background-color: #f2f2f2;
+                /* Beri warna latar belakang pada header tabel */
             }
         </style>
-
 
 
     </main><!-- End #main -->

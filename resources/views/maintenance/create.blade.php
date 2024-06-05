@@ -104,7 +104,7 @@
 
                                         <!-- Schedule Pengecekan -->
                                         <div class="mb-3">
-                                            <label for="schedule_pengecekan" class="form-label">Schedule Pengecekan</label>
+                                            <label for="schedule_pengecekan" class="form-label">Jadwal Pengecekan</label>
                                             <input type="date" class="form-control" id="schedule_pengecekan"
                                                 name="schedule_pengecekan">
                                         </div>
@@ -144,12 +144,12 @@
                                 <div class="collapse" id="updateProgress">
                                     <!-- Tabel History Progress -->
                                     <div class="table-responsive">
-                                        <table id="" class="display" style="table-layout: fixed;">
+                                        <table class="datatables datatable" style="table-layout: responsive;">
                                             <thead class="bg-primary text-white">
                                                 <tr>
                                                     <th scope="col">No</th>
                                                     <th scope="col">Tindak Lanjut</th>
-                                                    <th scope="col">Schedule Pengecekan</th>
+                                                    <th scope="col">Jadwal Pengecekan</th>
                                                     <th scope="col">PIC</th>
                                                     <th scope="col">Due Date</th>
                                                     <th scope="col">File</th>
@@ -230,27 +230,28 @@
     </main>
 @endsection
 
-<!-- Letakkan skrip JavaScript ini di dalam tag <head> atau sebelum tag </body> -->
-<script>
-    function handleSaveButtonClick() {
-        // Validate schedule_pengecekan against due_date
-        var schedulePengecekan = document.getElementById('schedule_pengecekan').value;
-        var dueDate = document.getElementById('due_date').value;
 
-        if (schedulePengecekan && dueDate && schedulePengecekan > dueDate) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'Schedule Pengecekan tidak boleh melebihi Due Date.'
-            });
-            return;
-        }
+<!-- Letakkan skrip JavaScript ini di dalam tag <head> atau sebelum tag </body> -->
+{{-- <script>
+    function handleSaveButtonClick() {
+        // // Validate schedule_pengecekan against due_date
+        // var schedulePengecekan = document.getElementById('schedule_pengecekan').value;
+        // var dueDate = document.getElementById('due_date').value;
+
+        // if (schedulePengecekan && dueDate && schedulePengecekan > dueDate) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Validation Error',
+        //         text: 'Schedule Pengecekan tidak boleh melebihi Due Date.'
+        //     });
+        //     return;
+        // }
 
         // If validation passes, proceed with form submission
         document.getElementById('confirmed_finish6').value = '1';
         document.getElementById('updateForm').submit();
     }
-</script>
+</script> --}}
 
 
 <script>
@@ -292,59 +293,6 @@
     });
 </script>
 
-<style>
-    /* CSS untuk modal */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-        align-items: center;
-        /* Mengatur penempatan vertikal ke tengah */
-        justify-content: center;
-        /* Mengatur penempatan horizontal ke tengah */
-    }
-
-    /* Konten dalam modal */
-    .modal-content {
-        max-width: 80%;
-        max-height: 80%;
-        background-color: white;
-        padding: 20px;
-        border-radius: 4px;
-        position: relative;
-    }
-
-    /* Tombol close */
-    .close {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        color: #aaa;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-    }
-
-    /* CSS untuk gambar di dalam modal */
-    .modal-content img {
-        width: 100%;
-        height: auto;
-        display: block;
-        margin: 0 auto;
-    }
-</style>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var attachmentInput = document.getElementById('attachment_file');

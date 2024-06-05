@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\WOImport;
 use App\Jobs\ProcessExcelJob;
 use App\Models\HeatTreatment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
@@ -21,21 +24,41 @@ class HeatTreatmentController extends Controller
         return view('wo_heat.tracingWO');
     }
 
+    // public function importWO(Request $request)
+    // {
+    //     $request->validate([
+    //         'excelFile' => 'required|mimes:xlsx,xls',
+    //     ]);
+
+    //     // Dapatkan jalur file sementara
+    //     $temporaryFilePath = $request->file('excelFile')->getRealPath();
+
+    //     // Kirim pekerjaan pemrosesan dengan menggunakan jalur sementara
+    //     ProcessExcelJob::dispatch($temporaryFilePath);
+
+    //     return back()->with('success', 'File is being processed.');
+    // }
+
+    // Controller Method
     public function importWO(Request $request)
     {
+        // Validasi file yang diupload
         $request->validate([
-            'excelFile' => 'required|mimes:xlsx,xls',
+            'excelFile' => 'required|file|mimes:xlsx,xls,csv',
         ]);
 
-        // Dapatkan jalur file sementara
-        $temporaryFilePath = $request->file('excelFile')->getPathname();
+        // Mendapatkan path dari file yang diupload
+        $filePath = $request->file('excelFile')->getRealPath();
 
-        // Kirim pekerjaan pemrosesan dengan menggunakan jalur sementara
-        ProcessExcelJob::dispatch($temporaryFilePath);
-
-        return back()->with('success', 'File is being processed.');
+        // Melakukan import data
+        try {
+            Excel::import(new WOImport(), $filePath);
+            return back()->with('success', 'Data telah berhasil diimpor');
+        } catch (\Exception $e) {
+            Log::error("Error importing file: " . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat mengimpor data. Silakan coba lagi.');
+        }
     }
-
 
     public function searchWO(Request $request)
     {
@@ -44,57 +67,39 @@ class HeatTreatmentController extends Controller
             $data = HeatTreatment::where('cust', 'LIKE', '%' . $searchWO . '%')->get()->groupBy('cust');
 
             $response = $data->map(function ($items, $key) {
-                return [
-                    'no_wo' => $items->pluck('no_wo')->unique()->implode(', '),
-                    'cust' => $items->pluck('cust')->unique()->implode(', '),
-                    'tgl_wo' => $items->pluck('tgl_wo')->unique()->implode(', '),
-                    'status_wo' => $items->pluck('status_wo')->unique()->implode(', '),
-                    'status_do' => $items->pluck('status_do')->unique()->implode(', '),
-                    'proses' => $items->pluck('proses')->unique()->implode(', '),
-                    'batch' => $items->pluck('batch_heating')->unique()->implode(', '),
-                    'mesin' => $items->pluck('mesin_heating')->unique()->implode(', '),
-                    'tgl_heating' => $items->pluck('tgl_heating')->unique()->implode(', '),
-                    'batch_temper1' => $items->pluck('batch_temper1')->unique()->implode(', '),
-                    'mesin_temper1' => $items->pluck('mesin_temper1')->unique()->implode(', '),
-                    'tgl_temper1' => $items->pluck('tgl_temper1')->unique()->implode(', '),
-                    'batch_temper2' => $items->pluck('batch_temper2')->unique()->implode(', '),
-                    'mesin_temper2' => $items->pluck('mesin_temper2')->unique()->implode(', '),
-                    'tgl_temper2' => $items->pluck('tgl_temper2')->unique()->implode(', '),
-                    'batch_temper3' => $items->pluck('batch_temper3')->unique()->implode(', '),
-                    'mesin_temper3' => $items->pluck('mesin_temper3')->unique()->implode(', '),
-                    'tgl_temper3' => $items->pluck('tgl_temper3')->unique()->implode(', '),
-                    'no_do' => $items->pluck('no_do')->unique()->implode(', '),
-                    'tgl_st' => $items->pluck('tgl_st')->unique()->implode(', '),
-                    'supir' => $items->pluck('supir')->unique()->implode(', '),
-                    'penerima' => $items->pluck('penerima')->unique()->implode(', '),
-                    'tgl_terima' => $items->pluck('tgl_terima')->unique()->implode(', '),
-                    'pcs' => $items->sum('pcs'),
-                    'kg' => $items->sum('kg'),
-                ];
+                return $items->map(function ($item) {
+                    return [
+                        'no_wo' => $item->no_wo,
+                        'cust' => $item->cust,
+                        'tgl_wo' => $item->tgl_wo,
+                        'status_wo' => $item->status_wo,
+                        'status_do' => $item->status_do,
+                        'proses' => $item->proses,
+                        'batch' => $item->batch_heating,
+                        'mesin' => $item->mesin_heating,
+                        'tgl_heating' => $item->tgl_heating,
+                        'batch_temper1' => $item->batch_temper1,
+                        'mesin_temper1' => $item->mesin_temper1,
+                        'tgl_temper1' => $item->tgl_temper1,
+                        'batch_temper2' => $item->batch_temper2,
+                        'mesin_temper2' => $item->mesin_temper2,
+                        'tgl_temper2' => $item->tgl_temper2,
+                        'batch_temper3' => $item->batch_temper3,
+                        'mesin_temper3' => $item->mesin_temper3,
+                        'tgl_temper3' => $item->tgl_temper3,
+                        'no_do' => $item->no_do,
+                        'tgl_st' => $item->tgl_st,
+                        'supir' => $item->supir,
+                        'penerima' => $item->penerima,
+                        'tgl_terima' => $item->tgl_terima,
+                        'pcs' => $item->pcs,
+                        'kg' => $item->kg,
+                    ];
+                });
             });
 
             return response()->json($response);
         }
         return response()->json(['message' => 'No data found'], 404);
-    }
-
-    public function fetchDetailProses(Request $request)
-    {
-        // Lakukan sesuatu untuk mendapatkan data detail berdasarkan cellId
-        $cellText = $request->input('cellText');
-
-        // Contoh pengembalian data
-        $detailData = [
-            'tgl_wo' => 'Tanggal WO dari ' . $cellText,
-            'status_wo' => 'Status WO dari ' . $cellText,
-            'status_do' => 'Status DO dari ' . $cellText,
-            'proses' => 'Proses dari ' . $cellText,
-            'customer' => 'Customer dari ' . $cellText,
-            'pcs' => 'PCS dari ' . $cellText,
-            'tonase' => 'Tonase dari ' . $cellText,
-        ];
-
-        // Kembalikan data dalam format JSON
-        return response()->json($detailData);
     }
 }

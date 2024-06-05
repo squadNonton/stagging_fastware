@@ -94,12 +94,12 @@
                         <h5 class="card-title">Tabel History Progress</h5>
                         <!-- Tabel History Progress -->
                         <div class="table-responsive">
-                            <table id="" class="display" style="table-layout: fixed;">
+                            <table class="datatables datatable" style="table-layout: responsive;">
                                 <thead class="bg-primary text-white">
                                     <tr>
                                         <th scope="col">No</th>
                                         <th scope="col">Tindak Lanjut</th>
-                                        <th scope="col">Schedule Pengecekan</th>
+                                        <th scope="col">Jadwal Pengecekan</th>
                                         <th scope="col">PIC</th>
                                         <th scope="col">Due Date</th>
                                         <th scope="col">File</th>

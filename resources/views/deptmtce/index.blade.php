@@ -26,7 +26,7 @@
                                 <i class="bi bi-filetype-xlsx"></i> Export Data
                             </a>
                             <div class="table-responsive">
-                                <table id="" class="display" style="table-layout: fixed;">
+                                <table class="datatables datatable" style="table-layout: responsive;">
                                     <thead>
                                         <tr>
                                             <th scope="col">No</th>
@@ -86,3 +86,24 @@
 
     </main><!-- End #main -->
 @endsection
+
+    .datatables.datatable {
+        border-collapse: collapse;
+        /* Pastikan border tidak menggandakan diri */
+        width: 100%;
+        /* Sesuaikan lebar tabel */
+    }
+
+    .datatables.datatable th,
+    .datatables.datatable td {
+        border: 1px solid #000;
+        /* Ubah warna border sesuai kebutuhan */
+        padding: 8px;
+        /* Tambahkan padding untuk membuat teks lebih mudah dibaca */
+        text-align: left;
+        /* Sesuaikan alignment teks sesuai kebutuhan */
+    }
+
+    .datatables.datatable th {
+        background-color: #f2f2f2;
+        /* Beri warna latar belakang pada header tabe

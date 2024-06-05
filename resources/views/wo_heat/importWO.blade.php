@@ -37,7 +37,7 @@
                             @if (isset($data))
                                 <!-- Table for imported data -->
                                 <div class="table-responsive">
-                                    <table id="example" class="datatables datatable" style="width:100%">
+                                    <table class="datatables datatable" style="table-layout: responsive;">
                                         <thead>
                                             <tr>
                                                 @foreach ($data[0] as $cell)
@@ -65,7 +65,7 @@
 
                             <!-- Table for heat treatments -->
                             <div class="table-responsive">
-                                <table id="example" class="datatables datatable" style="width:100%">
+                                <table class="datatables datatable" style="table-layout: responsive;">
                                     <thead>
                                         <tr>
                                             <th scope="col">No</th>
@@ -131,52 +131,5 @@
 
 
     </main><!-- End #main -->
-
-    <style>
-        .table-bordered th,
-        .table-bordered td {
-            border: 1px solid #dee2e6;
-        }
-
-        .table thead th {
-            vertical-align: bottom;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .table tbody+tbody {
-            border-top: 2px solid #dee2e6;
-        }
-
-        .table-bordered {
-            border: 1px solid #dee2e6;
-        }
-
-        .datatable th,
-        .datatable td {
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .datatable th[colspan] {
-            text-align: center;
-        }
-    </style>
-    <style>
-        /* Add border to the table */
-        #example {
-            border-collapse: collapse;
-        }
-
-        /* Add border to table cells */
-        #example td,
-        #example th {
-            border: 1px solid whitesmoke;
-            padding: 8px;
-            /* Add some padding for better readability */
-        }
-    </style>
-    <script>
-        new DataTable('#example');
-    </script>
 
 @endsection

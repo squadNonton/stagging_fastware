@@ -31,7 +31,7 @@
 
                             <!-- Table with stripped rows -->
                             <div class="table-responsive">
-                                <table id="example" style="width:100%">
+                                <table class="datatables datatable" style="table-layout: responsive;">
                                     <thead>
                                         <tr>
                                             <th scope="col" rowspan="2">No</th>
@@ -152,29 +152,5 @@
 
         <!-- Add jQuery DataTables -->
         <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-
-        <!-- Initialize DataTables -->
-        <script>
-            new DataTable('#example');
-        </script>
-
-        <style>
-            /* Add border to the table */
-            #example {
-                border-collapse: collapse;
-            }
-
-            /* Add border to table cells */
-            #example td,
-            #example th {
-                border: 1px solid whitesmoke;
-                padding: 8px;
-                /* Add some padding for better readability */
-            }
-        </style>
-
-
-
-
     </main><!-- End #main -->
 @endsection

@@ -24,7 +24,7 @@
                     <div class="card-body">
                         <h5 class="card-title">List Data Form FPP</h5>
                         <div class="table-responsive"> <!-- Add this div for better responsiveness -->
-                            <table class="table table-striped table-bordered table-hover datatable">
+                            <table class="datatables datatable" style="table-layout: responsive;">
                                 <thead>
                                     <tr>
                                         <th scope="col">No</th>

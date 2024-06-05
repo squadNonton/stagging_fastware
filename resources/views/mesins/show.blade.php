@@ -148,7 +148,7 @@
                                     <a class="btn btn-success float-end" href="{{ route('spareparts.export', ['nomor_mesin' => $mesin->no_mesin]) }}">Ekspor Sparepart</a>
                                     <br><br>
                                     <div class="table-responsive">
-                                        <table id="" class="display" style="table-layout: fixed;">
+                                        <table class="datatables datatable" style="table-layout: responsive;">
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
@@ -188,7 +188,7 @@
                                         </a>
                                     </div>
                                     <div class="table-responsive">
-                                        <table id="" class="display" style="table-layout: fixed;">
+                                        <table class="datatables datatable" style="table-layout: responsive;">
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
@@ -255,6 +255,7 @@
 
 
 </main><!-- End #main -->
+
 
 <script>
     // Function to validate file upload
