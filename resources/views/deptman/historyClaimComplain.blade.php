@@ -25,6 +25,7 @@
                                         <tr>
                                             <th class="text-center" width="50px">NO</th>
                                             <th class="text-center" width="100px">NO WO</th>
+                                            <th class="text-center" width="100px">PIC</th>
                                             <th class="text-center" width="100px">Kode Pelanggan</th>
                                             <th class="text-center" width="150px">Nama Pelanggan</th>
                                             <th class="text-center" width="100px">Area Pelanggan</th>
