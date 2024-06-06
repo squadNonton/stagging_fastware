@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="card mb-2">
                     <h5 class="card-title">Form Follow-Up</h5>
-                    <form id="#form-id" action="{{ route('updateFollowUp', $handlings->id) }}" method="post"
+                    <form id="formFollowUp" action="{{ route('updateFollowUp', $handlings->id) }}" method="post"
                         enctype="multipart/form-data" style="margin-top: 10px;">
                         @csrf
                         @method('PUT')
@@ -37,7 +37,7 @@
                                 <br>
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <label for="no_wo" class="col-sm-2 col-form-label">No. WO:<span
+                                        <label for="no_wo" class="col-sm-6 col-form-label">No. WO:<span
                                                 style="color: red;">*</span></label>
                                     </div>
                                     <div class="col-lg-6">
@@ -248,7 +248,7 @@
                                             (Jika ada)</label>
                                     </div>
                                     <div class="col-lg-6">
-                                        <textarea class="form-control" rows="5" id="results" name="results" style="width: 100%" disabled required>{{ $handlings->results }}</textarea>
+                                        <textarea class="form-control" rows="5" id="" name="" style="width: 100%" disabled required>{{ $handlings->results }}</textarea>
                                     </div>
                                 </div>
                                 <br>
@@ -300,7 +300,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar: (Jika
+                                        <label for="image_upload" class="col-sm-6 col-form-label">Unggah Gambar: (Jika
                                             ada)</span></label>
                                     </div>
                                     <div class="col-lg-6">
@@ -334,6 +334,7 @@
                                         <input type="datetime-local" class="form-control input-sm" id="schedule"
                                             name="schedule" style="max-width: 100%;">
                                     </div>
+
                                 </div>
                                 <br>
                                 <div class="row">
@@ -387,21 +388,18 @@
                             </div>
                         </div>
                         <div class="ps-3 mb-3 mt-3 d-flex justify-content-end">
-                            <button type="submit" name="action" value="claim" class="btn btn-success mb-4 me-2"
-                                onclick="buttonFollowUp()">
-                                <i class="fas fa-save"></i> Claim
-                            </button>
-
-                            <button type="submit" name="action" value="save" class="btn btn-primary mb-4 me-2"
-                                onclick="buttonFollowUp()">
+                            @if (!$hasHistoryType1)
+                                <button type="button" class="btn btn-success mb-4 me-2"
+                                    onclick="submitFollowUp('claim')">
+                                    <i class="fas fa-save"></i> Claim
+                                </button>
+                            @endif
+                            <button type="button" class="btn btn-primary mb-4 me-2" onclick="submitFollowUp('save')">
                                 <i class="fas fa-save"></i> Save
                             </button>
-
-                            <button type="submit" name="action" value="finish" class="btn btn-success mb-4 me-4"
-                                onclick="buttonFollowUp()">
+                            <button type="button" class="btn btn-success mb-4 me-4" onclick="submitFollowUp('finish')">
                                 <i class="fas fa-save"></i> Finish
                             </button>
-
                             <button type="button" class="btn btn-primary mb-4 me-4" onclick="goToSubmission()">
                                 <i class="fas fa-arrow-left"></i> Back
                             </button>
@@ -421,70 +419,73 @@
                         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <table id="" class="table table-striped table-bordered table-hover datatable">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align: center;">NO</th>
-                                            <th style="text-align: center;">Hasil dan Tindak Lanjut</th>
-                                            <th style="text-align: center;">Jadwal Kunjungan</th>
-                                            <th style="text-align: center;">PIC</th>
-                                            <th style="text-align: center;">Tenggat waktu</th>
-                                            <th style="text-align: center;">Jenis 1</th>
-                                            <th style="text-align: center;">Jenis 2</th>
-                                            <th style="text-align: center;">Unggahan (File)</th>
-                                            <th style="text-align: center;">Pembaruan Terakhir</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($data as $row)
+                                <div class="table-responsive">
+                                    <table id="" class="datatable table">
+                                        <thead>
                                             <tr>
-                                                <td class="text-center py-3">{{ $loop->iteration }}</td>
-                                                <td class="text-center py-3">{{ $row->results }}</td>
-                                                <td class="text-center py-3">{{ $row->schedule }}</td>
-                                                <td class="text-center py-3">{{ $row->pic }}</td>
-                                                <td class="text-center py-3">{{ $row->due_date }}</td>
-                                                <td class="text-center py-3">
-                                                    @if ($row->history_type == 1)
-                                                        Komplain
-                                                    @endif
-                                                </td>
-                                                <td class="text-center py-3">
-                                                    @if ($row->history_type == 1)
-                                                        Klaim
-                                                    @endif
-                                                </td>
-                                                <td class="text-center pt-3">
-                                                    @if (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['pdf']))
-                                                        <a href="{{ asset('assets/image/' . $row->file) }}"
-                                                            download="{{ $row->file_name }}">
-                                                            <i class="fas fa-file-pdf fs-4"></i>
-                                                        </a>
-                                                    @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['xlsx', 'xls']))
-                                                        <a href="{{ asset('assets/image/' . $row->file) }}"
-                                                            download="{{ $row->file_name }}">
-                                                            <i class="fas fa-file-excel fs-4"></i>
-                                                        </a>
-                                                    @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
-                                                        <a href="{{ asset('assets/image/' . $row->file) }}"
-                                                            download="{{ $row->file_name }}">
-                                                            <img src="{{ asset('assets/image/' . $row->file) }}"
-                                                                class="img-fluid rounded"
-                                                                style="max-width: 100%; height: auto;">
-                                                        </a>
-                                                    @else
-                                                        <p>File tidak didukung</p>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center py-3">{{ $row->created_at }}</td>
+                                                <th style="text-align: center;">NO</th>
+                                                <th style="text-align: center;">Hasil dan Tindak Lanjut</th>
+                                                <th style="text-align: center;">Jadwal Kunjungan</th>
+                                                <th style="text-align: center;">PIC</th>
+                                                <th style="text-align: center;">Tenggat waktu</th>
+                                                <th style="text-align: center;">Jenis 1</th>
+                                                <th style="text-align: center;">Jenis 2</th>
+                                                <th style="text-align: center;">Unggahan (File)</th>
+                                                <th style="text-align: center;">Pembaruan Terakhir</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($data as $row)
+                                                <tr>
+                                                    <td class="text-center py-3">{{ $loop->iteration }}</td>
+                                                    <td class="text-center py-3">{{ $row->results }}</td>
+                                                    <td class="text-center py-3">{{ $row->schedule }}</td>
+                                                    <td class="text-center py-3">{{ $row->pic }}</td>
+                                                    <td class="text-center py-3">{{ $row->due_date }}</td>
+                                                    <td class="text-center py-3">
+                                                        @if ($row->history_type == 1)
+                                                            Komplain
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center py-3">
+                                                        @if ($row->history_type == 1)
+                                                            Klaim
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center pt-3">
+                                                        @if (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['pdf', 'pptx', 'ppt']))
+                                                            <a href="{{ asset('assets/image/' . $row->file) }}"
+                                                                download="{{ $row->file_name }}">
+                                                                <i class="fas fa-file-pdf fs-4"></i>
+                                                            </a>
+                                                        @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['xlsx', 'xls']))
+                                                            <a href="{{ asset('assets/image/' . $row->file) }}"
+                                                                download="{{ $row->file_name }}">
+                                                                <i class="fas fa-file-excel fs-4"></i>
+                                                            </a>
+                                                        @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
+                                                            <a href="{{ asset('assets/image/' . $row->file) }}"
+                                                                download="{{ $row->file_name }}">
+                                                                <img src="{{ asset('assets/image/' . $row->file) }}"
+                                                                    class="img-fluid rounded"
+                                                                    style="max-width: 100%; height: auto;">
+                                                            </a>
+                                                        @else
+                                                            <p>File tidak didukung</p>
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center py-3">{{ $row->created_at }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <!-- Modal -->
             <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel"
                 aria-hidden="true">
@@ -503,6 +504,7 @@
                 </div>
             </div>
         </section>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             function updateCustomerInfo() {
                 var customerIdCodeSelect = document.getElementById('customer_id_code');
@@ -529,29 +531,77 @@
                 updateCustomerInfo();
             });
 
-            function buttonFollowUp() {
-                // Ambil nilai input PIC
-                var picInput = document.getElementById('pic').value;
-
-                // Lakukan validasi
-                if (picInput.trim() === '') {
-                    // Tampilkan pesan SweetAlert jika PIC kosong
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Harap Lengkapi Data Anda',
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    });
-                } else {
-                    // Tampilkan pesan sukses jika validasi berhasil
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil',
-                        text: 'Data telah berhasil disimpan',
-                        showConfirmButton: false
-                    });
+            function submitFollowUp(action) {
+                // Validasi berdasarkan tindakan
+                if (action === 'save') {
+                    if (!document.getElementById('pic').value.trim()) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'PIC Wajib Diisi',
+                            text: 'Silakan isi PIC sebelum menyimpan!',
+                        });
+                        return;
+                    }
+                } else if (action === 'claim') {
+                    if (!document.getElementById('pic').value.trim() || !document.getElementById('results').value.trim()) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'PIC dan Catatan Wajib Diisi',
+                            text: 'Silakan isi PIC dan Catatan Hasil sebelum mengklaim!',
+                        });
+                        return;
+                    }
+                } else if (action === 'finish') {
+                    if (!document.getElementById('pic').value.trim() || !document.getElementById('results').value.trim() ||
+                        document.getElementById('upload_file').files.length === 0) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'PIC, Catatan, dan File Wajib Diisi',
+                            text: 'Silakan isi PIC, Catatan, dan Unggah File sebelum menyelesaikan!',
+                        });
+                        return;
+                    }
                 }
+
+                // Tambahkan action ke form data
+                var formData = new FormData(document.getElementById('formFollowUp'));
+                formData.append('action', action);
+
+                // Kirim data ke server menggunakan AJAX
+                $.ajax({
+                    url: document.getElementById('formFollowUp').action,
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        // Tanggapan sukses dari server
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then((result) => {
+                            if (response.redirect) {
+                                window.location.href = response.redirect;
+                            } else if (response.refresh) {
+                                location.reload();
+                            }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Kesalahan dari server
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Terjadi kesalahan saat menyimpan data!',
+                        });
+                    }
+                });
+            }
+
+            // Fungsi untuk kembali ke halaman sebelumnya
+            function goToSubmission() {
+                // Kode untuk kembali ke halaman sebelumnya
             }
 
             function showModal(imageSrc) {

@@ -43,7 +43,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="no_wo" class="col-sm-2 col-form-label">No. WO:<span
+                                            <label for="no_wo" class="col-sm-6 col-form-label">No. WO:<span
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
@@ -224,7 +224,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="hasil_tindak_lanjut" class="col-sm-5 col-form-label">Keterangan:
+                                            <label for="hasil_tindak_lanjut" class="col-sm-6 col-form-label">Keterangan:
                                                 (Jika ada)</label>
                                         </div>
                                         <div class="col-lg-6">

@@ -15,6 +15,7 @@
     <link href="{{ asset('assets/img/logo-menu.png') }}" rel="icon">
     <link href="{{ asset('assets/img/logo-menu.png') }}" rel="apple-touch-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -40,9 +41,9 @@
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
 
-        <div class="d-flex align-items-center justify-content-between">
-            <h3 class="fw-bold mt-2 ps-5">DMS Adasi DS8</h3>
-            <i class="bi bi-list toggle-sidebar-btn mx-5"></i>
+        <div class="d-flex align-items-center justify-content-between p-3">
+            <h3 class="fw-bold mt-2 ps-3 fs-4">DMS Adasi DS8</h3>
+            <i class="bi bi-list toggle-sidebar-btn mx-3 fs-2"></i>
         </div><!-- End Logo -->
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">

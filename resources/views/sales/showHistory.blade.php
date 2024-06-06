@@ -97,7 +97,8 @@
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
-                                            <select name="type_id" id="type_id" class="select2" style="width: 100%" disabled>
+                                            <select name="type_id" id="type_id" class="select2" style="width: 100%"
+                                                disabled>
                                                 @foreach ($type_materials as $typeMaterial)
                                                     <option value="{{ $typeMaterial->id }}"
                                                         @if ($typeMaterial->id == $handlings->type_id) selected @endif>
@@ -242,7 +243,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="hasil_tindak_lanjut" class="col-sm-5 col-form-label">Keterangan:
+                                            <label for="hasil_tindak_lanjut" class="col-sm-6 col-form-label">Keterangan:
                                                 (Jika ada)</label>
                                         </div>
                                         <div class="col-lg-6">
@@ -300,7 +301,7 @@
                                 <div class="col-lg-6">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar: (Jika
+                                            <label for="image_upload" class="col-sm-7 col-form-label">Unggah Gambar: (Jika
                                                 ada)</span></label>
                                         </div>
                                         <div class="col-lg-6">
@@ -347,71 +348,73 @@
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                Riwayat Progres
+                                History Progres
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <table id="" class="table table-striped table-bordered table-hover datatable">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align: center;">NO</th>
-                                            <th style="text-align: center;">Hasil dan Tindak Lanjut</th>
-                                            <th style="text-align: center;">Jadwal Kunjungan</th>
-                                            <th style="text-align: center;">PIC</th>
-                                            <th style="text-align: center;">Tenggat waktu</th>
-                                            <th style="text-align: center;">Jenis 1</th>
-                                            <th style="text-align: center;">Jenis 2</th>
-                                            <th style="text-align: center;">Unggahan (File)</th>
-                                            <th style="text-align: center;">Pembaruan Terakhir</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($data as $row)
+                                <div class="table-responsive">
+                                    <table id="" class="datatable table">
+                                        <thead>
                                             <tr>
-                                                <td class="text-center py-3">{{ $loop->iteration }}</td>
-                                                <td class="text-center py-3">{{ $row->results }}</td>
-                                                <td class="text-center py-3">{{ $row->schedule }}</td>
-                                                <td class="text-center py-3">{{ $row->pic }}</td>
-                                                <td class="text-center py-3">{{ $row->due_date }}</td>
-                                                <td class="text-center py-3">
-                                                    @if ($row->history_type == 1)
-                                                        Komplain
-                                                    @endif
-                                                </td>
-                                                <td class="text-center py-3">
-                                                    @if ($row->history_type == 1)
-                                                        Klaim
-                                                    @endif
-                                                </td>
-                                                <td class="text-center pt-3">
-                                                    @if (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['pdf']))
-                                                        <a href="{{ asset('assets/image/' . $row->file) }}"
-                                                            download="{{ $row->file_name }}">
-                                                            <i class="fas fa-file-pdf fs-4"></i>
-                                                        </a>
-                                                    @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['xlsx', 'xls']))
-                                                        <a href="{{ asset('assets/image/' . $row->file) }}"
-                                                            download="{{ $row->file_name }}">
-                                                            <i class="fas fa-file-excel fs-4"></i>
-                                                        </a>
-                                                    @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
-                                                        <a href="{{ asset('assets/image/' . $row->file) }}"
-                                                            download="{{ $row->file_name }}">
-                                                            <img src="{{ asset('assets/image/' . $row->file) }}"
-                                                                class="img-fluid rounded"
-                                                                style="max-width: 100%; height: auto;">
-                                                        </a>
-                                                    @else
-                                                        <p>File tidak didukung</p>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center py-3">{{ $row->created_at }}</td>
+                                                <th style="text-align: center;">NO</th>
+                                                <th style="text-align: center;">Hasil dan Tindak Lanjut</th>
+                                                <th style="text-align: center;">Jadwal Kunjungan</th>
+                                                <th style="text-align: center;">PIC</th>
+                                                <th style="text-align: center;">Tenggat waktu</th>
+                                                <th style="text-align: center;">Jenis 1</th>
+                                                <th style="text-align: center;">Jenis 2</th>
+                                                <th style="text-align: center;">Unggahan (File)</th>
+                                                <th style="text-align: center;">Pembaruan Terakhir</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($data as $row)
+                                                <tr>
+                                                    <td class="text-center py-3">{{ $loop->iteration }}</td>
+                                                    <td class="text-center py-3">{{ $row->results }}</td>
+                                                    <td class="text-center py-3">{{ $row->schedule }}</td>
+                                                    <td class="text-center py-3">{{ $row->pic }}</td>
+                                                    <td class="text-center py-3">{{ $row->due_date }}</td>
+                                                    <td class="text-center py-3">
+                                                        @if ($row->history_type == 1)
+                                                            Komplain
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center py-3">
+                                                        @if ($row->history_type == 1)
+                                                            Klaim
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center pt-3">
+                                                        @if (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['pdf', 'pptx', 'ppt']))
+                                                            <a href="{{ asset('assets/image/' . $row->file) }}"
+                                                                download="{{ $row->file_name }}">
+                                                                <i class="fas fa-file-pdf fs-4"></i>
+                                                            </a>
+                                                        @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['xlsx', 'xls']))
+                                                            <a href="{{ asset('assets/image/' . $row->file) }}"
+                                                                download="{{ $row->file_name }}">
+                                                                <i class="fas fa-file-excel fs-4"></i>
+                                                            </a>
+                                                        @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
+                                                            <a href="{{ asset('assets/image/' . $row->file) }}"
+                                                                download="{{ $row->file_name }}">
+                                                                <img src="{{ asset('assets/image/' . $row->file) }}"
+                                                                    class="img-fluid rounded"
+                                                                    style="max-width: 100%; height: auto;">
+                                                            </a>
+                                                        @else
+                                                            <p>File tidak didukung</p>
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center py-3">{{ $row->created_at }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
