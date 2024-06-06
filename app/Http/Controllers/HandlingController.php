@@ -6,9 +6,11 @@ use App\Models\Customer;
 use App\Models\Handling;
 use App\Models\ScheduleVisit;
 use App\Models\TypeMaterial;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 // import Facade "Storage"
 use Illuminate\View\View;
@@ -97,7 +99,18 @@ class HandlingController extends Controller
         $data = Handling::findOrFail($id);
         $data->status = 3;
         $data->save();
-
+    
+        // Temukan pengguna dengan ID 23
+        $user = User::find(23);
+    
+        // Kirim email ke pengguna dengan ID 23 jika pengguna ditemukan dan email tidak kosong
+        if ($user && !empty($user->email)) {
+            Mail::send('emails.status_closed', ['handling' => $data], function ($message) use ($user, $data) {
+                $message->to($user->email)
+                        ->subject($data->no_wo . ' telah close proses');
+            });
+        }
+    
         return response()->json(['success' => 'Status changed successfully.']);
     }
 
@@ -336,6 +349,18 @@ class HandlingController extends Controller
         $handling->status_2 = 0;
         $handling->modified_by = $request->user()->name;
         $handling->save();
+
+        // Dapatkan post berdasarkan ID dan muat relasi yang diperlukan
+        $handling = Handling::with(['customers', 'type_materials'])->findOrFail($handling->id);
+
+        // Kirim email ke user dengan id 23
+        $user = User::find(23);
+        if ($user) {
+            Mail::send('emails.notification', ['handling' => $handling], function ($message) use ($user, $handling) {
+                $message->to($user->email)
+                        ->subject('Handling: '.$handling->no_wo.' telah dibuat');
+            });
+        }
 
         // redirect to index
         return redirect()->route('index')->with(['success' => 'Data Berhasil Disimpan!']);

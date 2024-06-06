@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 // import Facade "Storage"
@@ -191,15 +192,28 @@ class DeptManController extends Controller
      */
     public function updateConfirm(Request $request, $id): RedirectResponse
     {
-        // get post by ID
-        $handlings = Handling::findOrFail($id);
+        // Dapatkan post berdasarkan ID dan muat relasi yang diperlukan
+        $handling = Handling::with(['customers', 'type_materials'])->findOrFail($id);
 
-        // Update post
-        $handlings->update([
+        // Update status post
+        $handling->update([
             'status' => 1,
         ]);
 
-        // redirect to index
+        // Ambil semua pengguna dengan role_id 2, 3, atau 4
+        $users = User::whereIn('role_id', [2, 3, 4])->whereNotNull('email')->get();
+
+        // Loop melalui setiap pengguna dan kirim email
+        foreach ($users as $user) {
+            if (!empty($user->email)) {
+                Mail::send('emails.confirmation', ['handling' => $handling], function ($message) use ($user, $handling) {
+                    $message->to($user->email)
+                            ->subject($handling->no_wo.' telah di konfirmasi');
+                });
+            }
+        }
+
+        // Redirect ke index dengan pesan sukses
         return redirect()->route('submission')->with(['success' => 'Data Berhasil Diubah!']);
     }
 
@@ -248,10 +262,23 @@ class DeptManController extends Controller
             $scheduleVisit->save();
 
             // Temukan entitas Penanganan berdasarkan ID
-            $handlings = Handling::findOrFail($request->handling_id);
+            $handling = Handling::with(['customers', 'type_materials'])->findOrFail($id);
 
             // Perbarui status Penanganan menjadi 2
-            $handlings->update(['status' => 2]);
+            $handling->update(['status' => 2]);
+
+            // Ambil semua pengguna dengan role_id 2, 3, atau 4
+            $users = User::whereIn('role_id', [2, 3, 4])->whereNotNull('email')->get();
+
+            // Loop melalui setiap pengguna dan kirim email
+            foreach ($users as $user) {
+                if (!empty($user->email)) {
+                    Mail::send('emails.finish', ['handling' => $handling], function ($message) use ($user, $handling) {
+                        $message->to($user->email)
+                                ->subject($handling->no_wo.' telah Finish');
+                    });
+                }
+            }
 
             return response()->json(['message' => 'Data Berhasil Disimpan!', 'redirect' => route('submission')]);
         } elseif ($request->action == 'claim') {
@@ -260,14 +287,27 @@ class DeptManController extends Controller
             $scheduleVisit->save();
 
             // Temukan entitas Penanganan berdasarkan ID
-            $handlings = Handling::findOrFail($request->handling_id);
+            $handling = Handling::findOrFail($request->handling_id);
 
             // Perbarui status Penanganan menjadi 1
-            $handlings->update([
+            $handling->update([
                 'type_1' => '',
                 'type_2' => 'Klaim',
                 'status' => 1,
             ]);
+
+            // Ambil semua pengguna dengan role_id 2, 3, atau 4
+            $users = User::whereIn('role_id', [2, 3, 4])->whereNotNull('email')->get();
+
+            // Loop melalui setiap pengguna dan kirim email
+            foreach ($users as $user) {
+                if (!empty($user->email)) {
+                    Mail::send('emails.claim', ['handling' => $handling, 'scheduleVisit' => $scheduleVisit], function ($message) use ($user, $handling) {
+                        $message->to($user->email)
+                                ->subject($handling->no_wo.' berubah menjadi diklaim');
+                    });
+                }
+            }
 
             return response()->json(['message' => 'Data Berhasil Disimpan!', 'refresh' => true]);
         }

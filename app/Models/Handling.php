@@ -59,6 +59,7 @@ class Handling extends Model
     {
         return $this->belongsTo(TypeMaterial::class, 'type_id');
     }
+    
 
     public function schedule_viist(): HasMany
     {
