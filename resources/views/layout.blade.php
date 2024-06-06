@@ -1,3 +1,4 @@
+- layout
 <!DOCTYPE html>
 <html lang="en">
 
@@ -107,16 +108,22 @@
                 <ul id="dashboard-menu-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a class="nav-link collapsed" href="{{ route('dashboardHandling') }}">
-                            <i class="bi bi-list-check fs-6"></i>
+                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
                             <span>Maintenance</span>
                         </a>
                     </li>
                     <li>
                         <a class="nav-link collapsed" href="{{ route('dshandling') }}">
-                            <i class="bi bi-list-check fs-6"></i>
+                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
                             <span>Handling Klaim & Komplain</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('dashboardSS') }}">
+                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
+                            <span>Dashboard SS</span>
+                        </a>
+                    </li><!-- End Profile Page Nav -->
                 </ul>
             </li>
 
@@ -235,163 +242,161 @@
                     </li><!-- End Maint Received Nav -->
                 @endif
                 <!-- End Prod Forms Nav -->
-                <ul class="sidebar-nav">
-                    @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1)
-                        {{-- Role ID untuk Maintenance --}}
-                        {{-- Tampilkan sidebar untuk Maintenance --}}
-                        <li class="nav-heading">Engineering</li>
+                @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1)
+                    {{-- Role ID untuk Maintenance --}}
+                    {{-- Tampilkan sidebar untuk Maintenance --}}
+                    <li class="nav-heading">Engineering</li>
 
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
-                                href="#">
-                                <i class="bi bi-journal-text"></i><span>Mesin & Approve FPP</span><i
-                                    class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link collapsed" href="{{ route('dashboardmesins') }}">
-                                        <i class="bi bi-gear fs-6"></i>
-                                        <span>Data Mesin</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link collapsed" href="{{ route('deptmtce.index') }}">
-                                        <i class="bi bi-check2 fs-6"></i>
-                                        <span>Data Approved FPP</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
-                                        <i class="bi bi-list-check fs-6"></i>
-                                        <span>Riwayat FPP</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link collapsed" href="{{ route('dashboardPreventive') }}">
-                                        <i class="bi bi-check2 fs-6"></i>
-                                        <span>Tabel Preventif</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li><!-- End Dept Maint Nav -->
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#dept-complain-nav"
-                                data-bs-toggle="collapse" href="#">
-                                <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
-                                    class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li>
-                                    <a href="{{ route('submission') }}">
-                                        <i class="bi bi-list-check fs-6"></i><span>Form Tindak Lanjut</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('showHistoryCLaimComplain') }}">
-                                        <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim & Komplain</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('scheduleVisit') }}">
-                                        <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li><!-- End Dept Complain & Claim Nav -->
-                    @endif
-                    @if (Auth::user()->role_id == 14)
-                        {{-- Role ID untuk GA --}}
-                        {{-- Tampilkan sidebar untuk Engineering --}}
-                        <li class="nav-heading">Engineering</li>
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
-                                href="#">
-                                <i class="bi bi-journal-text fs-6"></i><span>Mesin & Approve FPP</span>
-                            </a>
-                            <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link collapsed" href="{{ route('dashboardgamesin') }}">
-                                        <i class="bi bi-gear fs-6"></i>
-                                        <span>Data Mesin</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link collapsed" href="{{ route('ga.approvedfpp') }}">
-                                        <i class="bi bi-check2 fs-6"></i>
-                                        <span>Data Approved FPP</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
-                                        <i class="bi bi-list-check fs-6"></i>
-                                        <span>Riwayat FPP</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link collapsed"
-                                        href="{{ route('dashboardPreventiveMaintenanceGA') }}">
-                                        <i class="bi bi-check2 fs-6"></i>
-                                        <span>Tabel Preventif</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li><!-- End Dept Maint Nav -->
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#dept-complain-nav"
-                                data-bs-toggle="collapse" href="#">
-                                <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
-                                    class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li>
-                                    <a href="{{ route('submission') }}">
-                                        <i class="bi bi-list-check fs-6"></i><span>Form Tindak Lanjut</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('showHistoryCLaimComplain') }}">
-                                        <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim & Komplain</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('scheduleVisit') }}">
-                                        <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li><!-- End Dept Complain & Claim Nav -->
-                    @endif
-                    @if (Auth::user()->role_id == 1 ||
-                            Auth::user()->role_id == 2 ||
-                            Auth::user()->role_id == 3 ||
-                            Auth::user()->role_id == 4 ||
-                            Auth::user()->role_id == 11 ||
-                            Auth::user()->role_id == 12 ||
-                            Auth::user()->role_id == 13 ||
-                            Auth::user()->role_id == 14)
-                        {{-- Role ID untuk Sales --}}
-                        <li class="nav-heading">Sales</li>
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#sales-fpp-nav" data-bs-toggle="collapse"
-                                href="#">
-                                <i class="bi bi-journal-text"></i><span>Form Permintaan Perbaikan</span><i
-                                    class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="sales-fpp-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link collapsed" href="{{ route('sales.index') }}">
-                                        <i class="bi bi-list-check fs-6"></i>
-                                        <span>Data Form FPP</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
-                                        <i class="bi bi-list-check fs-6"></i>
-                                        <span>Riwayat FPP</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li><!-- End Sales FPP Nav -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Mesin & Approve FPP</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('dashboardmesins') }}">
+                                    <i class="bi bi-gear fs-6"></i>
+                                    <span>Data Mesin</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('deptmtce.index') }}">
+                                    <i class="bi bi-check2 fs-6"></i>
+                                    <span>Data Approved FPP</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Riwayat FPP</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('dashboardPreventive') }}">
+                                    <i class="bi bi-check2 fs-6"></i>
+                                    <span>Tabel Preventif</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li><!-- End Dept Maint Nav -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#dept-complain-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="{{ route('submission') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Form Tindak Lanjut</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('showHistoryCLaimComplain') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim & Komplain</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('scheduleVisit') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li><!-- End Dept Complain & Claim Nav -->
+                @endif
+                @if (Auth::user()->role_id == 14)
+                    {{-- Role ID untuk GA --}}
+                    {{-- Tampilkan sidebar untuk Engineering --}}
+                    <li class="nav-heading">Engineering</li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text fs-6"></i><span>Mesin & Approve FPP</span>
+                        </a>
+                        <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('dashboardgamesin') }}">
+                                    <i class="bi bi-gear fs-6"></i>
+                                    <span>Data Mesin</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('ga.approvedfpp') }}">
+                                    <i class="bi bi-check2 fs-6"></i>
+                                    <span>Data Approved FPP</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Riwayat FPP</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenanceGA') }}">
+                                    <i class="bi bi-check2 fs-6"></i>
+                                    <span>Tabel Preventif</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li><!-- End Dept Maint Nav -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#dept-complain-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="{{ route('submission') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Form Tindak Lanjut</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('showHistoryCLaimComplain') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim & Komplain</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('scheduleVisit') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li><!-- End Dept Complain & Claim Nav -->
+                @endif
+                @if (Auth::user()->role_id == 1 ||
+                        Auth::user()->role_id == 2 ||
+                        Auth::user()->role_id == 3 ||
+                        Auth::user()->role_id == 4 ||
+                        Auth::user()->role_id == 11 ||
+                        Auth::user()->role_id == 12 ||
+                        Auth::user()->role_id == 13 ||
+                        Auth::user()->role_id == 14)
+                    {{-- Role ID untuk Sales --}}
+                    <li class="nav-heading">Sales</li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#sales-fpp-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Form Permintaan Perbaikan</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="sales-fpp-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('sales.index') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Data Form FPP</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Riwayat FPP</span>
+                                </a>
+                            </li>
+                        </ul>
+
                         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse"
                             href="#">
                             <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
@@ -415,61 +420,154 @@
                                 </a>
                             </li>
                         </ul>
-                        </li><!-- End Forms Nav -->
-                    @endif
+                    </li><!-- End Forms Nav -->
+                @endif
             @endif
 
-            {{-- Tables Sample --}}
+            {{-- SS, Safety Patrol dan Trace WO --}}
+            <li class="nav-heading">Suggestion System</li>
+            {{-- Form Sumbang Saran --}}
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i
+                <a class="nav-link collapsed" data-bs-target="#nav-ss" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-text-window-reverse"></i><span>Form Sumbang Saran</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="tables-general.html">
-                            <i class="bi bi-circle"></i><span>General Tables</span>
+                <ul id="nav-ss" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('showSS') }}">
+                            <i class="bi bi-journal-text fs-6"></i>
+                            <span>Buat Form</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="tables-data.html">
-                            <i class="bi bi-circle"></i><span>Data Tables</span>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('forumSS') }}">
+                            <i class="bi bi-chat-square-dots-fill fs-6"></i>
+                            <span>Overview Sumbang Saran</span>
                         </a>
                     </li>
                 </ul>
-            </li><!-- End Tables Nav -->
 
-            {{-- SS, Safety Patrol dan Trace WO --}}
+                <a class="nav-link collapsed" data-bs-target="#nav-conf" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-wtf"></i><span>Persetujuan</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="nav-conf" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 2 ||
+                            Auth::user()->role_id == 3 ||
+                            Auth::user()->role_id == 7 ||
+                            Auth::user()->role_id == 9 ||
+                            Auth::user()->role_id == 21 ||
+                            Auth::user()->role_id == 22 ||
+                            Auth::user()->role_id == 12 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiForeman') }}">
+                                <i class="bi bi-kanban fs-6"></i>
+                                <span>By Sect. Head</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 2 ||
+                            Auth::user()->role_id == 5 ||
+                            Auth::user()->role_id == 7 ||
+                            Auth::user()->role_id == 11 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiDeptHead') }}">
+                                <i class="bi bi-kanban-fill fs-6"></i>
+                                <span>By Dept. Head</span>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
 
-            <li class="nav-heading">Suggestion System</li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('dashboardSS') }}">
-                    <i class="bi bi-person"></i>
-                    <span>Dashboard SS</span>
+                <a class="nav-link collapsed" data-bs-target="#nav-pic" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-wtf"></i><span>PIC Penilaian</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End Profile Page Nav -->
+                <ul id="nav-pic" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 5 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiKomite') }}">
+                                <i class="bi-person-lines-fill fs-6"></i>
+                                <span>PIC Penilai SS | Komite</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 15 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiHRGA') }}">
+                                <i class="bi-person-lines-fill fs-6"></i>
+                                <span>PIC Penilai SS | HRGA</span>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+            </li><!-- End Form Sumbang Saran -->
+            {{-- <li class="nav-heading">Suggestion System</li>
             <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('forumSS') }}">
-                    <i class="bi bi-person"></i>
-                    <span>Forum SS</span>
+                <a class="nav-link collapsed" data-bs-target="#sales-fpp-nav" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-journal-text"></i><span>Kelola SS</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End Profile Page Nav -->
+                <ul id="ss-fpp-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('forumSS') }}">
+                            <i class="bi bi-chat-square-dots-fill"></i>
+                            <span>Forum SS</span>
+                        </a>
+                    </li><!-- End Profile Page Nav -->
+                    <li>
+                        <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                            <i class="bi bi-list-check fs-6"></i>
+                            <span>Riwayat FPP</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('index') }}">
+                            <i class="bi bi-list-check fs-6"></i><span>Form Pengajuan Klaim dan
+                                Komplain</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('showHistoryCLaimComplain') }}">
+                            <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim dan Komplain</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('scheduleVisit') }}">
+                            <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Forms Nav -->
+           
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ route('showSS') }}">
                     <i class="bi bi-journal-text fs-6"></i>
                     <span>Form SS</span>
                 </a>
             </li><!-- End Profile Page Nav -->
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 2 ||
-                    Auth::user()->role_id == 3 ||
-                    Auth::user()->role_id == 7 ||
-                    Auth::user()->role_id == 9 ||
-                    Auth::user()->role_id == 21 ||
-                    Auth::user()->role_id == 22 ||
-                    Auth::user()->role_id == 12 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 20)
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 7 || Auth::user()->role_id == 9 || Auth::user()->role_id == 21 || Auth::user()->role_id == 22 || Auth::user()->role_id == 12 || Auth::user()->role_id == 14 || Auth::user()->role_id == 20)
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="{{ route('showKonfirmasiForeman') }}">
                         <i class="bi bi-clipboard-check-fill"></i>
@@ -477,13 +575,7 @@
                     </a>
                 </li><!-- End Profile Page Nav -->
             @endif
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 2 ||
-                    Auth::user()->role_id == 5 ||
-                    Auth::user()->role_id == 7 ||
-                    Auth::user()->role_id == 11 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 20)
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 5 || Auth::user()->role_id == 7 || Auth::user()->role_id == 11 || Auth::user()->role_id == 14 || Auth::user()->role_id == 20)
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="{{ route('showKonfirmasiDeptHead') }}">
                         <i class="bi bi-clipboard-check-fill"></i>
@@ -491,10 +583,7 @@
                     </a>
                 </li><!-- End Profile Page Nav -->
             @endif
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 5 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 20)
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 20)
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="{{ route('showKonfirmasiKomite') }}">
                         <i class="bi-person-lines-fill"></i>
@@ -502,17 +591,14 @@
                     </a>
                 </li><!-- End Profile Page Nav -->
             @endif
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 15 ||
-                    Auth::user()->role_id == 20)
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 14 || Auth::user()->role_id == 15 || Auth::user()->role_id == 20)
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="{{ route('showKonfirmasiHRGA') }}">
                         <i class="bi-person-lines-fill"></i>
                         <span>PIC Penilai SS | HRGA</span>
                     </a>
                 </li><!-- End Profile Page Nav -->
-            @endif
+            @endif --}}
             <li class="nav-heading">Safety Patrol</li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ route('listpatrol') }}">
@@ -546,8 +632,6 @@
                 </a>
             </li><!-- End Profile Page Nav -->
             {{-- @endif --}}
-
-
             <hr>
             {{-- Pengaturan --}}
             <li class="nav-heading">Pengaturan</li>
@@ -566,9 +650,9 @@
             </li><!-- End Profile Page Nav -->
         </ul>
         </ul>
+
         <!-- Footer Sidebar -->
         <ul class="sidebar-nav fixed-bottom ps-3">
-
         </ul>
         <!-- End Footer Sidebar -->
     </aside><!-- End Sidebar-->
