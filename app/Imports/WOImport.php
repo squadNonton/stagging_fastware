@@ -28,14 +28,19 @@ class WOImport implements ToCollection
                     });
 
                     // Skip rows where mandatory fields are empty (e.g., 'no_wo' atau 'no_so')
-                    if (empty($row[0]) || empty($row[1])) {
+                    if (empty($row[0]) || (!isset($row[1]) && $row[1] !== '0')) {
                         Log::warning("Skipping row with empty mandatory fields: " . json_encode($row));
                         continue;
                     }
 
-                    $existingRecord = HeatTreatment::where('no_wo', $row[0])
-                        ->where('no_so', $row[1])
-                        ->first();
+                    $existingRecord = null;
+
+                    // Check if no_so is not 0, then apply the filter
+                    if ($row[1] !== '0') {
+                        $existingRecord = HeatTreatment::where('no_wo', $row[0])
+                            ->where('no_so', $row[1])
+                            ->first();
+                    }
 
                     $recordData = [
                         'tgl_wo' => $row[2] ?: null,

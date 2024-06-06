@@ -62,44 +62,87 @@ class HeatTreatmentController extends Controller
 
     public function searchWO(Request $request)
     {
+        // Mengambil nilai input dari request
         $searchWO = $request->input('searchWO');
-        if ($searchWO) {
-            $data = HeatTreatment::where('cust', 'LIKE', '%' . $searchWO . '%')->get()->groupBy('cust');
+        $searchStatusWO = $request->input('searchStatusWO');
+        $searchStatusDO = $request->input('searchStatusDO');
 
-            $response = $data->map(function ($items, $key) {
-                return $items->map(function ($item) {
-                    return [
-                        'no_wo' => $item->no_wo,
-                        'cust' => $item->cust,
-                        'tgl_wo' => $item->tgl_wo,
-                        'status_wo' => $item->status_wo,
-                        'status_do' => $item->status_do,
-                        'proses' => $item->proses,
-                        'batch' => $item->batch_heating,
-                        'mesin' => $item->mesin_heating,
-                        'tgl_heating' => $item->tgl_heating,
-                        'batch_temper1' => $item->batch_temper1,
-                        'mesin_temper1' => $item->mesin_temper1,
-                        'tgl_temper1' => $item->tgl_temper1,
-                        'batch_temper2' => $item->batch_temper2,
-                        'mesin_temper2' => $item->mesin_temper2,
-                        'tgl_temper2' => $item->tgl_temper2,
-                        'batch_temper3' => $item->batch_temper3,
-                        'mesin_temper3' => $item->mesin_temper3,
-                        'tgl_temper3' => $item->tgl_temper3,
-                        'no_do' => $item->no_do,
-                        'tgl_st' => $item->tgl_st,
-                        'supir' => $item->supir,
-                        'penerima' => $item->penerima,
-                        'tgl_terima' => $item->tgl_terima,
-                        'pcs' => $item->pcs,
-                        'kg' => $item->kg,
-                    ];
-                });
+        // Membuat query dasar untuk model HeatTreatment
+        $query = HeatTreatment::query();
+
+        $query->where(function ($q) use ($searchWO, $searchStatusWO, $searchStatusDO) {
+            if ($searchWO) {
+                $q->where('cust', 'LIKE', '%' . $searchWO . '%');
+            }
+            if ($searchStatusWO) {
+                $q->where('status_wo', 'LIKE', '%' . $searchStatusWO . '%');
+            }
+            if ($searchStatusDO) {
+                $q->where('status_do', 'LIKE', '%' . $searchStatusDO . '%');
+            }
+        });
+
+        // Tambahkan distinct() untuk menghindari duplikat
+        $query->distinct();
+
+        // Mendapatkan data berdasarkan kondisi pencarian dan mengelompokkannya berdasarkan customer
+        $data = $query->get()->groupBy('cust');
+
+        // Transformasi data yang dikelompokkan ke dalam struktur yang diinginkan
+        $response = $data->map(function ($items, $key) {
+            return $items->map(function ($item) {
+                return [
+                    'no_wo' => $item->no_wo,
+                    'cust' => $item->cust,
+                    'tgl_wo' => $item->tgl_wo,
+                    'status_wo' => $item->status_wo,
+                    'status_do' => $item->status_do,
+                    'proses' => $item->proses,
+                    'batch' => $item->batch_heating,
+                    'mesin_heating' => $item->mesin_heating,
+                    'tgl_heating' => $item->tgl_heating,
+                    'batch_temper1' => $item->batch_temper1,
+                    'mesin_temper1' => $item->mesin_temper1,
+                    'tgl_temper1' => $item->tgl_temper1,
+                    'batch_temper2' => $item->batch_temper2,
+                    'mesin_temper2' => $item->mesin_temper2,
+                    'tgl_temper2' => $item->tgl_temper2,
+                    'batch_temper3' => $item->batch_temper3,
+                    'mesin_temper3' => $item->mesin_temper3,
+                    'tgl_temper3' => $item->tgl_temper3,
+                    'no_do' => $item->no_do,
+                    'tgl_st' => $item->tgl_st,
+                    'supir' => $item->supir,
+                    'penerima' => $item->penerima,
+                    'tgl_terima' => $item->tgl_terima,
+                    'pcs' => $item->pcs,
+                    'kg' => $item->kg,
+                ];
             });
+        });
 
-            return response()->json($response);
+        // Mengembalikan data dalam format JSON
+        return response()->json($searchStatusDO, $searchStatusWO, $searchWO);
+    }
+
+    public function getBatchData(Request $request)
+    {
+        $batch = $request->input('batch');
+
+        $workOrders = collect([]);
+
+        $workOrders->push(HeatTreatment::where('batch_heating', $batch)->get());
+        $workOrders->push(HeatTreatment::where('batch_temper1', $batch)->get());
+        $workOrders->push(HeatTreatment::where('batch_temper2', $batch)->get());
+        $workOrders->push(HeatTreatment::where('batch_temper3', $batch)->get());
+
+        // Gabungkan hasil koleksi kerja ke dalam satu koleksi tunggal
+        $mergedWorkOrders = $workOrders->collapse();
+
+        if ($mergedWorkOrders->isEmpty()) {
+            return response()->json(['message' => 'No data found for the batch ' . $batch], 404);
         }
-        return response()->json(['message' => 'No data found'], 404);
+
+        return response()->json($mergedWorkOrders);
     }
 }

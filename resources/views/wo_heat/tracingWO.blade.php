@@ -23,11 +23,25 @@
                             <h5 class="card-title text-center">Trace By Customer</h5>
 
                             <!-- No. WO Search Textbox -->
-                            <div class="form-group">
-                                <label for="searchWO">Nama Customer</label>
-                                <input type="text" class="form-control" id="searchWO"
-                                    placeholder="Cari Nama Customer....">
+                            <div class="form-group d-flex justify-content-between">
+                                <div class="p-2 flex-fill">
+                                    <label for="searchWO">Nama Customer</label>
+                                    <input type="text" class="form-control" id="searchWO"
+                                        placeholder="Cari Nama Customer....">
+                                </div>
+                                <div class="p-2 flex-fill">
+                                    <label for="searchStatusWO">Status WO</label>
+                                    <input type="text" class="form-control" id="searchStatusWO"
+                                        placeholder="Cari Status WO....">
+                                </div>
+                                <div class="p-2 flex-fill">
+                                    <label for="searchStatusDO">Status DO</label>
+                                    <input type="text" class="form-control" id="searchStatusDO"
+                                        placeholder="Cari Status DO....">
+                                </div>
                             </div>
+
+
                             <br>
 
                             <div id="tableContainer"></div> <!-- Kontainer untuk tabel -->
@@ -52,10 +66,10 @@
                                     <tbody>
                                         <tr>
                                             <td>Batch</td>
-                                            <td id="batchHeating" class="clickable-cell"></td>
-                                            <td id="batchTemper1" class="clickable-cell"></td>
-                                            <td id="batchTemper2" class="clickable-cell"></td>
-                                            <td id="batchTemper3" class="clickable-cell"></td>
+                                            <td id="batchHeating" class="clickable-cell" data-type="heating"></td>
+                                            <td id="batchTemper1" class="clickable-cell" data-type="temper1"></td>
+                                            <td id="batchTemper2" class="clickable-cell" data-type="temper2"></td>
+                                            <td id="batchTemper3" class="clickable-cell" data-type="temper3"></td>
                                         </tr>
                                         <tr>
                                             <td>Mesin</td>
@@ -73,6 +87,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
+
                             </div>
                             <hr>
 
@@ -123,38 +138,63 @@
                         <div class="card-body">
                             <h5 class="card-title text-center">Detail Proses</h5>
                             <!-- Mesin (Search Textbox Readonly) -->
-                            <div class="form-group row">
+                            {{-- <div class="form-group row">
                                 <label for="searchMesin" class="col-sm-2 col-form-label">Mesin</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="searchMesin" placeholder="Search..."
+                                    <input type="text" class="form-control" id="searchMesin" placeholder="Search..."
                                         readonly>
                                 </div>
-                            </div>
+                            </div> --}}
                             <br>
                             <!-- Tabel -->
                             <div class="table-responsive">
                                 <table class="table" id="detailProsesTable">
                                     <thead>
                                         <tr>
+                                            <th scope="col">No.</th>
                                             <th scope="col">WO</th>
                                             <th scope="col">Nama Customer</th>
+                                            <th scope="col">Mesin</th>
                                             <th scope="col">PCS</th>
                                             <th scope="col">Tonase (QTY)</th>
+                                            <th scope="col">Tgl. WO</th>
+                                            <th scope="col">Status WO</th>
+                                            <th scope="col">Status DO</th>
+                                            <th scope="col">Proses</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td>
+                                                <div id="detailWO"></div>
+                                            </td>
+                                            <td>
+                                                <div id="detailCustomer"></div>
+                                            </td>
+                                            <td>
+                                                <div id="detailMesin"></div>
+                                            </td>
+                                            <td>
+                                                <div id="detailPCS"></div>
+                                            </td>
+                                            <td>
+                                                <div id="detailTonase"></div>
+                                            </td>
+                                            <td>
                                                 <div id="detailTglWO"></div>
+                                            </td>
+                                            <td>
                                                 <div id="detailStatusWO"></div>
+                                            </td>
+                                            <td>
                                                 <div id="detailStatusDO"></div>
+                                            </td>
+                                            <td>
                                                 <div id="detailProses"></div>
                                             </td>
-                                            <td id="detailCustomer"></td>
-                                            <td id="detailPCS"></td>
-                                            <td id="detailTonase"></td>
                                         </tr>
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>
@@ -186,13 +226,76 @@
                     });
                 });
 
-                function populateTables(data) {
-                    populateTable1(data);
-                    if (data.length > 0) {
-                        populateTable2(data[0]); // Initialize with the first record if available
-                        populateTable3(data[0]); // Initialize with the first record if available
-                    }
+                $('#searchStatusWO').on('keyup', function() {
+                    var searchStatusWO = $(this).val();
+
+                    $.ajax({
+                        url: '{{ route('searchWO') }}',
+                        type: 'GET',
+                        data: {
+                            'searchStatusWO': searchStatusWO
+                        },
+                        success: function(data) {
+                            globalData = data;
+                            populateTables(data);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                });
+
+                $('#searchStatusDO').on('keyup', function() {
+                    var searchStatusDO = $(this).val();
+
+                    $.ajax({
+                        url: '{{ route('searchWO') }}',
+                        type: 'GET',
+                        data: {
+                            'searchStatusDO': searchStatusDO
+                        },
+                        success: function(data) {
+                            globalData = data;
+                            populateTables(data);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                });
+
+                function populateTables() {
+                    var searchWO = $('#searchWO').val();
+                    var searchStatusWO = $('#searchStatusWO').val();
+                    var searchStatusDO = $('#searchStatusDO').val();
+
+                    $.ajax({
+                        url: '{{ route('searchWO') }}',
+                        type: 'GET',
+                        data: {
+                            'searchWO': searchWO,
+                            'searchStatusWO': searchStatusWO,
+                            'searchStatusDO': searchStatusDO
+                        },
+                        success: function(data) {
+                            globalData = data;
+                            populateTable1(data);
+                            if (data.length > 0) {
+                                populateTable2(data[0]);
+                                populateTable3(data[0]);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
                 }
+
+                $('#searchWO, #searchStatusWO, #searchStatusDO').on('keyup', function() {
+                    populateTables();
+                });
+
+
 
                 function populateTable1(data) {
                     $('#tableContainer').empty();
@@ -223,16 +326,17 @@
                     $.each(data, function(customer, workOrders) {
                         workOrders.forEach(wo => {
                             let rowHtml = `
-                                <tr data-no-wo="${wo.no_wo}">
-                                    <td class="no-wo clickable-cell">${wo.no_wo}</td>
-                                    <td>${wo.cust}</td>
-                                    <td>${wo.tgl_wo}</td>
-                                    <td>${wo.status_wo}</td>
-                                    <td>${wo.status_do}</td>
-                                    <td>${wo.proses}</td>
-                                </tr>
-                            `;
+                                    <tr data-no-wo="${wo.no_wo}">
+                                        <td class="no-wo clickable-cell">${wo.no_wo}</td>
+                                        <td>${wo.cust}</td>
+                                        <td>${wo.tgl_wo}</td>
+                                        <td>${wo.status_wo}</td>
+                                        <td>${wo.status_do}</td>
+                                        <td>${wo.proses}</td>
+                                    </tr>
+                                `;
                             $tableBody.append(rowHtml);
+
                         });
                     });
 
@@ -252,14 +356,32 @@
                             }
                         });
 
+                        console.log('Selected WO:', selectedWO); // tambahkan log di sini
+
                         if (selectedWO) {
                             populateTable2(selectedWO);
                             populateTable3(selectedWO);
                         }
                     });
+
                 }
 
                 function populateTable2(data) {
+                    // Membersihkan konten sebelumnya
+                    $('#batchHeating').text('');
+                    $('#mesinHeating').text('');
+                    $('#tanggalHeating').text('');
+                    $('#batchTemper1').text('');
+                    $('#mesinTemper1').text('');
+                    $('#tanggalTemper1').text('');
+                    $('#batchTemper2').text('');
+                    $('#mesinTemper2').text('');
+                    $('#tanggalTemper2').text('');
+                    $('#batchTemper3').text('');
+                    $('#mesinTemper3').text('');
+                    $('#tanggalTemper3').text('');
+
+                    // Menambahkan detail proses baru
                     $('#batchHeating').text(data.batch || '');
                     $('#mesinHeating').text(data.mesin_heating || '');
                     $('#tanggalHeating').text(data.tgl_heating || '');
@@ -275,6 +397,14 @@
                 }
 
                 function populateTable3(data) {
+                    // Membersihkan konten sebelumnya
+                    $('#detailNoDO').text('');
+                    $('#detailTglST').text('');
+                    $('#detailSupir').text('');
+                    $('#detailPenerima').text('');
+                    $('#detailTglTerima').text('');
+
+                    // Menambahkan detail proses baru
                     $('#detailNoDO').text(data.no_do || '');
                     $('#detailTglST').text(data.tgl_st || '');
                     $('#detailSupir').text(data.supir || '');
@@ -282,67 +412,82 @@
                     $('#detailTglTerima').text(data.tgl_terima || '');
                 }
 
-                // Event handler for clickable cells in the batch columns
                 $('#table2').on('click', '.clickable-cell', function() {
                     let batch = $(this).text().trim();
-                    let selectedWO = null;
+                    let type = $(this).data('type'); // Mendapatkan jenis mesin dari atribut data-type
 
-                    console.log('Clicked batch:', batch); // Log the clicked batch
+                    console.log('Clicked batch:', batch); // Log batch yang dipilih
+                    console.log('Type:', type); // Log jenis mesin yang dipilih
 
-                    // Find the corresponding work order in the global data
-                    $.each(globalData, function(customer, workOrders) {
-                        workOrders.forEach(wo => {
-                            if (wo.batch === batch || wo.batch_temper1 === batch || wo
-                                .batch_temper2 === batch || wo.batch_temper3 === batch) {
-                                selectedWO = wo;
-                                return false; // Exit loop
-                            }
-                        });
-                        if (selectedWO) {
-                            return false; // Exit loop
+                    $.ajax({
+                        url: '{{ route('getBatchData') }}', // Ganti dengan URL dari script backend Anda
+                        type: 'GET', // Anda dapat menggunakan metode POST atau GET sesuai kebutuhan Anda
+                        dataType: 'json', // Menentukan tipe data yang diharapkan dari respons server
+                        data: {
+                            batch: batch // Mengirimkan data batch ke server
+                        },
+                        success: function(response) {
+                            console.log('Data received:',
+                                response); // Log data yang diterima dari server
+
+                            // Memanggil fungsi untuk menampilkan detail proses dengan data yang diterima
+                            populateDetailProses(batch, response, type);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error); // Log pesan error jika terjadi
                         }
                     });
-
-                    if (selectedWO) {
-                        console.log('Selected work order:', selectedWO); // Log the selected work order
-                        populateDetailProses(selectedWO, batch);
-                    } else {
-                        console.log('No matching work order found for batch:', batch);
-                    }
                 });
 
-                function populateDetailProses(data, batch) {
-                    console.log('Populating details with data:',
-                        data); // Log the data being used to populate the details
+                function populateDetailProses(batch, workOrders, type) {
+                    // Reset detail proses
+                    $('#detailProsesTable tbody').empty();
+                    $('#selectedBatch').text(batch);
 
-                    // Determine the machine type based on the batch
-                    let mesin = null;
-                    if (data.batch === batch) {
-                        mesin = data.mesin_heating;
-                    } else if (data.batch_temper1 === batch) {
-                        mesin = data.mesin_temper1;
-                    } else if (data.batch_temper2 === batch) {
-                        mesin = data.mesin_temper2;
-                    } else if (data.batch_temper3 === batch) {
-                        mesin = data.mesin_temper3;
+                    // Tampilkan data untuk setiap work order yang terkait dengan batch yang dipilih
+                    workOrders.forEach((wo, index) => {
+                        let rowHtml = `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${wo.no_wo}</td>
+                <td>${wo.cust}</td>
+                <td>${wo.mesin_heating || wo.mesin_temper1 || wo.mesin_temper2 || wo.mesin_temper3}</td>
+                <td>${wo.pcs || ''}</td>
+                <td>${wo.kg || ''}</td>
+                <td>${wo.tgl_wo || ''}</td>
+                <td>${wo.status_wo || ''}</td>
+                <td>${wo.status_do || ''}</td>
+                <td>${wo.proses || ''}</td>
+            </tr>
+        `;
+
+                        // Tambahkan baris baru ke dalam tabel
+                        $('#detailProsesTable tbody').append(rowHtml);
+                    });
+
+                    // Memperbarui detail mesin berdasarkan jenis mesin yang dipilih
+                    switch (type) {
+                        case 'heating':
+                            $('#mesinHeating').text(workOrders[0].mesin_heating);
+                            $('#tanggalHeating').text(workOrders[0].tgl_wo);
+                            break;
+                        case 'temper1':
+                            $('#mesinTemper1').text(workOrders[0].mesin_temper1);
+                            $('#tanggalTemper1').text(workOrders[0].tgl_wo);
+                            break;
+                        case 'temper2':
+                            $('#mesinTemper2').text(workOrders[0].mesin_temper2);
+                            $('#tanggalTemper2').text(workOrders[0].tgl_wo);
+                            break;
+                        case 'temper3':
+                            $('#mesinTemper3').text(workOrders[0].mesin_temper3);
+                            $('#tanggalTemper3').text(workOrders[0].tgl_wo);
+                            break;
                     }
-
-                    console.log('Mesin value determined:', mesin); // Log the determined machine value
-
-                    if (mesin !== null) {
-                        $('input[name="searchMesin"]').val(mesin); // Use attribute selector for input fields
-                    } else {
-                        console.log('No matching mesin found for batch:', batch);
-                    }
-
-                    $('#detailTglWO').text(data.tgl_wo);
-                    $('#detailStatusWO').text(data.status_wo);
-                    $('#detailStatusDO').text(data.status_do);
-                    $('#detailProses').text(data.proses);
-                    $('#detailCustomer').text(data.cust);
-                    $('#detailPCS').text(data.pcs);
-                    $('#detailTonase').text(data.kg);
                 }
+
+
+
             });
         </script>
 
