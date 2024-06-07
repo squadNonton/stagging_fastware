@@ -10,8 +10,8 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="assets/img/Logo-adasi-tab.png" rel="icon">
-    <link href="assets/img/Logo-adasi-tab.png" rel="apple-touch-icon">
+    <link href="assets/img/logo-menu.png" rel="icon">
+    <link href="assets/img/logo-menu.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">

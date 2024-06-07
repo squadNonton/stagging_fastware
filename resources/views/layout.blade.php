@@ -11,11 +11,10 @@
     <meta content="" name="keywords">
     <meta name="csrf-token">
 
-    <!-- Favicons -->
-    <link href="{{ asset('assets/img/logo-menu.png') }}" rel="icon">
-    <link href="{{ asset('assets/img/logo-menu.png') }}" rel="apple-touch-icon">
+    <link href="assets/img/logo-menu.png" rel="icon">
+    <link href="assets/img/logo-menu.png" rel="apple-touch-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
+
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -47,22 +46,41 @@
         </div><!-- End Logo -->
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
-                <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li><!-- End Search Icon-->
-
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                         data-bs-toggle="dropdown">
                         <img src="assets/img/user.png" alt="Profile" class="rounded-circle">
-                        <span class="d-none d-md-block ps-2">{{ Auth::user()->name }} <br>
-                            {{ Auth::user()->roles->role }}</span>
-                    </a><!-- End Profile Image Icon -->
-                </li><!-- End Profile Nav -->
+                        <span class="d-none d-md-block ps-2">{{ Auth::user()->name }}
+                            <br>{{ Auth::user()->roles->role }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile mt-3">
+                        <li class="dropdown-header">
+                            <h6>{{ Auth::user()->name }}</h6>
+                            <span>{{ Auth::user()->roles->role }}</span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        {{-- Test Akun --}}
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" style="color: rgb(15, 0, 97)"
+                                href="{{ route('showDataDiri') }}">
+                                <i class="bi bi-person me-2"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" style="color: rgb(136, 0, 0)"
+                                href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
-        </nav><!-- End Icons Navigation -->
+        </nav>
 
     </header><!-- End Header -->
 
@@ -122,9 +140,15 @@
                     <li class="nav-item">
                         <a class="nav-link collapsed" href="{{ route('dashboardSS') }}">
                             <i class="bi bi-bar-chart-line-fill fs-6"></i>
-                            <span>Dashboard SS</span>
+                            <span>Sumbang Saran</span>
                         </a>
-                    </li><!-- End Profile Page Nav -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('reportpatrol') }}">
+                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
+                            <span>Safety Patrol</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
@@ -146,13 +170,13 @@
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.index') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Data Form FPP</span>
+                                    <span>Data Form Perbaikan</span>
                                 </a>
                             </li>
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat FPP</span>
+                                    <span>Riwayat Form Perbaikan</span>
                                 </a>
                             </li>
                         </ul>
@@ -170,13 +194,13 @@
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('sales.index') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Data Form FPP</span>
+                                    <span>Data Form Perbaikan</span>
                                 </a>
                             </li>
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat FPP</span>
+                                    <span>Riwayat Form Perbaikan</span>
                                 </a>
                             </li>
                         </ul>
@@ -185,28 +209,35 @@
                 @if (Auth::user()->role_id == 6 || Auth::user()->role_id == 1)
                     <li class="nav-heading">Maintenance</li>
                     <li class="nav-item">
-                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                        <a class="nav-link collapsed" data-bs-target="#maint-korektif-nav" data-bs-toggle="collapse"
                             href="#">
-                            <i class="bi bi-journal-text"></i><span>Received FPP & Jadwal Preventive</span><i
+                            <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
                                 class="bi bi-chevron-down ms-auto"></i>
                         </a>
-                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <ul id="maint-korektif-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ asset('dashboardmaintenance') }}">
                                     <i class="bi bi-file-earmark-text-fill fs-6"></i>
-                                    <span>Data Received FPP</span>
+                                    <span>Terima Form Perbaikan</span>
                                 </a>
                             </li>
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat FPP</span>
+                                    <span>Riwayat Form Perbaikan</span>
                                 </a>
                             </li>
+                        </ul>
+                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Tindakan Preventif</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenance') }}">
                                     <i class="bi bi-check2 fs-6"></i>
-                                    <span>Tabel Preventif</span>
+                                    <span>Tindakan Preventif</span>
                                 </a>
                             </li>
                         </ul>
@@ -217,26 +248,33 @@
                     <li class="nav-item">
                         <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
                             href="#">
-                            <i class="bi bi-journal-text"></i><span>Received FPP & Jadwal Preventive</span><i
+                            <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
                                 class="bi bi-chevron-down ms-auto"></i>
                         </a>
                         <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ route('ga.dashboardga') }}">
                                     <i class="bi bi-file-earmark-text-fill fs-6"></i>
-                                    <span>Data Received FPP</span>
+                                    <span>Terima Form Perbaikan</span>
                                 </a>
                             </li>
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat FPP</span>
+                                    <span>Riwayat Form Perbaikan</span>
                                 </a>
                             </li>
+                        </ul>
+                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Tindakan Preventif</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenanceGA') }}">
                                     <i class="bi bi-check2 fs-6"></i>
-                                    <span>Tabel Preventif</span>
+                                    <span>Tindakan Preventif</span>
                                 </a>
                             </li>
                         </ul>
@@ -251,14 +289,14 @@
                     <li class="nav-item">
                         <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
                             href="#">
-                            <i class="bi bi-journal-text"></i><span>Mesin & Approve FPP</span><i
+                            <i class="bi bi-journal-text"></i><span>Bag. Maintenance</span><i
                                 class="bi bi-chevron-down ms-auto"></i>
                         </a>
                         <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ route('dashboardmesins') }}">
                                     <i class="bi bi-gear fs-6"></i>
-                                    <span>Data Mesin</span>
+                                    <span>Kelola DMI</span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -270,7 +308,7 @@
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat FPP</span>
+                                    <span>Riwayat Form Perbaikan</span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -284,7 +322,7 @@
                     <li class="nav-item">
                         <a class="nav-link collapsed" data-bs-target="#dept-complain-nav" data-bs-toggle="collapse"
                             href="#">
-                            <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
+                            <i class="bi bi-journal-text"></i><span>Bag. Engineering</span><i
                                 class="bi bi-chevron-down ms-auto"></i>
                         </a>
                         <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
@@ -313,7 +351,7 @@
                     <li class="nav-item">
                         <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
                             href="#">
-                            <i class="bi bi-journal-text fs-6"></i><span>Mesin & Approve FPP</span>
+                            <i class="bi bi-journal-text fs-6"></i><span>Bag. Maintenance</span>
                         </a>
                         <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li class="nav-item">
@@ -345,7 +383,7 @@
                     <li class="nav-item">
                         <a class="nav-link collapsed" data-bs-target="#dept-complain-nav" data-bs-toggle="collapse"
                             href="#">
-                            <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
+                            <i class="bi bi-journal-text"></i><span>Bag. Engineering</span><i
                                 class="bi bi-chevron-down ms-auto"></i>
                         </a>
                         <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
@@ -387,13 +425,13 @@
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ route('sales.index') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Data Form FPP</span>
+                                    <span>Data Form Perbaikan</span>
                                 </a>
                             </li>
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
                                     <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat FPP</span>
+                                    <span>Riwayat Form Perbaikan</span>
                                 </a>
                             </li>
                         </ul>
@@ -610,15 +648,15 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ route('listpatrolpic') }}">
                     <i class="bi bi-person-badge-fill"></i>
-                    <span>PIC Form</span>
+                    <span>Data Safety Patrol</span>
                 </a>
             </li><!-- End Profile Page Nav -->
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ route('reportpatrol') }}">
                     <i class="bi bi-bar-chart-steps"></i>
                     <span>Report Form Safety Patrol</span>
                 </a>
-            </li><!-- End Profile Page Nav -->
+            </li><!-- End Profile Page Nav --> --}}
             <li class="nav-heading">WO Heat Treatment</li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ route('dashboardImportWO') }}">
@@ -633,22 +671,8 @@
                 </a>
             </li><!-- End Profile Page Nav -->
             {{-- @endif --}}
-            <hr>
-            {{-- Pengaturan --}}
-            <li class="nav-heading">Pengaturan</li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('showDataDiri') }}">
-                    <i class="bi bi-person"></i>
-                    <span>Profile</span>
-                </a>
-            </li><!-- End Profile Page Nav -->
-            <li class="nav-item mb-5">
-                <a class="nav-link collapsed" href="#"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    <span>Keluar</span>
-                </a>
-            </li><!-- End Profile Page Nav -->
+            {{-- <hr> --}}
+
         </ul>
         </ul>
 

@@ -37,12 +37,12 @@
                                 data-date="{{ $data[0]->tgl_pengajuan }}" data-title="{{ strtolower($data[0]->judul) }}"
                                 data-user="{{ strtolower($data[0]->user->name) }}">
                                 <div class="card position-relative"
-                                    style="background: linear-gradient(to right, #FFD700, #FFA500);">
-                                    <div class="position-absolute top-0 end-0 m-2 badge rounded-pill text-warning"
+                                    style="background: linear-gradient(to right, #f35129, #6b51ff);">
+                                    <div class="position-absolute top-0 end-0 m-2 badge rounded-pill text-warning fs-5"
                                         style="background-color: #333; font-size: 1.5rem; padding: 1rem;">
                                         🥇 1st Place
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body mt-3">
                                         <div class="mb-3 d-flex">
                                             <img src="assets/img/user.png" alt="User Avatar" class="rounded-circle me-2"
                                                 style="width: 50px; height: 50px;">
@@ -76,12 +76,28 @@
                                 data-date="{{ $data[1]->tgl_pengajuan }}" data-title="{{ strtolower($data[1]->judul) }}"
                                 data-user="{{ strtolower($data[1]->user->name) }}">
                                 <div class="card position-relative"
-                                    style="background: linear-gradient(to right, #C0C0C0, #A9A9A9);">
-                                    <div class="position-absolute top-0 end-0 m-2 badge rounded-pill text-secondary"
-                                        style="background-color: #333; font-size: 1.5rem; padding: 1rem;">
+                                    style="background: linear-gradient(to right,#FFA500, #FFD700 );">
+                                    <div class="position-absolute top-0 end-0 m-2 badge rounded-pill text-danger fs-6"
+                                        style="background-color: #333333; font-size: 1.5rem; padding: 1rem;">
                                         🥈 2nd Place
                                     </div>
-                                    <div class="card-body">
+
+                                    <style>
+                                        .card {
+                                            border-radius: 10px;
+                                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                                            transition: transform 0.3s ease, box-shadow 0.3s ease;
+                                            height: 200px;
+                                            display: flex;
+                                            justify-content: center;
+                                        }
+
+                                        .card:hover {
+                                            transform: scale(1.05);
+                                            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+                                        }
+                                    </style>
+                                    <div class="card-body mt-3">
                                         <div class="mb-3 d-flex">
                                             <img src="assets/img/user.png" alt="User Avatar" class="rounded-circle me-2"
                                                 style="width: 50px; height: 50px;">
@@ -115,12 +131,12 @@
                                 data-date="{{ $data[2]->tgl_pengajuan }}" data-title="{{ strtolower($data[2]->judul) }}"
                                 data-user="{{ strtolower($data[2]->user->name) }}">
                                 <div class="card position-relative"
-                                    style="background: linear-gradient(to right, #df8d3b, #dbaa3f);">
-                                    <div class="position-absolute top-0 end-0 m-2 badge rounded-pill text-info"
+                                    style="background: linear-gradient(to right, #f85b00, #dbaa3f);">
+                                    <div class="position-absolute top-0 end-0 m-2 badge rounded-pill text-info fs-6"
                                         style="background-color: #333; font-size: 1.5rem; padding: 1rem;">
                                         🥉 3rd Place
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body mt-3">
                                         <div class="mb-3 d-flex">
                                             <img src="assets/img/user.png" alt="User Avatar" class="rounded-circle me-2"
                                                 style="width: 50px; height: 50px;">
@@ -156,7 +172,7 @@
                                     data-date="{{ $post->tgl_pengajuan }}" data-title="{{ strtolower($post->judul) }}"
                                     data-user="{{ strtolower($post->user->name) }}">
                                     <div class="card">
-                                        <div class="card-body">
+                                        <div class="card-body mt-3">
                                             <div class="mb-3 d-flex">
                                                 <img src="assets/img/user.png" alt="User Avatar"
                                                     class="rounded-circle me-2" style="width: 50px; height: 50px;">
