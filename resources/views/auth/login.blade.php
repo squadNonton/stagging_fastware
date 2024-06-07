@@ -76,14 +76,14 @@
                                                 <span class="input-group-text" id="inputGroupPrepend">@</span>
                                                 <input type="text" name="username" class="form-control"
                                                     id="username" required>
-                                                <div class="invalid-feedback">Please enter your username.</div>
+                                                <div class="invalid-feedback">Silahkan Masukan Username.</div>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <label for="password" class="form-label">Password</label>
                                             <input type="password" name="password" class="form-control" id="password"
                                                 required style="animation: fadeIn 2.5s ease-in-out;">
-                                            <div class="invalid-feedback">Please enter your password!</div>
+                                            <div class="invalid-feedback">Silahkan Masukan Password!</div>
                                         </div>
                                         <div class="col-12">
                                             <button class="btn btn-primary w-100" type="submit"

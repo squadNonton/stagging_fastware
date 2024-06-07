@@ -30,8 +30,8 @@ class AuthController extends Controller
             'username' => 'required',
             'password' => 'required',
         ], [
-            'username.required' => 'Username is required.',
-            'password.required' => 'Password is required.',
+            'username.required' => 'Nama pengguna wajib diisi.',
+            'password.required' => 'Kata sandi wajib diisi.',
         ]);
 
         $credentials = [
@@ -44,18 +44,18 @@ class AuthController extends Controller
 
         if ($user && $user->is_active == 1) {
             // Jika is_active adalah 1, artinya pengguna tidak dapat login
-            return redirect()->route('login')->with('error', 'Your account is not active. Please contact admin.');
+            return redirect()->route('login')->with('error', 'Akun Anda tidak aktif. Silakan hubungi Departemen IT.');
         }
 
         if (Auth::attempt($credentials)) {
             // Autentikasi berhasil, tampilkan data login di console
-            Log::info('User logged in successfully.', ['username' => $request->username]);
+            Log::info('Pengguna berhasil masuk.', ['username' => $request->username]);
 
             return redirect()->route('dashboardHandling');
         }
 
         // Autentikasi gagal, tampilkan pesan error
-        return redirect()->route('login')->with('error', 'Invalid Username & Password');
+        return redirect()->route('login')->with('error', 'Nama Pengguna & Kata Sandi tidak valid.');
     }
 
     public function logout()
