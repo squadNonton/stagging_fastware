@@ -115,7 +115,7 @@
                                 data-date="{{ $data[2]->tgl_pengajuan }}" data-title="{{ strtolower($data[2]->judul) }}"
                                 data-user="{{ strtolower($data[2]->user->name) }}">
                                 <div class="card position-relative"
-                                    style="background: linear-gradient(to right, #cd7f32, #dbaa3f);">
+                                    style="background: linear-gradient(to right, #df8d3b, #dbaa3f);">
                                     <div class="position-absolute top-0 end-0 m-2 badge rounded-pill text-info"
                                         style="background-color: #333; font-size: 1.5rem; padding: 1rem;">
                                         🥉 3rd Place

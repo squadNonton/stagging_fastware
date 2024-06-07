@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Konfirmasi Klaim Proses Handling</title>
@@ -10,6 +11,7 @@
             margin: 0;
             padding: 0;
         }
+
         .email-container {
             max-width: 600px;
             margin: 0 auto;
@@ -18,6 +20,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         .header {
             text-align: center;
             padding: 20px 0;
@@ -25,21 +28,26 @@
             color: #ffffff;
             border-radius: 8px 8px 0 0;
         }
+
         .header h1 {
             margin: 0;
             font-size: 24px;
         }
+
         .content {
             padding: 20px;
         }
+
         .content p {
             font-size: 16px;
             color: #333333;
         }
+
         .content ul {
             list-style-type: none;
             padding: 0;
         }
+
         .content ul li {
             background-color: #fdecea;
             margin: 5px 0;
@@ -48,10 +56,12 @@
             font-size: 16px;
             color: #333333;
         }
+
         .button-container {
             text-align: center;
             margin: 20px 0;
         }
+
         .button-container a {
             background-color: #f44336;
             color: #ffffff;
@@ -60,9 +70,11 @@
             border-radius: 4px;
             font-size: 16px;
         }
+
         .button-container a:hover {
             background-color: #e53935;
         }
+
         .footer {
             text-align: center;
             padding: 10px;
@@ -71,21 +83,26 @@
             font-size: 14px;
             color: #666666;
         }
+
         @media screen and (max-width: 600px) {
             .email-container {
                 width: 100%;
                 padding: 10px;
             }
+
             .header h1 {
                 font-size: 20px;
             }
+
             .content p,
             .content ul li {
                 font-size: 14px;
             }
+
             .footer {
                 font-size: 12px;
             }
+
             .button-container a {
                 font-size: 14px;
                 padding: 8px 16px;
@@ -93,6 +110,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="email-container">
         <div class="header">
@@ -102,7 +120,7 @@
             <p>Proses handling dengan rincian berikut telah diklaim:</p>
             <ul>
                 <li><strong>No WO:</strong> {{ $handling->no_wo }}</li>
-                <li><strong>Hasil:</strong> {{ $scheduleVisit->results }}</li>
+                <li><strong>Catatan Hasil:</strong> {{ $scheduleVisit->results }}</li>
                 <li><strong>Jadwal Kunjungan:</strong> {{ $scheduleVisit->schedule }}</li>
             </ul>
             <div class="button-container">
@@ -113,4 +131,5 @@
             <p>Fastware - Astra Daido Steel Indonesia (ADASI)</p>
         </div>
 </body>
+
 </html>

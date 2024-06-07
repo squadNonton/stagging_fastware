@@ -200,17 +200,15 @@ class DeptManController extends Controller
             'status' => 1,
         ]);
 
-        // Ambil semua pengguna dengan role_id 2, 3, atau 4
-        $users = User::whereIn('role_id', [2, 3, 4])->whereNotNull('email')->get();
+        // Ambil pengguna yang mengisi data tersebut berdasarkan user_id
+        $user = User::find($handling->user_id);
 
-        // Loop melalui setiap pengguna dan kirim email
-        foreach ($users as $user) {
-            if (!empty($user->email)) {
-                Mail::send('emails.confirmation', ['handling' => $handling], function ($message) use ($user, $handling) {
-                    $message->to($user->email)
-                            ->subject($handling->no_wo.' telah di konfirmasi');
-                });
-            }
+        // Kirim email ke pengguna yang mengisi data tersebut
+        if ($user && !empty($user->email)) {
+            Mail::send('emails.confirmation', ['handling' => $handling], function ($message) use ($user, $handling) {
+                $message->to($user->email)
+                        ->subject($handling->no_wo.' telah di konfirmasi');
+            });
         }
 
         // Redirect ke index dengan pesan sukses
@@ -267,17 +265,15 @@ class DeptManController extends Controller
             // Perbarui status Penanganan menjadi 2
             $handling->update(['status' => 2]);
 
-            // Ambil semua pengguna dengan role_id 2, 3, atau 4
-            $users = User::whereIn('role_id', [2, 3, 4])->whereNotNull('email')->get();
+            // Ambil pengguna yang mengisi data tersebut berdasarkan user_id
+            $user = User::find($handling->user_id);
 
-            // Loop melalui setiap pengguna dan kirim email
-            foreach ($users as $user) {
-                if (!empty($user->email)) {
-                    Mail::send('emails.finish', ['handling' => $handling], function ($message) use ($user, $handling) {
-                        $message->to($user->email)
-                                ->subject($handling->no_wo.' telah Finish');
-                    });
-                }
+            // Kirim email ke pengguna yang mengisi data tersebut
+            if ($user && !empty($user->email)) {
+                Mail::send('emails.finish', ['handling' => $handling, 'scheduleVisit' => $scheduleVisit], function ($message) use ($user, $handling) {
+                    $message->to($user->email)
+                            ->subject($handling->no_wo.' telah Finish');
+                });
             }
 
             return response()->json(['message' => 'Data Berhasil Disimpan!', 'redirect' => route('submission')]);
@@ -296,17 +292,15 @@ class DeptManController extends Controller
                 'status' => 1,
             ]);
 
-            // Ambil semua pengguna dengan role_id 2, 3, atau 4
-            $users = User::whereIn('role_id', [2, 3, 4])->whereNotNull('email')->get();
+            // Ambil pengguna yang mengisi data tersebut berdasarkan user_id
+            $user = User::find($handling->user_id);
 
-            // Loop melalui setiap pengguna dan kirim email
-            foreach ($users as $user) {
-                if (!empty($user->email)) {
-                    Mail::send('emails.claim', ['handling' => $handling, 'scheduleVisit' => $scheduleVisit], function ($message) use ($user, $handling) {
-                        $message->to($user->email)
-                                ->subject($handling->no_wo.' berubah menjadi diklaim');
-                    });
-                }
+            // Kirim email ke pengguna yang mengisi data tersebut
+            if ($user && !empty($user->email)) {
+                Mail::send('emails.claim', ['handling' => $handling, 'scheduleVisit' => $scheduleVisit], function ($message) use ($user, $handling) {
+                    $message->to($user->email)
+                            ->subject($handling->no_wo.' berubah menjadi diklaim');
+                });
             }
 
             return response()->json(['message' => 'Data Berhasil Disimpan!', 'refresh' => true]);
