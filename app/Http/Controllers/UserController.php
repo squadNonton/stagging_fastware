@@ -41,6 +41,7 @@ class UserController extends Controller
         $user->update([
             'role_id' => $request->role_id ?? $user->role_id,
             'name' => $request->nama ?? $user->name,
+            'npk' => $request->npk ?? $user->npk,
             'username' => $request->username ?? $user->username,
             'password' => bcrypt($request->pass) ?? $user->password,
             'pass' => $request->pass ?? $user->pass,
@@ -60,6 +61,7 @@ class UserController extends Controller
         User::create([
             'role_id' => $request->role_id,
             'name' => $request->name,
+            'npk' => $request->npk,
             'username' => $request->username,
             'password' => bcrypt($request->pass), // Mengenkripsi password menggunakan bcrypt()
             'pass' => $request->pass,
