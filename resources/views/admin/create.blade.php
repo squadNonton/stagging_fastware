@@ -48,7 +48,7 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">
+                                        <label for="npk" class="form-label">
                                             NPK<span style="color: red;">*</span>
                                         </label>
                                         <input type="text" class="form-control" id="npk" name="npk">

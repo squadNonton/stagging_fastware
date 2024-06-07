@@ -165,7 +165,7 @@ class FormFPPController extends Controller
                 // Periksa apakah ada catatan 'Dikonfirmasi Dept.Maintenance' dalam TindakLanjut
                 $confirmed = $tindaklanjut
                     ->where('status', 2)
-                    ->where('note', "Dikonfirmasi Dept.Maintenance")
+                    ->where('note', "Dikonfirmasi Dept.Head Maintenance")
                     ->count();
                 if ($confirmed > 0) {
                     return view('fpps.closed', compact('formperbaikan', 'formperbaikans', 'tindaklanjuts'))->with('i', (request()->input('page', 1) - 1) * 5);
@@ -356,9 +356,9 @@ class FormFPPController extends Controller
             $users = User::whereIn('role_id', [5, 6, 7, 8, 9])->whereNotNull('email')->get();
             if ($users) {
                 $emails = $users->pluck('email')->toArray();
-                Mail::send('emails.buat_fpp', ['formperbaikan' => $formperbaikan], function ($message) use ($emails, $formperbaikan) {
+                Mail::send('emails.submit_fpp', ['formperbaikan' => $formperbaikan], function ($message) use ($emails, $formperbaikan) {
                     $message->to($emails)
-                        ->subject('Form Permintaan Perbaikan: ' . $formperbaikan->id_fpp . ' telah dibuat');
+                        ->subject('Form Permintaan Perbaikan: ' . $formperbaikan->id_fpp . ' telah disubmit Maintenance');
                 });
             }
 
