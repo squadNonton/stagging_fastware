@@ -3,6 +3,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.20.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
     <main id="main" class="main">
 
         <div class="pagetitle">

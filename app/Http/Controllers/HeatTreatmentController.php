@@ -122,7 +122,7 @@ class HeatTreatmentController extends Controller
         });
 
         // Mengembalikan data dalam format JSON
-        return response()->json($searchStatusDO, $searchStatusWO, $searchWO);
+        return response()->json($response);
     }
 
     public function getBatchData(Request $request)

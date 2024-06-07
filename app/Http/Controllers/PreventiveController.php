@@ -6,7 +6,10 @@ use App\Models\Preventive;
 use App\Models\Mesin;
 use App\Models\DetailPreventive;
 use App\Models\JadwalPreventif;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class PreventiveController extends Controller
 {
@@ -139,7 +142,7 @@ class PreventiveController extends Controller
         }
     }
 
-    public function updateIssue(Request $request, JadwalPreventif $preventive, DetailPreventive $detailPreventive)
+    public function updateIssue(Request $request, JadwalPreventif $preventive, DetailPreventive $detailPreventive): RedirectResponse
     {
         // Ambil semua nilai issue dan perbaikan dari request
         $issues = $request->input('issue');
@@ -181,6 +184,15 @@ class PreventiveController extends Controller
             $detailPreventive->update([
                 'jadwal_aktual' => now() // menggunakan now() untuk mendapatkan tanggal dan waktu saat ini
             ]);
+
+            $users = User::whereIn('role_id', [5, 6, 7, 8, 9])->whereNotNull('email')->get();
+            if ($users) {
+                $emails = $users->pluck('email')->toArray();
+                Mail::send('emails.submit_preventif', ['preventive' => $preventive], function ($message) use ($emails, $preventive) {
+                    $message->to($emails)
+                        ->subject('Jadwal Preventif Mesin: ' . $preventive->nomor_mesin . ' telah disubmit oleh Maintenance');
+                });
+            }
         } else {
             $preventive->update([
                 'status' => 0
@@ -222,7 +234,7 @@ class PreventiveController extends Controller
     //     return redirect()->route('dashboardPreventive')->with('success', 'Jadwal created successfully');
     // }
 
-    public function store(Request $request, JadwalPreventif $preventive, DetailPreventive $detailPreventive)
+    public function store(Request $request, JadwalPreventif $preventive, DetailPreventive $detailPreventive): RedirectResponse
     {
         // Mengubah status menjadi 0
         $request->merge(['status' => 0]);
@@ -231,7 +243,7 @@ class PreventiveController extends Controller
         $jadwal_rencana = \Carbon\Carbon::createFromFormat('Y-m-d', $request->jadwal_rencana);
 
         // Simpan data mesin beserta path foto dan sparepart ke database
-        JadwalPreventif::create([
+        $preventive = JadwalPreventif::create([
             'nomor_mesin' => $request->mesin,
             'tipe' => $request->tipe,
             'jadwal_rencana' => $jadwal_rencana,
@@ -250,6 +262,15 @@ class PreventiveController extends Controller
                 'issue_checked' => (in_array($key, $checkedIssues) ? '1' : '0'),
                 'jadwal_rencana' => $request->jadwal_rencana,
             ]);
+        }
+
+        $users = User::whereIn('role_id', [5, 6, 7, 8, 9])->whereNotNull('email')->get();
+        if ($users) {
+            $emails = $users->pluck('email')->toArray();
+            Mail::send('emails.buat_preventif', ['preventive' => $preventive], function ($message) use ($emails, $preventive) {
+                $message->to($emails)
+                    ->subject('Jadwal Preventif Mesin: ' . $preventive->nomor_mesin . ' telah dibuat oleh Dept.Head Maintenance');
+            });
         }
 
         return redirect()->route('dashboardPreventive')->with('success', 'Mesin created successfully');

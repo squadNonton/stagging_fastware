@@ -234,31 +234,5 @@
         <!-- Add jQuery DataTables -->
         <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
-
-        <style>
-            .datatables.datatable {
-                border-collapse: collapse;
-                /* Pastikan border tidak menggandakan diri */
-                width: 100%;
-                /* Sesuaikan lebar tabel */
-            }
-
-            .datatables.datatable th,
-            .datatables.datatable td {
-                border: 1px solid #000;
-                /* Ubah warna border sesuai kebutuhan */
-                padding: 8px;
-                /* Tambahkan padding untuk membuat teks lebih mudah dibaca */
-                text-align: left;
-                /* Sesuaikan alignment teks sesuai kebutuhan */
-            }
-
-            .datatables.datatable th {
-                background-color: #f2f2f2;
-                /* Beri warna latar belakang pada header tabel */
-            }
-        </style>
-
-
     </main><!-- End #main -->
 @endsection

@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\RedirectResponse;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Support\Facades\DB;
@@ -202,7 +204,7 @@ class FormFPPController extends Controller
         return view($viewName, compact('formperbaikan'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         // Validasi input
         $request->validate([
@@ -257,7 +259,6 @@ class FormFPPController extends Controller
             'gambar' => $gambarPath,
             'status' => $request->status,
             'status_2' => $request->status_2,
-            'pic' => $loggedInUser->name, // Menyimpan nama PIC berdasarkan pengguna yang login
         ]);
 
         // Membuat rekaman TindakLanjut terkait
@@ -268,8 +269,18 @@ class FormFPPController extends Controller
             'pic' => $loggedInUser->name, // Menyimpan nama PIC berdasarkan pengguna yang login
         ]);
 
+        $users = User::whereIn('role_id', [5, 6, 7, 8, 9])->whereNotNull('email')->get();
+        if ($users) {
+            $emails = $users->pluck('email')->toArray();
+            Mail::send('emails.buat_fpp', ['createdFormFPP' => $createdFormFPP], function ($message) use ($emails, $createdFormFPP) {
+                $message->to($emails)
+                    ->subject('Form Permintaan Perbaikan: ' . $createdFormFPP->id_fpp . ' telah dibuat');
+            });
+        }
+
         return redirect()->route('fpps.index')->with('success', 'Form FPP berhasil dibuat.');
     }
+
 
 
     public function edit(FormFPP $formperbaikan)
@@ -286,7 +297,7 @@ class FormFPPController extends Controller
         return view($viewName, compact('formperbaikan'));
     }
 
-    public function update(Request $request, FormFPP $formperbaikan, TindakLanjut $tindaklanjut)
+    public function update(Request $request, FormFPP $formperbaikan, TindakLanjut $tindaklanjut): RedirectResponse
     {
         // Handle file upload/update for attachment_file
         if ($request->hasFile('attachment_file')) {
@@ -342,20 +353,47 @@ class FormFPPController extends Controller
                 'status' => '2',
             ]);
 
+            $users = User::whereIn('role_id', [5, 6, 7, 8, 9])->whereNotNull('email')->get();
+            if ($users) {
+                $emails = $users->pluck('email')->toArray();
+                Mail::send('emails.buat_fpp', ['formperbaikan' => $formperbaikan], function ($message) use ($emails, $formperbaikan) {
+                    $message->to($emails)
+                        ->subject('Form Permintaan Perbaikan: ' . $formperbaikan->id_fpp . ' telah dibuat');
+                });
+            }
+
             return redirect()->route('maintenance.index')->with('success', 'Form FPP updated successfully');
         } elseif ($confirmedFinish2 === "1") {
             // Update the status and note accordingly in the original TindakLanjut
             $formperbaikan->update(['status' => '2']);
             $newTindakLanjut->update([
-                'note' => 'Dikonfirmasi Dept.Maintenance',
+                'note' => 'Dikonfirmasi Dept.Head Maintenance',
                 'status' => '2',
             ]);
+
+            $users = User::whereIn('role_id', [5, 6, 7, 8, 9])->whereNotNull('email')->get();
+            if ($users) {
+                $emails = $users->pluck('email')->toArray();
+                Mail::send('emails.konfirmasi2_fpp', ['formperbaikan' => $formperbaikan], function ($message) use ($emails, $formperbaikan) {
+                    $message->to($emails)
+                        ->subject('Form Permintaan Perbaikan: ' . $formperbaikan->id_fpp . ' telah dikonfirmasi oleh Dept.Head Maintenance');
+                });
+            }
 
             return redirect()->route('deptmtce.index')->with('success', 'Form FPP updated successfully');
         } elseif ($confirmedFinish3 === "1") {
             // Update the status and note accordingly in the original TindakLanjut
             $formperbaikan->update(['status' => '3']);
             $newTindakLanjut->update(['note' => 'Diclosed Production', 'status' => '3']);
+
+            $users = User::whereIn('role_id', [5, 6, 7, 8, 9])->whereNotNull('email')->get();
+            if ($users) {
+                $emails = $users->pluck('email')->toArray();
+                Mail::send('emails.closed_fpp', ['formperbaikan' => $formperbaikan], function ($message) use ($emails, $formperbaikan) {
+                    $message->to($emails)
+                        ->subject('Form Permintaan Perbaikan: ' . $formperbaikan->id_fpp . ' telah diclosed oleh Production');
+                });
+            }
 
             return redirect()->route('fpps.index')->with('success', 'Form FPP updated successfully');
         } elseif ($confirmedFinish4 === "1") {
@@ -367,6 +405,16 @@ class FormFPPController extends Controller
             // Update the status and note accordingly in the original TindakLanjut
             $formperbaikan->update(['status' => '1']);
             $newTindakLanjut->update(['note' => 'Dikonfirmasi Maintenance']);
+
+            $users = User::whereIn('role_id', [5, 6, 7, 8, 9])->whereNotNull('email')->get();
+            if ($users) {
+                $emails = $users->pluck('email')->toArray();
+                Mail::send('emails.konfirmasi_fpp', ['formperbaikan' => $formperbaikan], function ($message) use ($emails, $formperbaikan) {
+                    $message->to($emails)
+                        ->subject('Form Permintaan Perbaikan: ' . $formperbaikan->id_fpp . ' telah dikonfirmasi Maintenance');
+                });
+            }
+
             return redirect()->route('maintenance.index')->with('success', 'Form FPP updated successfully');
         } elseif ($confirmedFinish6 === "1") {
             // Update the status and note accordingly in the original TindakLanjut
@@ -384,7 +432,6 @@ class FormFPPController extends Controller
             return redirect()->route('maintenance.index')->with('success', 'Form FPP updated successfully');
         }
     }
-
     public function downloadAttachment(TindakLanjut $tindaklanjut)
     {
         // Pastikan file attachment_file ada sebelum mencoba mengunduh
