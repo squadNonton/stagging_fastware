@@ -124,9 +124,9 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label for="w" class="form-label">L:</label>
-                                            <input type="text" class="form-control input-sm" id="lenght"
-                                                name="lenght" placeholder="Lenght" style="max-width: 80%;"
-                                                value="{{ $handlings->lenght }}" disabled>
+                                            <input type="text" class="form-control input-sm" id="length"
+                                                name="length" placeholder="Lenght" style="max-width: 80%;"
+                                                value="{{ $handlings->length }}" disabled>
                                         </div>
                                     </div>
                                     <div class="row">

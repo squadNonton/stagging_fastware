@@ -119,7 +119,7 @@
                                                         @endif
                                                     @endif
                                                     <button class="btn btn-success btn-sm" id="fetchDataButton"
-                                                        onclick="openViewSS({{ $item->id }})" title="lihat">
+                                                        onclick="viewFormSS({{ $item->id }})" title="lihat">
                                                         <i class="fa-solid fa-eye fa-1x"></i>
                                                     </button>
                                                 </td>
@@ -474,7 +474,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="editPlant" class="col-sm-2 col-form-label">Plant<span
+                                    <label for="viewPlant" class="col-sm-2 col-form-label">Plant<span
                                             style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <select class="form-control" id="viewPlant" name="plant" disabled required>
@@ -497,7 +497,8 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="viewTglDiterapkan" class="col-sm-2 col-form-label">Tgl. Diterapkan</label>
+                                    <label for="viewTglDiterapkan" class="col-sm-2 col-form-label">Tgl. Diterapkan<span
+                                            style="color: red;">*</span></label>
                                     <div class="col-sm-10">
                                         <input type="date" class="form-control" id="viewTglDiterapkan"
                                             name="tgl_diterapkan" disabled>
@@ -520,7 +521,7 @@
                                 </div>
                                 <div class="row mb-3">
                                     <label for="viewImage" class="col-sm-2 col-form-label">File Upload
-                                        (Sebelumnya) <span style="color: red;">*</span></label>
+                                        (Sebelumnya)</label>
                                     <div class="col-sm-10">
                                         <div id="view-image-preview" style="margin-top: 10px;"></div>
                                     </div>
@@ -534,15 +535,14 @@
                                 </div>
                                 <!-- Input File Upload 2 -->
                                 <div class="row mb-3">
-                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload (Sesudah) <span
-                                            style="color: red;">*</span></label>
+                                    <label for="viewImage2" class="col-sm-2 col-form-label">File Upload (Sesudah)</label>
                                     <div class="col-sm-10">
                                         <div id="view-image2-preview" style="margin-top: 10px;"></div>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="viewKeuntungan" class="col-sm-2 col-form-label">Keuntungan Dari Penerapan
-                                        Ide <span style="color: red;">*</span></label>
+                                        Ide</label>
                                     <div class="col-sm-10">
                                         <textarea class="form-control" style="height: 100px" id="viewKeuntungan" name="keuntungan_ide" disabled></textarea>
                                     </div>
@@ -561,7 +561,7 @@
                         <div class="modal-header">
                             <h5 class="modal-title" id="viewImageModalLabel">Gambar</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                                aria-label="Tutup"></button>
                         </div>
                         <div class="modal-body text-center">
                             <img id="viewModalImage" src="" class="img-fluid">
@@ -569,6 +569,7 @@
                     </div>
                 </div>
             </div>
+
         </section>
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script>
@@ -733,7 +734,6 @@
                 });
             }
 
-
             function submitEditForm() {
                 var formData = new FormData($('#editSumbangSaranForm')[0]);
                 var id = $('#editSumbangSaranId').val();
@@ -880,53 +880,60 @@
                 previewFile(this, 'image_2-preview');
             });
 
-            //viewmodal
-            function openViewSS(id) {
+            function viewFormSS(id) {
                 $.ajax({
-                    url: '{{ route('sumbangsaran.show', ':id') }}'.replace(':id', id),
+                    url: '{{ route('sechead.show', ':id') }}'.replace(':id', id),
                     type: 'GET',
                     success: function(response) {
-                        // Mengisi data ke dalam form modal
-                        $('#viewname').val(response.user.name);
-                        $('#viewnpk').val(response.user.npk);
-                        $('#viewTglPengajuan').val(response.tgl_pengajuan_ide);
-                        $('#viewLokasiIde').val(response.lokasi_ide);
-                        $('#viewPlant').val(response.plant);
-                        $('#viewTglDiterapkan').val(response.tgl_diterapkan);
-                        $('#viewJudulIde').val(response.judul);
-                        $('#viewKeadaanSebelumnya').val(response.keadaan_sebelumnya);
-                        $('#viewUsulanIde').val(response.usulan_ide);
-                        $('#viewKeuntungan').val(response.keuntungan_ide);
-                        $('#viewSumbangSaranId').val(response.id);
+                        console.log(response); // Debug: Cek respons
 
-                        // Menampilkan file pertama
-                        var fileExtension1 = response.file_name.split('.').pop().toLowerCase();
-                        var fileLink1 = '{{ asset('assets/image/') }}/' + response.image;
+                        if (response) {
+                            $('#viewname').val(response.user.name);
+                            $('#viewnpk').val(response.user.npk);
+                            $('#viewTglPengajuan').val(response.tgl_pengajuan_ide);
+                            $('#viewPlant').val(response.plant);
+                            $('#viewLokasiIde').val(response.lokasi_ide);
+                            $('#viewTglDiterapkan').val(response.tgl_diterapkan);
+                            $('#viewJudulIde').val(response.judul);
+                            $('#viewKeadaanSebelumnya').val(response.keadaan_sebelumnya);
+                            $('#viewUsulanIde').val(response.usulan_ide);
+                            $('#viewKeuntungan').val(response.keuntungan_ide);
+                            $('#viewSumbangSaranId').val(response.id);
 
-                        if (['jpg', 'jpeg', 'png'].includes(fileExtension1)) {
-                            $('#view-image-preview').html('<img src="' + fileLink1 +
-                                '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
-                                fileLink1 + '">');
+                            if (response.file_name && response.image) {
+                                var fileExtension1 = response.file_name.split('.').pop().toLowerCase();
+                                var fileLink1 = '{{ asset('assets/image/') }}/' + response.image;
+                                if (['jpg', 'jpeg', 'png'].includes(fileExtension1)) {
+                                    $('#view-image-preview').html('<img src="' + fileLink1 +
+                                        '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
+                                        fileLink1 + '">');
+                                } else {
+                                    $('#view-image-preview').html('<a href="' + fileLink1 + '" download="' +
+                                        response.file_name + '">' + response.file_name + '</a>');
+                                }
+                            } else {
+                                $('#view-image-preview').html('');
+                            }
+
+                            if (response.file_name_2 && response.image_2) {
+                                var fileExtension2 = response.file_name_2.split('.').pop().toLowerCase();
+                                var fileLink2 = '{{ asset('assets/image/') }}/' + response.image_2;
+                                if (['jpg', 'jpeg', 'png'].includes(fileExtension2)) {
+                                    $('#view-image2-preview').html('<img src="' + fileLink2 +
+                                        '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
+                                        fileLink2 + '">');
+                                } else {
+                                    $('#view-image2-preview').html('<a href="' + fileLink2 + '" download="' +
+                                        response.file_name_2 + '">' + response.file_name_2 + '</a>');
+                                }
+                            } else {
+                                $('#view-image2-preview').html('');
+                            }
+
+                            $('#viewSumbangSaranModal').modal('show');
                         } else {
-                            $('#view-image-preview').html('<a href="' + fileLink1 + '" download="' + response
-                                .file_name + '">' + response.file_name + '</a>');
+                            console.error('Tidak ada data respons');
                         }
-
-                        // Menampilkan file kedua
-                        var fileExtension2 = response.file_name_2.split('.').pop().toLowerCase();
-                        var fileLink2 = '{{ asset('assets/image/') }}/' + response.image_2;
-
-                        if (['jpg', 'jpeg', 'png'].includes(fileExtension2)) {
-                            $('#view-image2-preview').html('<img src="' + fileLink2 +
-                                '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
-                                fileLink2 + '">');
-                        } else {
-                            $('#view-image2-preview').html('<a href="' + fileLink2 + '" download="' + response
-                                .file_name_2 + '">' + response.file_name_2 + '</a>');
-                        }
-
-                        // Menampilkan modal
-                        $('#viewSumbangSaranModal').modal('show');
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText);
@@ -935,10 +942,19 @@
             }
 
             // Event listener untuk gambar yang diklik
-            $(document).on('click', '.clickable-view-image', function() {
+            $(document).on('click', '.clickable-view-image', function(event) {
+                event.preventDefault(); // Mencegah perilaku default
                 var imgSrc = $(this).data('img-src');
-                $('#viewModalImage').attr('src', imgSrc);
-                $('#viewImageModal').modal('show');
+                console.log('Sumber Gambar:', imgSrc); // Debug: Cek sumber gambar
+
+                // Cek apakah modal ada
+                var $modal = $('#viewImageModal');
+                if ($modal.length) {
+                    $('#viewModalImage').attr('src', imgSrc);
+                    $modal.modal('show');
+                } else {
+                    console.error('Modal tidak ditemukan');
+                }
             });
         </script>
 

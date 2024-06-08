@@ -19,7 +19,8 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Form Ubah Data</h5>
-                        <form action="{{ route('update', $handlings->id) }}" method="post" enctype="multipart/form-data">
+                        <form id="updateForm" action="{{ route('update', $handlings->id) }}" method="post"
+                            enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="row">
@@ -38,7 +39,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="no_wo" class="col-sm-2 col-form-label">No. WO:<span
+                                            <label for="no_wo" class="col-sm-5 col-form-label">No. WO:<span
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
@@ -112,47 +113,51 @@
                                         <div class="col-md-3">
                                             <label for="t" class="form-label">T:</label>
                                             <input type="text" class="form-control input-sm" id="thickness"
-                                                name="thickness" placeholder="Thickness" style="max-width: 80%;"
+                                                name="thickness" placeholder="Thickness" style="max-width: 100%;"
                                                 value="{{ $handlings->thickness }}" onkeypress="hanyaAngka(event)">
                                         </div>
                                         <div class="col-md-3">
                                             <label for="w" class="form-label">W:</label>
                                             <input type="text" class="form-control input-sm" id="weight"
-                                                name="weight" placeholder="Weight" style="max-width: 80%;"
+                                                name="weight" placeholder="Weight" style="max-width: 100%;"
                                                 value="{{ $handlings->weight }}" onkeypress="hanyaAngka(event)">
                                         </div>
                                         <div class="col-md-3">
                                             <label for="w" class="form-label">L:</label>
-                                            <input type="text" class="form-control input-sm" id="lenght"
-                                                name="lenght" placeholder="Lenght" style="max-width: 80%;"
-                                                value="{{ $handlings->lenght }}" onkeypress="hanyaAngka(event)">
+                                            <input type="text" class="form-control input-sm" id="length"
+                                                name="length" placeholder="length" style="max-width: 100%;"
+                                                value="{{ $handlings->length }}" onkeypress="hanyaAngka(event)">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-3">
                                             <label for="w" class="form-label">OD:</label>
                                             <input type="text" class="form-control input-sm" id="outer_diameter"
-                                                name="outer_diameter" placeholder="Outer Diameter" style="max-width: 40%"
-                                                value="{{ $handlings->outer_diameter }}" onkeypress="hanyaAngka(event)">
+                                                name="outer_diameter" placeholder="Outer Diameter"
+                                                style="max-width: 100%" value="{{ $handlings->outer_diameter }}"
+                                                onkeypress="hanyaAngka(event)">
                                         </div>
                                         <div class="col-md-3">
                                             <label for="w" class="form-label">ID:</label>
                                             <input type="text" class="form-control input-sm" id="inner_diameter"
-                                                name="inner_diameter" placeholder="Inner Diameter" style="max-width: 40%"
-                                                value="{{ $handlings->inner_diameter }}" onkeypress="hanyaAngka(event)">
+                                                name="inner_diameter" placeholder="Inner Diameter"
+                                                style="max-width: 100%" value="{{ $handlings->inner_diameter }}"
+                                                onkeypress="hanyaAngka(event)">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <label for="qty" class="form-label">QTY (Kg):</label>
+                                            <label for="qty" class="form-label">QTY (Kg):<span
+                                                    style="color: red;">*</span></label>
                                             <input type="text" class="form-control input-sm" id="qty"
-                                                name="qty" style="max-width: 40%;" value="{{ $handlings->qty }}"
+                                                name="qty" style="max-width: 100%;" value="{{ $handlings->qty }}"
                                                 required onkeypress="hanyaAngka(event)">
                                         </div>
                                         <div class="col-md-3">
-                                            <label for="pcs" class="form-label">Unit (Pcs):</label>
+                                            <label for="pcs" class="form-label">Unit (Pcs):<span
+                                                    style="color: red;">*</span></label>
                                             <input type="text" class="form-control input-sm" id="pcs"
-                                                name="pcs" style="max-width: 40%" value="{{ $handlings->pcs }}"
+                                                name="pcs" style="max-width: 100%" value="{{ $handlings->pcs }}"
                                                 required onkeypress="hanyaAngka(event)">
                                         </div>
                                     </div>
@@ -242,7 +247,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="hasil_tindak_lanjut" class="col-sm-5 col-form-label">Keterangan:
+                                            <label for="hasil_tindak_lanjut" class="col-sm-6 col-form-label">Keterangan:
                                                 (Jika ada)</label>
                                         </div>
                                         <div class="col-lg-6">
@@ -300,7 +305,8 @@
                                 <div class="col-lg-6">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar: (Jika Ada)</label>
+                                            <label for="image_upload" class="col-sm-8 col-form-label">Unggah Gambar: (Jika
+                                                Ada)</label>
                                         </div>
                                         <div class="col-lg-6">
                                             <input class="form-control @error('image') is-invalid @enderror"
@@ -351,21 +357,23 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div id="imageModal" class="modal"
-                                    style="display: none; position: fixed; z-index: 1; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9);">
-                                    <div
-                                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; max-width: 700px; background-color: #fefefe; border-radius: 5px;">
-                                        <span class="close"
-                                            style="position: absolute; top: 10px; right: 10px; color: #000; font-size: 30px; font-weight: bold; cursor: pointer;"
-                                            onclick="closeModal()">&times;</span>
-                                        <img class="modal-content" id="modalImage"
-                                            style="display: block; margin: auto; width: 50%; max-width: 70%;">
-                                    </div>
-                                </div>
                         </form>
+                        <div id="imageModal" class="modal"
+                            style="display: none; position: fixed; z-index: 1; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9);">
+                            <div
+                                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; max-width: 500px; background-color: #fefefe; border-radius: 5px;">
+                                <span class="close"
+                                    style="position: absolute; top: 10px; right: 10px; color: #000; font-size: 30px; font-weight: bold; cursor: pointer;"
+                                    onclick="closeModal()">&times;</span>
+                                <img class="modal-content" id="modalImage"
+                                    style="display: block; margin: auto; width: 70%; max-width: 70%;">
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
         </section>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             function updateCustomerInfo() {
                 var customerIdCodeSelect = document.getElementById('customer_id_code');
@@ -390,6 +398,41 @@
             // Initialize the customer info on page load
             document.addEventListener('DOMContentLoaded', function() {
                 updateCustomerInfo();
+            });
+
+            document.getElementById('updateForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent form submission
+
+                // Check for required fields
+                let isValid = true;
+                const requiredFields = ['no_wo', 'customer_id_code', 'type_id', 'qty', 'pcs', 'category',
+                    'process_type'];
+
+                requiredFields.forEach(function(fieldId) {
+                    const field = document.getElementById(fieldId);
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('is-invalid');
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+
+                if (!isValid) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Silakan isi semua bidang yang wajib diisi!',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Formulir berhasil disimpan!',
+                    }).then(() => {
+                        document.getElementById('updateForm').submit(); // Submit the form
+                    });
+                }
             });
 
 

@@ -99,18 +99,18 @@ class HandlingController extends Controller
         $data = Handling::findOrFail($id);
         $data->status = 3;
         $data->save();
-    
+
         // Temukan pengguna dengan ID 23
         $user = User::find(23);
-    
+
         // Kirim email ke pengguna dengan ID 23 jika pengguna ditemukan dan email tidak kosong
         if ($user && !empty($user->email)) {
             Mail::send('emails.status_closed', ['handling' => $data], function ($message) use ($user, $data) {
                 $message->to($user->email)
-                        ->subject($data->no_wo . ' telah close proses');
+                        ->subject($data->no_wo.' telah close proses');
             });
         }
-    
+
         return response()->json(['success' => 'Status changed successfully.']);
     }
 
@@ -336,7 +336,7 @@ class HandlingController extends Controller
         $handling->weight = $request->weight;
         $handling->outer_diameter = $request->outer_diameter;
         $handling->inner_diameter = $request->inner_diameter;
-        $handling->length = $request->lenght;
+        $handling->length = $request->length;
         $handling->qty = $request->qty;
         $handling->pcs = $request->pcs;
         $handling->category = $request->category;
@@ -376,6 +376,9 @@ class HandlingController extends Controller
         $handlings = Handling::with(['customers', 'type_materials'])->findOrFail($id);
         $customers = Customer::all();
         $type_materials = TypeMaterial::all();
+
+        // Strip the prefix 'WO/yyyy/' from the no_wo
+        $handlings->no_wo = preg_replace('/^WO\/\d{4}\//', '', $handlings->no_wo);
 
         return view('sales.edit', compact('handlings', 'customers', 'type_materials'));
     }
@@ -428,9 +431,21 @@ class HandlingController extends Controller
         // Combine old and new image paths
         $allImagePaths = $newImagePaths;
 
-        // Update post with new image paths
+        // Get the current year
+        $currentYear = date('Y');
+
+        // Check if the no_wo has the correct format
+        if (strpos($request->no_wo, 'WO/'.$currentYear.'/') === false) {
+            // Format the no_wo correctly if it doesn't have the proper prefix
+            $no_wo = 'WO/'.$currentYear.'/'.$request->no_wo;
+        } else {
+            // Keep the existing formatted no_wo
+            $no_wo = $request->no_wo;
+        }
+
+        // Update post with new image paths and other data
         $handlings->update([
-            'no_wo' => $request->no_wo,
+            'no_wo' => $no_wo,
             'user_id' => $request->user()->id,
             'customer_id' => $request->customer_id,
             'type_id' => $request->type_id,
@@ -438,7 +453,7 @@ class HandlingController extends Controller
             'weight' => $request->weight,
             'outer_diameter' => $request->outer_diameter,
             'inner_diameter' => $request->inner_diameter,
-            'length' => $request->lenght,
+            'length' => $request->length,
             'qty' => $request->qty,
             'pcs' => $request->pcs,
             'category' => $request->category,
@@ -451,7 +466,7 @@ class HandlingController extends Controller
             'modified_by' => $request->user()->name,
         ]);
 
-        // redirect to index
+        // Redirect to index
         return redirect()->route('index')->with(['success' => 'Data Berhasil Diubah!']);
     }
 
