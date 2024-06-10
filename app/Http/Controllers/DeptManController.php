@@ -293,17 +293,6 @@ class DeptManController extends Controller
                 'status' => 1,
             ]);
 
-            // Ambil pengguna yang mengisi data tersebut berdasarkan user_id
-            $user = User::find($handling->user_id);
-
-            // Kirim email ke pengguna yang mengisi data tersebut
-            if ($user && !empty($user->email)) {
-                Mail::send('emails.claim', ['handling' => $handling, 'scheduleVisit' => $scheduleVisit], function ($message) use ($user, $handling) {
-                    $message->to($user->email)
-                            ->subject($handling->no_wo.' berubah menjadi diklaim');
-                });
-            }
-
             return response()->json(['message' => 'Data Berhasil Diklaim!', 'refresh' => true]);
         }
     }

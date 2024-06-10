@@ -230,7 +230,7 @@
                         _method: 'PATCH' // Metode HTTP yang digunakan adalah PATCH
                     },
                     success: function(response) {
-                        Swal.fire('Success!', 'Status has been changed successfully.', 'success')
+                        Swal.fire('Berhasil!', 'Proses telah close.', 'success')
                             .then(() => {
                                 window.location.href = '{{ route('index') }}';
                             });
