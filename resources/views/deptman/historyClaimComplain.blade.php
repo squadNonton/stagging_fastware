@@ -18,7 +18,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Data Table History Claim & Complain</h5>
+                            <h5 class="card-title">Tampilan Data Riwayat Klaim dan Komplain</h5>
                             <div class="table-responsive" style="height: 100%; overflow-y: auto;">
                                 <table class="datatable table">
                                     <thead>
@@ -76,7 +76,7 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <a href="{{ route('showCloseProgres', ['id' => $row->id]) }}"
-                                                        class="btn btn-sm btn-warning">
+                                                        class="btn btn-sm btn-warning" title="Riwayat Klaim dan Komplain">
                                                         <i class="fa fa-eye fa-1x" aria-hidden="true"></i>
                                                     </a>
                                                 </td>
