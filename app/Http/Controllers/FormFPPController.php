@@ -27,6 +27,14 @@ class FormFPPController extends Controller
         return view('fpps.history', compact('formperbaikans'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
+    public function HistorySales()
+    {
+        $formperbaikans = FormFPP::where('status', 3)->orderBy('updated_at', 'desc')->get();
+
+        return view('sales.history', compact('formperbaikans'))->with('i', (request()->input('page', 1) - 1) * 5);
+    }
+
+
     public function DashboardProduction()
     {
         // Mengambil semua data FormFPP diurutkan berdasarkan updated_at terbaru
@@ -143,7 +151,7 @@ class FormFPPController extends Controller
         }
     }
 
-    public function LihatFPP(FormFPP $formperbaikan, TindakLanjut $tindaklanjut)
+    public function LihatFPP(FormFPP $formperbaikan, TindakLanjut $tindakLanjut)
     {
         // Mengambil semua data FormFPP
         $formperbaikans = FormFPP::latest()->get();
@@ -159,27 +167,25 @@ class FormFPPController extends Controller
             case 0:
             case 1:
             case 3:
-                return view('fpps.show', compact('formperbaikan', 'formperbaikans', 'tindaklanjuts'))->with('i', (request()->input('page', 1) - 1) * 5);
-                break;
+                return view('fpps.show', compact('formperbaikan', 'formperbaikans', 'tindaklanjuts'))
+                    ->with('i', (request()->input('page', 1) - 1) * 5);
             case 2:
-                // Periksa apakah ada catatan 'Dikonfirmasi Dept.Maintenance' dalam TindakLanjut
-                $confirmed = $tindaklanjut
-                    ->where('status', 2)
-                    ->where('note', "Dikonfirmasi Dept.Head Maintenance")
+                // Periksa apakah ada catatan 'Dikonfirmasi Dept.Head Maintenance' dalam TindakLanjut untuk nomor FPP yang sesuai
+                $confirmed = TindakLanjut::where('note', 'Dikonfirmasi Dept.Head Maintenance')
                     ->count();
+
                 if ($confirmed > 0) {
-                    return view('fpps.closed', compact('formperbaikan', 'formperbaikans', 'tindaklanjuts'))->with('i', (request()->input('page', 1) - 1) * 5);
+                    return view('fpps.closed', compact('formperbaikan', 'formperbaikans', 'tindaklanjuts'))
+                        ->with('i', (request()->input('page', 1) - 1) * 5);
                 } else {
-                    return view('fpps.show', compact('formperbaikan', 'formperbaikans', 'tindaklanjuts'))->with('i', (request()->input('page', 1) - 1) * 5);
+                    return view('fpps.show', compact('formperbaikan', 'formperbaikans', 'tindaklanjuts'))
+                        ->with('i', (request()->input('page', 1) - 1) * 5);
                 }
-                break;
             default:
-                return view('fpps.index', compact('formperbaikan', 'formperbaikans', 'tindaklanjuts'))->with('i', (request()->input('page', 1) - 1) * 5);
-                break;
+                return view('fpps.index', compact('formperbaikan', 'formperbaikans', 'tindaklanjuts'))
+                    ->with('i', (request()->input('page', 1) - 1) * 5);
         }
     }
-
-
 
     public function LihatDeptMTCE(FormFPP $formperbaikan)
     {
@@ -349,7 +355,7 @@ class FormFPPController extends Controller
             // Update the status and note accordingly in the original TindakLanjut
             $formperbaikan->update(['status' => '2']);
             $newTindakLanjut->update([
-                'note' => 'Disubmit Maintenance',
+                'note' => 'Disubmit Dept. Maintenance',
                 'status' => '2',
             ]);
 

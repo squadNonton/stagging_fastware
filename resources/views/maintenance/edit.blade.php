@@ -73,7 +73,7 @@
 
                                         <div class="mb-3">
                                             <label for="section" class="form-label">
-                                                Section<span style="color: red;">*</span>
+                                                Bagian<span style="color: red;">*</span>
                                             </label>
                                             <select class="form-select" id="section" name="section" disabled>
                                                 <option value="{{ $formperbaikan->section }}" selected>
@@ -130,7 +130,7 @@
                         <div class="card-body">
                             <div class="accordion">
                                 <h5 class="card-title">
-                                    Update Progres
+                                    Kemajuan Progres
                                 </h5>
 
                                 <div class="collapse" id="updateProgress">
@@ -147,20 +147,19 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="due_date" class="form-label">Due Date</label>
+                                            <label for="due_date" class="form-label">Tanggal Jatuh Tempo</label>
                                             <input type="date" class="form-control" id="due_date" name="due_date"
                                                 disabled>
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="schedule_pengecekan" class="form-label">Schedule
-                                                Pengecekan</label>
-                                            <input type="text" class="form-control" id="schedule_pengecekan"
+                                            <label for="schedule_pengecekan" class="form-label">Jadwal Pengecekan</label>
+                                            <input type="date" class="form-control" id="schedule_pengecekan"
                                                 name="schedule_pengecekan" disabled>
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="attachment_file" class="form-label">Attachment File</label>
+                                            <label for="attachment_file" class="form-label">Unggah Data</label>
                                             <input type="file" class="form-control" id="attachment_file"
                                                 name="attachment_file" disabled>
                                         </div>
@@ -171,7 +170,7 @@
                                         <div class="text-end">
                                             <!-- Change the button type to 'button' to prevent default form submission -->
                                             <button type="button" class="btn btn-primary"
-                                                onclick="handleFormSubmission()">Confirmed</button>
+                                                onclick="handleFormSubmission()">Konfirmasi</button>
                                         </div>
                                     </form>
                                 </div>
@@ -196,12 +195,12 @@
                                                     <th scope="col">No</th>
                                                     <th scope="col">Tindak Lanjut</th>
                                                     <th scope="col">Jadwal Pengecekan</th>
-                                                    <th scope="col">PIC</th>
-                                                    <th scope="col">Due Date</th>
-                                                    <th scope="col">File</th>
+                                                    <th scope="col">Penanggung Jawab</th>
+                                                    <th scope="col">Tanggal Jatuh Tempo</th>
+                                                    <th scope="col">Unggahan Data</th>
                                                     <th scope="col">Status</th>
-                                                    <th scope="col">Note</th>
-                                                    <th scope="col">Last Update</th>
+                                                    <th scope="col">Catatan</th>
+                                                    <th scope="col">Modifikasi Terakhir</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

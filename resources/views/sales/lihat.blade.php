@@ -19,7 +19,7 @@
                 <div class="col-lg-3">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Form Lihat FPP</h5>
+                            <h5 class="card-title">Form Permintaan Perbaikan</h5>
 
                             <form id="FPPForm" action="{{ route('formperbaikans.update', $formperbaikan->id) }}"
                                 method="POST" enctype="multipart/form-data">
@@ -36,7 +36,7 @@
 
                                 <div class="mb-3">
                                     <label for="date" class="form-label">
-                                        Date<span style="color: red;">*</span>
+                                        Tanggal<span style="color: red;">*</span>
                                     </label>
                                     <input type="date" class="form-control" id="date" name="date"
                                         value="{{ $formperbaikan->date }}" readonly>
@@ -44,7 +44,7 @@
 
                                 <div class="mb-3">
                                     <label for="section" class="form-label">
-                                        Section<span style="color: red;">*</span>
+                                        Bagian<span style="color: red;">*</span>
                                     </label>
                                     <select class="form-select" id="section" name="section" disabled>
                                         <option value="{{ $formperbaikan->section }}" selected>{{ $formperbaikan->section }}
@@ -66,7 +66,7 @@
 
                                 <div class="mb-3">
                                     <label for="lokasi" class="form-label">
-                                        Lokasi Mesin<span style="color: red;">*</span>
+                                        Lokasi<span style="color: red;">*</span>
                                     </label>
                                     <select class="form-select" id="lokasi" name="lokasi" disabled>
                                         <option value="{{ $formperbaikan->lokasi }}" selected>{{ $formperbaikan->lokasi }}
@@ -101,7 +101,7 @@
                 <div class="col-lg-9">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Tabel History Progress</h5>
+                            <h5 class="card-title">Tabel Riwayat Progres</h5>
                             <div class="table-responsive">
                                 <table class="datatables datatable" style="table-layout: responsive;">
                                     <thead class="bg-primary text-white">
@@ -109,12 +109,12 @@
                                             <th scope="col">No</th>
                                             <th scope="col">Tindak Lanjut</th>
                                             <th scope="col">Jadwal Pengecekan</th>
-                                            <th scope="col">Operator</th>
-                                            <th scope="col">Due Date</th>
-                                            <th scope="col">File</th>
+                                            <th scope="col">Penanggung Jawab</th>
+                                            <th scope="col">Tanggal Jatuh Tempo</th>
+                                            <th scope="col">Unggahan Data</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">Note</th>
-                                            <th scope="col">Last Update</th>
+                                            <th scope="col">Catatan</th>
+                                            <th scope="col">Modifikasi Terakhir</th>
                                         </tr>
                                     </thead>
                                     <tbody>

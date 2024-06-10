@@ -5,7 +5,7 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Production</h1>
+            <h1>Sales</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Form Permintaan Perbaikan</li>

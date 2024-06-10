@@ -37,13 +37,14 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="date" class="form-label">Date<span style="color: red;">*</span></label>
+                                    <label for="date" class="form-label">Tanggal<span
+                                            style="color: red;">*</span></label>
                                     <input type="date" class="form-control" id="date" name="date"
                                         value="{{ $formperbaikan->date }}" readonly>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="section" class="form-label">Section<span
+                                    <label for="section" class="form-label">Bagian<span
                                             style="color: red;">*</span></label>
                                     <select class="form-select" id="section" name="section" disabled>
                                         <option value="{{ $formperbaikan->section }}" selected>{{ $formperbaikan->section }}
@@ -62,7 +63,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="lokasi" class="form-label">Lokasi Mesin<span
+                                    <label for="lokasi" class="form-label">Lokasi<span
                                             style="color: red;">*</span></label>
                                     <select class="form-select" id="lokasi" name="lokasi" disabled>
                                         <option value="{{ $formperbaikan->lokasi }}" selected>{{ $formperbaikan->lokasi }}
@@ -116,12 +117,12 @@
                                             <th scope="col">No</th>
                                             <th scope="col">Tindak Lanjut</th>
                                             <th scope="col">Jadwal Pengecekan</th>
-                                            <th scope="col">PIC</th>
-                                            <th scope="col">Due Date</th>
-                                            <th scope="col">File</th>
+                                            <th scope="col">Penanggung Jawab</th>
+                                            <th scope="col">Tanggal Jatuh Tempo</th>
+                                            <th scope="col">Unggahan Data</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">Note</th>
-                                            <th scope="col">Last Update</th>
+                                            <th scope="col">Catatan</th>
+                                            <th scope="col">Modifikasi Terakhir</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -334,9 +335,10 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({
-                    title: "Note",
+                    title: "Catatan",
                     text: result.value,
-                    icon: "success"
+                    icon: "success",
+                    timer: 1500 // Durasi notifikasi dalam milidetik
                 });
             }
         });

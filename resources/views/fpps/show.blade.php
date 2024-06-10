@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="section" class="form-label">
-                                        Section<span style="color: red;">*</span>
+                                        Bagian<span style="color: red;">*</span>
                                     </label>
                                     <select class="form-select" id="section" name="section" disabled>
                                         <option value="{{ $formperbaikan->section }}" selected>{{ $formperbaikan->section }}
@@ -99,12 +99,12 @@
                                             <th scope="col">No</th>
                                             <th scope="col">Tindak Lanjut</th>
                                             <th scope="col">Jadwal Pengecekan</th>
-                                            <th scope="col">PIC</th>
-                                            <th scope="col">Due Date</th>
-                                            <th scope="col">File</th>
+                                            <th scope="col">Penanggung Jawab</th>
+                                            <th scope="col">Tanggal Jatuh Tempo</th>
+                                            <th scope="col">Unggahan Data</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">Note</th>
-                                            <th scope="col">Last Update</th>
+                                            <th scope="col">Catatan</th>
+                                            <th scope="col">Modifikasi Terakhir</th>
                                         </tr>
                                     </thead>
                                     <tbody>

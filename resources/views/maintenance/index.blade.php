@@ -9,8 +9,8 @@
             <h1>Maintenance</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item">Received FPP & Jadwal Preventif</li>
-                    <li class="breadcrumb-item">Data Received FPP</li>
+                    <li class="breadcrumb-item">Tindakan Korektif</li>
+                    <li class="breadcrumb-item">Terima Form Perbaikan</li>
                 </ol>
             </nav>
 
@@ -20,10 +20,10 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Daftar Received FPP</h5>
+                            <h5 class="card-title">Terima Form Perbaikan</h5>
                             <a class="btn btn-success mb-3" href="{{ url('downtimeExport') }}"
                                 style="display: inline-block;">
-                                <i class="bi bi-filetype-xlsx"></i> Export Data
+                                <i class="bi bi-filetype-xlsx"></i> Ekspor Data
                             </a>
 
                             <div class="table-responsive">
@@ -32,12 +32,12 @@
                                         <tr>
                                             <th scope="col">No</th>
                                             <th scope="col">Mesin</th>
-                                            <th scope="col">Section</th>
+                                            <th scope="col">Bagian</th>
                                             <th scope="col">Lokasi</th>
                                             <th scope="col">Kendala</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Tanggal Dibuat</th>
-                                            <th scope="col">Last Update</th>
+                                            <th scope="col">Modifikasi Terakhir</th>
                                             <th scope="col">Aksi</th>
                                         </tr>
                                     </thead>

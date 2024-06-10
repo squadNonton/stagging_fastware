@@ -6,10 +6,10 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Dept.Head Maintenance</h1>
+            <h1>Engineering</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item">Mesin & Approved FPP</li>
+                    <li class="breadcrumb-item">Bag. Maintenance</li>
                     <li class="breadcrumb-item active">Data Approved FPP</li>
                 </ol>
             </nav>
@@ -20,10 +20,10 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Data Approved FPP</h5>
+                            <h5 class="card-title">Data Persetujuan FPP</h5>
                             <a class="btn btn-success mb-3" href="{{ url('downtimeExport') }}"
                                 style="display: inline-block;">
-                                <i class="bi bi-filetype-xlsx"></i> Export Data
+                                <i class="bi bi-filetype-xlsx"></i> Ekspor Data
                             </a>
                             <div class="table-responsive">
                                 <table class="datatables datatable" style="table-layout: responsive;">
@@ -32,12 +32,12 @@
                                             <th scope="col">No</th>
                                             <th scope="col">Nomor FPP</th>
                                             <th scope="col">Mesin</th>
-                                            <th scope="col">Section</th>
+                                            <th scope="col">Bagian</th>
                                             <th scope="col">Lokasi</th>
                                             <th scope="col">Kendala</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Tanggal Dibuat</th>
-                                            <th scope="col">Last Update</th>
+                                            <th scope="col">Modifikasi Terakhir</th>
                                             <th scope="col">Aksi</th>
                                         </tr>
                                     </thead>
@@ -87,23 +87,23 @@
     </main><!-- End #main -->
 @endsection
 
-    .datatables.datatable {
-        border-collapse: collapse;
-        /* Pastikan border tidak menggandakan diri */
-        width: 100%;
-        /* Sesuaikan lebar tabel */
-    }
+{{-- .datatables.datatable {
+border-collapse: collapse;
+/* Pastikan border tidak menggandakan diri */
+width: 100%;
+/* Sesuaikan lebar tabel */
+}
 
-    .datatables.datatable th,
-    .datatables.datatable td {
-        border: 1px solid #000;
-        /* Ubah warna border sesuai kebutuhan */
-        padding: 8px;
-        /* Tambahkan padding untuk membuat teks lebih mudah dibaca */
-        text-align: left;
-        /* Sesuaikan alignment teks sesuai kebutuhan */
-    }
+.datatables.datatable th,
+.datatables.datatable td {
+border: 1px solid #000;
+/* Ubah warna border sesuai kebutuhan */
+padding: 8px;
+/* Tambahkan padding untuk membuat teks lebih mudah dibaca */
+text-align: left;
+/* Sesuaikan alignment teks sesuai kebutuhan */
+}
 
-    .datatables.datatable th {
-        background-color: #f2f2f2;
-        /* Beri warna latar belakang pada header tabe
+.datatables.datatable th {
+background-color: #f2f2f2;
+/* Beri warna latar belakang pada header tabe --}}

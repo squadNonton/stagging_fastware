@@ -37,7 +37,7 @@
 
                                         <div class="mb-3">
                                             <label for="section" class="form-label">
-                                                Section<span style="color: red;">*</span>
+                                                Bagian<span style="color: red;">*</span>
                                             </label>
                                             <select class="form-select" id="section" name="section" disabled>
                                                 <option value="{{ $formperbaikan->section }}" selected>
@@ -82,7 +82,7 @@
                     <div class="card">
                         <div class="accordion">
                             <div class="card-body">
-                                <h5 class="card-title">Update Progres</h5>
+                                <h5 class="card-title">Perbarui Progres</h5>
 
                                 <div class="collapse" id="updateProgress">
                                     <!-- Form Update Progress -->
@@ -98,7 +98,7 @@
 
                                         <!-- Due Date -->
                                         <div class="mb-3">
-                                            <label for="due_date" class="form-label">Due Date</label>
+                                            <label for="due_date" class="form-label">Tanggal Jatuh Tempo</label>
                                             <input type="date" class="form-control" id="due_date" name="due_date">
                                         </div>
 
@@ -111,7 +111,7 @@
 
                                         <!-- Input for attachment file -->
                                         <div class="mb-3">
-                                            <label for="attachment_file" class="form-label">Attachment File</label>
+                                            <label for="attachment_file" class="form-label">Unggah Data</label>
                                             <!-- Input file for existing attachment -->
                                             <input type="file" class="form-control" id="attachment_file"
                                                 name="attachment_file">
@@ -126,12 +126,11 @@
 
                                         <div class="text-end">
                                             <button type="button" class="btn btn-secondary" id="saveButton"
-                                                onclick="handleSaveButtonClick()">Save</button>
+                                                onclick="handleSaveButtonClick()">Simpan</button>
                                             <button type="button" class="btn btn-primary" id="finishButton"
-                                                onclick="handleFinishButtonClick()">Finish</button>
+                                                onclick="handleFinishButtonClick()">Selesai</button>
                                         </div>
                                     </form>
-
                                 </div>
                             </div>
                         </div>
@@ -150,12 +149,12 @@
                                                     <th scope="col">No</th>
                                                     <th scope="col">Tindak Lanjut</th>
                                                     <th scope="col">Jadwal Pengecekan</th>
-                                                    <th scope="col">PIC</th>
-                                                    <th scope="col">Due Date</th>
-                                                    <th scope="col">File</th>
+                                                    <th scope="col">Penanggung Jawab</th>
+                                                    <th scope="col">Tanggal Jatuh Tempo</th>
+                                                    <th scope="col">Unggahan Data</th>
                                                     <th scope="col">Status</th>
-                                                    <th scope="col">Note</th>
-                                                    <th scope="col">Last Update</th>
+                                                    <th scope="col">Catatan</th>
+                                                    <th scope="col">Modifikasi Terakhir</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -229,30 +228,6 @@
 
     </main>
 @endsection
-
-
-<!-- Letakkan skrip JavaScript ini di dalam tag <head> atau sebelum tag </body> -->
-{{-- <script>
-    function handleSaveButtonClick() {
-        // // Validate schedule_pengecekan against due_date
-        // var schedulePengecekan = document.getElementById('schedule_pengecekan').value;
-        // var dueDate = document.getElementById('due_date').value;
-
-        // if (schedulePengecekan && dueDate && schedulePengecekan > dueDate) {
-        //     Swal.fire({
-        //         icon: 'error',
-        //         title: 'Validation Error',
-        //         text: 'Schedule Pengecekan tidak boleh melebihi Due Date.'
-        //     });
-        //     return;
-        // }
-
-        // If validation passes, proceed with form submission
-        document.getElementById('confirmed_finish6').value = '1';
-        document.getElementById('updateForm').submit();
-    }
-</script> --}}
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -349,7 +324,8 @@
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes'
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Tidak'
         }).then((result) => {
             if (result.isConfirmed) {
                 // Set the value of confirmed_finish to 1 before submitting the form

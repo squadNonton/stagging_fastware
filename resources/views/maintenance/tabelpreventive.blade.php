@@ -21,12 +21,16 @@
                                         <th rowspan="2">No</th>
                                         <th rowspan="2">Nomor Mesin</th>
                                         <th rowspan="2">Tipe</th>
-                                        @for ($i = 1; $i <= 12; $i++) <th colspan="2">{{ \Carbon\Carbon::create(null, $i, null)->format('F') }}</th>
-                                            @endfor
+                                        @php
+    \Carbon\Carbon::setLocale('id');
+@endphp
+@for ($i = 1; $i <= 12; $i++)
+<th colspan="2">{{ \Carbon\Carbon::create(null, $i, null)->translatedFormat('F') }}</th>
+@endfor
                                     </tr>
                                     <tr>
-                                        @for ($i = 0; $i < 12; $i++) <th>Plan</th>
-                                            <th>Actual</th>
+                                        @for ($i = 0; $i < 12; $i++) <th>Rencana</th>
+                                            <th>Aktual</th>
                                             @endfor
                                     </tr>
                                 </thead>

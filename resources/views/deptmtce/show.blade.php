@@ -125,12 +125,12 @@
                                             <th scope="col">No</th>
                                             <th scope="col">Tindak Lanjut</th>
                                             <th scope="col">Jadwal Pengecekan</th>
-                                            <th scope="col">Operator</th>
-                                            <th scope="col">Due Date</th>
-                                            <th scope="col">File</th>
+                                            <th scope="col">Penanggung Jawab</th>
+                                            <th scope="col">Tanggal Jatuh Tempo</th>
+                                            <th scope="col">Unggahan Data</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">Note</th>
-                                            <th scope="col">Last Update</th>
+                                            <th scope="col">Catatan</th>
+                                            <th scope="col">Modifikasi Terakhir</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -189,10 +189,10 @@
                                 </table>
                             </div>
                             <div class="text-end">
-                                <button type="button" class="btn btn-danger" onclick="showCheckAgain()">Check
-                                    Again</button>
+                                <button type="button" class="btn btn-danger" onclick="showCheckAgain()">Cek
+                                    Kembali</button>
                                 <button type="button" class="btn btn-primary" id="confirmedButton"
-                                    onclick="showConfirmationAlert()">Confirmed</button>
+                                    onclick="showConfirmationAlert()">Konfirmasi</button>
                             </div>
                         </div>
                     </div>
@@ -323,7 +323,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({
-                    title: "Note",
+                    title: "Catatan",
                     text: result.value,
                     icon: "success"
                 });

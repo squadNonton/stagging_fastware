@@ -1,4 +1,3 @@
-- layout
 <!DOCTYPE html>
 <html lang="en">
 
@@ -432,7 +431,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                <a class="nav-link collapsed" href="{{ route('sales.history') }}">
                                     <i class="bi bi-list-check fs-6"></i>
                                     <span>Riwayat Form Perbaikan</span>
                                 </a>

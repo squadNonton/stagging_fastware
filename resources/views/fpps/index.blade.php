@@ -5,11 +5,11 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Production</h1>
+            <h1>Productions</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Form Permintaan Perbaikan</li>
-                    <li class="breadcrumb-item">Data FPP</li>
+                    <li class="breadcrumb-item">Data Form Perbaikan</li>
                 </ol>
             </nav>
 
@@ -18,9 +18,12 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Data Form Permintaan Perbaikan</h5>
+                        <h5 class="card-title">Data Form Perbaikan</h5>
                         <div class="text-right mb-3">
-                            <a class="btn btn-success float-right" href="{{ route('formperbaikans.create') }}">Buat Form</a>
+
+                            <a class="btn btn-success float-right" href="{{ route('formperbaikans.create') }}"> <i
+                                    class="bi bi-file-earmark-plus"></i> Buat Form
+                                Perbaikan</a>
                         </div>
                         <!-- Table with stripped rows -->
                         <div class="table-responsive">
@@ -30,12 +33,12 @@
                                         <th scope="col">No</th>
                                         <th scope="col">Nomor FPP</th>
                                         <th scope="col">Mesin</th>
-                                        <th scope="col">Section</th>
+                                        <th scope="col">Bagian</th>
                                         <th scope="col">Lokasi</th>
                                         <th scope="col">Kendala</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Tanggal Dibuat</th>
-                                        <th scope="col">Last Update</th>
+                                        <th scope="col">Modifikasi Terakhir</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
@@ -80,5 +83,4 @@
             </div>
         </section>
     </main><!-- End #main -->
-
 @endsection

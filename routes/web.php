@@ -126,6 +126,8 @@ Route::middleware(['web', 'auth'])->group(function () {
     // Sales
     Route::get('dashboardfppsales', [FormFPPController::class, 'DashboardFPPSales'])
         ->name('sales.index');
+    Route::get('historysales', [FormFPPController::class, 'HistorySales'])
+        ->name('sales.history');
     Route::get('lihatfppsales/{formperbaikan}', [FormFPPController::class, 'LihatFPPSales'])
         ->name('sales.lihat');
 

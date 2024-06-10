@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
+
 class PreventiveController extends Controller
 {
     public function dashboardPreventive(Request $request)
