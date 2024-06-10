@@ -21,7 +21,7 @@
     <main id="main" class="main">
         <section class="section dashboard">
             <div class="row">
-                <h3 style="display: flex; justify-content: center;">Dashboard Handling Claim dan Complain</h3>
+                <h3 style="display: flex; justify-content: center;">Dashboard Handling Klaim dan Komplain</h3>
                 <!-- Left side columns -->
                 <div class="col-lg-12">
                     <div class="row">
