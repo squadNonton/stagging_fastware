@@ -557,10 +557,17 @@
                         </li>
                     @endif
                 </ul>
-                <a class="nav-link collapsed" data-bs-target="#nav-pic" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-wtf"></i><span>PIC Penilaian</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
+                @if (Auth::user()->role_id == 1 ||
+                        Auth::user()->role_id == 5 ||
+                        Auth::user()->role_id == 14 ||
+                        Auth::user()->role_id == 15 ||
+                        Auth::user()->role_id == 20)
+                    <a class="nav-link collapsed" data-bs-target="#nav-pic" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-layout-wtf"></i><span>PIC Penilaian</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                @endif
                 <ul id="nav-pic" class="nav-content collapse " data-bs-parent="#sidebar-nav">
 
                     @if (Auth::user()->role_id == 1 ||
