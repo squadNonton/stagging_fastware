@@ -9,7 +9,6 @@ use App\Models\JadwalPreventif;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 
 class PreventiveController extends Controller
@@ -185,15 +184,6 @@ class PreventiveController extends Controller
             $detailPreventive->update([
                 'jadwal_aktual' => now() // menggunakan now() untuk mendapatkan tanggal dan waktu saat ini
             ]);
-
-            $users = User::whereIn('role_id', [5, 6, 7, 8, 9])->whereNotNull('email')->get();
-            if ($users) {
-                $emails = $users->pluck('email')->toArray();
-                Mail::send('emails.submit_preventif', ['preventive' => $preventive], function ($message) use ($emails, $preventive) {
-                    $message->to($emails)
-                        ->subject('Jadwal Preventif Mesin: ' . $preventive->nomor_mesin . ' telah disubmit oleh Maintenance');
-                });
-            }
         } else {
             $preventive->update([
                 'status' => 0
@@ -265,14 +255,7 @@ class PreventiveController extends Controller
             ]);
         }
 
-        $users = User::whereIn('role_id', [5, 6, 7, 8, 9])->whereNotNull('email')->get();
-        if ($users) {
-            $emails = $users->pluck('email')->toArray();
-            Mail::send('emails.buat_preventif', ['preventive' => $preventive], function ($message) use ($emails, $preventive) {
-                $message->to($emails)
-                    ->subject('Jadwal Preventif Mesin: ' . $preventive->nomor_mesin . ' telah dibuat oleh Dept.Head Maintenance');
-            });
-        }
+
 
         return redirect()->route('dashboardPreventive')->with('success', 'Mesin created successfully');
     }
