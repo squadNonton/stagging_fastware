@@ -149,7 +149,7 @@
                                                                         Auth::user()->role_id == 2 ||
                                                                         Auth::user()->role_id == 3 ||
                                                                         Auth::user()->role_id == 4)
-                                                                    <button type="button" class="btn btn-sm btn-danger"
+                                                                    <button type="button" class="btn btn-sm btn-success" title="CLose Proses"
                                                                         onclick="confirmStatusChange({{ $row->id }})">
                                                                         <i class="fa fa-window-close fa-1x"></i>
                                                                     </button>
@@ -203,7 +203,7 @@
 
             function confirmStatusChange(id) {
                 Swal.fire({
-                    title: 'Anda yakin?',
+                    title: 'Peringatan!',
                     text: 'Anda ingin Close proses ini?',
                     icon: 'warning',
                     showCancelButton: true,

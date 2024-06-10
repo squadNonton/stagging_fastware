@@ -420,8 +420,8 @@
                 if (!isValid) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: 'Silakan isi semua data yang wajib diisi!',
+                        title: 'Gagal',
+                        text: 'Harap lengkapi semua isian yang diperlukan!',
                     });
                 } else {
                     Swal.fire({
@@ -433,7 +433,6 @@
                     });
                 }
             });
-
 
             var imageError = document.getElementById('imageError');
             imageError.style.display = 'none';

@@ -154,7 +154,7 @@
                                                 <td class="text-center py-3"
                                                     style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                                                     @if ($row->status == 0)
-                                                        <span class="badge bg-success align-items-center"
+                                                        <span class="badge bg-danger align-items-center"
                                                             style="font-size: 18px;">Open</span>
                                                     @elseif ($row->status == 1)
                                                         <span class="badge bg-warning align-items-center"
@@ -163,7 +163,7 @@
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">Finish</span>
                                                     @elseif($row->status == 3)
-                                                        <span class="badge bg-danger align-items-center"
+                                                        <span class="badge bg-success align-items-center"
                                                             style="font-size: 18px;">Close</span>
                                                     @endif
                                                 </td>
@@ -179,14 +179,14 @@
                                                     @elseif ($row->status == 2)
                                                     @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1 ||  Auth::user()->role_id == 14)
                                                         <a href="{{ route('showHistoryProgres', $row->id) }}"
-                                                            class="btn btn-sm btn-success"  title="Riwayat Progres">
+                                                            class="btn btn-sm btn-warning"  title="Lihat Progres">
                                                             <i class="fa fa-eye fa-2x" aria-hidden="true"></i>
                                                         </a>
                                                         @endif
                                                     @elseif ($row->status == 3)
                                                     @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1 ||  Auth::user()->role_id == 14)
                                                         <a href="{{ route('showHistoryProgres', $row->id) }}"
-                                                            class="btn btn-sm btn-success"  title="Riwayat Progres">
+                                                            class="btn btn-sm btn-warning"  title="Lihat Progres">
                                                             <i class="fa fa-eye fa-2x" aria-hidden="true"></i>
                                                         </a>
                                                         @endif

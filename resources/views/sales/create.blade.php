@@ -424,7 +424,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal!',
-                        text: 'Form belum di isi!',
+                        text: 'Harap lengkapi semua isian yang diperlukan!',
                     });
                 } else {
                     // Simulasi validasi
