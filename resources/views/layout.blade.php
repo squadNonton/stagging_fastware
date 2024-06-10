@@ -678,61 +678,62 @@
                     </a>
                 </li><!-- End Profile Page Nav -->
             @endif --}}
-            <li class="nav-heading">Safety Patrol</li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('listpatrol') }}">
-                    <i class="bi bi-person"></i>
-                    <span>Form Safety Patrol</span>
-                </a>
-            </li><!-- End Profile Page Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('listpatrolpic') }}">
-                    <i class="bi bi-person-badge-fill"></i>
-                    <span>Data Safety Patrol</span>
-                </a>
-            </li><!-- End Profile Page Nav -->
-            {{-- <li class="nav-item">
+            @if (Auth::user()->role_id == 1)
+                <li class="nav-heading">Safety Patrol</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('listpatrol') }}">
+                        <i class="bi bi-person"></i>
+                        <span>Form Safety Patrol</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('listpatrolpic') }}">
+                        <i class="bi bi-person-badge-fill"></i>
+                        <span>Data Safety Patrol</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+                {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ route('reportpatrol') }}">
                     <i class="bi bi-bar-chart-steps"></i>
                     <span>Report Form Safety Patrol</span>
                 </a>
             </li><!-- End Profile Page Nav --> --}}
-            <li class="nav-heading">WO Heat Treatment</li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('dashboardImportWO') }}">
-                    <i class="bi bi-cloud-upload"></i>
-                    <span>Import WO</span>
-                </a>
-            </li><!-- End Profile Page Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('dashboardTracingWO') }}">
-                    <i class="bi bi-search"></i>
-                    <span>Tracing WO</span>
-                </a>
-            </li>
-            {{-- Menu Inventory-PPC --}}
-            <li class="nav-heading">PPIC</li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
-                    <i class="bi bi-cloud-upload"></i>
-                    <span>Validasi Sales</span>
-                </a>
-            </li><!-- End Profile Page Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
-                    <i class="bi bi-search"></i>
-                    <span>Approval Sales</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
-                    <i class="bi bi-search"></i>
-                    <span>Incoming Shipment</span>
-                </a>
-            </li>
-            {{-- @endif --}}
-            {{-- <hr> --}}
-
+                <li class="nav-heading">WO Heat Treatment</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('dashboardImportWO') }}">
+                        <i class="bi bi-cloud-upload"></i>
+                        <span>Import WO</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('dashboardTracingWO') }}">
+                        <i class="bi bi-search"></i>
+                        <span>Tracing WO</span>
+                    </a>
+                </li>
+                {{-- Menu Inventory-PPC --}}
+                <li class="nav-heading">PPIC</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#">
+                        <i class="bi bi-cloud-upload"></i>
+                        <span>Validasi Sales</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#">
+                        <i class="bi bi-search"></i>
+                        <span>Approval Sales</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#">
+                        <i class="bi bi-search"></i>
+                        <span>Incoming Shipment</span>
+                    </a>
+                </li>
+                {{-- @endif --}}
+                {{-- <hr> --}}
+            @endif
         </ul>
         </ul>
 
