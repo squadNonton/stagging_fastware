@@ -7,6 +7,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\FormFPPController;
 use App\Http\Controllers\HandlingController;
 use App\Http\Controllers\HeatTreatmentController;
+use App\Http\Controllers\InquirySalesController;
 use App\Http\Controllers\MesinController;
 use App\Http\Controllers\PreventiveController;
 use App\Http\Controllers\SafetyController;
@@ -231,4 +232,8 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/searchWO', [HeatTreatmentController::class, 'searchWO'])->name('searchWO');
     Route::get('downtimeExport', [FormFPPController::class, 'downtimeExport']);
     Route::get('/getBatchData', [HeatTreatmentController::class, 'getBatchData'])->name('getBatchData');
+
+    // Inquiry Sales
+    Route::get('createinquiry', [InquirySalesController::class, 'createInquirySales'])->name('createinquiry');
+    Route::post('storeinquiry', [InquirySalesController::class, 'storeInquirySales'])->name('storeinquiry');
 });

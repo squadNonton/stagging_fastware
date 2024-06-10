@@ -459,6 +459,23 @@
                                 </a>
                             </li>
                         </ul>
+                        <a class="nav-link collapsed" data-bs-target="#forms-nav-inquiry" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Inquiry Sales</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="forms-nav-inquiry" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="{{ route('createinquiry') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Buat Inquiry Sales</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="bi bi-list-check fs-6"></i><span>Approve Inquiry</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li><!-- End Forms Nav -->
                 @endif
             @endif
@@ -669,7 +686,27 @@
                     <i class="bi bi-search"></i>
                     <span>Tracing WO</span>
                 </a>
+            </li>
+            {{-- Menu Inventory-PPC --}}
+            <li class="nav-heading">PPIC</li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#">
+                    <i class="bi bi-cloud-upload"></i>
+                    <span>Validasi Sales</span>
+                </a>
             </li><!-- End Profile Page Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#">
+                    <i class="bi bi-search"></i>
+                    <span>Approval Sales</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#">
+                    <i class="bi bi-search"></i>
+                    <span>Incoming Shipment</span>
+                </a>
+            </li>
             {{-- @endif --}}
             {{-- <hr> --}}
 
