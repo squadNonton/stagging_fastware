@@ -25,10 +25,10 @@ class HandlingController extends Controller
     public function index()
     {
         $data = Handling::with(['customers', 'type_materials', 'user'])
-            ->whereIn('status', [2, 1, 0, 3])
-            ->orderByRaw('FIELD(status, 2, 1, 0, 3)') // Urutkan berdasarkan urutan status yang diinginkan
-            ->orderByDesc('created_at') // Urutkan berdasarkan created_at dalam setiap status
-            ->paginate();
+        ->whereIn('status', [2, 1, 0, 3])
+        ->orderByRaw('FIELD(status, 2, 1, 0, 3)') // Urutkan berdasarkan urutan status yang diinginkan
+        ->orderByDesc('created_at') // Urutkan berdasarkan created_at dalam setiap status
+        ->paginate();
 
         return view('sales.handling', compact('data'));
     }
@@ -41,12 +41,12 @@ class HandlingController extends Controller
             DB::raw('COUNT(CASE WHEN status = 3 THEN 1 END) as total_status_3'),
             DB::raw('MONTH(created_at) as month')
         )
-            ->whereYear('created_at', $year)
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get()
-            ->keyBy('month')
-            ->toArray();
+        ->whereYear('created_at', $year)
+        ->groupBy('month')
+        ->orderBy('month')
+        ->get()
+        ->keyBy('month')
+        ->toArray();
 
         $fullData = [];
         for ($i = 1; $i <= 12; ++$i) {
@@ -107,7 +107,7 @@ class HandlingController extends Controller
         if ($user && !empty($user->email)) {
             Mail::send('emails.status_closed', ['handling' => $data], function ($message) use ($user, $data) {
                 $message->to($user->email)
-                    ->subject($data->no_wo . ' telah close proses');
+                        ->subject($data->no_wo.' telah close proses');
             });
         }
 
@@ -143,39 +143,39 @@ class HandlingController extends Controller
         $end_month = $request->input('end_month'); // Tambahkan parameter bulan akhir
 
         $query = DB::table('handlings')
-            ->join('type_materials', 'handlings.type_id', '=', 'type_materials.id')
-            ->select(
-                'type_materials.id',
-                'type_materials.type_name AS type_name',
-                DB::raw('(SELECT SUM(handlings.qty) 
+        ->join('type_materials', 'handlings.type_id', '=', 'type_materials.id')
+                ->select(
+                    'type_materials.id',
+                    'type_materials.type_name AS type_name',
+                    DB::raw('(SELECT SUM(handlings.qty) 
                             FROM handlings 
                             WHERE handlings.type_id = type_materials.id 
                                 AND handlings.type_1 = "Komplain") AS qty_komplain'),
-                DB::raw('(SELECT SUM(handlings.qty) 
+                    DB::raw('(SELECT SUM(handlings.qty) 
                             FROM handlings 
                             WHERE handlings.type_id = type_materials.id 
                                 AND handlings.type_2 = "Klaim") AS qty_klaim'),
-                DB::raw('(SELECT SUM(handlings.pcs) 
+                    DB::raw('(SELECT SUM(handlings.pcs) 
                             FROM handlings 
                             WHERE handlings.type_id = type_materials.id 
                                 AND handlings.type_1 = "Komplain") AS pcs_komplain'),
-                DB::raw('(SELECT SUM(handlings.pcs) 
+                    DB::raw('(SELECT SUM(handlings.pcs) 
                             FROM handlings 
                             WHERE handlings.type_id = type_materials.id 
                                 AND handlings.type_2 = "Klaim") AS pcs_klaim'),
-                DB::raw('(SELECT SUM(handlings.qty) 
+                    DB::raw('(SELECT SUM(handlings.qty) 
                             FROM handlings 
                             WHERE handlings.type_id = type_materials.id 
                                 AND (handlings.type_1 = "Komplain" OR handlings.type_2 = "Klaim")) AS qty_all'),
-                DB::raw('(SELECT SUM(handlings.pcs) 
+                    DB::raw('(SELECT SUM(handlings.pcs) 
                             FROM handlings 
                             WHERE handlings.type_id = type_materials.id 
                                 AND (handlings.type_1 = "Komplain" OR handlings.type_2 = "Klaim")) AS pcs_all'),
-                DB::raw('SUM(CASE WHEN handlings.type_1 = "Komplain" THEN 1 ELSE 0 END) AS total_komplain'),
-                DB::raw('SUM(CASE WHEN handlings.type_2 = "Klaim" THEN 1 ELSE 0 END) AS total_klaim'),
-                DB::raw('COALESCE(SUM(CASE WHEN handlings.type_1 = "Komplain" THEN 1 ELSE 0 END) +
+                    DB::raw('SUM(CASE WHEN handlings.type_1 = "Komplain" THEN 1 ELSE 0 END) AS total_komplain'),
+                    DB::raw('SUM(CASE WHEN handlings.type_2 = "Klaim" THEN 1 ELSE 0 END) AS total_klaim'),
+                    DB::raw('COALESCE(SUM(CASE WHEN handlings.type_1 = "Komplain" THEN 1 ELSE 0 END) +
                                 SUM(CASE WHEN handlings.type_2 = "Klaim" THEN 1 ELSE 0 END), 0) AS kategori')
-            )
+                )
             ->where(function ($query) use ($type) {
                 if ($type == 'total_komplain') {
                     $query->where('handlings.type_1', 'Komplain');
@@ -324,7 +324,7 @@ class HandlingController extends Controller
         $currentYear = date('Y');
 
         // Buat nomor WO dengan menambahkan tahun saat ini
-        $no_wo = 'WO/' . $currentYear . '/' . $request->no_wo;
+        $no_wo = 'WO/'.$currentYear.'/'.$request->no_wo;
 
         // Buat data handling
         $handling = new Handling();
@@ -358,7 +358,7 @@ class HandlingController extends Controller
         if ($user) {
             Mail::send('emails.notification', ['handling' => $handling], function ($message) use ($user, $handling) {
                 $message->to($user->email)
-                    ->subject('Handling: ' . $handling->no_wo . ' telah dibuat');
+                        ->subject('Handling: '.$handling->no_wo.' telah dibuat');
             });
         }
 
@@ -408,7 +408,7 @@ class HandlingController extends Controller
                 $oldImagePaths = json_decode($handlings->image, true);
 
                 foreach ($oldImagePaths as $oldImagePath) {
-                    $fullPath = public_path('assets/image/' . $oldImagePath);
+                    $fullPath = public_path('assets/image/'.$oldImagePath);
                     if (file_exists($fullPath)) {
                         unlink($fullPath);
                     }
@@ -435,9 +435,9 @@ class HandlingController extends Controller
         $currentYear = date('Y');
 
         // Check if the no_wo has the correct format
-        if (strpos($request->no_wo, 'WO/' . $currentYear . '/') === false) {
+        if (strpos($request->no_wo, 'WO/'.$currentYear.'/') === false) {
             // Format the no_wo correctly if it doesn't have the proper prefix
-            $no_wo = 'WO/' . $currentYear . '/' . $request->no_wo;
+            $no_wo = 'WO/'.$currentYear.'/'.$request->no_wo;
         } else {
             // Keep the existing formatted no_wo
             $no_wo = $request->no_wo;
@@ -475,7 +475,7 @@ class HandlingController extends Controller
      *
      * @return void
      */
-    public function delete($id): RedirectResponse
+    public function delete($id)
     {
         // get post by ID
         $handlings = Handling::findOrFail($id);
@@ -483,7 +483,7 @@ class HandlingController extends Controller
         // delete old image
         // Hapus gambar lama jika ada
         if ($handlings->image) {
-            $oldImagePath = public_path('assets/image/' . $handlings->image);
+            $oldImagePath = public_path('assets/image/'.$handlings->image);
             if (file_exists($oldImagePath)) {
                 unlink($oldImagePath);
             }
@@ -492,7 +492,7 @@ class HandlingController extends Controller
         // delete post
         $handlings->delete();
 
-        // redirect to index
-        return redirect()->route('index')->with(['success' => 'Data Berhasil Dihapus!']);
+        // return JSON response
+        return response()->json(['success' => 'Data Berhasil Dihapus!'], 200);
     }
 }

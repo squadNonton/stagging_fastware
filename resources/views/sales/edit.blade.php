@@ -44,8 +44,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <input type="text" class="form-control" id="no_wo" name="no_wo"
-                                                maxlength="6" style="width: 100%;" value="{{ $handlings->no_wo }}"
-                                                required>
+                                                maxlength="6" style="width: 100%;" value="{{ $handlings->no_wo }}">
                                         </div>
                                     </div>
                                     <br>
@@ -151,14 +150,14 @@
                                                     style="color: red;">*</span></label>
                                             <input type="text" class="form-control input-sm" id="qty"
                                                 name="qty" style="max-width: 100%;" value="{{ $handlings->qty }}"
-                                                required onkeypress="hanyaAngka(event)">
+                                                 onkeypress="hanyaAngka(event)">
                                         </div>
                                         <div class="col-md-3">
                                             <label for="pcs" class="form-label">Unit (Pcs):<span
                                                     style="color: red;">*</span></label>
                                             <input type="text" class="form-control input-sm" id="pcs"
                                                 name="pcs" style="max-width: 100%" value="{{ $handlings->pcs }}"
-                                                required onkeypress="hanyaAngka(event)">
+                                                onkeypress="hanyaAngka(event)">
                                         </div>
                                     </div>
                                     <br>
@@ -169,7 +168,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <select name="category" class="form-control" id="category"
-                                                style="width: 100%" required>
+                                                style="width: 100%">
                                                 <option value="" class="text-center">-------- Silahkan Pilih
                                                     Kategori --------</option>
                                                 <option value="CT - Ukuran Minus"
@@ -262,7 +261,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <select name="process_type" class="form-control" id="process_type"
-                                                style="width: 100%" required>
+                                                style="width: 100%">
                                                 <option value="">------------------- Jenis Proses -----------------
                                                 </option>
                                                 <option value="Heat Treatment"
@@ -422,13 +421,13 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: 'Silakan isi semua bidang yang wajib diisi!',
+                        text: 'Silakan isi semua data yang wajib diisi!',
                     });
                 } else {
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil!',
-                        text: 'Formulir berhasil disimpan!',
+                        text: 'Data Berhasil Diubah!',
                     }).then(() => {
                         document.getElementById('updateForm').submit(); // Submit the form
                     });

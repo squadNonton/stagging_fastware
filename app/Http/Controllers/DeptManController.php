@@ -139,14 +139,15 @@ class DeptManController extends Controller
         // Mengambil data schedule visit berdasarkan handling_id
         $data = ScheduleVisit::where('handling_id', $id)->get();
 
-        // Cek apakah ada schedule visit dengan history_type bernilai 1
-        $hasHistoryType1 = ScheduleVisit::where('handling_id', $id)->where('history_type', 1)->exists();
+        // Cek apakah handling memiliki type_1 atau type_2
+        $hasType1 = $handlings->type_1 != null;
+        $hasType2 = $handlings->type_2 != null;
 
         // Mengambil semua data schedule visit
         $scheduleVisit = ScheduleVisit::all();
 
         // render view with handlings
-        return view('deptman.followup', compact('handlings', 'customers', 'type_materials', 'data', 'user', 'scheduleVisit', 'hasHistoryType1'));
+        return view('deptman.followup', compact('handlings', 'customers', 'type_materials', 'data', 'user', 'scheduleVisit', 'hasType1', 'hasType2'));
     }
 
     public function showHistoryProgres(string $id): View
@@ -276,7 +277,7 @@ class DeptManController extends Controller
                 });
             }
 
-            return response()->json(['message' => 'Data Berhasil Disimpan!', 'redirect' => route('submission')]);
+            return response()->json(['message' => 'Proses telah Finish!', 'redirect' => route('submission')]);
         } elseif ($request->action == 'claim') {
             $scheduleVisit->status = '1';
             $scheduleVisit->history_type = '1';
@@ -303,7 +304,7 @@ class DeptManController extends Controller
                 });
             }
 
-            return response()->json(['message' => 'Data Berhasil Disimpan!', 'refresh' => true]);
+            return response()->json(['message' => 'Data Berhasil Diklaim!', 'refresh' => true]);
         }
     }
 }

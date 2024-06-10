@@ -399,7 +399,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
-                    text: 'Data telah berhasil di simpan',
+                    text: 'Data telah berhasil dikonfrimasi',
                     showConfirmButton: false
                 });
             }

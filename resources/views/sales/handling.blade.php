@@ -110,12 +110,11 @@
                                                         @endif
                                                     </td>
                                                     <td class="text-center py-4">
-                                                        <form onsubmit="return confirm('Apakah Anda Yakin ?');"
+                                                        <form id="deleteForm-{{ $row->id }}"
                                                             action="{{ route('delete', $row->id) }}" method="POST">
                                                             @csrf
                                                             @method('DELETE')
                                                             @if ($row->status != 1 && $row->status != 2 && $row->status != 3)
-                                                                <!-- Menambahkan kondisi untuk status yang tidak sama dengan 1, 2, atau 3 -->
                                                                 @if (Auth::user()->role_id == 1 ||
                                                                         Auth::user()->role_id == 2 ||
                                                                         Auth::user()->role_id == 3 ||
@@ -125,8 +124,9 @@
                                                                         <i class="fa-solid fa-edit fa-1x"></i>
                                                                     </a>
 
-                                                                    <button type="submit" class="btn btn-sm btn-danger"
-                                                                        title="Hapus">
+                                                                    <button type="button" class="btn btn-sm btn-danger"
+                                                                        title="Hapus"
+                                                                        onclick="confirmDelete({{ $row->id }})">
                                                                         <i class="fas fa-trash fa-1x"></i>
                                                                     </button>
                                                                 @endif
@@ -136,7 +136,7 @@
                                                                         Auth::user()->role_id == 13 ||
                                                                         Auth::user()->role_id == 14)
                                                                     <a href="{{ route('showHistory', $row->id) }}"
-                                                                        class="btn btn-sm btn-success">
+                                                                        class="btn btn-sm btn-success" title="Lihat Progres">
                                                                         <i class="fa fa-eye fa-1x" aria-hidden="true"></i>
                                                                     </a>
                                                                 @endif
@@ -146,7 +146,6 @@
                                                                     <i class="fa fa-eye fa-1x" aria-hidden="true"></i>
                                                                 </a>
                                                             @elseif ($row->status == 2)
-                                                                <!-- Jika status 2 (Finish), tampilkan SweetAlert untuk konfirmasi -->
                                                                 @if (Auth::user()->role_id == 1 ||
                                                                         Auth::user()->role_id == 2 ||
                                                                         Auth::user()->role_id == 3 ||
@@ -172,7 +171,6 @@
                                                                     <i class="fa fa-eye fa-1x" aria-hidden="true"></i>
                                                                 </a>
                                                             @else
-                                                                <!-- Jika status 1 (On Progress), 2 (Close), atau 3 (undefined), tombol Edit dan Hapus dinonaktifkan -->
                                                                 <button type="button"
                                                                     class="btn btn-sm btn-primary disabled"
                                                                     title="Ubah Data" disabled>
@@ -202,7 +200,6 @@
             //datatabelSales
             $(document).ready(function() {
                 new DataTable('#viewSales');
-
             });
 
             function confirmStatusChange(id) {
@@ -227,7 +224,7 @@
                 $.ajax({
                     type: 'POST', // Menggunakan POST dengan spoofing metode PATCH
                     url: '{{ route('changeStatus', ['id' => '__id__']) }}'.replace('__id__',
-                    id), // URL endpoint dengan parameter id
+                        id), // URL endpoint dengan parameter id
                     data: {
                         _token: '{{ csrf_token() }}', // Token CSRF untuk keamanan
                         _method: 'PATCH' // Metode HTTP yang digunakan adalah PATCH
@@ -240,6 +237,68 @@
                     },
                     error: function(xhr, status, error) {
                         Swal.fire('Error!', 'There was an error changing the status.', 'error');
+                    }
+                });
+            }
+
+            function confirmDelete(id) {
+                Swal.fire({
+                    title: 'Apakah Anda Yakin?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Menampilkan loading sebelum penghapusan
+                        Swal.fire({
+                            title: 'Menghapus data...',
+                            text: 'Mohon tunggu',
+                            icon: 'info',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            showConfirmButton: false,
+                            onBeforeOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // Menunggu 2 detik sebelum melanjutkan penghapusan
+                        setTimeout(() => {
+                            // Mengirim permintaan penghapusan
+                            fetch("{{ route('delete', '') }}/" + id, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            }).then(response => {
+                                return response.json(); // Mengonversi respons menjadi JSON
+                            }).then(data => {
+                                if (data.success) {
+                                    Swal.fire({
+                                        title: 'Data berhasil dihapus!',
+                                        text: data.success,
+                                        icon: 'success',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        // Muat ulang halaman atau lakukan tindakan lain
+                                        location.reload();
+                                    });
+                                } else {
+                                    throw new Error('Penghapusan gagal');
+                                }
+                            }).catch(error => {
+                                Swal.fire({
+                                    title: 'Gagal menghapus data',
+                                    text: error.message,
+                                    icon: 'error'
+                                });
+                            });
+                        }, 2000); // Menunggu 2 detik
                     }
                 });
             }

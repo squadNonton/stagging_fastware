@@ -4,12 +4,12 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Follow-Up</h1>
+            <h1>Tindak Lanjut</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item">Forms</li>
-                    <li class="breadcrumb-item active">Elements</li>
+                    <li class="breadcrumb-item"><a href="{{ route('dashboardHandling') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('submission') }}">Menu Tindak Lanjut</a></li>
+                    <li class="breadcrumb-item active">Form Tindak Lanjut</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -388,10 +388,10 @@
                             </div>
                         </div>
                         <div class="ps-3 mb-3 mt-3 d-flex justify-content-end">
-                            @if (!$hasHistoryType1)
+                            @if (!$hasType2)
                                 <button type="button" class="btn btn-success mb-4 me-2"
                                     onclick="submitFollowUp('claim')">
-                                    <i class="fas fa-save"></i> Claim
+                                    <i class="fas fa-save"></i> Klaim
                                 </button>
                             @endif
                             <button type="button" class="btn btn-primary mb-4 me-2" onclick="submitFollowUp('save')">
@@ -534,11 +534,11 @@
             function submitFollowUp(action) {
                 // Validasi berdasarkan tindakan
                 if (action === 'save') {
-                    if (!document.getElementById('pic').value.trim()) {
+                    if (!document.getElementById('pic').value.trim() || !document.getElementById('results').value.trim()) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'PIC Wajib Diisi',
-                            text: 'Silakan isi PIC sebelum menyimpan!',
+                            title: 'PIC dan Catatan Wajib Diisi',
+                            text: 'Silakan isi PIC dan Catatan Hasil sebelum menyimpan!',
                         });
                         return;
                     }

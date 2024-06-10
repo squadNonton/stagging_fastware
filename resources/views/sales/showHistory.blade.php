@@ -26,7 +26,7 @@
                                 <div class="col-lg-6">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="modified_by" class="col-sm-2 col-form-label">User : <span
+                                            <label for="modified_by" class="col-sm-6 col-form-label">User : <span
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
@@ -38,7 +38,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="no_wo" class="col-sm-2 col-form-label">No. WO:<span
+                                            <label for="no_wo" class="col-sm-6 col-form-label">No. WO:<span
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
@@ -129,6 +129,7 @@
                                                 value="{{ $handlings->length }}" disabled>
                                         </div>
                                     </div>
+                                    <br>
                                     <div class="row">
                                         <div class="col-md-3">
                                             <label for="w" class="form-label">OD:</label>
@@ -143,6 +144,7 @@
                                                 value="{{ $handlings->inner_diameter }}" disabled>
                                         </div>
                                     </div>
+                                    <br>
                                     <div class="row">
                                         <div class="col-md-3">
                                             <label for="qty" class="form-label">QTY (Kg):</label>
