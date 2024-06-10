@@ -36,7 +36,7 @@
 
     {{-- jadwal kunjungan calender --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css" rel="stylesheet" />
-    
+
 <body>
 
     <!-- Buat Header -->
@@ -505,10 +505,25 @@
                         </a>
                     </li>
                 </ul>
-
-                <a class="nav-link collapsed" data-bs-target="#nav-conf" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-wtf"></i><span>Persetujuan</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
+                @if (Auth::user()->role_id == 1 ||
+                        Auth::user()->role_id == 2 ||
+                        Auth::user()->role_id == 3 ||
+                        Auth::user()->role_id == 5 ||
+                        Auth::user()->role_id == 7 ||
+                        Auth::user()->role_id == 9 ||
+                        Auth::user()->role_id == 11 ||
+                        Auth::user()->role_id == 14 ||
+                        Auth::user()->role_id == 21 ||
+                        Auth::user()->role_id == 22 ||
+                        Auth::user()->role_id == 12 ||
+                        Auth::user()->role_id == 14 ||
+                        Auth::user()->role_id == 20)
+                    <a class="nav-link collapsed" data-bs-target="#nav-conf" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-layout-wtf"></i><span>Persetujuan</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                @endif
                 <ul id="nav-conf" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     @if (Auth::user()->role_id == 1 ||
                             Auth::user()->role_id == 2 ||
@@ -542,7 +557,6 @@
                         </li>
                     @endif
                 </ul>
-
                 <a class="nav-link collapsed" data-bs-target="#nav-pic" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-layout-wtf"></i><span>PIC Penilaian</span><i
                         class="bi bi-chevron-down ms-auto"></i>
