@@ -62,6 +62,6 @@ class Handling extends Model
 
     public function schedule_viist(): HasMany
     {
-        return $this->hasMany(ScheduleVisit::class);
+        return $this->hasMany(ScheduleVisit::class, 'handling_id');
     }
 }

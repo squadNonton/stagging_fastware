@@ -71,7 +71,7 @@
                                                 <td class="text-center py-3">{{ $row->created_at }}</td>
                                                 <td class="text-center py-4">
                                                     @if ($row->status == 0)
-                                                        <span class="badge bg-success align-items-center"
+                                                        <span class="badge bg-danger align-items-center"
                                                             style="font-size: 18px;">Open</span>
                                                     @endif
                                                 </td>

@@ -63,39 +63,45 @@ class DeptManController extends Controller
 
     public function showHistoryClaimComplain()
     {
-        $data2 = Handling::select(
-            'handlings.id',
-            'handlings.no_wo',
-            'customers.customer_code',
-            'customers.name_customer',
-            'customers.area',
-            'type_materials.type_name',
-            'handlings.thickness',
-            'handlings.weight',
-            'handlings.outer_diameter',
-            'handlings.inner_diameter',
-            'handlings.length',
-            'handlings.qty',
-            'handlings.pcs',
-            'handlings.category',
-            'handlings.process_type',
-            'handlings.type_1',
-            'handlings.type_2',
-            'handlings.image',
-            'schedule_visits.schedule',
-            'schedule_visits.results',
-            'schedule_visits.due_date',
-            'schedule_visits.pic',
-            'handlings.status',
-            'handlings.created_at',
-            'users.name'
-        )
-        ->join('schedule_visits', 'handlings.id', '=', 'schedule_visits.handling_id')
-        ->join('customers', 'handlings.customer_id', '=', 'customers.id')
-        ->join('type_materials', 'handlings.type_id', '=', 'type_materials.id')
-        ->join('users', 'users.id', '=', 'handlings.user_id')
-        ->where('handlings.status', 3)
-        ->orderByDesc('handlings.created_at')
+        // $data2 = Handling::select(
+        //     'handlings.id',
+        //     'handlings.no_wo',
+        //     'customers.customer_code',
+        //     'customers.name_customer',
+        //     'customers.area',
+        //     'type_materials.type_name',
+        //     'handlings.thickness',
+        //     'handlings.weight',
+        //     'handlings.outer_diameter',
+        //     'handlings.inner_diameter',
+        //     'handlings.length',
+        //     'handlings.qty',
+        //     'handlings.pcs',
+        //     'handlings.category',
+        //     'handlings.process_type',
+        //     'handlings.type_1',
+        //     'handlings.type_2',
+        //     'handlings.image',
+        //     'schedule_visits.schedule',
+        //     'schedule_visits.results',
+        //     'schedule_visits.due_date',
+        //     'schedule_visits.pic',
+        //     'handlings.status',
+        //     'handlings.created_at',
+        //     'users.name'
+        // )
+        // ->join('schedule_visits', 'handlings.id', '=', 'schedule_visits.handling_id')
+        // ->join('customers', 'handlings.customer_id', '=', 'customers.id')
+        // ->join('type_materials', 'handlings.type_id', '=', 'type_materials.id')
+        // ->join('users', 'users.id', '=', 'handlings.user_id')
+        // ->where('handlings.status', 3)
+        // ->orderByDesc('handlings.created_at')
+        // ->get();
+
+        // Menggunakan Eloquent dengan eager loading
+        $data2 = Handling::with(['schedule_viist', 'customers', 'type_materials', 'user'])
+        ->where('status', 3)
+        ->orderByDesc('created_at')
         ->get();
 
         return view('deptman.historyClaimComplain', compact('data2'));

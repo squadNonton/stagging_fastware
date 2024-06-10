@@ -51,11 +51,11 @@
                                             <tr id="row_{{ $row->id }}">
                                                 <td class="text-center py-3">{{ $loop->iteration }}</td>
                                                 <td class="text-center py-3">{{ $row->no_wo }}</td>
-                                                <td class="text-center py-3">{{ $row->name }}</td>
-                                                <td class="text-center py-3">{{ $row->customer_code }}</td>
-                                                <td class="text-center py-3">{{ $row->name_customer }}</td>
-                                                <td class="text-center py-3">{{ $row->area }}</td>
-                                                <td class="text-center py-3">{{ $row->type_name }}</td>
+                                                <td class="text-center py-3">{{ $row->user->name }}</td>
+                                                <td class="text-center py-3">{{ $row->customers->customer_code }}</td>
+                                                <td class="text-center py-3">{{ $row->customers->name_customer }}</td>
+                                                <td class="text-center py-3">{{ $row->customers->area }}</td>
+                                                <td class="text-center py-3">{{ $row->type_materials->type_name }}</td>
                                                 <td class="text-center py-3">{{ $row->thickness }}</td>
                                                 <td class="text-center py-3">{{ $row->weight }}</td>
                                                 <td class="text-center py-3">{{ $row->outer_diameter }}</td>
@@ -70,13 +70,13 @@
                                                 <td class="text-center py-3">{{ $row->created_at }}</td>
                                                 <td class="text-center py-3">
                                                     @if ($row->status == 3)
-                                                        <span class="badge bg-danger align-items-center"
+                                                        <span class="badge bg-success align-items-center"
                                                             style="font-size: 18px;">Close</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
                                                     <a href="{{ route('showCloseProgres', ['id' => $row->id]) }}"
-                                                        class="btn btn-sm btn-success">
+                                                        class="btn btn-sm btn-warning">
                                                         <i class="fa fa-eye fa-1x" aria-hidden="true"></i>
                                                     </a>
                                                 </td>

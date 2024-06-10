@@ -351,7 +351,7 @@
                 }
             }
         </style>
-
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
         <script>
             document.getElementById('searchInput').addEventListener('input', function() {
                 let searchQuery = this.value.toLowerCase();

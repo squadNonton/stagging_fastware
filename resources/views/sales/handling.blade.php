@@ -96,7 +96,7 @@
                                                     <td class="text-center py-4"
                                                         style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                                                         @if ($row->status == 0)
-                                                            <span class="badge bg-success align-items-center"
+                                                            <span class="badge bg-danger align-items-center"
                                                                 style="font-size: 18px;">Open</span>
                                                         @elseif ($row->status == 1)
                                                             <span class="badge bg-warning align-items-center"
@@ -105,7 +105,7 @@
                                                             <span class="badge bg-info align-items-center"
                                                                 style="font-size: 18px;">Finish</span>
                                                         @elseif($row->status == 3)
-                                                            <span class="badge bg-danger align-items-center"
+                                                            <span class="badge bg-success align-items-center"
                                                                 style="font-size: 18px;">Close</span>
                                                         @endif
                                                     </td>
@@ -123,7 +123,6 @@
                                                                         class="btn btn-sm btn-primary" title="Ubah Data">
                                                                         <i class="fa-solid fa-edit fa-1x"></i>
                                                                     </a>
-
                                                                     <button type="button" class="btn btn-sm btn-danger"
                                                                         title="Hapus"
                                                                         onclick="confirmDelete({{ $row->id }})">
@@ -142,7 +141,7 @@
                                                                 @endif
                                                             @elseif($row->status == 1)
                                                                 <a href="{{ route('showHistory', $row->id) }}"
-                                                                    class="btn btn-sm btn-success">
+                                                                    class="btn btn-sm btn-warning">
                                                                     <i class="fa fa-eye fa-1x" aria-hidden="true"></i>
                                                                 </a>
                                                             @elseif ($row->status == 2)
@@ -161,13 +160,13 @@
                                                                         Auth::user()->role_id == 4 ||
                                                                         Auth::user()->role_id == 14)
                                                                     <a href="{{ route('showHistory', $row->id) }}"
-                                                                        class="btn btn-sm btn-success">
+                                                                        class="btn btn-sm btn-warning">
                                                                         <i class="fa fa-eye fa-1x" aria-hidden="true"></i>
                                                                     </a>
                                                                 @endif
                                                             @elseif($row->status == 3)
                                                                 <a href="{{ route('showHistory', $row->id) }}"
-                                                                    class="btn btn-sm btn-success">
+                                                                    class="btn btn-sm btn-warning">
                                                                     <i class="fa fa-eye fa-1x" aria-hidden="true"></i>
                                                                 </a>
                                                             @else
