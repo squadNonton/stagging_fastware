@@ -148,7 +148,7 @@
                 if (pemohon === '' || tanggal === '' || mesin === '' || lokasi === '' || kendala === '' || section === '') {
                     // Menampilkan SweetAlert jika ada isian yang kosong kecuali upload gambar
                     Swal.fire({
-                        title: 'Data belum lengkap!',
+                        title: 'Gagal!',
                         text: 'Mohon lengkapi semua isian, kecuali unggah gambar.',
                         icon: 'error',
                         confirmButtonText: 'OK'

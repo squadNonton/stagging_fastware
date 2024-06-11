@@ -311,7 +311,11 @@ class FormFPPController extends Controller
 
         // Isi kolom 'pic' dengan nama pengguna yang sedang login
         $loggedInUser = Auth::user();
-        $newTindakLanjut->pic = $loggedInUser->name;
+        if ($loggedInUser) {
+            $newTindakLanjut->pic = $loggedInUser->name;
+        } else {
+            return redirect()->back()->with('error', 'User not logged in');
+        }
 
         // Assign fields that need to be updated
         $newTindakLanjut->id_fpp = $formperbaikan->id_fpp;
@@ -392,6 +396,8 @@ class FormFPPController extends Controller
             return redirect()->route('maintenance.index')->with('success', 'Form FPP updated successfully');
         }
     }
+
+
     public function downloadAttachment(TindakLanjut $tindaklanjut)
     {
         // Pastikan file attachment_file ada sebelum mencoba mengunduh

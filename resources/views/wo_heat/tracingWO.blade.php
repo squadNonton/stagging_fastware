@@ -1,5 +1,747 @@
-@extends('layout')
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Astra Daido Steel Indonesia</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+    <meta name="csrf-token">
+
+    <link href="assets/img/logo-menu.png" rel="icon">
+    <link href="assets/img/logo-menu.png" rel="apple-touch-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/quill/quill.snow.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+
+    {{-- jadwal kunjungan calender --}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css" rel="stylesheet" />
+
+<body>
+
+    <!-- Buat Header -->
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+
+        <div class="d-flex align-items-center justify-content-between p-3">
+            <h3 class="fw-bold mt-2 ps-3 fs-4">DMS Adasi DS8</h3>
+            <i class="bi bi-list toggle-sidebar-btn mx-3 fs-2"></i>
+        </div><!-- End Logo -->
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+                <li class="nav-item dropdown pe-3">
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
+                        data-bs-toggle="dropdown">
+                        <img src="assets/img/user.png" alt="Profile" class="rounded-circle">
+                        <span class="d-none d-md-block ps-2">{{ Auth::user()->name }}
+                            <br>{{ Auth::user()->roles->role }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile mt-3">
+                        <li class="dropdown-header">
+                            <h6>{{ Auth::user()->name }}</h6>
+                            <span>{{ Auth::user()->roles->role }}</span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        {{-- Test Akun --}}
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" style="color: rgb(15, 0, 97)"
+                                href="{{ route('showDataDiri') }}">
+                                <i class="bi bi-person me-2"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" style="color: rgb(136, 0, 0)"
+                                href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+    </header><!-- End Header -->
+
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+                <!-- CSRF token untuk keamanan -->
+            </form>
+
+            <li class="nav-heading">Dashboard</li>
+            <li class="nav-item">
+            </li><!-- End Logout Nav -->
+            @if (Auth::user()->role_id == 1)
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-toggle="collapse" href="#dashboard-admin-nav">
+                        <i class="bi bi-person-circle"></i>
+                        <span>SP-Administrasi</span>
+                        <i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="dashboard-admin-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a class="nav-link collapsed" href="{{ route('dashboardusers') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Kelola Akun</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link collapsed" href="{{ route('dashboardcustomers') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Kelola Customer</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-toggle="collapse" href="#dashboard-menu-nav">
+                    <i class="bi bi-gear"></i>
+                    <span>Dashboard</span>
+                    <i class="bi bi-chevron-down ms-auto fs-6"></i>
+                </a>
+                <ul id="dashboard-menu-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a class="nav-link collapsed" href="{{ route('dashboardHandling') }}">
+                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
+                            <span>Maintenance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link collapsed" href="{{ route('dshandling') }}">
+                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
+                            <span>Handling Klaim & Komplain</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('dashboardSS') }}">
+                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
+                            <span>Sumbang Saran</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('reportpatrol') }}">
+                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
+                            <span>Safety Patrol</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            {{-- Maintenance dan Handling --}}
+
+            @if (Auth::check())
+                @if (Auth::user()->role_id == 7 ||
+                        Auth::user()->role_id == 8 ||
+                        Auth::user()->role_id == 9 ||
+                        Auth::user()->role_id == 1)
+                    <li class="nav-heading">Productions</li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#prod-forms-nav">
+                            <i class="bi bi-journal-text fs-6"></i>
+                            <span>Form Permintaan Perbaikan</span>
+                            <i class="bi bi-chevron-down ms-auto fs-6"></i>
+                        </a>
+                        <ul id="prod-forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('fpps.index') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Data Form Perbaikan</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Riwayat Form Perbaikan</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+                @if (Auth::user()->role_id == 14)
+                    <li class="nav-heading">Productions</li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#prod-forms-nav">
+                            <i class="bi bi-journal-text"></i>
+                            <span>Form Permintaan Perbaikan</span>
+                            <i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="prod-forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('sales.index') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Data Form Perbaikan</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Riwayat Form Perbaikan</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+                @if (Auth::user()->role_id == 6 || Auth::user()->role_id == 1)
+                    <li class="nav-heading">Maintenance</li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#maint-korektif-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="maint-korektif-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ asset('dashboardmaintenance') }}">
+                                    <i class="bi bi-file-earmark-text-fill fs-6"></i>
+                                    <span>Terima Form Perbaikan</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Riwayat Form Perbaikan</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Tindakan Preventif</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenance') }}">
+                                    <i class="bi bi-check2 fs-6"></i>
+                                    <span>Tabel Preventif</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li><!-- End Maint Received Nav -->
+                @endif
+                @if (Auth::user()->role_id == 14)
+                    <li class="nav-heading">Maintenance</li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('ga.dashboardga') }}">
+                                    <i class="bi bi-file-earmark-text-fill fs-6"></i>
+                                    <span>Terima Form Perbaikan</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Riwayat Form Perbaikan</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Tindakan Preventif</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenanceGA') }}">
+                                    <i class="bi bi-check2 fs-6"></i>
+                                    <span>Tindakan Preventif</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li><!-- End Maint Received Nav -->
+                @endif
+                <!-- End Prod Forms Nav -->
+                @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1)
+                    {{-- Role ID untuk Maintenance --}}
+                    {{-- Tampilkan sidebar untuk Maintenance --}}
+                    <li class="nav-heading">Engineering</li>
+
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Bag. Maintenance</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('dashboardmesins') }}">
+                                    <i class="bi bi-gear fs-6"></i>
+                                    <span>Kelola DMI</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('deptmtce.index') }}">
+                                    <i class="bi bi-check2 fs-6"></i>
+                                    <span>Data Approved FPP</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Riwayat Form Perbaikan</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('dashboardPreventive') }}">
+                                    <i class="bi bi-check2 fs-6"></i>
+                                    <span>Tabel Preventif</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li><!-- End Dept Maint Nav -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#dept-complain-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Bag. Engineering</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="{{ route('submission') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Form Tindak Lanjut</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('showHistoryCLaimComplain') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim & Komplain</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('scheduleVisit') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li><!-- End Dept Complain & Claim Nav -->
+                @endif
+                @if (Auth::user()->role_id == 14)
+                    {{-- Role ID untuk GA --}}
+                    {{-- Tampilkan sidebar untuk Engineering --}}
+                    <li class="nav-heading">Engineering</li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text fs-6"></i><span>Bag. Maintenance</span>
+                        </a>
+                        <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('dashboardgamesin') }}">
+                                    <i class="bi bi-gear fs-6"></i>
+                                    <span>Data Mesin</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('ga.approvedfpp') }}">
+                                    <i class="bi bi-check2 fs-6"></i>
+                                    <span>Data Approved FPP</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Riwayat FPP</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenanceGA') }}">
+                                    <i class="bi bi-check2 fs-6"></i>
+                                    <span>Tabel Preventif</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li><!-- End Dept Maint Nav -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#dept-complain-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Bag. Engineering</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="{{ route('submission') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Form Tindak Lanjut</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('showHistoryCLaimComplain') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim & Komplain</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('scheduleVisit') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li><!-- End Dept Complain & Claim Nav -->
+                @endif
+                @if (Auth::user()->role_id == 1 ||
+                        Auth::user()->role_id == 2 ||
+                        Auth::user()->role_id == 3 ||
+                        Auth::user()->role_id == 4 ||
+                        Auth::user()->role_id == 11 ||
+                        Auth::user()->role_id == 12 ||
+                        Auth::user()->role_id == 13 ||
+                        Auth::user()->role_id == 14)
+                    {{-- Role ID untuk Sales --}}
+                    <li class="nav-heading">Sales</li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#sales-fpp-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Form Permintaan Perbaikan</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="sales-fpp-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('sales.index') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Data Form Perbaikan</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('sales.history') }}">
+                                    <i class="bi bi-list-check fs-6"></i>
+                                    <span>Riwayat Form Perbaikan</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="{{ route('index') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Form Pengajuan Klaim dan
+                                        Komplain</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('showHistoryCLaimComplain') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim dan Komplain</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('scheduleVisit') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <a class="nav-link collapsed" data-bs-target="#forms-nav-inquiry" data-bs-toggle="collapse"
+                            href="#">
+                            <i class="bi bi-journal-text"></i><span>Inquiry Sales</span><i
+                                class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="forms-nav-inquiry" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="{{ route('createinquiry') }}">
+                                    <i class="bi bi-list-check fs-6"></i><span>Buat Inquiry Sales</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="bi bi-list-check fs-6"></i><span>Approve Inquiry</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li><!-- End Forms Nav -->
+                @endif
+            @endif
+
+            {{-- SS, Safety Patrol dan Trace WO --}}
+            <li class="nav-heading">Suggestion System</li>
+            {{-- Form Sumbang Saran --}}
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#nav-ss" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-text-window-reverse"></i><span>Form Sumbang Saran</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="nav-ss" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('showSS') }}">
+                            <i class="bi bi-journal-text fs-6"></i>
+                            <span>Buat Form</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('forumSS') }}">
+                            <i class="bi bi-chat-square-dots-fill fs-6"></i>
+                            <span>Overview Sumbang Saran</span>
+                        </a>
+                    </li>
+                </ul>
+                @if (Auth::user()->role_id == 1 ||
+                        Auth::user()->role_id == 2 ||
+                        Auth::user()->role_id == 3 ||
+                        Auth::user()->role_id == 5 ||
+                        Auth::user()->role_id == 7 ||
+                        Auth::user()->role_id == 9 ||
+                        Auth::user()->role_id == 11 ||
+                        Auth::user()->role_id == 14 ||
+                        Auth::user()->role_id == 21 ||
+                        Auth::user()->role_id == 22 ||
+                        Auth::user()->role_id == 12 ||
+                        Auth::user()->role_id == 14 ||
+                        Auth::user()->role_id == 20)
+                    <a class="nav-link collapsed" data-bs-target="#nav-conf" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-layout-wtf"></i><span>Persetujuan</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                @endif
+                <ul id="nav-conf" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 2 ||
+                            Auth::user()->role_id == 3 ||
+                            Auth::user()->role_id == 7 ||
+                            Auth::user()->role_id == 9 ||
+                            Auth::user()->role_id == 21 ||
+                            Auth::user()->role_id == 22 ||
+                            Auth::user()->role_id == 12 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiForeman') }}">
+                                <i class="bi bi-kanban fs-6"></i>
+                                <span>By Sect. Head</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 2 ||
+                            Auth::user()->role_id == 5 ||
+                            Auth::user()->role_id == 7 ||
+                            Auth::user()->role_id == 11 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiDeptHead') }}">
+                                <i class="bi bi-kanban-fill fs-6"></i>
+                                <span>By Dept. Head</span>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+                @if (Auth::user()->role_id == 1 ||
+                        Auth::user()->role_id == 5 ||
+                        Auth::user()->role_id == 14 ||
+                        Auth::user()->role_id == 15 ||
+                        Auth::user()->role_id == 20)
+                    <a class="nav-link collapsed" data-bs-target="#nav-pic" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-layout-wtf"></i><span>PIC Penilaian</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                @endif
+                <ul id="nav-pic" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 5 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiKomite') }}">
+                                <i class="bi-person-lines-fill fs-6"></i>
+                                <span>PIC Penilai SS | Komite</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()->role_id == 1 ||
+                            Auth::user()->role_id == 14 ||
+                            Auth::user()->role_id == 15 ||
+                            Auth::user()->role_id == 20)
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiHRGA') }}">
+                                <i class="bi-person-lines-fill fs-6"></i>
+                                <span>PIC Penilai SS | HRGA</span>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+            </li><!-- End Form Sumbang Saran -->
+            {{-- <li class="nav-heading">Suggestion System</li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#sales-fpp-nav" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-journal-text"></i><span>Kelola SS</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="ss-fpp-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('forumSS') }}">
+                            <i class="bi bi-chat-square-dots-fill"></i>
+                            <span>Forum SS</span>
+                        </a>
+                    </li><!-- End Profile Page Nav -->
+                    <li>
+                        <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                            <i class="bi bi-list-check fs-6"></i>
+                            <span>Riwayat FPP</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('index') }}">
+                            <i class="bi bi-list-check fs-6"></i><span>Form Pengajuan Klaim dan
+                                Komplain</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('showHistoryCLaimComplain') }}">
+                            <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim dan Komplain</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('scheduleVisit') }}">
+                            <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Forms Nav -->
+           
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{{ route('showSS') }}">
+                    <i class="bi bi-journal-text fs-6"></i>
+                    <span>Form SS</span>
+                </a>
+            </li><!-- End Profile Page Nav -->
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 7 || Auth::user()->role_id == 9 || Auth::user()->role_id == 21 || Auth::user()->role_id == 22 || Auth::user()->role_id == 12 || Auth::user()->role_id == 14 || Auth::user()->role_id == 20)
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('showKonfirmasiForeman') }}">
+                        <i class="bi bi-clipboard-check-fill"></i>
+                        <span>Konfirmasi SS by Sec. Head</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+            @endif
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 5 || Auth::user()->role_id == 7 || Auth::user()->role_id == 11 || Auth::user()->role_id == 14 || Auth::user()->role_id == 20)
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('showKonfirmasiDeptHead') }}">
+                        <i class="bi bi-clipboard-check-fill"></i>
+                        <span>Konfirmasi SS by Dept. Head</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+            @endif
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 20)
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('showKonfirmasiKomite') }}">
+                        <i class="bi-person-lines-fill"></i>
+                        <span>PIC Penilai SS | Komite</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+            @endif
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 14 || Auth::user()->role_id == 15 || Auth::user()->role_id == 20)
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('showKonfirmasiHRGA') }}">
+                        <i class="bi-person-lines-fill"></i>
+                        <span>PIC Penilai SS | HRGA</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+            @endif --}}
+            @if (Auth::user()->role_id == 1)
+                <li class="nav-heading">Safety Patrol</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('listpatrol') }}">
+                        <i class="bi bi-person"></i>
+                        <span>Form Safety Patrol</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('listpatrolpic') }}">
+                        <i class="bi bi-person-badge-fill"></i>
+                        <span>Data Safety Patrol</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+                {{-- <li class="nav-item">
+                <a class="nav-link collapsed" href="{{ route('reportpatrol') }}">
+                    <i class="bi bi-bar-chart-steps"></i>
+                    <span>Report Form Safety Patrol</span>
+                </a>
+            </li><!-- End Profile Page Nav --> --}}
+                <li class="nav-heading">WO Heat Treatment</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('dashboardImportWO') }}">
+                        <i class="bi bi-cloud-upload"></i>
+                        <span>Import WO</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('dashboardTracingWO') }}">
+                        <i class="bi bi-search"></i>
+                        <span>Tracing WO</span>
+                    </a>
+                </li>
+                {{-- Menu Inventory-PPC --}}
+                <li class="nav-heading">PPIC</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#">
+                        <i class="bi bi-cloud-upload"></i>
+                        <span>Validasi Sales</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#">
+                        <i class="bi bi-search"></i>
+                        <span>Approval Sales</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#">
+                        <i class="bi bi-search"></i>
+                        <span>Incoming Shipment</span>
+                    </a>
+                </li>
+                {{-- @endif --}}
+                {{-- <hr> --}}
+            @endif
+        </ul>
+        </ul>
+
+        <!-- Footer Sidebar -->
+        <ul class="sidebar-nav fixed-bottom ps-3">
+        </ul>
+        <!-- End Footer Sidebar -->
+    </aside><!-- End Sidebar-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.20.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css">
@@ -32,15 +774,34 @@
                                 </div>
                                 <div class="p-2 flex-fill">
                                     <label for="searchStatusWO">Status WO</label>
-                                    <input type="text" class="form-control" id="searchStatusWO"
-                                        placeholder="Cari Status WO....">
+                                    <select class="form-control" id="searchStatusWO">
+                                        <option value="">All</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        <option value="Draft">Draft</option>
+                                        <option value="Finished">Finished</option>
+                                        <option value="Ready">Ready</option>
+                                    </select>
                                 </div>
                                 <div class="p-2 flex-fill">
                                     <label for="searchStatusDO">Status DO</label>
-                                    <input type="text" class="form-control" id="searchStatusDO"
-                                        placeholder="Cari Status DO....">
+                                    <select class="form-control" id="searchStatusDO">
+                                        <option value="">All</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        <option value="Delivered">Delivered</option>
+                                        <option value="Ready to Deliver">Ready to Deliver</option>
+                                        <option value="Waiting Availability">Waiting Availability</option>
+                                    </select>
+                                </div>
+                                <div class="p-2 flex-fill">
+                                    <label for="startDate">Tanggal Mulai</label>
+                                    <input type="date" class="form-control" id="startDate" placeholder="dd-mm">
+                                </div>
+                                <div class="p-2 flex-fill">
+                                    <label for="endDate">Tanggal Akhir</label>
+                                    <input type="date" class="form-control" id="endDate" placeholder="dd-mm">
                                 </div>
                             </div>
+
 
 
                             <br>
@@ -138,16 +899,19 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title text-center">Detail Proses</h5>
-                            <!-- Mesin (Search Textbox Readonly) -->
+                            <!-- Date filters -->
                             {{-- <div class="form-group row">
-                                <label for="searchMesin" class="col-sm-2 col-form-label">Mesin</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="searchMesin" placeholder="Search..."
-                                        readonly>
-                                </div>
-                            </div> --}}
+                                    <label for="startDate" class="col-sm-2 col-form-label">Start Date</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" id="startDate" placeholder="dd-mm">
+                                    </div>
+                                    <label for="endDate" class="col-sm-2 col-form-label">End Date</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" id="endDate" placeholder="dd-mm">
+                                    </div>
+                                </div> --}}
                             <br>
-                            <!-- Tabel -->
+                            <!-- Table -->
                             <div class="table-responsive">
                                 <table class="table" id="detailProsesTable">
                                     <thead>
@@ -165,39 +929,19 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <div id="detailWO"></div>
-                                            </td>
-                                            <td>
-                                                <div id="detailCustomer"></div>
-                                            </td>
-                                            <td>
-                                                <div id="detailMesin"></div>
-                                            </td>
-                                            <td>
-                                                <div id="detailPCS"></div>
-                                            </td>
-                                            <td>
-                                                <div id="detailTonase"></div>
-                                            </td>
-                                            <td>
-                                                <div id="detailTglWO"></div>
-                                            </td>
-                                            <td>
-                                                <div id="detailStatusWO"></div>
-                                            </td>
-                                            <td>
-                                                <div id="detailStatusDO"></div>
-                                            </td>
-                                            <td>
-                                                <div id="detailProses"></div>
-                                            </td>
-                                        </tr>
+                                        <!-- Data will be populated here -->
                                     </tbody>
-
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="4" class="text-right">Total:</th>
+                                            <th id="grandTotalPcs">0</th>
+                                            <th id="grandTotalTonase">0</th>
+                                            <th colspan="4"></th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -208,67 +952,16 @@
             var globalData = {};
 
             $(document).ready(function() {
-                $('#searchWO').on('keyup', function() {
-                    var searchWO = $(this).val();
-
-                    $.ajax({
-                        url: '{{ route('searchWO') }}',
-                        type: 'GET',
-                        data: {
-                            'searchWO': searchWO
-                        },
-                        success: function(data) {
-                            globalData = data;
-                            populateTables(data);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                        }
-                    });
-                });
-
-                $('#searchStatusWO').on('keyup', function() {
-                    var searchStatusWO = $(this).val();
-
-                    $.ajax({
-                        url: '{{ route('searchWO') }}',
-                        type: 'GET',
-                        data: {
-                            'searchStatusWO': searchStatusWO
-                        },
-                        success: function(data) {
-                            globalData = data;
-                            populateTables(data);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                        }
-                    });
-                });
-
-                $('#searchStatusDO').on('keyup', function() {
-                    var searchStatusDO = $(this).val();
-
-                    $.ajax({
-                        url: '{{ route('searchWO') }}',
-                        type: 'GET',
-                        data: {
-                            'searchStatusDO': searchStatusDO
-                        },
-                        success: function(data) {
-                            globalData = data;
-                            populateTables(data);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                        }
-                    });
+                $('#searchWO, #searchStatusWO, #searchStatusDO, #startDate, #endDate').on('keyup change', function() {
+                    populateTables();
                 });
 
                 function populateTables() {
                     var searchWO = $('#searchWO').val();
                     var searchStatusWO = $('#searchStatusWO').val();
                     var searchStatusDO = $('#searchStatusDO').val();
+                    var startDate = $('#startDate').val();
+                    var endDate = $('#endDate').val();
 
                     $.ajax({
                         url: '{{ route('searchWO') }}',
@@ -276,7 +969,9 @@
                         data: {
                             'searchWO': searchWO,
                             'searchStatusWO': searchStatusWO,
-                            'searchStatusDO': searchStatusDO
+                            'searchStatusDO': searchStatusDO,
+                            'startDate': startDate,
+                            'endDate': endDate
                         },
                         success: function(data) {
                             globalData = data;
@@ -292,33 +987,27 @@
                     });
                 }
 
-                $('#searchWO, #searchStatusWO, #searchStatusDO').on('keyup', function() {
-                    populateTables();
-                });
-
-
-
                 function populateTable1(data) {
                     $('#tableContainer').empty();
 
                     let tableHtml = `
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>No. WO</th>
-                                        <th>Customer</th>
-                                        <th>Tgl. WO</th>
-                                        <th>Status WO</th>
-                                        <th>Status DO</th>
-                                        <th>Proses</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tableBody">
-                                </tbody>
-                            </table>
-                        </div>
-                    `;
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>No. WO</th>
+                                            <th>Customer</th>
+                                            <th>Tgl. WO</th>
+                                            <th>Status WO</th>
+                                            <th>Status DO</th>
+                                            <th>Proses</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
 
                     $('#tableContainer').append(tableHtml);
 
@@ -337,7 +1026,6 @@
                                     </tr>
                                 `;
                             $tableBody.append(rowHtml);
-
                         });
                     });
 
@@ -357,18 +1045,14 @@
                             }
                         });
 
-                        console.log('Selected WO:', selectedWO); // tambahkan log di sini
-
                         if (selectedWO) {
                             populateTable2(selectedWO);
                             populateTable3(selectedWO);
                         }
                     });
-
                 }
 
                 function populateTable2(data) {
-                    // Membersihkan konten sebelumnya
                     $('#batchHeating').text('');
                     $('#mesinHeating').text('');
                     $('#tanggalHeating').text('');
@@ -382,7 +1066,6 @@
                     $('#mesinTemper3').text('');
                     $('#tanggalTemper3').text('');
 
-                    // Menambahkan detail proses baru
                     $('#batchHeating').text(data.batch || '');
                     $('#mesinHeating').text(data.mesin_heating || '');
                     $('#tanggalHeating').text(data.tgl_heating || '');
@@ -398,14 +1081,12 @@
                 }
 
                 function populateTable3(data) {
-                    // Membersihkan konten sebelumnya
                     $('#detailNoDO').text('');
                     $('#detailTglST').text('');
                     $('#detailSupir').text('');
                     $('#detailPenerima').text('');
                     $('#detailTglTerima').text('');
 
-                    // Menambahkan detail proses baru
                     $('#detailNoDO').text(data.no_do || '');
                     $('#detailTglST').text(data.tgl_st || '');
                     $('#detailSupir').text(data.supir || '');
@@ -415,58 +1096,57 @@
 
                 $('#table2').on('click', '.clickable-cell', function() {
                     let batch = $(this).text().trim();
-                    let type = $(this).data('type'); // Mendapatkan jenis mesin dari atribut data-type
-
-                    console.log('Clicked batch:', batch); // Log batch yang dipilih
-                    console.log('Type:', type); // Log jenis mesin yang dipilih
+                    let type = $(this).data('type');
 
                     $.ajax({
-                        url: '{{ route('getBatchData') }}', // Ganti dengan URL dari script backend Anda
-                        type: 'GET', // Anda dapat menggunakan metode POST atau GET sesuai kebutuhan Anda
-                        dataType: 'json', // Menentukan tipe data yang diharapkan dari respons server
+                        url: '{{ route('getBatchData') }}',
+                        type: 'GET',
+                        dataType: 'json',
                         data: {
-                            batch: batch // Mengirimkan data batch ke server
+                            batch: batch
                         },
                         success: function(response) {
-                            console.log('Data received:',
-                                response); // Log data yang diterima dari server
-
-                            // Memanggil fungsi untuk menampilkan detail proses dengan data yang diterima
                             populateDetailProses(batch, response, type);
                         },
                         error: function(xhr, status, error) {
-                            console.error('Error:', error); // Log pesan error jika terjadi
+                            console.error('Error:', error);
                         }
                     });
                 });
 
                 function populateDetailProses(batch, workOrders, type) {
-                    // Reset detail proses
                     $('#detailProsesTable tbody').empty();
                     $('#selectedBatch').text(batch);
 
-                    // Tampilkan data untuk setiap work order yang terkait dengan batch yang dipilih
-                    workOrders.forEach((wo, index) => {
-                        let rowHtml = `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${wo.no_wo}</td>
-                <td>${wo.cust}</td>
-                <td>${wo.mesin_heating || wo.mesin_temper1 || wo.mesin_temper2 || wo.mesin_temper3}</td>
-                <td>${wo.pcs || ''}</td>
-                <td>${wo.kg || ''}</td>
-                <td>${wo.tgl_wo || ''}</td>
-                <td>${wo.status_wo || ''}</td>
-                <td>${wo.status_do || ''}</td>
-                <td>${wo.proses || ''}</td>
-            </tr>
-        `;
+                    let totalPcs = 0;
+                    let totalTonase = 0;
 
-                        // Tambahkan baris baru ke dalam tabel
+                    workOrders.forEach((wo, index) => {
+                        totalPcs += parseInt(wo.pcs || 0);
+                        totalTonase += parseFloat(wo.kg || 0);
+
+                        let rowHtml = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${wo.no_wo}</td>
+                    <td>${wo.cust}</td>
+                    <td>${wo.mesin_heating || wo.mesin_temper1 || wo.mesin_temper2 || wo.mesin_temper3}</td>
+                    <td>${wo.pcs || ''}</td>
+                    <td>${wo.kg || ''}</td>
+                    <td>${wo.tgl_wo || ''}</td>
+                    <td>${wo.status_wo || ''}</td>
+                    <td>${wo.status_do || ''}</td>
+                    <td>${wo.proses || ''}</td>
+                </tr>
+            `;
                         $('#detailProsesTable tbody').append(rowHtml);
                     });
 
-                    // Memperbarui detail mesin berdasarkan jenis mesin yang dipilih
+                    // Update grand total values
+                    $('#grandTotalPcs').text(totalPcs);
+                    $('#grandTotalTonase').text(totalTonase.toFixed(2));
+
+                    // Other existing code for populating batch and type details
                     switch (type) {
                         case 'heating':
                             $('#mesinHeating').text(workOrders[0].mesin_heating);
@@ -488,9 +1168,9 @@
                 }
 
 
-
             });
         </script>
+
 
         <style>
             #detailProcessTable td {
@@ -526,4 +1206,27 @@
             }
         </style>
     </main>
-@endsection
+
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; Copyright <strong><span>ADASI</span></strong>. All Rights Reserved
+        </div>
+    </footer><!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/chart.js/chart.umd.js') }}"></script>
+    <script src="{{ asset('assets/vendor/echarts/echarts.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{ asset('assets/vendor/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{{ asset('assets/js/main.js') }}"></script>

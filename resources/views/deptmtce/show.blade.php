@@ -325,7 +325,8 @@
                 Swal.fire({
                     title: "Catatan",
                     text: result.value,
-                    icon: "success"
+                    icon: "success",
+                    timer: 2000,
                 });
             }
         });

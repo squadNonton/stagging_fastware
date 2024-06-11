@@ -125,8 +125,8 @@
                                             value='0'>
 
                                         <div class="text-end">
-                                            <button type="button" class="btn btn-secondary" id="saveButton"
-                                                onclick="handleSaveButtonClick()">Simpan</button>
+                                            <button type="submit" class="btn btn-secondary"
+                                                id="saveButton">Simpan</button>
                                             <button type="button" class="btn btn-primary" id="finishButton"
                                                 onclick="handleFinishButtonClick()">Selesai</button>
                                         </div>
@@ -334,9 +334,10 @@
                 // Show success notification
                 Swal.fire({
                     icon: 'success',
-                    title: 'Status berhasil diubah menjadi Finish!',
+                    title: 'Berhasil!',
+                    text: 'Status berhasil diubah menjadi Finish!',
                     showConfirmButton: false,
-                    timer: 2000, // Durasi notifikasi dalam milidetik
+                    timer: 2000,
                     didClose: () => {
                         // Submit the form after the success notification is closed
                         document.getElementById('updateForm').submit();

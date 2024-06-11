@@ -141,8 +141,8 @@
                 if (inputCount === 0) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Eror',
-                        text: 'Mohon isi semua inputan',
+                        title: 'Gagal!',
+                        text: 'Harap isi semua inputan.',
                     });
                     return false; // Prevent form submission
                 }

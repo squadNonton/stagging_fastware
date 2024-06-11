@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Imports\WOImport;
 use App\Jobs\ProcessExcelJob;
 use App\Models\HeatTreatment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -66,19 +68,28 @@ class HeatTreatmentController extends Controller
         $searchWO = $request->input('searchWO');
         $searchStatusWO = $request->input('searchStatusWO');
         $searchStatusDO = $request->input('searchStatusDO');
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
 
         // Membuat query dasar untuk model HeatTreatment
         $query = HeatTreatment::query();
 
-        $query->where(function ($q) use ($searchWO, $searchStatusWO, $searchStatusDO) {
+        // Tambahkan kondisi pencarian
+        $query->where(function ($q) use ($searchWO, $searchStatusWO, $searchStatusDO, $startDate, $endDate) {
             if ($searchWO) {
                 $q->where('cust', 'LIKE', '%' . $searchWO . '%');
             }
-            if ($searchStatusWO) {
+            if ($searchStatusWO && $searchStatusWO != 'All') {
                 $q->where('status_wo', 'LIKE', '%' . $searchStatusWO . '%');
             }
-            if ($searchStatusDO) {
+            if ($searchStatusDO && $searchStatusDO != 'All') {
                 $q->where('status_do', 'LIKE', '%' . $searchStatusDO . '%');
+            }
+            if ($startDate) {
+                $q->whereRaw("SUBSTRING_INDEX(tgl_wo, '-', 2) >= ?", [$startDate]);
+            }
+            if ($endDate) {
+                $q->whereRaw("SUBSTRING_INDEX(tgl_wo, '-', 2) <= ?", [$endDate]);
             }
         });
 
@@ -125,18 +136,26 @@ class HeatTreatmentController extends Controller
         return response()->json($response);
     }
 
+
+
+
+
     public function getBatchData(Request $request)
     {
         $batch = $request->input('batch');
 
         $workOrders = collect([]);
 
-        $workOrders->push(HeatTreatment::where('batch_heating', $batch)->get());
-        $workOrders->push(HeatTreatment::where('batch_temper1', $batch)->get());
-        $workOrders->push(HeatTreatment::where('batch_temper2', $batch)->get());
-        $workOrders->push(HeatTreatment::where('batch_temper3', $batch)->get());
+        $heatingQuery = HeatTreatment::where('batch_heating', $batch);
+        $temper1Query = HeatTreatment::where('batch_temper1', $batch);
+        $temper2Query = HeatTreatment::where('batch_temper2', $batch);
+        $temper3Query = HeatTreatment::where('batch_temper3', $batch);
 
-        // Gabungkan hasil koleksi kerja ke dalam satu koleksi tunggal
+        $workOrders->push($heatingQuery->get());
+        $workOrders->push($temper1Query->get());
+        $workOrders->push($temper2Query->get());
+        $workOrders->push($temper3Query->get());
+
         $mergedWorkOrders = $workOrders->collapse();
 
         if ($mergedWorkOrders->isEmpty()) {

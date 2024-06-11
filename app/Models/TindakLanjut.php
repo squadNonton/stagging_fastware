@@ -26,13 +26,13 @@ class TindakLanjut extends Model
 
         switch ($status) {
             case '0':
-                return 'green'; // Mengubah warna menjadi 'green' untuk status 0 (Open)
+                return 'red'; // Mengubah warna menjadi 'green' untuk status 0 (Open)
             case '1':
                 return 'orange'; // Mengubah warna menjadi 'orange' untuk status 1 (On Progress)
             case '2':
                 return 'blue'; // Mengubah warna menjadi 'blue' untuk status 2 (Finish)
             case '3':
-                return 'black'; // Mengubah warna menjadi 'black' untuk status 3 (Closed)
+                return 'green'; // Mengubah warna menjadi 'black' untuk status 3 (Closed)
             default:
                 return 'transparent'; // Mengembalikan 'transparent' untuk nilai lain
         }

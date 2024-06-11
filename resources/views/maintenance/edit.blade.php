@@ -130,7 +130,7 @@
                         <div class="card-body">
                             <div class="accordion">
                                 <h5 class="card-title">
-                                    Kemajuan Progres
+                                    Perbarui Progres
                                 </h5>
 
                                 <div class="collapse" id="updateProgress">

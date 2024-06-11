@@ -239,7 +239,7 @@
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenance') }}">
                                     <i class="bi bi-check2 fs-6"></i>
-                                    <span>Tindakan Preventif</span>
+                                    <span>Tabel Preventif</span>
                                 </a>
                             </li>
                         </ul>

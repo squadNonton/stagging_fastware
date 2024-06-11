@@ -65,7 +65,7 @@
                                     <div id="input-container">
                                         <!-- Input awal issue -->
                                         <label for="issues[]" class="form-label">
-                                            Issue<span style="color: red;">*</span>
+                                            Isu<span style="color: red;">*</span>
                                         </label>
                                         @foreach ($issues as $key => $issue)
                                             <div class="mb-3">
@@ -87,7 +87,7 @@
                                         <button type="submit" class="btn btn-secondary">Simpan</button>
                                         <!-- Tombol Finish dengan event onclick yang dipanggil handleFinishButtonClick() -->
                                         <button type="button" class="btn btn-primary" id="finishButton"
-                                            onclick="handleFinishButtonClick()">Kirim</button>
+                                            onclick="handleFinishButtonClick()">Selesai</button>
                                         <a href="{{ route('dashboardPreventiveMaintenance') }}"
                                             class="btn btn-primary">Batal</a>
                                     </div>
@@ -153,8 +153,8 @@
         } else {
             Swal.fire({
                 icon: 'error',
-                title: 'Validation Error',
-                text: 'Semua issue harus dichecklist sebelum menyelesaikan acara.'
+                title: 'Gagal!',
+                text: 'Semua isu harus diceklis.'
             });
         }
     }

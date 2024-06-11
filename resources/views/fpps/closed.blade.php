@@ -338,7 +338,7 @@
                     title: "Catatan",
                     text: result.value,
                     icon: "success",
-                    timer: 1500 // Durasi notifikasi dalam milidetik
+                    timer: 2000 // Durasi notifikasi dalam milidetik
                 });
             }
         });
@@ -364,7 +364,8 @@
                 // Menampilkan SweetAlert sukses
                 Swal.fire({
                     icon: 'success',
-                    title: 'Status berhasil berubah menjadi Closed!',
+                    title: 'Berhasil!',
+                    text: 'Status berhasil berubah menjadi Closed!',
                     showConfirmButton: false,
                     timer: 1500 // Durasi notifikasi dalam milidetik
                 }).then(() => {
