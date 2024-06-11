@@ -238,4 +238,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     // Inquiry Sales
     Route::get('createinquiry', [InquirySalesController::class, 'createInquirySales'])->name('createinquiry');
     Route::post('storeinquiry', [InquirySalesController::class, 'storeInquirySales'])->name('storeinquiry');
+    // routes/web.php
+    Route::put('/inquiry/{id}', [InquirySalesController::class, 'update'])->name('updateinquiry');
+    Route::get('/editInquiry/{id}', [InquirySalesController::class, 'editInquiry'])->name('editInquiry');
 });

@@ -163,7 +163,7 @@ class SumbangSaranController extends Controller
                 break;
             case 11:
             case 12:
-                $rolesToView = [13, 15, 20];
+                $rolesToView = [1, 13, 15, 20];
                 break;
                 // Tidak perlu menambahkan case untuk 1 dan 14 karena $isAdmin sudah menghandle
         }
@@ -252,7 +252,7 @@ class SumbangSaranController extends Controller
                 $rolesToView = [8, 9, 18, 21, 22, 26];
                 break;
             case 11:
-                $rolesToView = [12, 13, 15, 20];
+                $rolesToView = [1, 12, 13, 15, 20];
                 break;
                 // Tidak perlu menambahkan case untuk 1 dan 14 karena $isAdmin sudah menghandle
         }

@@ -71,10 +71,12 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a class="btn btn-primary mt-1">
-                                            <i class="bi bi-pencil-fill"></i>
+                                        <a class="btn btn-primary mt-1" title="Edit">
+                                            <i class="bi bi-pencil-fill"
+                                                onclick="openEditInquiryModal({{ $inquiry->id }})"></i>
                                         </a>
-                                        <a class="btn btn-warning mt-1">
+
+                                        <a class="btn btn-warning mt-1" title="View Form">
                                             <i class="bi bi-eye-fill"></i>
                                         </a>
                                     </td>
@@ -84,7 +86,7 @@
                     </table>
                     <!-- End Table with stripped rows -->
 
-                    <!-- Modal -->
+                    <!-- Modal Add-->
                     <div class="modal fade" id="inquiryModal" tabindex="-1" aria-labelledby="inquiryModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog">
@@ -165,6 +167,94 @@
                         </div>
                     </div>
                     <!-- End Modal -->
+                    <!-- Edit Inquiry Modal -->
+                    <div class="modal fade" id="editInquiryModal" tabindex="-1" aria-labelledby="editInquiryModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editInquiryModalLabel">Edit Inquiry</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="editInquiryForm" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" id="editInquiryId" name="inquiry_id">
+                                        <div class="mb-3">
+                                            <label for="editkode_inquiry" class="form-label">Kode Inquiry</label>
+                                            <input type="text" class="form-control" id="editkode_inquiry"
+                                                name="kode_inquiry" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editjenis_inquiry" class="form-label">Jenis Inquiry</label>
+                                            <select class="form-select" id="editjenis_inquiry" name="jenis_inquiry"
+                                                required>
+                                                <option value="RO">RO</option>
+                                                <option value="SPOR">SPOR</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="edittype" class="form-label">Type</label>
+                                            <input type="text" class="form-control" id="edittype" name="type"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editsize" class="form-label">Size</label>
+                                            <input type="text" class="form-control" id="editsize" name="size"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editsupplier" class="form-label">Supplier</label>
+                                            <input type="text" class="form-control" id="editsupplier" name="supplier"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editqty" class="form-label">Qty</label>
+                                            <input type="number" class="form-control" id="editqty" name="qty"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editorder_from" class="form-label">Order From</label>
+                                            <input type="text" class="form-control" id="editorder_from"
+                                                name="order_from" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editcreate_by" class="form-label">Create By</label>
+                                            <input type="text" class="form-control" id="editcreate_by"
+                                                name="create_by" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editto_approve" class="form-label">To Approve</label>
+                                            <input type="text" class="form-control" id="editto_approve"
+                                                name="to_approve" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editto_validate" class="form-label">To Validate</label>
+                                            <input type="text" class="form-control" id="editto_validate"
+                                                name="to_validate" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editnote" class="form-label">Note</label>
+                                            <textarea class="form-control" id="editnote" name="note"></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editattach_file" class="form-label">Attach File</label>
+                                            <input type="file" class="form-control" id="editattach_file"
+                                                name="attach_file">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Edit Inquiry Modal -->
                 </div>
             </div>
         </section>
@@ -202,6 +292,68 @@
                     }
                 });
             });
+
+            function openEditInquiryModal(id) {
+                console.log('Opening modal for inquiry ID: ' + id); // Debugging log
+                $.ajax({
+                    url: '{{ route('editInquiry', ['id' => ':id']) }}'.replace(':id', id),
+                    type: 'GET',
+                    success: function(response) {
+                        console.log('Response:', response); // Debugging log
+
+                        // Isi form modal dengan data yang diperoleh
+                        $('#editkode_inquiry').val(response.kode_inquiry);
+                        $('#editjenis_inquiry').val(response.jenis_inquiry);
+                        $('#edittype').val(response.type);
+                        $('#editsize').val(response.size);
+                        $('#editsupplier').val(response.supplier);
+                        $('#editqty').val(response.qty);
+                        $('#editorder_from').val(response.order_from);
+                        $('#editcreate_by').val(response.create_by);
+                        $('#editto_approve').val(response.to_approve);
+                        $('#editto_validate').val(response.to_validate);
+                        $('#editnote').val(response.note);
+                        $('#editInquiryId').val(response.id);
+
+                        // Update form action URL dengan ID
+                        $('#editInquiryForm').attr('action', '{{ route('updateinquiry', ['id' => ':id']) }}'
+                            .replace(':id', response.id));
+
+                        if (response.attach_file) {
+                            // Display the attached file (image or other)
+                            var fileExtension = response.attach_file.split('.').pop().toLowerCase();
+                            var fileLink = '{{ asset('assets/files/') }}/' + response.attach_file;
+
+                            if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+                                $('#editImagePreview').attr('src', fileLink).attr('width', '150').attr('height',
+                                    '150').show();
+                                $('#editFilePreview').hide();
+                                $('#editFileName').text('');
+                                $('#editImagePreview').click(function() {
+                                    showImageInModal(fileLink);
+                                });
+                            } else {
+                                $('#editImagePreview').hide();
+                                $('#editFilePreview').attr('href', fileLink).attr('download', response.attach_file)
+                                    .show();
+                                $('#editFileName').text(response.attach_file);
+                            }
+                        } else {
+                            // Jika tidak ada file terlampir
+                            $('#editImagePreview').hide();
+                            $('#editFilePreview').hide();
+                            $('#editFileName').text('');
+                        }
+
+                        // Display modal
+                        $('#editInquiryModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        // Handle error
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
         </script>
 
     </main><!-- End #main -->

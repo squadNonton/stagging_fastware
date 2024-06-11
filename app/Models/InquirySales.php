@@ -9,6 +9,7 @@ class InquirySales extends Model
 {
     use HasFactory;
 
+    protected $table = 'inquiry_sales'; // Pastikan nama tabel benar
     protected $fillable = [
         'kode_inquiry',
         'jenis_inquiry',
