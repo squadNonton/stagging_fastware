@@ -87,7 +87,6 @@ class HeatTreatmentController extends Controller
                 $q->where('status_do', 'LIKE', '%' . $searchStatusDO . '%');
             }
             // Tambahkan kondisi untuk menangani jika salah satu atau kedua tanggal kosong
-            // Tanggal filter
             if ($startDate && $endDate) {
                 try {
                     $q->whereBetween('tgl_wo', [$startDate, $endDate]);

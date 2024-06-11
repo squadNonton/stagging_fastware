@@ -960,8 +960,8 @@
                     var searchWO = $('#searchWO').val();
                     var searchStatusWO = $('#searchStatusWO').val();
                     var searchStatusDO = $('#searchStatusDO').val();
-                    var startDate = $('#startDate').val();
-                    var endDate = $('#endDate').val();
+                    var startDate = formatDate($('#startDate').val());
+                    var endDate = formatDate($('#endDate').val());
 
                     $.ajax({
                         url: '{{ route('searchWO') }}',
@@ -986,6 +986,17 @@
                         }
                     });
                 }
+
+                function formatDate(date) {
+                    if (date) {
+                        // Memisahkan tahun, bulan, dan hari dari tanggal
+                        var parts = date.split('-');
+                        // Menggabungkan kembali dengan format yang diinginkan (DD/MM/YYYY)
+                        return parts[2] + '/' + parts[1] + '/' + parts[0];
+                    }
+                    return date;
+                }
+
 
                 function populateTable1(data) {
                     $('#tableContainer').empty();
