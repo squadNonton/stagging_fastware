@@ -1028,18 +1028,6 @@
             });
         });
 
-        // //jsDropdownCLaim-cutting
-        document.getElementById('process_type').addEventListener('change', function() {
-            var dropdownValue = this.value;
-            var checkBox1 = document.getElementById('type_2');
-
-            if (dropdownValue === 'Cutting') {
-                checkBox1.checked = true;
-            } else {
-                checkBox1.checked = false;
-            }
-        });
-
         //RefreshFromPageInputCreateHandling
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');

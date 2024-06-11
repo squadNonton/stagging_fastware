@@ -52,7 +52,7 @@
                                         </div>
                                     </div>
                                     <br>
-                                    
+
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <label for="customer_code" class="col-sm-5 col-form-label">Kode Pelanggan:<span
@@ -324,6 +324,17 @@
             </div>
         </section>
         <script>
+            document.getElementById('process_type').addEventListener('change', function() {
+                var dropdownValue = this.value;
+                var checkBox1 = document.getElementById('type_2');
+
+                if (dropdownValue === 'Cutting') {
+                    checkBox1.checked = true;
+                } else {
+                    checkBox1.checked = false;
+                }
+            });
+
             var imageError = document.getElementById('imageError');
             imageError.style.display = 'none';
 
