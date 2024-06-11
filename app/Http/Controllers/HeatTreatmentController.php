@@ -62,6 +62,7 @@ class HeatTreatmentController extends Controller
         }
     }
 
+
     public function searchWO(Request $request)
     {
         // Mengambil nilai input dari request
@@ -85,11 +86,26 @@ class HeatTreatmentController extends Controller
             if ($searchStatusDO && $searchStatusDO != 'All') {
                 $q->where('status_do', 'LIKE', '%' . $searchStatusDO . '%');
             }
-            if ($startDate) {
-                $q->whereRaw("SUBSTRING_INDEX(tgl_wo, '-', 2) >= ?", [$startDate]);
-            }
-            if ($endDate) {
-                $q->whereRaw("SUBSTRING_INDEX(tgl_wo, '-', 2) <= ?", [$endDate]);
+            // Tambahkan kondisi untuk menangani jika salah satu atau kedua tanggal kosong
+            // Tanggal filter
+            if ($startDate && $endDate) {
+                try {
+                    $q->whereBetween('tgl_wo', [$startDate, $endDate]);
+                } catch (\Exception $e) {
+                    Log::warning("Date parsing failed for: $startDate, $endDate");
+                }
+            } elseif ($startDate) {
+                try {
+                    $q->where('tgl_wo', $startDate);
+                } catch (\Exception $e) {
+                    Log::warning("Start date parsing failed for: $startDate");
+                }
+            } elseif ($endDate) {
+                try {
+                    $q->where('tgl_wo', $endDate);
+                } catch (\Exception $e) {
+                    Log::warning("End date parsing failed for: $endDate");
+                }
             }
         });
 
@@ -135,6 +151,8 @@ class HeatTreatmentController extends Controller
         // Mengembalikan data dalam format JSON
         return response()->json($response);
     }
+
+
 
 
 
