@@ -537,7 +537,7 @@
                     if (!document.getElementById('pic').value.trim() || !document.getElementById('results').value.trim()) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'PIC dan Catatan Wajib Diisi',
+                            title: 'Gagal!',
                             text: 'Silakan isi PIC dan Catatan Hasil sebelum menyimpan!',
                         });
                         return;
@@ -546,7 +546,7 @@
                     if (!document.getElementById('pic').value.trim() || !document.getElementById('results').value.trim()) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'PIC dan Catatan Wajib Diisi',
+                            title: 'Gagal!',
                             text: 'Silakan isi PIC dan Catatan Hasil sebelum mengklaim!',
                         });
                         return;
@@ -556,7 +556,7 @@
                         document.getElementById('upload_file').files.length === 0) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'PIC, Catatan, dan File Wajib Diisi',
+                            title: 'Gagal!',
                             text: 'Silakan isi PIC, Catatan, dan Unggah File sebelum menyelesaikan!',
                         });
                         return;
@@ -590,14 +590,18 @@
                     },
                     error: function(xhr, status, error) {
                         // Kesalahan dari server
+                        // Bagian ini ditambahkan untuk menampilkan pesan kesalahan spesifik dari controller
+                        var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message :
+                            'Terjadi kesalahan saat menyimpan data!';
                         Swal.fire({
                             icon: 'error',
-                            title: 'Oops...',
-                            text: 'Terjadi kesalahan saat menyimpan data!',
+                            title: 'Gagal!',
+                            text: errorMessage, // Pesan kesalahan spesifik ditampilkan di sini
                         });
                     }
                 });
             }
+
 
             // Fungsi untuk kembali ke halaman sebelumnya
             function goToSubmission() {

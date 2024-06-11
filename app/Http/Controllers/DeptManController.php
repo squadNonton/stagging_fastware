@@ -63,41 +63,6 @@ class DeptManController extends Controller
 
     public function showHistoryClaimComplain()
     {
-        // $data2 = Handling::select(
-        //     'handlings.id',
-        //     'handlings.no_wo',
-        //     'customers.customer_code',
-        //     'customers.name_customer',
-        //     'customers.area',
-        //     'type_materials.type_name',
-        //     'handlings.thickness',
-        //     'handlings.weight',
-        //     'handlings.outer_diameter',
-        //     'handlings.inner_diameter',
-        //     'handlings.length',
-        //     'handlings.qty',
-        //     'handlings.pcs',
-        //     'handlings.category',
-        //     'handlings.process_type',
-        //     'handlings.type_1',
-        //     'handlings.type_2',
-        //     'handlings.image',
-        //     'schedule_visits.schedule',
-        //     'schedule_visits.results',
-        //     'schedule_visits.due_date',
-        //     'schedule_visits.pic',
-        //     'handlings.status',
-        //     'handlings.created_at',
-        //     'users.name'
-        // )
-        // ->join('schedule_visits', 'handlings.id', '=', 'schedule_visits.handling_id')
-        // ->join('customers', 'handlings.customer_id', '=', 'customers.id')
-        // ->join('type_materials', 'handlings.type_id', '=', 'type_materials.id')
-        // ->join('users', 'users.id', '=', 'handlings.user_id')
-        // ->where('handlings.status', 3)
-        // ->orderByDesc('handlings.created_at')
-        // ->get();
-
         // Menggunakan Eloquent dengan eager loading
         $data2 = Handling::with(['schedule_viist', 'customers', 'type_materials', 'user'])
         ->where('status', 3)
@@ -224,7 +189,7 @@ class DeptManController extends Controller
 
     public function updateFollowUp(Request $request, $id)
     {
-        // Validate for "finish" action
+        // Validasi untuk tindakan "finish"
         if ($request->action == 'finish') {
             $request->validate([
                 'results' => 'required|string|max:255',
@@ -232,7 +197,25 @@ class DeptManController extends Controller
             ]);
         }
 
-        // Save file with a hash name
+        // Ambil jadwal kunjungan yang ada berdasarkan handling_id
+        $existingScheduleVisit = ScheduleVisit::where('handling_id', $request->handling_id)->orderBy('schedule', 'desc')->first();
+
+        if ($existingScheduleVisit) {
+            $existingSchedule = strtotime($existingScheduleVisit->schedule);
+        } else {
+            $existingSchedule = null;
+        }
+
+        // Periksa apakah batas akhir lebih awal dari jadwal kunjungan
+        if (isset($request->due_date)) {
+            $dueDate = strtotime($request->due_date);
+            if ($existingSchedule && $dueDate < $existingSchedule) {
+                // Bagian ini ditambahkan untuk mengembalikan pesan kesalahan spesifik jika batas akhir lebih awal dari jadwal kunjungan
+                return response()->json(['message' => 'Batas Akhir tidak boleh lebih awal dari Jadwal Kunjungan!'], 400);
+            }
+        }
+
+        // Simpan file dengan nama hash
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $filename = $file->hashName();
