@@ -151,12 +151,6 @@ class HeatTreatmentController extends Controller
         return response()->json($response);
     }
 
-
-
-
-
-
-
     public function getBatchData(Request $request)
     {
         $batch = $request->input('batch');
