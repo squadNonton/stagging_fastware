@@ -241,4 +241,6 @@ Route::middleware(['web', 'auth'])->group(function () {
     // routes/web.php
     Route::put('/inquiry/{id}', [InquirySalesController::class, 'update'])->name('updateinquiry');
     Route::get('/editInquiry/{id}', [InquirySalesController::class, 'editInquiry'])->name('editInquiry');
+
+    Route::delete('/deleteinquiry/{id}', [InquirySalesController::class, 'delete'])->name('deleteinquiry');
 });

@@ -100,7 +100,7 @@
                                                             $item->status != 5 &&
                                                             $item->status != 6 &&
                                                             $item->status != 7)
-                                                        @if (Auth::user()->role_id != 14 && Auth::user()->role_id != 20)
+                                                        @if (Auth::user()->role_id != 20)
                                                             <button class="btn btn-primary btn-sm"
                                                                 onclick="openEditModal({{ $item->id }})"
                                                                 title="Edit">

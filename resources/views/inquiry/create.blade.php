@@ -19,8 +19,7 @@
                     <h5 class="card-title">Inquiry Sales</h5>
                     <button class="btn btn-primary btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#inquiryModal">Form
                         Inquiry</button>
-                    <button class="btn btn-warning btn-sm mb-3" data-bs-toggle="modal"
-                        data-bs-target="#inquiryModal">Report</button>
+                    <button id="exportReportBtn" class="btn btn-warning btn-sm mb-3">Report</button>
 
                     <!-- Table with stripped rows -->
                     <table class="table table-striped" id="inquiryTable">
@@ -39,6 +38,7 @@
                                 <th scope="col" class="text-center">To Validate</th>
                                 <th scope="col">Note</th>
                                 <th scope="col">File</th>
+                                <th scope="col">is Active</th>
                                 <th scope="col">Actions</th>
                             </tr>
                         </thead>
@@ -56,10 +56,15 @@
                                     <td>{{ $inquiry->create_by }}</td>
                                     <td class="text-center">
                                         <button
-                                            class="btn btn-success btn-sm text-center">{{ $inquiry->to_approve }}</button>
+                                            class="btn btn-sm text-center {{ $inquiry->to_approve == 'Waiting' ? 'btn-warning' : ($inquiry->to_approve == 'Approved' ? 'btn-success' : 'btn-danger') }}">
+                                            {{ $inquiry->to_approve }}
+                                        </button>
                                     </td>
                                     <td class="text-center">
-                                        <button class="btn btn-success btn-sm">{{ $inquiry->to_validate }}</button>
+                                        <button
+                                            class="btn btn-sm {{ $inquiry->to_validate == 'Waiting' ? 'btn-warning' : ($inquiry->to_validate == 'Validated' ? 'btn-success' : 'btn-danger') }}">
+                                            {{ $inquiry->to_validate }}
+                                        </button>
                                     </td>
                                     <td>{{ $inquiry->note }}</td>
                                     <td>
@@ -71,10 +76,31 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a class="btn btn-primary mt-1" title="Edit">
-                                            <i class="bi bi-pencil-fill"
-                                                onclick="openEditInquiryModal({{ $inquiry->id }})"></i>
-                                        </a>
+                                        @if ($inquiry->status == 0)
+                                            <button type="button" class="btn btn-danger" title="Data tidak aktif">
+                                                <i class="bi bi-exclamation-octagon"></i>
+                                            </button>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @if (
+                                            $inquiry->status != 0 &&
+                                                $inquiry->status != 1 &&
+                                                $inquiry->status != 3 &&
+                                                $inquiry->status != 4 &&
+                                                $inquiry->status != 5 &&
+                                                $inquiry->status != 6 &&
+                                                $inquiry->status != 7)
+                                            <a class="btn btn-primary mt-1" title="Edit">
+                                                <i class="bi bi-pencil-fill"
+                                                    onclick="openEditInquiryModal({{ $inquiry->id }})"></i>
+                                            </a>
+                                            <a class="btn btn-danger mt-1" title="Delete">
+                                                <i class="bi bi-trash-fill"
+                                                    onclick="deleteInquiry({{ $inquiry->id }})"></i>
+                                            </a>
+                                        @endif
 
                                         <a class="btn btn-warning mt-1" title="View Form">
                                             <i class="bi bi-eye-fill"></i>
@@ -132,30 +158,6 @@
                                             <input type="text" class="form-control" id="order_from" name="order_from"
                                                 required>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="create_by" class="form-label">Create By</label>
-                                            <input type="text" class="form-control" id="create_by" name="create_by"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="to_approve" class="form-label">To Approve</label>
-                                            <input type="text" class="form-control" id="to_approve" name="to_approve"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="to_validate" class="form-label">To Validate</label>
-                                            <input type="text" class="form-control" id="to_validate"
-                                                name="to_validate" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="note" class="form-label">Note</label>
-                                            <textarea class="form-control" id="note" name="note"></textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="attach_file" class="form-label">Attach File</label>
-                                            <input type="file" class="form-control" id="attach_file"
-                                                name="attach_file">
-                                        </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Close</button>
@@ -167,6 +169,7 @@
                         </div>
                     </div>
                     <!-- End Modal -->
+
                     <!-- Edit Inquiry Modal -->
                     <div class="modal fade" id="editInquiryModal" tabindex="-1" aria-labelledby="editInquiryModalLabel"
                         aria-hidden="true">
@@ -178,15 +181,12 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form id="editInquiryForm" method="POST" enctype="multipart/form-data">
+                                    <form id="editInquiryForm"
+                                        action="{{ route('updateinquiry', ['id' => $inquiry->id]) }}" method="POST"
+                                        enctype="multipart/form-data">
                                         @csrf
                                         @method('PUT')
                                         <input type="hidden" id="editInquiryId" name="inquiry_id">
-                                        <div class="mb-3">
-                                            <label for="editkode_inquiry" class="form-label">Kode Inquiry</label>
-                                            <input type="text" class="form-control" id="editkode_inquiry"
-                                                name="kode_inquiry" required>
-                                        </div>
                                         <div class="mb-3">
                                             <label for="editjenis_inquiry" class="form-label">Jenis Inquiry</label>
                                             <select class="form-select" id="editjenis_inquiry" name="jenis_inquiry"
@@ -220,30 +220,6 @@
                                             <input type="text" class="form-control" id="editorder_from"
                                                 name="order_from" required>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="editcreate_by" class="form-label">Create By</label>
-                                            <input type="text" class="form-control" id="editcreate_by"
-                                                name="create_by" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editto_approve" class="form-label">To Approve</label>
-                                            <input type="text" class="form-control" id="editto_approve"
-                                                name="to_approve" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editto_validate" class="form-label">To Validate</label>
-                                            <input type="text" class="form-control" id="editto_validate"
-                                                name="to_validate" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editnote" class="form-label">Note</label>
-                                            <textarea class="form-control" id="editnote" name="note"></textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editattach_file" class="form-label">Attach File</label>
-                                            <input type="file" class="form-control" id="editattach_file"
-                                                name="attach_file">
-                                        </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Close</button>
@@ -261,6 +237,9 @@
 
         <!-- jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        {{-- excel --}}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
         <!-- SimpleDataTables JS -->
         <script src="{{ asset('assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
 
@@ -354,6 +333,132 @@
                     }
                 });
             }
+
+            //delete
+            function deleteInquiry(id) {
+                Swal.fire({
+                    title: "Apakah Anda yakin?",
+                    text: "Anda akan menghapus inquiry ini!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('deleteinquiry', '') }}/' + id,
+                            type: 'DELETE',
+                            data: {
+                                '_token': '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Inquiry telah berhasil dihapus!',
+                                    'success'
+                                ).then((result) => {
+                                    // Jika pengguna menekan tombol 'OK', refresh halaman
+                                    if (result.isConfirmed) {
+                                        location.reload();
+                                    }
+                                })
+                                // Anda bisa menambahkan kode untuk menghapus baris tabel atau memperbarui tampilan di sini
+                            }
+                        });
+                    }
+                })
+            }
+
+            // report
+            document.getElementById('exportReportBtn').addEventListener('click', function() {
+                // Get the table element
+                var table = document.getElementById('inquiryTable');
+
+                // Create a workbook and add a worksheet
+                var wb = XLSX.utils.table_to_book(table, {
+                    sheet: "Inquiry Report"
+                });
+                var ws = wb.Sheets["Inquiry Report"];
+
+                // Filter out unwanted columns (Note, File, is Active, Actions)
+                // Define the columns we want to keep (1-based index: No, Kode Inq., Type Inq., Type, Size, Supplier, Qty, Order From, Create By, To Approve, To Validate)
+                var columnsToKeep = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+                // Get the range of the worksheet
+                var range = XLSX.utils.decode_range(ws['!ref']);
+
+                // Create a new worksheet to store the filtered data
+                var newWsData = [];
+
+                for (var R = range.s.r; R <= range.e.r; ++R) {
+                    var newRow = [];
+                    for (var C = range.s.c; C <= range.e.c; ++C) {
+                        if (columnsToKeep.includes(C + 1)) {
+                            var cellAddress = {
+                                c: C,
+                                r: R
+                            };
+                            var cellRef = XLSX.utils.encode_cell(cellAddress);
+                            newRow.push(ws[cellRef] ? ws[cellRef].v : null);
+                        }
+                    }
+                    newWsData.push(newRow);
+                }
+
+                // Create a new worksheet with the filtered data
+                var newWs = XLSX.utils.aoa_to_sheet(newWsData);
+
+                // Apply auto filter to the header row
+                newWs['!autofilter'] = {
+                    ref: `A1:K${newWsData.length}`
+                };
+
+                // Adjust column widths
+                var colWidths = [{
+                        wpx: 40
+                    }, // No
+                    {
+                        wpx: 100
+                    }, // Kode Inq.
+                    {
+                        wpx: 100
+                    }, // Type Inq.
+                    {
+                        wpx: 100
+                    }, // Type
+                    {
+                        wpx: 60
+                    }, // Size
+                    {
+                        wpx: 120
+                    }, // Supplier
+                    {
+                        wpx: 60
+                    }, // Qty
+                    {
+                        wpx: 100
+                    }, // Order From
+                    {
+                        wpx: 100
+                    }, // Create By
+                    {
+                        wpx: 100
+                    }, // To Approve
+                    {
+                        wpx: 100
+                    } // To Validate
+                ];
+                newWs['!cols'] = colWidths;
+
+                // Replace the old worksheet with the new one
+                wb.Sheets["Inquiry Report"] = newWs;
+
+                // Write the workbook to a file
+                XLSX.writeFile(wb, 'Inquiry_Report.xlsx');
+            });
+
+            
         </script>
 
     </main><!-- End #main -->

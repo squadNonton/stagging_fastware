@@ -23,5 +23,6 @@ class InquirySales extends Model
         'to_validate',
         'note',
         'attach_file',
+        'status'
     ];
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\InquirySales; // Impor model InquirySales
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class InquirySalesController extends Controller
 {
@@ -24,11 +25,6 @@ class InquirySalesController extends Controller
             'supplier' => 'required',
             'qty' => 'required|integer',
             'order_from' => 'required',
-            'create_by' => 'required',
-            'to_approve' => 'required',
-            'to_validate' => 'required',
-            'note' => 'nullable',
-            'attach_file' => 'nullable|file',
         ]);
 
         // Generate kode inquiry
@@ -41,57 +37,83 @@ class InquirySalesController extends Controller
 
         $inquiry = new InquirySales($request->all());
         $inquiry->kode_inquiry = $kodeInquiry;
+        $inquiry->to_approve = 'Waiting';
+        $inquiry->to_validate = 'Waiting';
+        $inquiry->status = 2;
 
-        if ($request->hasFile('attach_file')) {
-            $filePath = $request->file('attach_file')->store('attachments');
-            $inquiry->attach_file = $filePath;
-        }
+        // Assign the name of the logged-in user to the create_by field
+        $inquiry->create_by = Auth::user()->name;
 
         $inquiry->save();
 
         return redirect()->route('createinquiry');
     }
 
-public function editInquiry($id)
-{
-    \Log::info('Attempting to edit inquiry with ID: ' . $id);
+    public function editInquiry($id)
+    {
+        $inquiry = InquirySales::find($id);
 
-    $inquiry = InquirySales::find($id);
-
-    if (!$inquiry) {
-        \Log::error('Inquiry not found with ID: ' . $id);
-        return response()->json(['error' => 'Inquiry not found'], 404);
+        return response()->json([
+            'id' => $inquiry->id,
+            'kode_inquiry' => $inquiry->kode_inquiry,
+            'jenis_inquiry' => $inquiry->jenis_inquiry,
+            'type' => $inquiry->type,
+            'size' => $inquiry->size,
+            'supplier' => $inquiry->supplier,
+            'qty' => $inquiry->qty,
+            'order_from' => $inquiry->order_from,
+            'create_by' => $inquiry->create_by,
+            'to_approve' => $inquiry->to_approve,
+            'to_validate' => $inquiry->to_validate,
+            'note' => $inquiry->note,
+            'attach_file' => $inquiry->attach_file,
+        ]);
     }
-
-    return response()->json([
-        'id' => $inquiry->id,
-        'kode_inquiry' => $inquiry->kode_inquiry,
-        'jenis_inquiry' => $inquiry->jenis_inquiry,
-        'type' => $inquiry->type,
-        'size' => $inquiry->size,
-        'supplier' => $inquiry->supplier,
-        'qty' => $inquiry->qty,
-        'order_from' => $inquiry->order_from,
-        'create_by' => $inquiry->create_by,
-        'to_approve' => $inquiry->to_approve,
-        'to_validate' => $inquiry->to_validate,
-        'note' => $inquiry->note,
-        'attach_file' => $inquiry->attach_file,
-    ]);
-}
 
     public function update(Request $request, $id)
     {
-        $inquiry = InquirySales::findOrFail($id); // Pastikan nama modelnya benar
+        $request->validate([
+            'jenis_inquiry' => 'required',
+            'type' => 'required',
+            'size' => 'required',
+            'supplier' => 'required',
+            'qty' => 'required|integer',
+            'order_from' => 'required',
+        ]);
+
+        $inquiry = InquirySales::findOrFail($id);
+
+        // Generate kode inquiry
+        $jenisInquiry = $request->jenis_inquiry; // RO atau SPOR
+        $currentMonth = Carbon::now()->format('m');
+        $currentYear = Carbon::now()->format('Y');
+        $lastInquiry = InquirySales::where('jenis_inquiry', $jenisInquiry)->orderBy('id', 'desc')->first();
+        $nextNumber = $lastInquiry ? intval(substr($lastInquiry->kode_inquiry, -3)) + 1 : 1;
+        $kodeInquiry = sprintf('%s/%02d/%04d/%03d', $jenisInquiry, $currentMonth, $currentYear, $nextNumber);
+
+        $inquiry->kode_inquiry = $kodeInquiry;
+        $inquiry->to_approve = 'Waiting';
+        $inquiry->to_validate = 'Waiting';
+        $inquiry->status = 2;
+
+        // Assign the name of the logged-in user to the create_by field
+        $inquiry->create_by = Auth::user()->name;
+
         $inquiry->update($request->all());
 
-        if ($request->hasFile('attach_file')) {
-            $file = $request->file('attach_file');
-            $filePath = $file->store('uploads', 'public');
-            $inquiry->attach_file = $filePath;
-            $inquiry->save();
-        }
+        return redirect()->route('createinquiry')->with('success', 'Inquiry updated successfully');
+    }
 
-        return redirect()->route('inquiry.create')->with('success', 'Inquiry updated successfully');
+    public function delete($id){
+        // Temukan data berdasarkan ID
+        $inquiry = InquirySales::findOrFail($id);
+    
+        // Ubah status menjadi 0
+        $inquiry->status = 0;
+    
+        // Simpan perubahan
+        $inquiry->save();
+    
+        return response()->json(['success' => 'Inquiry deleted successfully']);
     }
 }
