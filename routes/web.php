@@ -236,11 +236,16 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/getBatchData', [HeatTreatmentController::class, 'getBatchData'])->name('getBatchData');
 
     // Inquiry Sales
+
+    // view 
     Route::get('createinquiry', [InquirySalesController::class, 'createInquirySales'])->name('createinquiry');
+    Route::get('konfirmInquiry', [InquirySalesController::class, 'konfirmInquiry'])->name('konfirmInquiry');
+    //fungsi
     Route::post('storeinquiry', [InquirySalesController::class, 'storeInquirySales'])->name('storeinquiry');
-    // routes/web.php
     Route::put('/inquiry/{id}', [InquirySalesController::class, 'update'])->name('updateinquiry');
     Route::get('/editInquiry/{id}', [InquirySalesController::class, 'editInquiry'])->name('editInquiry');
-
     Route::delete('/deleteinquiry/{id}', [InquirySalesController::class, 'delete'])->name('deleteinquiry');
+
+
+    Route::put('/approvedInquiry/{id}', [InquirySalesController::class, 'approvedInquiry'])->name('approvedInquiry');
 });

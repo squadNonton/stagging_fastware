@@ -473,7 +473,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#">
+                                <a href="{{route ('konfirmInquiry')}}">
                                     <i class="bi bi-list-check fs-6"></i><span>Approve Inquiry</span>
                                 </a>
                             </li>

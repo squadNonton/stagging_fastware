@@ -11,9 +11,22 @@ class InquirySalesController extends Controller
 {
     public function createInquirySales()
     {
-        $inquiries = InquirySales::all();
+        $statuses = [0, 1, 2, 3, 1, 4, 5, 6, 7];
+        $inquiries = InquirySales::whereIn('status', $statuses)
+            ->orderByRaw('FIELD(status, 2, 3, 1, 0, 4, 5, 6, 7)')
+            ->get();
 
         return view('inquiry.create', compact('inquiries'));
+    }
+
+    public function konfirmInquiry()
+    {
+        $statuses = [2, 3, 1, 4, 5, 6, 7];
+        $inquiries = InquirySales::whereIn('status', $statuses)
+            ->orderByRaw('FIELD(status, 2, 3, 1, 4, 5, 6, 7)')
+            ->get();
+
+        return view('inquiry.konfirmInquiry', compact('inquiries'));
     }
 
     public function storeInquirySales(Request $request)
@@ -104,16 +117,36 @@ class InquirySalesController extends Controller
         return redirect()->route('createinquiry')->with('success', 'Inquiry updated successfully');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         // Temukan data berdasarkan ID
         $inquiry = InquirySales::findOrFail($id);
-    
+
         // Ubah status menjadi 0
         $inquiry->status = 0;
-    
+
         // Simpan perubahan
         $inquiry->save();
-    
+
         return response()->json(['success' => 'Inquiry deleted successfully']);
+    }
+
+    public function approvedInquiry(Request $request, $id)
+    {
+        $inquiry = InquirySales::findOrFail($id);
+
+        $inquiry->to_validate = 'Waiting';
+
+        if ($request->action_type == 'approved') {
+            $inquiry->to_approve = 'Approved';
+            $inquiry->status = 3;
+        } elseif ($request->action_type == 'not_approved') {
+            $inquiry->to_approve = 'Not Approved';
+            $inquiry->status = 1; // Or any other status code you want to set for not approved
+        }
+
+        $inquiry->save(); // Save the inquiry to update the database
+
+        return redirect()->route('konfirmInquiry')->with('success', 'Inquiry updated successfully');
     }
 }

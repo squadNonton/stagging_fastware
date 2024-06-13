@@ -86,7 +86,6 @@
                                     <td>
                                         @if (
                                             $inquiry->status != 0 &&
-                                                $inquiry->status != 1 &&
                                                 $inquiry->status != 3 &&
                                                 $inquiry->status != 4 &&
                                                 $inquiry->status != 5 &&
@@ -458,7 +457,7 @@
                 XLSX.writeFile(wb, 'Inquiry_Report.xlsx');
             });
 
-            
+
         </script>
 
     </main><!-- End #main -->

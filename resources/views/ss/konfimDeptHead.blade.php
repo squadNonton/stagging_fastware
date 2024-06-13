@@ -426,7 +426,8 @@
                     url: '{{ route('sechead.show', ':id') }}'.replace(':id', id),
                     type: 'GET',
                     success: function(response) {
-                        console.log(response); // Tambahkan ini untuk debug
+                        console.log(response); // Debug: Check response
+
                         if (response) {
                             $('#viewname').val(response.user.name);
                             $('#viewnpk').val(response.user.npk);
@@ -440,13 +441,17 @@
                             $('#viewKeuntungan').val(response.keuntungan_ide);
                             $('#viewSumbangSaranId').val(response.id);
 
+                            // Menampilkan file pertama
                             if (response.file_name && response.image) {
                                 var fileExtension1 = response.file_name.split('.').pop().toLowerCase();
                                 var fileLink1 = '{{ asset('assets/image/') }}/' + response.image;
                                 if (['jpg', 'jpeg', 'png'].includes(fileExtension1)) {
                                     $('#view-image-preview').html('<img src="' + fileLink1 +
-                                        '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
+                                        '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-img-src="' +
                                         fileLink1 + '">');
+                                    $('#view-image-preview img').click(function() {
+                                        showImageInModal2(fileLink1, 'view');
+                                    });
                                 } else {
                                     $('#view-image-preview').html('<a href="' + fileLink1 + '" download="' +
                                         response.file_name + '">' + response.file_name + '</a>');
@@ -455,13 +460,17 @@
                                 $('#view-image-preview').html('');
                             }
 
+                            // Menampilkan file kedua
                             if (response.file_name_2 && response.image_2) {
                                 var fileExtension2 = response.file_name_2.split('.').pop().toLowerCase();
                                 var fileLink2 = '{{ asset('assets/image/') }}/' + response.image_2;
                                 if (['jpg', 'jpeg', 'png'].includes(fileExtension2)) {
                                     $('#view-image2-preview').html('<img src="' + fileLink2 +
-                                        '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-bs-toggle="modal" data-bs-target="#viewImageModal" data-img-src="' +
+                                        '" class="img-fluid rounded clickable-view-image" style="max-width: 200px; height: auto;" data-img-src="' +
                                         fileLink2 + '">');
+                                    $('#view-image2-preview img').click(function() {
+                                        showImageInModal2(fileLink2, 'view');
+                                    });
                                 } else {
                                     $('#view-image2-preview').html('<a href="' + fileLink2 + '" download="' +
                                         response.file_name_2 + '">' + response.file_name_2 + '</a>');
@@ -472,7 +481,7 @@
 
                             $('#viewSumbangSaranModal').modal('show');
                         } else {
-                            console.error('No response data');
+                            console.error('Tidak ada data respons');
                         }
                     },
                     error: function(xhr, status, error) {
@@ -480,12 +489,16 @@
                     }
                 });
             }
-            // Event listener untuk gambar yang diklik
-            $(document).on('click', '.clickable-view-image', function() {
-                var imgSrc = $(this).data('img-src');
-                $('#viewModalImage').attr('src', imgSrc);
-                $('#viewImageModal').modal('show');
-            });
+
+            // Fungsi untuk menampilkan gambar dalam modal
+            function showImageInModal2(imageLink, modalType) {
+                if (modalType === 'view') {
+                    $('#viewImageModal').modal('show');
+                    $('#viewModalImage').attr('src', imageLink);
+                } else {
+                    console.error('Modal type not recognized');
+                }
+            }
         </script>
 
     </main><!-- End #main -->
