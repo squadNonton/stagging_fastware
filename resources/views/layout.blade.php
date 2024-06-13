@@ -412,7 +412,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{route ('konfirmInquiry')}}">
+                                <a href="{{ route('konfirmInquiry') }}">
                                     <i class="bi bi-list-check fs-6"></i><span>Approve Inquiry</span>
                                 </a>
                             </li>
@@ -450,12 +450,12 @@
                         Auth::user()->role_id == 7 ||
                         Auth::user()->role_id == 9 ||
                         Auth::user()->role_id == 11 ||
-                        Auth::user()->role_id == 14 ||
-                        Auth::user()->role_id == 21 ||
-                        Auth::user()->role_id == 22 ||
                         Auth::user()->role_id == 12 ||
                         Auth::user()->role_id == 14 ||
-                        Auth::user()->role_id == 20)
+                        Auth::user()->role_id == 16 ||
+                        Auth::user()->role_id == 22 ||
+                        Auth::user()->role_id == 30 ||
+                        Auth::user()->role_id == 31)
                     <a class="nav-link collapsed" data-bs-target="#nav-conf" data-bs-toggle="collapse"
                         href="#">
                         <i class="bi bi-layout-wtf"></i><span>Persetujuan</span><i
@@ -487,7 +487,7 @@
                             Auth::user()->role_id == 11 ||
                             Auth::user()->role_id == 14 ||
                             Auth::user()->role_id == 22 ||
-                            Auth::user()->role_id == 30
+                            Auth::user()->role_id == 30 ||
                             Auth::user()->role_id == 31)
                         <li class="nav-item">
                             <a class="nav-link collapsed" href="{{ route('showKonfirmasiDeptHead') }}">
