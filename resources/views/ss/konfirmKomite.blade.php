@@ -370,6 +370,7 @@
                                 $('#editSumbangSaranModal').modal('hide');
                                 // Pilihan: reload halaman atau perbarui tabel untuk mencerminkan perubahan
                                 window.location.href = '{{ route('showKonfirmasiKomite') }}';
+                                location.reload();
                             }
                         });
                     },
