@@ -69,14 +69,14 @@ class HeatTreatmentController extends Controller
         $searchWO = $request->input('searchWO');
         $searchStatusWO = $request->input('searchStatusWO');
         $searchStatusDO = $request->input('searchStatusDO');
-        $startDate = $request->input('startDate');
-        $endDate = $request->input('endDate');
+        $startMonth = $request->input('startMonth');
+        $endMonth = $request->input('endMonth');
 
         // Membuat query dasar untuk model HeatTreatment
         $query = HeatTreatment::query();
 
         // Tambahkan kondisi pencarian
-        $query->where(function ($q) use ($searchWO, $searchStatusWO, $searchStatusDO, $startDate, $endDate) {
+        $query->where(function ($q) use ($searchWO, $searchStatusWO, $searchStatusDO, $startMonth, $endMonth) {
             if ($searchWO) {
                 $q->where('cust', 'LIKE', '%' . $searchWO . '%');
             }
@@ -86,25 +86,13 @@ class HeatTreatmentController extends Controller
             if ($searchStatusDO && $searchStatusDO != 'All') {
                 $q->where('status_do', 'LIKE', '%' . $searchStatusDO . '%');
             }
-            // Tambahkan kondisi untuk menangani jika salah satu atau kedua tanggal kosong
-            if ($startDate && $endDate) {
-                try {
-                    $q->whereBetween('tgl_wo', [$startDate, $endDate]);
-                } catch (\Exception $e) {
-                    Log::warning("Date parsing failed for: $startDate, $endDate");
-                }
-            } elseif ($startDate) {
-                try {
-                    $q->where('tgl_wo', $startDate);
-                } catch (\Exception $e) {
-                    Log::warning("Start date parsing failed for: $startDate");
-                }
-            } elseif ($endDate) {
-                try {
-                    $q->where('tgl_wo', $endDate);
-                } catch (\Exception $e) {
-                    Log::warning("End date parsing failed for: $endDate");
-                }
+            // Tambahkan kondisi untuk menangani filter berdasarkan bulan (ambil bagian bulan dari format dd-mm)
+            if ($startMonth && $endMonth) {
+                $q->whereBetween(DB::raw('SUBSTRING(tgl_wo, 4, 2)'), [$startMonth, $endMonth]);
+            } elseif ($startMonth) {
+                $q->where(DB::raw('SUBSTRING(tgl_wo, 4, 2)'), $startMonth);
+            } elseif ($endMonth) {
+                $q->where(DB::raw('SUBSTRING(tgl_wo, 4, 2)'), $endMonth);
             }
         });
 
@@ -150,6 +138,8 @@ class HeatTreatmentController extends Controller
         // Mengembalikan data dalam format JSON
         return response()->json($response);
     }
+
+
 
     public function getBatchData(Request $request)
     {

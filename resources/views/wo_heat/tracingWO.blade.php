@@ -792,14 +792,48 @@
                                         <option value="Waiting Availability">Waiting Availability</option>
                                     </select>
                                 </div>
-                                <div class="p-2 flex-fill">
-                                    <label for="startDate">Tanggal Mulai</label>
-                                    <input type="date" class="form-control" id="startDate" placeholder="dd-mm">
+                                <!-- Month Dropdowns -->
+                                <div class="form-group d-flex justify-content-between">
+                                    <!-- Other filters remain unchanged -->
+                                    <div class="p-2 flex-fill">
+                                        <label for="startMonth">Bulan Mulai</label>
+                                        <select class="form-control" id="startMonth">
+                                            <option value="All">Pilih Bulan</option>
+                                            <option value="01">Januari</option>
+                                            <option value="02">Februari</option>
+                                            <option value="03">Maret</option>
+                                            <option value="04">April</option>
+                                            <option value="05">Mei</option>
+                                            <option value="06">Juni</option>
+                                            <option value="07">Juli</option>
+                                            <option value="08">Agustus</option>
+                                            <option value="09">September</option>
+                                            <option value="10">Oktober</option>
+                                            <option value="11">November</option>
+                                            <option value="12">Desember</option>
+                                        </select>
+                                    </div>
+                                    <div class="p-2 flex-fill">
+                                        <label for="endMonth">Bulan Akhir</label>
+                                        <select class="form-control" id="endMonth">
+                                            <option value="All">Pilih Bulan</option>
+                                            <option value="01">Januari</option>
+                                            <option value="02">Februari</option>
+                                            <option value="03">Maret</option>
+                                            <option value="04">April</option>
+                                            <option value="05">Mei</option>
+                                            <option value="06">Juni</option>
+                                            <option value="07">Juli</option>
+                                            <option value="08">Agustus</option>
+                                            <option value="09">September</option>
+                                            <option value="10">Oktober</option>
+                                            <option value="11">November</option>
+                                            <option value="12">Desember</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="p-2 flex-fill">
-                                    <label for="endDate">Tanggal Akhir</label>
-                                    <input type="date" class="form-control" id="endDate" placeholder="dd-mm">
-                                </div>
+
+
                             </div>
 
 
@@ -952,7 +986,7 @@
             var globalData = {};
 
             $(document).ready(function() {
-                $('#searchWO, #searchStatusWO, #searchStatusDO, #startDate, #endDate').on('keyup change', function() {
+                $('#searchWO, #searchStatusWO, #searchStatusDO, #startMonth, #endMonth').on('keyup change', function() {
                     populateTables();
                 });
 
@@ -960,8 +994,12 @@
                     var searchWO = $('#searchWO').val();
                     var searchStatusWO = $('#searchStatusWO').val();
                     var searchStatusDO = $('#searchStatusDO').val();
-                    var startDate = formatDate($('#startDate').val());
-                    var endDate = formatDate($('#endDate').val());
+                    var startMonth = $('#startMonth').val();
+                    var endMonth = $('#endMonth').val();
+
+                    // Convert "All" selection to empty string
+                    if (startMonth === 'All') startMonth = '';
+                    if (endMonth === 'All') endMonth = '';
 
                     $.ajax({
                         url: '{{ route('searchWO') }}',
@@ -970,8 +1008,8 @@
                             'searchWO': searchWO,
                             'searchStatusWO': searchStatusWO,
                             'searchStatusDO': searchStatusDO,
-                            'startDate': startDate,
-                            'endDate': endDate
+                            'startMonth': startMonth,
+                            'endMonth': endMonth
                         },
                         success: function(data) {
                             globalData = data;
@@ -986,17 +1024,6 @@
                         }
                     });
                 }
-
-                function formatDate(date) {
-                    if (date) {
-                        // Memisahkan tahun, bulan, dan hari dari tanggal
-                        var parts = date.split('-');
-                        // Menggabungkan kembali dengan format yang diinginkan (DD/MM/YYYY)
-                        return parts[2] + '/' + parts[1] + '/' + parts[0];
-                    }
-                    return date;
-                }
-
 
                 function populateTable1(data) {
                     $('#tableContainer').empty();

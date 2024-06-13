@@ -44,35 +44,9 @@ class WOImport implements ToCollection
                                 ->first();
                         }
 
-                        // Function to handle date values and format as dd/mm/yyyy
-                        $parseDate = function ($date) {
-                            if (empty($date)) {
-                                return null;
-                            }
-
-                            // Try to parse it as 'd-m' format and convert to 'd/m/Y'
-                            try {
-                                return Carbon::createFromFormat('d-m', $date)->format('d/m/Y');
-                            } catch (\Exception $e) {
-                                Log::warning("Date parsing failed for: $date");
-                                return null;
-                            }
-                        };
-
-                        // Log parsed dates for debugging
-                        $parsedDates = [
-                            'tgl_wo' => $parseDate($row[2]),
-                            'tgl_heating' => $parseDate($row[11]),
-                            'tgl_temper1' => $parseDate($row[14]),
-                            'tgl_temper2' => $parseDate($row[17]),
-                            'tgl_temper3' => $parseDate($row[20]),
-                            'tgl_st' => $parseDate($row[24]),
-                            'tgl_terima' => $parseDate($row[27])
-                        ];
-                        Log::info("Parsed dates: " . json_encode($parsedDates));
-
+                        // Directly assign the date values as strings
                         $recordData = [
-                            'tgl_wo' => $parsedDates['tgl_wo'],
+                            'tgl_wo' => $row[2] ?: null,
                             'area' => $row[3] ?: null,
                             'kode' => $row[4] ?: null,
                             'cust' => $row[5] ?: null,
@@ -81,23 +55,23 @@ class WOImport implements ToCollection
                             'kg' => $row[8] ?: null,
                             'batch_heating' => $row[9] ?: null,
                             'mesin_heating' => $row[10] ?: null,
-                            'tgl_heating' => $parsedDates['tgl_heating'],
+                            'tgl_heating' => $row[11] ?: null,
                             'batch_temper1' => $row[12] ?: null,
                             'mesin_temper1' => $row[13] ?: null,
-                            'tgl_temper1' => $parsedDates['tgl_temper1'],
+                            'tgl_temper1' => $row[14] ?: null,
                             'batch_temper2' => $row[15] ?: null,
                             'mesin_temper2' => $row[16] ?: null,
-                            'tgl_temper2' => $parsedDates['tgl_temper2'],
+                            'tgl_temper2' => $row[17] ?: null,
                             'batch_temper3' => $row[18] ?: null,
                             'mesin_temper3' => $row[19] ?: null,
-                            'tgl_temper3' => $parsedDates['tgl_temper3'],
+                            'tgl_temper3' => $row[20] ?: null,
                             'status_wo' => $row[21] ?: null,
                             'no_do' => $row[22] ?: null,
                             'status_do' => $row[23] ?: null,
-                            'tgl_st' => $parsedDates['tgl_st'],
+                            'tgl_st' => $row[24] ?: null,
                             'supir' => $row[25] ?: null,
                             'penerima' => $row[26] ?: null,
-                            'tgl_terima' => $parsedDates['tgl_terima'],
+                            'tgl_terima' => $row[27] ?: null,
                         ];
 
                         if ($existingRecord) {
