@@ -153,10 +153,10 @@
             });
             //filter chart 1
             const roleData = {
-                'Sales': ['DH Sales'],
-                'HT': ['Engineering'],
-                'SupplyChainProduction': ['DH Productions'],
-                'FinnAccHrgaIT': ['DH Finance', 'IT'],
+                'Sales': ['DH Sales', 'SC Sales'],
+                'HT': ['Engineering', 'SC HT'],
+                'SupplyChainProduction': ['DH Supply Chain', 'SC PPIC', 'SC WHS'],
+                'FinnAccHrgaIT': ['DH Finance', 'SC HRGA'],
                 'TotalSS': [] // Tambahkan opsi TotalSS dengan array kosong
             };
 

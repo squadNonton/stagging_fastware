@@ -143,27 +143,28 @@ class SumbangSaranController extends Controller
         $userRole = Auth::user()->role_id;
 
         // Tentukan apakah pengguna memiliki role 1 atau 14
-        $isAdmin = in_array($userRole, [1, 14, 20]);
+        $isAdmin = in_array($userRole, [1, 14, 16, 20]);
 
         // Tentukan role yang bisa dilihat berdasarkan role pengguna yang sedang login
         $rolesToView = [];
         switch ($userRole) {
-            case 2:
             case 3:
-                $rolesToView = [3, 4, 16];
+                $rolesToView = [2, 3, 4];
                 break;
-            case 5:
-                $rolesToView = [6, 18];
-                break;
-            case 7:
-            case 9:
-            case 21:
             case 22:
-                $rolesToView = [8, 21, 22, 26];
+                $rolesToView = [5, 6, 22, 26];
                 break;
-            case 11:
+            case 9:
+                $rolesToView = [8, 18, 21, 27];
+                break;
             case 12:
-                $rolesToView = [1, 13, 15, 20];
+                $rolesToView = [13];
+                break;
+            case 30:
+                $rolesToView = [28];
+                break;
+            case 31:
+                $rolesToView = [29];
                 break;
                 // Tidak perlu menambahkan case untuk 1 dan 14 karena $isAdmin sudah menghandle
         }
@@ -237,22 +238,27 @@ class SumbangSaranController extends Controller
         $userRole = Auth::user()->role_id;
 
         // Tentukan apakah pengguna memiliki role 1 atau 14
-        $isAdmin = in_array($userRole, [1, 14, 20]);
+        $isAdmin = in_array($userRole, [1, 14, 16, 20]);
 
         // Tentukan role yang bisa dilihat berdasarkan role pengguna yang sedang login
         $rolesToView = [];
         switch ($userRole) {
             case 2:
-                $rolesToView = [3, 4, 16];
+            case 3:
+                $rolesToView = [3, 4];
                 break;
             case 5:
-                $rolesToView = [6, 18];
+            case 22:
+                $rolesToView = [6, 26];
                 break;
             case 7:
-                $rolesToView = [8, 9, 18, 21, 22, 26];
+            case 30:
+            case 31:
+                $rolesToView = [9, 8, 18, 21, 28, 29, 30, 31];
                 break;
             case 11:
-                $rolesToView = [1, 12, 13, 15, 20];
+            case 14:
+                $rolesToView = [12, 13, 15, 20];
                 break;
                 // Tidak perlu menambahkan case untuk 1 dan 14 karena $isAdmin sudah menghandle
         }
@@ -421,13 +427,13 @@ class SumbangSaranController extends Controller
     public function chartSection(Request $request)
     {
         // Eksekusi query untuk mengambil data dari database
-        $dataFromSQL = SumbangSaran::whereIn('modified_by', ['DH Finance', 'Engineering', 'DH Sales', 'DH Productions'])
+        $dataFromSQL = SumbangSaran::whereIn('modified_by', ['DH Finance', 'Engineering', 'DH Sales', 'DH Supply Chain'])
             ->selectRaw("MONTH(tgl_pengajuan) as month,
                  CASE 
                     WHEN modified_by = 'DH Finance' THEN 'FIN ACC HRGA IT'
                     WHEN modified_by = 'Engineering' THEN 'HT'
                     WHEN modified_by = 'DH Sales' THEN 'Sales'
-                    WHEN modified_by = 'DH Productions' THEN 'Supply Chain & Productions'
+                    WHEN modified_by = 'DH Supply Chain' THEN 'Supply Chain & Productions'
                     ELSE modified_by
                  END AS modified_by,
                  COUNT(*) as jumlah")
@@ -475,8 +481,8 @@ class SumbangSaranController extends Controller
         $categories = [
             'Sales' => ['DH Sales', 'SC Sales', 'UR Sales'],
             'HT' => ['Engineering', 'UR Maintenance', 'SC HT', 'UR HT'],
-            'SupplyChainProduction' => ['DH Productions', 'UR Productions', 'SC Productions', 'FM Productions', 'SC Cut-Mac', 'UR Cut-Mac'],
-            'FinnAccHrgaIT' => ['DH Finance', 'UR Finance', 'SC Finance', 'SC HRGA', 'UR HRGA', 'IT'],
+            'SupplyChainProduction' => ['DH Supply Chain', 'UR Productions', 'SC Productions', 'FM Productions', 'UR CT', 'UR MCH', 'UR MC-CUSTOME', 'UR PPIC', 'UR LOGISTIC', 'SC PPIC', 'SC WHS'],
+            'FinnAccHrgaIT' => ['DH Finance', 'SC HRGA', 'UR Finance', 'SC Finance', 'UR HRGA', 'IT'],
         ];
 
         $query = DB::table('sumbang_sarans')
@@ -594,10 +600,10 @@ class SumbangSaranController extends Controller
 
         // Define categories
         $categories = [
-            'Sales' => ['DH Sales', 'SC Sales', 'UR Sales'],
+           'Sales' => ['DH Sales', 'SC Sales', 'UR Sales'],
             'HT' => ['Engineering', 'UR Maintenance', 'SC HT', 'UR HT'],
-            'SupplyChainProduction' => ['DH Productions', 'UR Productions', 'SC Productions', 'FM Productions', 'SC Cut-Mac', 'UR Cut-Mac'],
-            'FinnAccHrgaIT' => ['DH Finance', 'UR Finance', 'SC Finance', 'SC HRGA', 'UR HRGA'],
+            'SupplyChainProduction' => ['DH Supply Chain', 'UR Productions', 'SC Productions', 'FM Productions', 'UR CT', 'UR MCH', 'UR MC-CUSTOME', 'UR PPIC', 'UR LOGISTIC', 'SC PPIC', 'SC WHS'],
+            'FinnAccHrgaIT' => ['DH Finance', 'SC HRGA', 'UR Finance', 'SC Finance', 'UR HRGA', 'IT'],
         ];
 
         $query = DB::table('sumbang_sarans')
