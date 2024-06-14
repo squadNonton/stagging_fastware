@@ -53,12 +53,22 @@ class HeatTreatmentController extends Controller
             $rows = $worksheet->toArray();
 
             foreach ($rows as $index => $row) {
-                if ($index === 0) {
-                    // Skip the header row
+                if ($index < 2) {
+                    // Skip the first two rows
                     continue;
                 }
-                // Assuming columns match the fields in the model
-                HeatTreatment::create([
+
+                // Normalize numeric values to remove unnecessary decimals
+                foreach ($row as $key => $value) {
+                    if (is_numeric($value)) {
+                        $row[$key] = (string)intval($value);
+                    }
+                }
+
+                // Check if record exists
+                $existingRecord = HeatTreatment::where('no_wo', $row[0])->where('no_so', $row[1])->first();
+
+                $data = [
                     'no_wo' => $row[0],
                     'no_so' => $row[1],
                     'tgl_wo' => $row[2],
@@ -87,14 +97,25 @@ class HeatTreatmentController extends Controller
                     'supir' => $row[25],
                     'penerima' => $row[26],
                     'tgl_terima' => $row[27],
-                ]);
+                ];
+
+                if ($existingRecord) {
+                    // Update the existing record
+                    $existingRecord->update($data);
+                } else {
+                    // Create a new record
+                    HeatTreatment::create($data);
+                }
             }
 
             return response()->json(['success' => true, 'message' => 'Data berhasil diimpor.']);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: '.$e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
+
+
+
 
     public function searchWO(Request $request)
     {
@@ -111,13 +132,13 @@ class HeatTreatmentController extends Controller
         // Tambahkan kondisi pencarian
         $query->where(function ($q) use ($searchWO, $searchStatusWO, $searchStatusDO, $startMonth, $endMonth) {
             if ($searchWO) {
-                $q->where('cust', 'LIKE', '%'.$searchWO.'%');
+                $q->where('cust', 'LIKE', '%' . $searchWO . '%');
             }
             if ($searchStatusWO && $searchStatusWO != 'All') {
-                $q->where('status_wo', 'LIKE', '%'.$searchStatusWO.'%');
+                $q->where('status_wo', 'LIKE', '%' . $searchStatusWO . '%');
             }
             if ($searchStatusDO && $searchStatusDO != 'All') {
-                $q->where('status_do', 'LIKE', '%'.$searchStatusDO.'%');
+                $q->where('status_do', 'LIKE', '%' . $searchStatusDO . '%');
             }
             // Tambahkan kondisi untuk menangani filter berdasarkan bulan (ambil bagian bulan dari format dd-mm)
             if ($startMonth && $endMonth) {
@@ -191,7 +212,7 @@ class HeatTreatmentController extends Controller
         $mergedWorkOrders = $workOrders->collapse();
 
         if ($mergedWorkOrders->isEmpty()) {
-            return response()->json(['message' => 'No data found for the batch '.$batch], 404);
+            return response()->json(['message' => 'No data found for the batch ' . $batch], 404);
         }
 
         return response()->json($mergedWorkOrders);

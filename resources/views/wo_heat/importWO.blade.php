@@ -768,7 +768,7 @@
                             <form id="importForm" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
-                                    <input type="file" name="excelFile" class="form-control-file" required>
+                                    <input type="file" name="excelFile" class="form-control" required>
                                 </div>
                                 <button type="submit" class="btn btn-danger mt-3">
                                     <i class="bi bi-upload"></i> Import Data
