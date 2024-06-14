@@ -21,10 +21,15 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Terima Form Perbaikan</h5>
-                            <a class="btn btn-success mb-3" href="{{ url('downtimeExport') }}"
-                                style="display: inline-block;">
-                                <i class="bi bi-filetype-xlsx"></i> Ekspor Data
-                            </a>
+                            @if (Auth::user()->role_id == 6 ||
+                                    Auth::user()->role_id == 5 ||
+                                    Auth::user()->role_id == 22 ||
+                                    Auth::user()->role_id == 1)
+                                <a class="btn btn-success mb-3" href="{{ url('downtimeExport') }}"
+                                    style="display: inline-block;">
+                                    <i class="bi bi-filetype-xlsx"></i> Ekspor Data
+                                </a>
+                            @endif
 
                             <div class="table-responsive">
                                 <table class="datatables datatable" style="table-layout: responsive;">
@@ -70,10 +75,16 @@
                                                         href="{{ route('maintenance.lihat', $formperbaikan->id) }}">
                                                         <i class="bi bi-eye-fill"></i>
                                                     </a>
-                                                    <a class="btn btn-primary"
-                                                        href="{{ route('maintenance.edit', $formperbaikan->id) }}">
-                                                        <i class="bi bi-pencil-fill"></i>
-                                                    </a>
+
+                                                    @if (Auth::user()->role_id == 6 ||
+                                                            Auth::user()->role_id == 5 ||
+                                                            Auth::user()->role_id == 22 ||
+                                                            Auth::user()->role_id == 1)
+                                                        <a class="btn btn-primary"
+                                                            href="{{ route('maintenance.edit', $formperbaikan->id) }}">
+                                                            <i class="bi bi-pencil-fill"></i>
+                                                        </a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

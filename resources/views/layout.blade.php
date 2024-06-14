@@ -129,22 +129,22 @@
                 </a>
                 @if (Auth::check())
                     <ul id="dashboard-menu-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                        @if (Auth::user()->role_id == 1||
-                                Auth::user()->role_id == 2||
-                                Auth::user()->role_id == 3||
-                                Auth::user()->role_id == 4||
-                                Auth::user()->role_id == 5||
-                                Auth::user()->role_id == 6||
+                        @if (Auth::user()->role_id == 1 ||
+                                Auth::user()->role_id == 2 ||
+                                Auth::user()->role_id == 3 ||
+                                Auth::user()->role_id == 4 ||
+                                Auth::user()->role_id == 5 ||
+                                Auth::user()->role_id == 6 ||
                                 Auth::user()->role_id == 7 ||
                                 Auth::user()->role_id == 9 ||
-                                Auth::user()->role_id == 11||
-                                Auth::user()->role_id == 12||
-                                Auth::user()->role_id == 13||
-                                Auth::user()->role_id == 14||
-                                Auth::user()->role_id == 16||
-                                Auth::user()->role_id == 17||
-                                Auth::user()->role_id == 22||
-                                Auth::user()->role_id == 30||
+                                Auth::user()->role_id == 11 ||
+                                Auth::user()->role_id == 12 ||
+                                Auth::user()->role_id == 13 ||
+                                Auth::user()->role_id == 14 ||
+                                Auth::user()->role_id == 16 ||
+                                Auth::user()->role_id == 17 ||
+                                Auth::user()->role_id == 22 ||
+                                Auth::user()->role_id == 30 ||
                                 Auth::user()->role_id == 31)
                             <li>
                                 <a class="nav-link collapsed" href="{{ route('dashboardHandling') }}">
@@ -174,13 +174,14 @@
                     </ul>
                 @endif
             </li>
-
             {{-- Maintenance dan Handling --}}
-
-            @if (Auth::user()->role_id == 7 ||
+            @if (Auth::user()->role_id == 1 ||
+                    Auth::user()->role_id == 7 ||
                     Auth::user()->role_id == 8 ||
                     Auth::user()->role_id == 9 ||
-                    Auth::user()->role_id == 1)
+                    Auth::user()->role_id == 14 ||
+                    Auth::user()->role_id == 30 ||
+                    Auth::user()->role_id == 31)
                 <li class="nav-heading">Productions</li>
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-toggle="collapse" href="#prod-forms-nav">
@@ -204,31 +205,11 @@
                     </ul>
                 </li>
             @endif
-            @if (Auth::user()->role_id == 14)
-                <li class="nav-heading">Productions</li>
-                <li class="nav-item">
-                    <a class="nav-link collapsed" data-bs-toggle="collapse" href="#prod-forms-nav">
-                        <i class="bi bi-journal-text"></i>
-                        <span>Form Permintaan Perbaikan</span>
-                        <i class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                    <ul id="prod-forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                        <li>
-                            <a class="nav-link collapsed" href="{{ route('sales.index') }}">
-                                <i class="bi bi-list-check fs-6"></i>
-                                <span>Data Form Perbaikan</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
-                                <i class="bi bi-list-check fs-6"></i>
-                                <span>Riwayat Form Perbaikan</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            @endif
-            @if (Auth::user()->role_id == 6 || Auth::user()->role_id == 1)
+            @if (Auth::user()->role_id == 6 ||
+                    Auth::user()->role_id == 5 ||
+                    Auth::user()->role_id == 14 ||
+                    Auth::user()->role_id == 22 ||
+                    Auth::user()->role_id == 1)
                 <li class="nav-heading">Maintenance</li>
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#maint-korektif-nav" data-bs-toggle="collapse"
@@ -260,43 +241,6 @@
                             <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenance') }}">
                                 <i class="bi bi-check2 fs-6"></i>
                                 <span>Tabel Preventif</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li><!-- End Maint Received Nav -->
-            @endif
-            @if (Auth::user()->role_id == 14)
-                <li class="nav-heading">Maintenance</li>
-                <li class="nav-item">
-                    <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
-                        href="#">
-                        <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
-                            class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                    <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" href="{{ route('ga.dashboardga') }}">
-                                <i class="bi bi-file-earmark-text-fill fs-6"></i>
-                                <span>Terima Form Perbaikan</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
-                                <i class="bi bi-list-check fs-6"></i>
-                                <span>Riwayat Form Perbaikan</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
-                        href="#">
-                        <i class="bi bi-journal-text"></i><span>Tindakan Preventif</span><i
-                            class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                    <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenanceGA') }}">
-                                <i class="bi bi-check2 fs-6"></i>
-                                <span>Tindakan Preventif</span>
                             </a>
                         </li>
                     </ul>

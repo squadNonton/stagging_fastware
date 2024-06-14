@@ -19,12 +19,18 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Data Form Perbaikan</h5>
-                        <div class="text-right mb-3">
-
-                            <a class="btn btn-success float-right" href="{{ route('formperbaikans.create') }}"> <i
-                                    class="bi bi-file-earmark-plus"></i> Buat Form
-                                Perbaikan</a>
-                        </div>
+                        @if (Auth::user()->role_id == 1 ||
+                                Auth::user()->role_id == 7 ||
+                                Auth::user()->role_id == 8 ||
+                                Auth::user()->role_id == 9 ||
+                                Auth::user()->role_id == 30 ||
+                                Auth::user()->role_id == 31)
+                            <div class="text-right mb-3">
+                                <a class="btn btn-success float-right" href="{{ route('formperbaikans.create') }}"> <i
+                                        class="bi bi-file-earmark-plus"></i> Buat Form
+                                    Perbaikan</a>
+                            </div>
+                        @endif
                         <!-- Table with stripped rows -->
                         <div class="table-responsive">
                             <table class="datatables datatable" style="table-layout: responsive;">
