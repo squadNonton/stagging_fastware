@@ -230,22 +230,21 @@ Route::middleware(['web', 'auth'])->group(function () {
         ->name('dashboardImportWO');
     Route::get('dashboardTracingWO', [HeatTreatmentController::class, 'dashboardTracingWO'])
         ->name('dashboardTracingWO');
-    Route::post('/dashboard/import-wo', [HeatTreatmentController::class, 'importWO'])->name('importWO');
+    Route::post('importWO', [HeatTreatmentController::class, 'WOHeat'])->name('importWO');
     Route::get('/searchWO', [HeatTreatmentController::class, 'searchWO'])->name('searchWO');
     Route::get('downtimeExport', [FormFPPController::class, 'downtimeExport']);
     Route::get('/getBatchData', [HeatTreatmentController::class, 'getBatchData'])->name('getBatchData');
 
     // Inquiry Sales
 
-    // view 
+    // view
     Route::get('createinquiry', [InquirySalesController::class, 'createInquirySales'])->name('createinquiry');
     Route::get('konfirmInquiry', [InquirySalesController::class, 'konfirmInquiry'])->name('konfirmInquiry');
-    //fungsi
+    // fungsi
     Route::post('storeinquiry', [InquirySalesController::class, 'storeInquirySales'])->name('storeinquiry');
     Route::put('/inquiry/{id}', [InquirySalesController::class, 'update'])->name('updateinquiry');
     Route::get('/editInquiry/{id}', [InquirySalesController::class, 'editInquiry'])->name('editInquiry');
     Route::delete('/deleteinquiry/{id}', [InquirySalesController::class, 'delete'])->name('deleteinquiry');
-
 
     Route::put('/approvedInquiry/{id}', [InquirySalesController::class, 'approvedInquiry'])->name('approvedInquiry');
 });

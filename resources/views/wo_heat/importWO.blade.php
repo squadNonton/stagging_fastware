@@ -765,10 +765,10 @@
                         <div class="card-body">
                             <h5 class="card-title text-center">Import WO Heat Treatment</h5>
 
-                            <form action="{{ route('importWO') }}" method="POST" enctype="multipart/form-data">
+                            <form id="importForm" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
-                                    <input type="file" name="excelFile" class="form-control" required>
+                                    <input type="file" name="excelFile" class="form-control-file" required>
                                 </div>
                                 <button type="submit" class="btn btn-danger mt-3">
                                     <i class="bi bi-upload"></i> Import Data
@@ -862,8 +862,6 @@
             </div>
         </section>
     </main>
-
-
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">
@@ -886,3 +884,35 @@
 
     <!-- Template Main JS File -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#importForm').on('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                let formData = new FormData(this);
+
+                $.ajax({
+                    url: "{{ route('importWO') }}",
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        alert(response.message); // Tampilkan pesan dari server
+                        if (response.success) {
+                            window.location.reload(); // Contoh: reload halaman setelah sukses
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        let errorMessage = xhr.status + ': ' + xhr.statusText;
+                        alert('Error - ' + errorMessage);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

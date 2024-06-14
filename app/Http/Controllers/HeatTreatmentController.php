@@ -2,22 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Imports\WOImport;
 use App\Jobs\ProcessExcelJob;
 use App\Models\HeatTreatment;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class HeatTreatmentController extends Controller
 {
     public function dashboardImportWO()
     {
         $heattreatments = HeatTreatment::orderBy('updated_at', 'desc')->get();
+
         return view('wo_heat.importWO', compact('heattreatments'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
@@ -42,26 +39,62 @@ class HeatTreatmentController extends Controller
     // }
 
     // Controller Method
-    public function importWO(Request $request)
+
+    public function WOHeat(Request $request)
     {
-        // Validasi file yang diupload
         $request->validate([
-            'excelFile' => 'required|file|mimes:xlsx,xls,csv',
+            'excelFile' => 'required|mimes:xlsx,xls', // Validasi file hanya boleh berformat Excel
         ]);
 
-        // Mendapatkan path dari file yang diupload
-        $filePath = $request->file('excelFile')->getRealPath();
-
-        // Melakukan import data
         try {
-            Excel::import(new WOImport(), $filePath);
-            return back()->with('success', 'Data telah berhasil diimpor');
+            $file = $request->file('excelFile');
+            $spreadsheet = IOFactory::load($file->getPathname());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows = $worksheet->toArray();
+
+            foreach ($rows as $index => $row) {
+                if ($index === 0) {
+                    // Skip the header row
+                    continue;
+                }
+                // Assuming columns match the fields in the model
+                HeatTreatment::create([
+                    'no_wo' => $row[0],
+                    'no_so' => $row[1],
+                    'tgl_wo' => $row[2],
+                    'area' => $row[3],
+                    'kode' => $row[4],
+                    'cust' => $row[5],
+                    'proses' => $row[6],
+                    'pcs' => $row[7],
+                    'kg' => $row[8],
+                    'batch_heating' => $row[9],
+                    'mesin_heating' => $row[10],
+                    'tgl_heating' => $row[11],
+                    'batch_temper1' => $row[12],
+                    'mesin_temper1' => $row[13],
+                    'tgl_temper1' => $row[14],
+                    'batch_temper2' => $row[15],
+                    'mesin_temper2' => $row[16],
+                    'tgl_temper2' => $row[17],
+                    'batch_temper3' => $row[18],
+                    'mesin_temper3' => $row[19],
+                    'tgl_temper3' => $row[20],
+                    'status_wo' => $row[21],
+                    'no_do' => $row[22],
+                    'status_do' => $row[23],
+                    'tgl_st' => $row[24],
+                    'supir' => $row[25],
+                    'penerima' => $row[26],
+                    'tgl_terima' => $row[27],
+                ]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Data berhasil diimpor.']);
         } catch (\Exception $e) {
-            Log::error("Error importing file: " . $e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan saat mengimpor data. Silakan coba lagi.');
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: '.$e->getMessage()], 500);
         }
     }
-
 
     public function searchWO(Request $request)
     {
@@ -78,13 +111,13 @@ class HeatTreatmentController extends Controller
         // Tambahkan kondisi pencarian
         $query->where(function ($q) use ($searchWO, $searchStatusWO, $searchStatusDO, $startMonth, $endMonth) {
             if ($searchWO) {
-                $q->where('cust', 'LIKE', '%' . $searchWO . '%');
+                $q->where('cust', 'LIKE', '%'.$searchWO.'%');
             }
             if ($searchStatusWO && $searchStatusWO != 'All') {
-                $q->where('status_wo', 'LIKE', '%' . $searchStatusWO . '%');
+                $q->where('status_wo', 'LIKE', '%'.$searchStatusWO.'%');
             }
             if ($searchStatusDO && $searchStatusDO != 'All') {
-                $q->where('status_do', 'LIKE', '%' . $searchStatusDO . '%');
+                $q->where('status_do', 'LIKE', '%'.$searchStatusDO.'%');
             }
             // Tambahkan kondisi untuk menangani filter berdasarkan bulan (ambil bagian bulan dari format dd-mm)
             if ($startMonth && $endMonth) {
@@ -139,8 +172,6 @@ class HeatTreatmentController extends Controller
         return response()->json($response);
     }
 
-
-
     public function getBatchData(Request $request)
     {
         $batch = $request->input('batch');
@@ -160,7 +191,7 @@ class HeatTreatmentController extends Controller
         $mergedWorkOrders = $workOrders->collapse();
 
         if ($mergedWorkOrders->isEmpty()) {
-            return response()->json(['message' => 'No data found for the batch ' . $batch], 404);
+            return response()->json(['message' => 'No data found for the batch '.$batch], 404);
         }
 
         return response()->json($mergedWorkOrders);
