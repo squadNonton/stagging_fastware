@@ -315,8 +315,6 @@
                     document.getElementById('note').value = note;
                     // Set the confirmed_finish4 value to 1
                     document.getElementById('confirmed_finish4').value = '1';
-                    // If validation is successful, submit the form
-                    document.getElementById('approvedForm').submit();
                     return note;
                 }
             }
@@ -326,12 +324,16 @@
                     title: "Catatan",
                     text: result.value,
                     icon: "success",
-                    timer: 2000,
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    // If validation is successful and user clicks OK, submit the form
+                    document.getElementById('approvedForm').submit();
                 });
             }
         });
     }
 </script>
+
 <script>
     function showConfirmationAlert() {
         Swal.fire({

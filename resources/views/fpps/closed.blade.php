@@ -322,13 +322,12 @@
             preConfirm: (note) => {
                 if (!note) {
                     Swal.showValidationMessage("Catatan tidak boleh kosong");
+                    return false;
                 } else {
                     // Set the note value to the hidden input field in the form
                     document.getElementById('note').value = note;
                     // Set the confirmed_finish4 value to 1
                     document.getElementById('confirmed_finish4').value = '1';
-                    // If validation is successful, submit the form
-                    document.getElementById('closedForm').submit();
                     return note;
                 }
             }
@@ -338,12 +337,16 @@
                     title: "Catatan",
                     text: result.value,
                     icon: "success",
-                    timer: 2000 // Durasi notifikasi dalam milidetik
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    // If user clicks OK, submit the form
+                    document.getElementById('closedForm').submit();
                 });
             }
         });
     }
 </script>
+
 <script>
     function showConfirmationAlert() {
         // Tampilkan SweetAlert konfirmasi
