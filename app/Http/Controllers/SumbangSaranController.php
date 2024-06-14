@@ -142,7 +142,7 @@ class SumbangSaranController extends Controller
         // Ambil role dari pengguna yang sedang login
         $userRole = Auth::user()->role_id;
 
-        // Tentukan apakah pengguna memiliki role 1 atau 14
+        // Tentukan apakah pengguna memiliki role 1, 14, 16, atau 20
         $isAdmin = in_array($userRole, [1, 14, 16, 20]);
 
         // Tentukan role yang bisa dilihat berdasarkan role pengguna yang sedang login
@@ -155,7 +155,7 @@ class SumbangSaranController extends Controller
                 $rolesToView = [5, 6, 22, 26];
                 break;
             case 9:
-                $rolesToView = [8, 18, 21, 27];
+                $rolesToView = [8, 9, 18, 21, 27];
                 break;
             case 12:
                 $rolesToView = [13];
@@ -249,7 +249,7 @@ class SumbangSaranController extends Controller
                 break;
             case 5:
             case 22:
-                $rolesToView = [6, 26];
+                $rolesToView = [22, 6, 26];
                 break;
             case 7:
             case 30:
@@ -258,7 +258,7 @@ class SumbangSaranController extends Controller
                 break;
             case 11:
             case 14:
-                $rolesToView = [12, 13, 15, 20];
+                $rolesToView = [12, 13, 14, 15, 20];
                 break;
                 // Tidak perlu menambahkan case untuk 1 dan 14 karena $isAdmin sudah menghandle
         }
@@ -660,6 +660,8 @@ class SumbangSaranController extends Controller
             'judul' => 'required|string',
             'keadaan_sebelumnya' => 'required|string',
             'usulan_ide' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         // Simpan data
@@ -676,7 +678,7 @@ class SumbangSaranController extends Controller
         $sumbangSaran->tgl_pengajuan = Carbon::now();
         $sumbangSaran->status = 1;
 
-        // Simpan gambar pertama
+       // Simpan gambar pertama
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imagePath = $image->hashName();
@@ -696,9 +698,10 @@ class SumbangSaranController extends Controller
             $sumbangSaran->file_name_2 = $imageOriginalName2;
         }
 
+        // Simpan data ke database
         $sumbangSaran->save();
 
-        // Anda dapat mengembalikan respons JSON jika Anda menginginkannya
+        // Kembalikan respons JSON
         return response()->json(['message' => 'Data berhasil disimpan'], 200);
     }
 

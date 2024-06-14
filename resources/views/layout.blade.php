@@ -120,305 +120,324 @@
                     </ul>
                 </li>
             @endif
+
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-toggle="collapse" href="#dashboard-menu-nav">
                     <i class="bi bi-gear"></i>
                     <span>Dashboard</span>
                     <i class="bi bi-chevron-down ms-auto fs-6"></i>
                 </a>
-                <ul id="dashboard-menu-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-link collapsed" href="{{ route('dashboardHandling') }}">
-                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
-                            <span>Maintenance</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link collapsed" href="{{ route('dshandling') }}">
-                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
-                            <span>Handling Klaim & Komplain</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link collapsed" href="{{ route('dashboardSS') }}">
-                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
-                            <span>Sumbang Saran</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link collapsed" href="{{ route('reportpatrol') }}">
-                            <i class="bi bi-bar-chart-line-fill fs-6"></i>
-                            <span>Safety Patrol</span>
-                        </a>
-                    </li>
-                </ul>
+                @if (Auth::check())
+                    <ul id="dashboard-menu-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        @if (Auth::user()->role_id == 1||
+                                Auth::user()->role_id == 2||
+                                Auth::user()->role_id == 3||
+                                Auth::user()->role_id == 4||
+                                Auth::user()->role_id == 5||
+                                Auth::user()->role_id == 6||
+                                Auth::user()->role_id == 7 ||
+                                Auth::user()->role_id == 9 ||
+                                Auth::user()->role_id == 11||
+                                Auth::user()->role_id == 12||
+                                Auth::user()->role_id == 13||
+                                Auth::user()->role_id == 14||
+                                Auth::user()->role_id == 15||
+                                Auth::user()->role_id == 17||
+                                Auth::user()->role_id == 22||
+                                Auth::user()->role_id == 30||
+                                Auth::user()->role_id == 31)
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('dashboardHandling') }}">
+                                    <i class="bi bi-bar-chart-line-fill fs-6"></i>
+                                    <span>Maintenance</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link collapsed" href="{{ route('dshandling') }}">
+                                    <i class="bi bi-bar-chart-line-fill fs-6"></i>
+                                    <span>Handling Klaim & Komplain</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="{{ route('reportpatrol') }}">
+                                    <i class="bi bi-bar-chart-line-fill fs-6"></i>
+                                    <span>Safety Patrol</span>
+                                </a>
+                            </li>
+                        @endif
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('dashboardSS') }}">
+                                <i class="bi bi-bar-chart-line-fill fs-6"></i>
+                                <span>Sumbang Saran</span>
+                            </a>
+                        </li>
+                    </ul>
+                @endif
             </li>
 
             {{-- Maintenance dan Handling --}}
 
-            @if (Auth::check())
-                @if (Auth::user()->role_id == 7 ||
-                        Auth::user()->role_id == 8 ||
-                        Auth::user()->role_id == 9 ||
-                        Auth::user()->role_id == 1)
-                    <li class="nav-heading">Productions</li>
-                    <li class="nav-item">
-                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#prod-forms-nav">
-                            <i class="bi bi-journal-text fs-6"></i>
-                            <span>Form Permintaan Perbaikan</span>
-                            <i class="bi bi-chevron-down ms-auto fs-6"></i>
-                        </a>
-                        <ul id="prod-forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                            <li>
-                                <a class="nav-link collapsed" href="{{ route('fpps.index') }}">
-                                    <i class="bi bi-list-check fs-6"></i>
-                                    <span>Data Form Perbaikan</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
-                                    <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat Form Perbaikan</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
-                @if (Auth::user()->role_id == 14)
-                    <li class="nav-heading">Productions</li>
-                    <li class="nav-item">
-                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#prod-forms-nav">
-                            <i class="bi bi-journal-text"></i>
-                            <span>Form Permintaan Perbaikan</span>
-                            <i class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="prod-forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                            <li>
-                                <a class="nav-link collapsed" href="{{ route('sales.index') }}">
-                                    <i class="bi bi-list-check fs-6"></i>
-                                    <span>Data Form Perbaikan</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
-                                    <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat Form Perbaikan</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
-                @if (Auth::user()->role_id == 6 || Auth::user()->role_id == 1)
-                    <li class="nav-heading">Maintenance</li>
-                    <li class="nav-item">
-                        <a class="nav-link collapsed" data-bs-target="#maint-korektif-nav" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="maint-korektif-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="{{ asset('dashboardmaintenance') }}">
-                                    <i class="bi bi-file-earmark-text-fill fs-6"></i>
-                                    <span>Terima Form Perbaikan</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
-                                    <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat Form Perbaikan</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Tindakan Preventif</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenance') }}">
-                                    <i class="bi bi-check2 fs-6"></i>
-                                    <span>Tabel Preventif</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li><!-- End Maint Received Nav -->
-                @endif
-                @if (Auth::user()->role_id == 14)
-                    <li class="nav-heading">Maintenance</li>
-                    <li class="nav-item">
-                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="{{ route('ga.dashboardga') }}">
-                                    <i class="bi bi-file-earmark-text-fill fs-6"></i>
-                                    <span>Terima Form Perbaikan</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
-                                    <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat Form Perbaikan</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Tindakan Preventif</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenanceGA') }}">
-                                    <i class="bi bi-check2 fs-6"></i>
-                                    <span>Tindakan Preventif</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li><!-- End Maint Received Nav -->
-                @endif
-                <!-- End Prod Forms Nav -->
-                @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1 || Auth::user()->role_id == 14)
-                    {{-- Role ID untuk Maintenance --}}
-                    {{-- Tampilkan sidebar untuk Maintenance --}}
-                    <li class="nav-heading">Engineering</li>
+            @if (Auth::user()->role_id == 7 ||
+                    Auth::user()->role_id == 8 ||
+                    Auth::user()->role_id == 9 ||
+                    Auth::user()->role_id == 1)
+                <li class="nav-heading">Productions</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-toggle="collapse" href="#prod-forms-nav">
+                        <i class="bi bi-journal-text fs-6"></i>
+                        <span>Form Permintaan Perbaikan</span>
+                        <i class="bi bi-chevron-down ms-auto fs-6"></i>
+                    </a>
+                    <ul id="prod-forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a class="nav-link collapsed" href="{{ route('fpps.index') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Data Form Perbaikan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Riwayat Form Perbaikan</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+            @if (Auth::user()->role_id == 14)
+                <li class="nav-heading">Productions</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-toggle="collapse" href="#prod-forms-nav">
+                        <i class="bi bi-journal-text"></i>
+                        <span>Form Permintaan Perbaikan</span>
+                        <i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="prod-forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a class="nav-link collapsed" href="{{ route('sales.index') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Data Form Perbaikan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Riwayat Form Perbaikan</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+            @if (Auth::user()->role_id == 6 || Auth::user()->role_id == 1)
+                <li class="nav-heading">Maintenance</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#maint-korektif-nav" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="maint-korektif-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ asset('dashboardmaintenance') }}">
+                                <i class="bi bi-file-earmark-text-fill fs-6"></i>
+                                <span>Terima Form Perbaikan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Riwayat Form Perbaikan</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Tindakan Preventif</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenance') }}">
+                                <i class="bi bi-check2 fs-6"></i>
+                                <span>Tabel Preventif</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li><!-- End Maint Received Nav -->
+            @endif
+            @if (Auth::user()->role_id == 14)
+                <li class="nav-heading">Maintenance</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Tindakan Korektif</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('ga.dashboardga') }}">
+                                <i class="bi bi-file-earmark-text-fill fs-6"></i>
+                                <span>Terima Form Perbaikan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Riwayat Form Perbaikan</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <a class="nav-link collapsed" data-bs-target="#maint-received-nav" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Tindakan Preventif</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="maint-received-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('dashboardPreventiveMaintenanceGA') }}">
+                                <i class="bi bi-check2 fs-6"></i>
+                                <span>Tindakan Preventif</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li><!-- End Maint Received Nav -->
+            @endif
+            <!-- End Prod Forms Nav -->
+            @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1 || Auth::user()->role_id == 14)
+                {{-- Role ID untuk Maintenance --}}
+                {{-- Tampilkan sidebar untuk Maintenance --}}
+                <li class="nav-heading">Engineering</li>
 
-                    <li class="nav-item">
-                        <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Bag. Maintenance</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="{{ route('dashboardmesins') }}">
-                                    <i class="bi bi-gear fs-6"></i>
-                                    <span>Kelola DMI</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="{{ route('deptmtce.index') }}">
-                                    <i class="bi bi-check2 fs-6"></i>
-                                    <span>Data Approved FPP</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
-                                    <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat Form Perbaikan</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="{{ route('dashboardPreventive') }}">
-                                    <i class="bi bi-check2 fs-6"></i>
-                                    <span>Tabel Preventif</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li><!-- End Dept Maint Nav -->
-                    <li class="nav-item">
-                        <a class="nav-link collapsed" data-bs-target="#dept-complain-nav" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Bag. Engineering</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                            <li>
-                                <a href="{{ route('submission') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Form Tindak Lanjut</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('showHistoryCLaimComplain') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim & Komplain</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('scheduleVisit') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li><!-- End Dept Complain & Claim Nav -->
-                @endif
-                @if (Auth::user()->role_id == 1 ||
-                        Auth::user()->role_id == 2 ||
-                        Auth::user()->role_id == 3 ||
-                        Auth::user()->role_id == 4 ||
-                        Auth::user()->role_id == 11 ||
-                        Auth::user()->role_id == 12 ||
-                        Auth::user()->role_id == 13 ||
-                        Auth::user()->role_id == 14)
-                    {{-- Role ID untuk Sales --}}
-                    <li class="nav-heading">Sales</li>
-                    <li class="nav-item">
-                        <a class="nav-link collapsed" data-bs-target="#sales-fpp-nav" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Form Permintaan Perbaikan</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="sales-fpp-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="{{ route('sales.index') }}">
-                                    <i class="bi bi-list-check fs-6"></i>
-                                    <span>Data Form Perbaikan</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link collapsed" href="{{ route('sales.history') }}">
-                                    <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat Form Perbaikan</span>
-                                </a>
-                            </li>
-                        </ul>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Bag. Maintenance</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('dashboardmesins') }}">
+                                <i class="bi bi-gear fs-6"></i>
+                                <span>Kelola DMI</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('deptmtce.index') }}">
+                                <i class="bi bi-check2 fs-6"></i>
+                                <span>Data Approved FPP</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link collapsed" href="{{ route('fpps.history') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Riwayat Form Perbaikan</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('dashboardPreventive') }}">
+                                <i class="bi bi-check2 fs-6"></i>
+                                <span>Tabel Preventif</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li><!-- End Dept Maint Nav -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#dept-complain-nav" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Bag. Engineering</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a href="{{ route('submission') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Form Tindak Lanjut</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('showHistoryCLaimComplain') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim & Komplain</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('scheduleVisit') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li><!-- End Dept Complain & Claim Nav -->
+            @endif
+            @if (Auth::user()->role_id == 1 ||
+                    Auth::user()->role_id == 2 ||
+                    Auth::user()->role_id == 3 ||
+                    Auth::user()->role_id == 4 ||
+                    Auth::user()->role_id == 11 ||
+                    Auth::user()->role_id == 12 ||
+                    Auth::user()->role_id == 13 ||
+                    Auth::user()->role_id == 14)
+                {{-- Role ID untuk Sales --}}
+                <li class="nav-heading">Sales</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#sales-fpp-nav" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Form Permintaan Perbaikan</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="sales-fpp-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('sales.index') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Data Form Perbaikan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link collapsed" href="{{ route('sales.history') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Riwayat Form Perbaikan</span>
+                            </a>
+                        </li>
+                    </ul>
 
-                        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                            <li>
-                                <a href="{{ route('index') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Form Pengajuan Klaim dan
-                                        Komplain</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('showHistoryCLaimComplain') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim dan Komplain</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('scheduleVisit') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <a class="nav-link collapsed" data-bs-target="#forms-nav-inquiry" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Inquiry Sales</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="forms-nav-inquiry" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                            <li>
-                                <a href="{{ route('createinquiry') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Buat Inquiry Sales</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('konfirmInquiry') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Approve Inquiry</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li><!-- End Forms Nav -->
-                @endif
+                    <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a href="{{ route('index') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Form Pengajuan Klaim dan
+                                    Komplain</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('showHistoryCLaimComplain') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim dan Komplain</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('scheduleVisit') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <a class="nav-link collapsed" data-bs-target="#forms-nav-inquiry" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Inquiry Sales</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="forms-nav-inquiry" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a href="{{ route('createinquiry') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Buat Inquiry Sales</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('konfirmInquiry') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Approve Inquiry</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li><!-- End Forms Nav -->
             @endif
 
             {{-- SS, Safety Patrol dan Trace WO --}}
