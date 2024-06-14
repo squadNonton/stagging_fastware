@@ -13,6 +13,7 @@ class HeatTreatment extends Model
         'no_wo',
         'no_so',
         'tgl_wo',
+        'deskripsi',
         'area',
         'kode',
         'cust',
