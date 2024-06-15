@@ -972,6 +972,7 @@
                                             <th scope="col">WO</th>
                                             <th scope="col">Nama Customer</th>
                                             <th scope="col">Mesin</th>
+                                            <th scope="col">Deskripsi</th>
                                             <th scope="col">PCS</th>
                                             <th scope="col">Tonase (QTY)</th>
                                             <th scope="col">Tgl. WO</th>
@@ -985,7 +986,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="4" class="text-right">Total:</th>
+                                            <th colspan="5" class="text-right">Total:</th>
                                             <th id="grandTotalPcs">0</th>
                                             <th id="grandTotalTonase">0</th>
                                             <th colspan="4"></th>
@@ -1004,12 +1005,15 @@
             var globalData = {};
 
             $(document).ready(function() {
-                $('#searchWO, #searchStatusWO, #searchStatusDO, #startMonth, #endMonth').on('keyup change', function() {
-                    populateTables();
-                });
+                $('#searchWO, #searchDeskripsi, #searchStatusWO, #searchStatusDO, #startMonth, #endMonth').on(
+                    'keyup change',
+                    function() {
+                        populateTables();
+                    });
 
                 function populateTables() {
                     var searchWO = $('#searchWO').val();
+                    var searchDeskripsi = $('#searchDeskripsi').val();
                     var searchStatusWO = $('#searchStatusWO').val();
                     var searchStatusDO = $('#searchStatusDO').val();
                     var startMonth = $('#startMonth').val();
@@ -1024,6 +1028,7 @@
                         type: 'GET',
                         data: {
                             'searchWO': searchWO,
+                            'searchDeskripsi': searchDeskripsi,
                             'searchStatusWO': searchStatusWO,
                             'searchStatusDO': searchStatusDO,
                             'startMonth': startMonth,
@@ -1053,6 +1058,7 @@
                                         <tr>
                                             <th>No. WO</th>
                                             <th>Customer</th>
+                                            <th>Deskripsi</th>
                                             <th>Tgl. WO</th>
                                             <th>Status WO</th>
                                             <th>Status DO</th>
@@ -1075,6 +1081,7 @@
                                     <tr data-no-wo="${wo.no_wo}">
                                         <td class="no-wo clickable-cell">${wo.no_wo}</td>
                                         <td>${wo.cust}</td>
+                                        <td>${wo.deskripsi}</td>
                                         <td>${wo.tgl_wo}</td>
                                         <td>${wo.status_wo}</td>
                                         <td>${wo.status_do}</td>
@@ -1187,6 +1194,7 @@
                     <td>${wo.no_wo}</td>
                     <td>${wo.cust}</td>
                     <td>${wo.mesin_heating || wo.mesin_temper1 || wo.mesin_temper2 || wo.mesin_temper3}</td>
+                    <td>${wo.deskripsi}</td>
                     <td>${wo.pcs || ''}</td>
                     <td>${wo.kg || ''}</td>
                     <td>${wo.tgl_wo || ''}</td>

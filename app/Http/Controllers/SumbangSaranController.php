@@ -103,9 +103,9 @@ class SumbangSaranController extends Controller
         // Menangani pencarian jika ada
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('judul', 'like', '%'.$search.'%')
+            $query->where('judul', 'like', '%' . $search . '%')
                 ->orWhereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', '%'.$search.'%');
+                    $q->where('name', 'like', '%' . $search . '%');
                 });
         }
 
@@ -206,7 +206,7 @@ class SumbangSaranController extends Controller
 
         if (!$isAdmin && !empty($rolesToView)) {
             // Tambahkan filter role pengguna yang dapat dilihat
-            $dataQuery .= 'AND users.role_id IN ('.implode(',', $rolesToView).') ';
+            $dataQuery .= 'AND users.role_id IN (' . implode(',', $rolesToView) . ') ';
         }
 
         $dataQuery .= '
@@ -300,7 +300,7 @@ class SumbangSaranController extends Controller
 
         if (!$isAdmin) {
             // Tambahkan filter role pengguna yang dapat dilihat
-            $dataQuery .= 'AND users.role_id IN ('.implode(',', $rolesToView).') ';
+            $dataQuery .= 'AND users.role_id IN (' . implode(',', $rolesToView) . ') ';
         }
 
         $dataQuery .= '
@@ -566,7 +566,7 @@ class SumbangSaranController extends Controller
         }
 
         // Debugging: Log query yang akan dieksekusi
-        \Log::info('SQL Query: '.$query->toSql());
+        \Log::info('SQL Query: ' . $query->toSql());
 
         if ($employeeType === 'AllEmployee') {
             $data = $query->select('users.id as user_id', 'users.name as user_name', DB::raw('count(sumbang_sarans.id) as submission_count'))
@@ -584,7 +584,7 @@ class SumbangSaranController extends Controller
         }
 
         // Debugging: Log hasil query
-        \Log::info('Query Result: '.json_encode($data));
+        \Log::info('Query Result: ' . json_encode($data));
 
         $formattedData = $data->map(function ($item) {
             return ['name' => $item->user_name, 'y' => $item->submission_count];
@@ -600,7 +600,7 @@ class SumbangSaranController extends Controller
 
         // Define categories
         $categories = [
-           'Sales' => ['DH Sales', 'SC Sales', 'UR Sales'],
+            'Sales' => ['DH Sales', 'SC Sales', 'UR Sales'],
             'HT' => ['Engineering', 'UR Maintenance', 'SC HT', 'UR HT'],
             'SupplyChainProduction' => ['DH Supply Chain', 'UR Productions', 'SC Productions', 'FM Productions', 'UR CT', 'UR MCH', 'UR MC-CUSTOME', 'UR PPIC', 'UR LOGISTIC', 'SC PPIC', 'SC WHS'],
             'FinnAccHrgaIT' => ['DH Finance', 'SC HRGA', 'UR Finance', 'SC Finance', 'UR HRGA', 'IT'],
@@ -612,7 +612,7 @@ class SumbangSaranController extends Controller
 
         if ($startMonth && $endMonth) {
             $query->whereBetween('tgl_pengajuan', [
-                date('Y-m-d', strtotime($startMonth.'-01')),
+                date('Y-m-d', strtotime($startMonth . '-01')),
                 date('Y-m-t', strtotime($endMonth)),
             ]);
         }
@@ -660,8 +660,8 @@ class SumbangSaranController extends Controller
             'judul' => 'required|string',
             'keadaan_sebelumnya' => 'required|string',
             'usulan_ide' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx',
+            'image_2' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx',
         ]);
 
         // Simpan data
@@ -678,7 +678,7 @@ class SumbangSaranController extends Controller
         $sumbangSaran->tgl_pengajuan = Carbon::now();
         $sumbangSaran->status = 1;
 
-       // Simpan gambar pertama
+        // Simpan gambar pertama
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imagePath = $image->hashName();
@@ -737,7 +737,7 @@ class SumbangSaranController extends Controller
             return response()->json($sumbangSaran);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             // Handle the case where no query results are found
-            return response()->json(['error' => 'Sumbang Saran not found for ID: '.$id], 404);
+            return response()->json(['error' => 'Sumbang Saran not found for ID: ' . $id], 404);
         } catch (\Exception $e) {
             // Handle other types of exceptions
             return response()->json(['error' => 'Internal Server Error'], 500);
@@ -753,8 +753,8 @@ class SumbangSaranController extends Controller
         $penilaians = PenilaianSS::where('ss_id', $id)->get();
 
         // Include file paths in the response if available
-        $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/'.$sumbangSaran->image) : null;
-        $sumbangSaran->edit_image_2_url = $sumbangSaran->image_2 ? asset('assets/image/'.$sumbangSaran->image_2) : null;
+        $sumbangSaran->edit_image_url = $sumbangSaran->image ? asset('assets/image/' . $sumbangSaran->image) : null;
+        $sumbangSaran->edit_image_2_url = $sumbangSaran->image_2 ? asset('assets/image/' . $sumbangSaran->image_2) : null;
 
         // Prepare the data to return as JSON
         $response = [
@@ -892,8 +892,8 @@ class SumbangSaranController extends Controller
         if ($request->hasFile('edit_image')) {
             if ($sumbangSaran->image) {
                 // Menghapus gambar yang lama
-                if (file_exists(public_path('assets/image/'.$sumbangSaran->image))) {
-                    unlink(public_path('assets/image/'.$sumbangSaran->image));
+                if (file_exists(public_path('assets/image/' . $sumbangSaran->image))) {
+                    unlink(public_path('assets/image/' . $sumbangSaran->image));
                 }
             }
             // Simpan gambar yang baru diunggah
@@ -908,8 +908,8 @@ class SumbangSaranController extends Controller
         if ($request->hasFile('edit_image_2')) {
             if ($sumbangSaran->image_2) {
                 // Menghapus gambar yang lama
-                if (file_exists(public_path('assets/image/'.$sumbangSaran->image_2))) {
-                    unlink(public_path('assets/image/'.$sumbangSaran->image_2));
+                if (file_exists(public_path('assets/image/' . $sumbangSaran->image_2))) {
+                    unlink(public_path('assets/image/' . $sumbangSaran->image_2));
                 }
             }
             // Simpan gambar yang baru diunggah
@@ -1213,7 +1213,7 @@ class SumbangSaranController extends Controller
 
     public function download($filename)
     {
-        $filePath = public_path('assets/image/'.$filename);
+        $filePath = public_path('assets/image/' . $filename);
 
         if (!file_exists($filePath)) {
             return abort(404, 'File not found.');
@@ -1223,7 +1223,7 @@ class SumbangSaranController extends Controller
 
         return Response::make($fileContents, 200, [
             'Content-Type' => mime_content_type($filePath),
-            'Content-Disposition' => 'attachment; filename="'.basename($filePath).'"',
+            'Content-Disposition' => 'attachment; filename="' . basename($filePath) . '"',
         ]);
     }
 }

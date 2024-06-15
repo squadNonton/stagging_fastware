@@ -822,8 +822,9 @@
                             @endif
 
                             <!-- Table for heat treatments -->
-                            <div class="table-responsive">
-                                <table class="datatables datatable" style="table-layout: responsive;">
+                            <div class="table-responsive table-responsive-sm">
+                                <table class="datatables datatable"
+                                    style="table-layout: responsive; white-space: nowrap; overflow-x: auto;">
                                     <thead>
                                         <tr>
                                             <th scope="col">No</th>
@@ -832,7 +833,7 @@
                                             <th scope="col">Tgl. WO</th>
                                             <th scope="col">Area</th>
                                             <th scope="col">Kode</th>
-                                            <th scope="col">Cust</th>
+                                            <th scope="col">Customer</th>
                                             <th scope="col">Proses</th>
                                             <th scope="col">Pcs</th>
                                             <th scope="col">Kg</th>
