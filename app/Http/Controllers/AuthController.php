@@ -51,7 +51,7 @@ class AuthController extends Controller
             // Autentikasi berhasil, tampilkan data login di console
             Log::info('Pengguna berhasil masuk.', ['username' => $request->username]);
 
-            return redirect()->route('dashboardHandling');
+            return redirect()->route('forumSS');
         }
 
         // Autentikasi gagal, tampilkan pesan error

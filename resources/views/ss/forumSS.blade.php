@@ -3,11 +3,11 @@
 @section('content')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Forum SS</h1>
+            <h1>Overview Sumbang Saran</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboardHandling') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Forum SS</li>
+                    <li class="breadcrumb-item active">Overview Sumbang Saran</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->

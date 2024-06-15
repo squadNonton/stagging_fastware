@@ -698,19 +698,6 @@
                     <span>Report Form Safety Patrol</span>
                 </a>
             </li><!-- End Profile Page Nav --> --}}
-                <li class="nav-heading">WO Heat Treatment</li>
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="{{ route('dashboardImportWO') }}">
-                        <i class="bi bi-cloud-upload"></i>
-                        <span>Import WO</span>
-                    </a>
-                </li><!-- End Profile Page Nav -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="{{ route('dashboardTracingWO') }}">
-                        <i class="bi bi-search"></i>
-                        <span>Tracing WO</span>
-                    </a>
-                </li>
                 {{-- Menu Inventory-PPC --}}
                 <li class="nav-heading">PPIC</li>
                 <li class="nav-item">
@@ -732,6 +719,36 @@
                     </a>
                 </li>
                 {{-- @endif --}}
+            @endif
+            @if (Auth::user()->role_id == 1 ||
+                    Auth::user()->role_id == 5 ||
+                    Auth::user()->role_id == 14 ||
+                    Auth::user()->role_id == 22 ||
+                    Auth::user()->role_id == 26)
+                <li class="nav-heading">WO Heat Treatment</li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('dashboardImportWO') }}">
+                        <i class="bi bi-cloud-upload"></i>
+                        <span>Import WO</span>
+                    </a>
+                </li><!-- End Profile Page Nav -->
+            @endif
+            @if (Auth::user()->role_id == 1 ||
+                    Auth::user()->role_id == 5 ||
+                    Auth::user()->role_id == 14 ||
+                    Auth::user()->role_id == 22 ||
+                    Auth::user()->role_id == 26 ||
+                    Auth::user()->role_id == 2 ||
+                    Auth::user()->role_id == 3 ||
+                    Auth::user()->role_id == 4 ||
+                    Auth::user()->role_id == 28 ||
+                    Auth::user()->role_id == 30)
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="{{ route('dashboardTracingWO') }}">
+                        <i class="bi bi-search"></i>
+                        <span>Tracing WO</span>
+                    </a>
+                </li>
                 {{-- <hr> --}}
             @endif
         </ul>
