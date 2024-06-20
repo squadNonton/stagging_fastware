@@ -240,6 +240,8 @@ Route::middleware(['web', 'auth'])->group(function () {
     // view
     Route::get('createinquiry', [InquirySalesController::class, 'createInquirySales'])->name('createinquiry');
     Route::get('konfirmInquiry', [InquirySalesController::class, 'konfirmInquiry'])->name('konfirmInquiry');
+    Route::get('validasiInquiry', [InquirySalesController::class, 'validasiInquiry'])->name('validasiInquiry');
+    Route::get('reportInquiry', [InquirySalesController::class, 'reportInquiry'])->name('reportInquiry');
     // fungsi
     Route::post('storeinquiry', [InquirySalesController::class, 'storeInquirySales'])->name('storeinquiry');
     Route::put('/inquiry/{id}', [InquirySalesController::class, 'update'])->name('updateinquiry');
@@ -247,4 +249,5 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::delete('/deleteinquiry/{id}', [InquirySalesController::class, 'delete'])->name('deleteinquiry');
 
     Route::put('/approvedInquiry/{id}', [InquirySalesController::class, 'approvedInquiry'])->name('approvedInquiry');
+    Route::put('/validateInquiry/{id}', [InquirySalesController::class, 'validateInquiry'])->name('validateInquiry');
 });

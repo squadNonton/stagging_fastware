@@ -124,13 +124,10 @@ class FormFPPController extends Controller
         // Mengambil semua data FormFPP
         $formperbaikans = FormFPP::latest()->get();
 
-        // Mengambil semua data TindakLanjut
-        $tindaklanjuts = TindakLanjut::latest()->get();
+        // Mengambil data TindakLanjut yang terkait dengan formperbaikan tertentu dan mengelompokkannya berdasarkan nomor FPP
+        $tindaklanjutsGrouped = $formperbaikan->tindaklanjuts()->latest()->get()->groupBy('no_fpp');
 
-        // // Assuming $formperbaikan is an instance of the FormFPP model
-        $status = $formperbaikan->status;
-
-        return view('sales.lihat', compact('formperbaikan', 'formperbaikans', 'tindaklanjuts'))->with('i', (request()->input('page', 1) - 1) * 5);
+        return view('sales.lihat', compact('formperbaikan', 'formperbaikans', 'tindaklanjutsGrouped'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     public function EditMaintenance(FormFPP $formperbaikan, TindakLanjut $tindaklanjut)
@@ -210,8 +207,8 @@ class FormFPPController extends Controller
             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
-
-
+    // Tambah
+    // Ubah fungsi ini saja
     public function store(Request $request): RedirectResponse
     {
         // Validasi input
@@ -219,8 +216,9 @@ class FormFPPController extends Controller
             'gambar' => 'image|mimes:jpeg,png,jpg,gif|max:4096', // Hanya menerima format gambar dengan ukuran maksimal 4MB
         ]);
 
-        // Mendapatkan ID terakhir dari tabel FormFPP
-        $lastFPPId = FormFPP::latest('id')->first()->id ?? 0;
+        // Mendapatkan ID terakhir dari kolom id_fpp
+        $lastFPP = FormFPP::latest('id_fpp')->first();
+        $lastFPPId = $lastFPP ? (int) substr($lastFPP->id_fpp, 3) : 0;
 
         // Membuat nomor FPP dengan format FPXXXX, misalnya FP0001
         $id_fpp = 'FPP' . str_pad($lastFPPId + 1, 4, '0', STR_PAD_LEFT);
@@ -241,20 +239,10 @@ class FormFPPController extends Controller
         }
 
         // Set nilai default untuk bidang status
-        $request->merge(['status' => 0]);
-        $request->merge(['status_2' => 0]);
-        $request->merge(['status_catatan' => 0]);
-        $request->merge(['note' => 'Form FPP Dibuat']);
+        $request->merge(['status' => 0, 'status_2' => 0, 'status_catatan' => 0, 'note' => 'Form FPP Dibuat']);
 
         // Menentukan nilai 'mesin' berdasarkan opsi yang dipilih
-        $mesin = $request->mesin;
-        if ($request->mesin === "Others") {
-            // Gunakan nilai dari bidang input 'namaAlatBantu'
-            $mesin = $request->namaAlatBantu;
-        } else {
-            // Gunakan opsi yang dipilih untuk 'mesin'
-            $mesin = $request->mesin;
-        }
+        $mesin = $request->mesin === "Others" ? $request->namaAlatBantu : $request->mesin;
 
         // Membuat rekaman FormFPP
         $createdFormFPP = FormFPP::create([
@@ -281,6 +269,7 @@ class FormFPPController extends Controller
 
         return redirect()->route('fpps.index')->with('success', 'Form FPP berhasil dibuat.');
     }
+
 
 
 

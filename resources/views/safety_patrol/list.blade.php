@@ -108,50 +108,11 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-
-
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
-        <style>
-            .table-bordered th,
-            .table-bordered td {
-                border: 1px solid #dee2e6;
-            }
-
-            .table thead th {
-                vertical-align: bottom;
-                border-bottom: 2px solid #dee2e6;
-            }
-
-            .table tbody+tbody {
-                border-top: 2px solid #dee2e6;
-            }
-
-            .table-bordered {
-                border: 1px solid #dee2e6;
-            }
-
-            .datatable th,
-            .datatable td {
-                text-align: center;
-                vertical-align: middle;
-            }
-
-            .datatable th[colspan] {
-                text-align: center;
-            }
-        </style>
-
-        <!-- Add jQuery -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-        <!-- Add jQuery DataTables -->
-        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     </main><!-- End #main -->
 @endsection

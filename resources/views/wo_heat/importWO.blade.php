@@ -903,6 +903,8 @@
     <!-- Template Main JS File -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
     <script>
         $(document).ready(function() {
             $('#importForm').on('submit', function(event) {
@@ -910,26 +912,89 @@
 
                 let formData = new FormData(this);
 
+                // Show the SweetAlert loading with progress bar and percentage
+                Swal.fire({
+                    title: "Importing WO...",
+                    html: '<div id="progress-container" style="margin-top: 20px;"><div id="progress-bar" style="width: 0%; height: 20px; background-color: #3085d6;"></div><div id="progress-percent" style="margin-top: 10px;">0%</div></div><br>Please wait while we process your data.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 $.ajax({
                     url: "{{ route('importWO') }}",
                     method: "POST",
                     data: formData,
                     processData: false,
                     contentType: false,
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+
+                        // Upload progress
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total * 100;
+                                updateProgressBar(percentComplete);
+                            }
+                        }, false);
+
+                        return xhr;
+                    },
                     success: function(response) {
-                        alert(response.message); // Tampilkan pesan dari server
+                        updateProgressBar(100);
+
                         if (response.success) {
-                            window.location.reload(); // Contoh: reload halaman setelah sukses
+                            setTimeout(function() {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.message,
+                                    timer: 2000,
+                                    timerProgressBar: true,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.location
+                                        .reload(); // Reload the page after success
+                                });
+                            }, 500); // Small delay to show 100% completion
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message
+                            });
                         }
                     },
                     error: function(xhr, status, error) {
+                        Swal.close(); // Close the loading alert
+
                         let errorMessage = xhr.status + ': ' + xhr.statusText;
-                        alert('Error - ' + errorMessage);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error - ' + errorMessage
+                        });
                     }
                 });
+
+                let currentPercent = 0;
+
+                function updateProgressBar(percentComplete) {
+                    let interval = setInterval(function() {
+                        if (currentPercent >= percentComplete) {
+                            clearInterval(interval);
+                        } else {
+                            currentPercent++;
+                            $('#progress-bar').css('width', currentPercent + '%');
+                            $('#progress-percent').text(currentPercent + '%');
+                        }
+                    }, 10); // Update interval for smooth progress
+                }
             });
         });
     </script>
+
 
 </body>
 

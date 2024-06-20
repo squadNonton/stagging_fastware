@@ -791,6 +791,11 @@
                                         placeholder="Cari Nama Customer....">
                                 </div>
                                 <div class="p-2 flex-fill">
+                                    <label for="searchKodeOrNoWO">Kode / No. WO</label>
+                                    <input type="text" class="form-control" id="searchKodeOrNoWO"
+                                        placeholder="Cari Kode atau No. WO....">
+                                </div>
+                                <div class="p-2 flex-fill">
                                     <label for="searchStatusWO">Status WO</label>
                                     <select class="form-control" id="searchStatusWO">
                                         <option value="">All</option>
@@ -850,11 +855,7 @@
                                         </select>
                                     </div>
                                 </div>
-
-
                             </div>
-
-
 
                             <br>
 
@@ -901,7 +902,6 @@
                                         </tr>
                                     </tbody>
                                 </table>
-
                             </div>
                             <hr>
 
@@ -911,9 +911,13 @@
                             <!-- Table 3 (Detail Status DO) -->
                             <div class="table-responsive">
                                 <table class="table" id="table3">
-                                    <thead>
-                                    </thead>
+                                    <thead></thead>
                                     <tbody>
+                                        <!-- Tambah Disini-->
+                                        <tr>
+                                            <td>No. WO</td>
+                                            <td id="detailNoWO"></td>
+                                        </tr>
                                         <tr>
                                             <td>No. DO</td>
                                             <td id="detailNoDO"></td>
@@ -938,11 +942,10 @@
                                 </table>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
+
         </section>
 
         <section class="section">
@@ -1005,14 +1008,18 @@
             var globalData = {};
 
             $(document).ready(function() {
-                $('#searchWO, #searchDeskripsi, #searchStatusWO, #searchStatusDO, #startMonth, #endMonth').on(
-                    'keyup change',
-                    function() {
-                        populateTables();
-                    });
+                // Event listeners for search fields
+                $('#searchWO, #searchDeskripsi, #searchKodeOrNoWO, #searchStatusWO, #searchStatusDO, #startMonth, #endMonth')
+                    .on(
+                        'keyup change',
+                        function() {
+                            populateTables();
+                        });
 
+                // Function to populate tables based on search criteria
                 function populateTables() {
                     var searchWO = $('#searchWO').val();
+                    var searchKodeOrNoWO = $('#searchKodeOrNoWO').val();
                     var searchDeskripsi = $('#searchDeskripsi').val();
                     var searchStatusWO = $('#searchStatusWO').val();
                     var searchStatusDO = $('#searchStatusDO').val();
@@ -1029,6 +1036,7 @@
                         data: {
                             'searchWO': searchWO,
                             'searchDeskripsi': searchDeskripsi,
+                            'searchKodeOrNoWO': searchKodeOrNoWO,
                             'searchStatusWO': searchStatusWO,
                             'searchStatusDO': searchStatusDO,
                             'startMonth': startMonth,
@@ -1048,28 +1056,30 @@
                     });
                 }
 
+                // Function to populate the main table
                 function populateTable1(data) {
                     $('#tableContainer').empty();
 
                     let tableHtml = `
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>No. WO</th>
-                                            <th>Customer</th>
-                                            <th>Deskripsi</th>
-                                            <th>Tgl. WO</th>
-                                            <th>Status WO</th>
-                                            <th>Status DO</th>
-                                            <th>Proses</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tableBody">
-                                    </tbody>
-                                </table>
-                            </div>
-                        `;
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>No. WO</th>
+                                        <th>Kode</th>
+                                        <th>Customer</th>
+                                        <th>Deskripsi</th>
+                                        <th>Tgl. WO</th>
+                                        <th>Status WO</th>
+                                        <th>Status DO</th>
+                                        <th>Proses</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
 
                     $('#tableContainer').append(tableHtml);
 
@@ -1078,16 +1088,17 @@
                     $.each(data, function(customer, workOrders) {
                         workOrders.forEach(wo => {
                             let rowHtml = `
-                                    <tr data-no-wo="${wo.no_wo}">
-                                        <td class="no-wo clickable-cell">${wo.no_wo}</td>
-                                        <td>${wo.cust}</td>
-                                        <td>${wo.deskripsi}</td>
-                                        <td>${wo.tgl_wo}</td>
-                                        <td>${wo.status_wo}</td>
-                                        <td>${wo.status_do}</td>
-                                        <td>${wo.proses}</td>
-                                    </tr>
-                                `;
+                                <tr data-no-wo="${wo.no_wo}">
+                                    <td class="no-wo clickable-cell">${wo.no_wo}</td>
+                                    <td>${wo.kode}</td>
+                                    <td>${wo.cust}</td>
+                                    <td>${wo.deskripsi}</td>
+                                    <td>${wo.tgl_wo}</td>
+                                    <td>${wo.status_wo}</td>
+                                    <td>${wo.status_do}</td>
+                                    <td>${wo.proses}</td>
+                                </tr>
+                            `;
                             $tableBody.append(rowHtml);
                         });
                     });
@@ -1115,6 +1126,7 @@
                     });
                 }
 
+                // Function to populate the heating and tempering table
                 function populateTable2(data) {
                     $('#batchHeating').text('');
                     $('#mesinHeating').text('');
@@ -1143,13 +1155,16 @@
                     $('#tanggalTemper3').text(data.tgl_temper3 || '');
                 }
 
+                // Function to populate the details table
                 function populateTable3(data) {
+                    $('#detailNoWO').text('');
                     $('#detailNoDO').text('');
                     $('#detailTglST').text('');
                     $('#detailSupir').text('');
                     $('#detailPenerima').text('');
                     $('#detailTglTerima').text('');
 
+                    $('#detailNoWO').text(data.no_wo || '');
                     $('#detailNoDO').text(data.no_do || '');
                     $('#detailTglST').text(data.tgl_st || '');
                     $('#detailSupir').text(data.supir || '');
@@ -1157,6 +1172,7 @@
                     $('#detailTglTerima').text(data.tgl_terima || '');
                 }
 
+                // Event listener for detailed batch information
                 $('#table2').on('click', '.clickable-cell', function() {
                     let batch = $(this).text().trim();
                     let type = $(this).data('type');
@@ -1177,6 +1193,7 @@
                     });
                 });
 
+                // Function to populate the detailed process information
                 function populateDetailProses(batch, workOrders, type) {
                     $('#detailProsesTable tbody').empty();
                     $('#selectedBatch').text(batch);
@@ -1189,20 +1206,20 @@
                         totalTonase += parseFloat(wo.kg || 0);
 
                         let rowHtml = `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${wo.no_wo}</td>
-                    <td>${wo.cust}</td>
-                    <td>${wo.mesin_heating || wo.mesin_temper1 || wo.mesin_temper2 || wo.mesin_temper3}</td>
-                    <td>${wo.deskripsi}</td>
-                    <td>${wo.pcs || ''}</td>
-                    <td>${wo.kg || ''}</td>
-                    <td>${wo.tgl_wo || ''}</td>
-                    <td>${wo.status_wo || ''}</td>
-                    <td>${wo.status_do || ''}</td>
-                    <td>${wo.proses || ''}</td>
-                </tr>
-            `;
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${wo.no_wo}</td>
+                                <td>${wo.cust}</td>
+                                <td>${wo.mesin_heating || wo.mesin_temper1 || wo.mesin_temper2 || wo.mesin_temper3}</td>
+                                <td>${wo.deskripsi}</td>
+                                <td>${wo.pcs || ''}</td>
+                                <td>${wo.kg || ''}</td>
+                                <td>${wo.tgl_wo || ''}</td>
+                                <td>${wo.status_wo || ''}</td>
+                                <td>${wo.status_do || ''}</td>
+                                <td>${wo.proses || ''}</td>
+                            </tr>
+                        `;
                         $('#detailProsesTable tbody').append(rowHtml);
                     });
 
@@ -1230,10 +1247,9 @@
                             break;
                     }
                 }
-
-
             });
         </script>
+
 
 
         <style>

@@ -14,158 +14,266 @@
             </nav>
         </div> --}}
         <section class="section">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Approve Dept. Head</h5>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Approve Dept.Head (Waiting)</h5>
 
-                    <!-- Table with stripped rows -->
-                    <table class="table table-striped" id="inquiryTable">
-                        <thead>
-                            <tr>
-                                <th scope="col">No</th>
-                                <th scope="col">Kode Inq.</th>
-                                <th scope="col">Type Inq.</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Size</th>
-                                <th scope="col">Supplier</th>
-                                <th scope="col">Qty</th>
-                                <th scope="col">Order From</th>
-                                <th scope="col">Create By</th>
-                                <th scope="col" class="text-center">To Approve</th>
-                                <th scope="col" class="text-center">To Validate</th>
-                                <th scope="col">Note</th>
-                                <th scope="col">File</th>
-                                <th scope="col" class="text-center">is Active</th>
-                                <th scope="col" class="text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($inquiries as $inquiry)
-                                <tr>
-                                    <th scope="row">{{ $loop->iteration }}</th>
-                                    <td>{{ $inquiry->kode_inquiry }}</td>
-                                    <td>{{ $inquiry->jenis_inquiry }}</td>
-                                    <td>{{ $inquiry->type }}</td>
-                                    <td>{{ $inquiry->size }}</td>
-                                    <td>{{ $inquiry->supplier }}</td>
-                                    <td>{{ $inquiry->qty }}</td>
-                                    <td>{{ $inquiry->order_from }}</td>
-                                    <td>{{ $inquiry->create_by }}</td>
-                                    <td class="text-center">
-                                        <button
-                                            class="btn btn-sm text-center {{ $inquiry->to_approve == 'Waiting' ? 'btn-warning' : ($inquiry->to_approve == 'Approved' ? 'btn-success' : 'btn-danger') }}">
-                                            {{ $inquiry->to_approve }}
-                                        </button>
-                                    </td>
-                                    <td class="text-center">
-                                        <button
-                                            class="btn btn-sm {{ $inquiry->to_validate == 'Waiting' ? 'btn-warning' : ($inquiry->to_validate == 'Validated' ? 'btn-success' : 'btn-danger') }}">
-                                            {{ $inquiry->to_validate }}
-                                        </button>
-                                    </td>
-                                    <td>{{ $inquiry->note }}</td>
-                                    <td>
-                                        @if ($inquiry->attach_file)
-                                            <a href="{{ asset('storage/' . $inquiry->attach_file) }}" target="_blank">View
-                                                File</a>
-                                        @else
-                                            No File
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($inquiry->status == 0)
-                                            <button type="button" class="btn btn-danger" title="Data tidak aktif">
-                                                <i class="bi bi-exclamation-octagon"></i>
-                                            </button>
-                                        @endif
-                                    </td>
+                            <!-- Table with stripped rows -->
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="inquiryTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Kode Inq.</th>
+                                            <th scope="col">Type Inq.</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Size</th>
+                                            <th scope="col">Supplier</th>
+                                            <th scope="col">Qty</th>
+                                            <th scope="col">Order From</th>
+                                            <th scope="col">Create By</th>
+                                            <th scope="col" class="text-center">To Approve</th>
+                                            <th scope="col" class="text-center">To Validate</th>
+                                            <th scope="col">Note</th>
+                                            <th scope="col">File</th>
+                                            <th scope="col" class="text-center">is Active</th>
+                                            <th scope="col" class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($inquiries as $inquiry)
+                                            @if ($inquiry->status == 2)
+                                                <tr>
+                                                    <th scope="row">{{ $loop->iteration }}</th>
+                                                    <td>{{ $inquiry->kode_inquiry }}</td>
+                                                    <td>{{ $inquiry->jenis_inquiry }}</td>
+                                                    <td>{{ $inquiry->type }}</td>
+                                                    <td>{{ $inquiry->size }}</td>
+                                                    <td>{{ $inquiry->supplier }}</td>
+                                                    <td>{{ $inquiry->qty }}</td>
+                                                    <td>{{ $inquiry->order_from }}</td>
+                                                    <td>{{ $inquiry->create_by }}</td>
+                                                    <td class="text-center">
+                                                        <button
+                                                            class="btn btn-sm text-center {{ $inquiry->to_approve == 'Waiting' ? 'btn-warning' : ($inquiry->to_approve == 'Approved' ? 'btn-success' : 'btn-danger') }}">
+                                                            {{ $inquiry->to_approve }}
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button
+                                                            class="btn btn-sm {{ $inquiry->to_validate == 'Waiting' ? 'btn-warning' : ($inquiry->to_validate == 'Validated' ? 'btn-success' : 'btn-danger') }}">
+                                                            {{ $inquiry->to_validate }}
+                                                        </button>
+                                                    </td>
+                                                    <td>{{ $inquiry->note }}</td>
+                                                    <td>
+                                                        @if ($inquiry->attach_file)
+                                                            <a href="{{ asset('assets/files/' . $inquiry->attach_file) }}"
+                                                                target="_blank">View File</a>
+                                                        @else
+                                                            No File
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($inquiry->status == 0)
+                                                            <button type="button" class="btn btn-danger"
+                                                                title="Data tidak aktif">
+                                                                <i class="bi bi-exclamation-octagon"></i>
+                                                            </button>
+                                                        @endif
+                                                    </td>
 
-                                    <td>
-                                        @if (
-                                            $inquiry->status != 3 &&
-                                                $inquiry->status != 4 &&
-                                                $inquiry->status != 5 &&
-                                                $inquiry->status != 6 &&
-                                                $inquiry->status != 7)
-                                            <a class="btn btn-success mt-1" title="Edit">
-                                                <i class="bi bi-check2-all"
-                                                    onclick="openViewInquiryModal({{ $inquiry->id }})"></i>
-                                            </a>
-                                        @endif
-                                        <a class="btn btn-warning mt-1" title="View Form">
-                                            <i class="bi bi-eye-fill"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <!-- approval -->
-                    <!-- approval -->
-                    <div class="modal fade" id="viewInquiryModal" tabindex="-1" aria-labelledby="viewInquiryModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="viewInquiryModalLabel">Form Approved Inquiry</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="viewInquiryForm"
-                                        action="{{ route('approvedInquiry', ['id' => $inquiry->id]) }}" method="POST"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        @method('PUT')
-                                        <input type="hidden" id="viewInquiryId" name="inquiry_id">
-                                        <input type="hidden" id="action_type" name="action_type">
-                                        <div class="mb-3">
-                                            <label for="viewjenis_inquiry" class="form-label">Jenis Inquiry</label>
-                                            <select class="form-select" id="viewjenis_inquiry" name="jenis_inquiry" required
-                                                disabled>
-                                                <option value="RO">RO</option>
-                                                <option value="SPOR">SPOR</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="viewtype" class="form-label">Type</label>
-                                            <input type="text" class="form-control" id="viewtype" name="type"
-                                                required disabled>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="viewsize" class="form-label">Size</label>
-                                            <input type="text" class="form-control" id="viewsize" name="size"
-                                                required disabled>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="viewsupplier" class="form-label">Supplier</label>
-                                            <input type="text" class="form-control" id="viewsupplier" name="supplier"
-                                                required disabled>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="viewqty" class="form-label">Qty</label>
-                                            <input type="number" class="form-control" id="viewqty" name="qty"
-                                                required disabled>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="vieworder_from" class="form-label">Order From</label>
-                                            <input type="text" class="form-control" id="vieworder_from"
-                                                name="order_from" required disabled>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary"
-                                                onclick="setActionType('approved')">Approved</button>
-                                            <button type="submit" class="btn btn-danger"
-                                                onclick="setActionType('not_approved')">Not Approved</button>
-                                        </div>
-                                    </form>
-                                </div>
+                                                    <td>
+                                                        @if (
+                                                            $inquiry->status != 3 &&
+                                                                $inquiry->status != 4 &&
+                                                                $inquiry->status != 5 &&
+                                                                $inquiry->status != 6 &&
+                                                                $inquiry->status != 7)
+                                                            <a class="btn btn-success mt-1" title="Edit">
+                                                                <i class="bi bi-check2-all"
+                                                                    onclick="openViewInquiryModal({{ $inquiry->id }})"></i>
+                                                            </a>
+                                                        @endif
+                                                        <a class="btn btn-warning mt-1" title="View Form">
+                                                            <i class="bi bi-eye-fill"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Approve Dept. Head (Approve & Reject)</h5>
+
+                            <!-- Table with stripped rows -->
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="inquiryTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Kode Inq.</th>
+                                            <th scope="col">Type Inq.</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Size</th>
+                                            <th scope="col">Supplier</th>
+                                            <th scope="col">Qty</th>
+                                            <th scope="col">Order From</th>
+                                            <th scope="col">Create By</th>
+                                            <th scope="col" class="text-center">To Approve</th>
+                                            <th scope="col" class="text-center">To Validate</th>
+                                            <th scope="col">Note</th>
+                                            <th scope="col">File</th>
+                                            <th scope="col" class="text-center">is Active</th>
+                                            <th scope="col" class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($inquiries as $inquiry)
+                                            @if ($inquiry->status == 1 || $inquiry->status == 3 || $inquiry->status == 4)
+                                                <tr>
+                                                    <th scope="row">{{ $loop->iteration }}</th>
+                                                    <td>{{ $inquiry->kode_inquiry }}</td>
+                                                    <td>{{ $inquiry->jenis_inquiry }}</td>
+                                                    <td>{{ $inquiry->type }}</td>
+                                                    <td>{{ $inquiry->size }}</td>
+                                                    <td>{{ $inquiry->supplier }}</td>
+                                                    <td>{{ $inquiry->qty }}</td>
+                                                    <td>{{ $inquiry->order_from }}</td>
+                                                    <td>{{ $inquiry->create_by }}</td>
+                                                    <td class="text-center">
+                                                        <button
+                                                            class="btn btn-sm text-center {{ $inquiry->to_approve == 'Waiting' ? 'btn-warning' : ($inquiry->to_approve == 'Approved' ? 'btn-success' : 'btn-danger') }}">
+                                                            {{ $inquiry->to_approve }}
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button
+                                                            class="btn btn-sm {{ $inquiry->to_validate == 'Waiting' ? 'btn-warning' : ($inquiry->to_validate == 'Validated' ? 'btn-success' : 'btn-danger') }}">
+                                                            {{ $inquiry->to_validate }}
+                                                        </button>
+                                                    </td>
+                                                    <td>{{ $inquiry->note }}</td>
+                                                    <td>
+                                                        @if ($inquiry->attach_file)
+                                                            <a href="{{ asset('assets/files/' . $inquiry->attach_file) }}"
+                                                                target="_blank">View File</a>
+                                                        @else
+                                                            No File
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($inquiry->status == 0)
+                                                            <button type="button" class="btn btn-danger"
+                                                                title="Data tidak aktif">
+                                                                <i class="bi bi-exclamation-octagon"></i>
+                                                            </button>
+                                                        @endif
+                                                    </td>
+
+                                                    <td>
+                                                        @if (
+                                                            $inquiry->status != 3 &&
+                                                                $inquiry->status != 4 &&
+                                                                $inquiry->status != 5 &&
+                                                                $inquiry->status != 6 &&
+                                                                $inquiry->status != 7)
+                                                            <a class="btn btn-success mt-1" title="Edit">
+                                                                <i class="bi bi-check2-all"
+                                                                    onclick="openViewInquiryModal({{ $inquiry->id }})"></i>
+                                                            </a>
+                                                        @endif
+                                                        <a class="btn btn-warning mt-1" title="View Form">
+                                                            <i class="bi bi-eye-fill"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- approval -->
+            <!-- approval -->
+            <div class="modal fade" id="viewInquiryModal" tabindex="-1" aria-labelledby="viewInquiryModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewInquiryModalLabel">Form Approved Inquiry</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="viewInquiryForm" action="{{ route('approvedInquiry', ['id' => $inquiry->id]) }}"
+                                method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" id="viewInquiryId" name="inquiry_id">
+                                <input type="hidden" id="action_type" name="action_type">
+                                <div class="mb-3">
+                                    <label for="viewjenis_inquiry" class="form-label">Jenis Inquiry</label>
+                                    <select class="form-select" id="viewjenis_inquiry" name="jenis_inquiry" required
+                                        disabled>
+                                        <option value="RO">RO</option>
+                                        <option value="SPOR">SPOR</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="viewtype" class="form-label">Type</label>
+                                    <input type="text" class="form-control" id="viewtype" name="type" required
+                                        disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="viewsize" class="form-label">Size</label>
+                                    <input type="text" class="form-control" id="viewsize" name="size" required
+                                        disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="viewsupplier" class="form-label">Supplier</label>
+                                    <input type="text" class="form-control" id="viewsupplier" name="supplier"
+                                        required disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="viewqty" class="form-label">Qty</label>
+                                    <input type="number" class="form-control" id="viewqty" name="qty" required
+                                        disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="vieworder_from" class="form-label">Order From</label>
+                                    <input type="text" class="form-control" id="vieworder_from" name="order_from"
+                                        required disabled>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary"
+                                        onclick="setActionType('approved')">Approved</button>
+                                    <button type="submit" class="btn btn-danger"
+                                        onclick="setActionType('not_approved')">Not Approved</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
             </div>
         </section>
 

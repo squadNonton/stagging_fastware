@@ -29,38 +29,98 @@ class InquirySalesController extends Controller
         return view('inquiry.konfirmInquiry', compact('inquiries'));
     }
 
+    public function validasiInquiry()
+    {
+        $statuses = [2, 3, 1, 4, 5, 6, 7];
+        $inquiries = InquirySales::whereIn('status', $statuses)
+            ->orderByRaw('FIELD(status, 2, 3, 1, 0, 4, 5, 6, 7)')
+            ->get();
+
+        return view('inquiry.validasi', compact('inquiries'));
+    }
+
+    public function reportInquiry()
+    {
+        $statuses = [2, 3, 1, 4, 5, 6, 7];
+        $inquiries = InquirySales::whereIn('status', $statuses)
+            ->orderByRaw('FIELD(status, 2, 3, 1, 0, 4, 5, 6, 7)')
+            ->get();
+
+        return view('inquiry.report', compact('inquiries'));
+    }
+
     public function storeInquirySales(Request $request)
     {
         $request->validate([
             'jenis_inquiry' => 'required',
-            'type' => 'required',
-            'size' => 'required',
             'supplier' => 'required',
             'qty' => 'required|integer',
             'order_from' => 'required',
+            'type.*' => 'required', // Validasi untuk multiple input type
+            'size.*' => 'required', // Validasi untuk multiple input size
         ]);
 
         // Generate kode inquiry
-        $jenisInquiry = $request->jenis_inquiry; // RO atau SPOR
+        $jenisInquiry = $request->jenis_inquiry;
         $currentMonth = Carbon::now()->format('m');
         $currentYear = Carbon::now()->format('Y');
-        $lastInquiry = InquirySales::where('jenis_inquiry', $jenisInquiry)->orderBy('id', 'desc')->first();
-        $nextNumber = $lastInquiry ? intval(substr($lastInquiry->kode_inquiry, -3)) + 1 : 1;
-        $kodeInquiry = sprintf('%s/%02d/%04d/%03d', $jenisInquiry, $currentMonth, $currentYear, $nextNumber);
+        $lastInquiry = InquirySales::where('jenis_inquiry', $jenisInquiry)
+            ->where('supplier', $request->supplier)
+            ->where('qty', $request->qty)
+            ->where('order_from', $request->order_from)
+            ->first();
 
-        $inquiry = new InquirySales($request->all());
-        $inquiry->kode_inquiry = $kodeInquiry;
-        $inquiry->to_approve = 'Waiting';
-        $inquiry->to_validate = 'Waiting';
-        $inquiry->status = 2;
+        if ($lastInquiry) {
+            // Jika sudah ada inquiry dengan kombinasi yang sama, gabungkan type dan size yang baru ke inquiry yang sudah ada
+            foreach ($request->type as $key => $type) {
+                // Cek apakah kombinasi type dan size sudah ada dalam inquiry yang ada
+                $typeSizeExists = $lastInquiry->where('type', $type)
+                    ->where('size', $request->size[$key])
+                    ->exists();
 
-        // Assign the name of the logged-in user to the create_by field
-        $inquiry->create_by = Auth::user()->name;
+                if (!$typeSizeExists) {
+                    // Jika belum ada, tambahkan dengan format yang diinginkan
+                    $lastInquiry->type .= ', ' . $type;
+                    $lastInquiry->size .= ', ' . $request->size[$key];
+                }
+            }
+            $lastInquiry->save();
+        } else {
+            // Jika belum ada inquiry dengan kombinasi yang sama, buat inquiry baru
+            $nextNumber = InquirySales::where('jenis_inquiry', $jenisInquiry)
+                ->whereYear('created_at', $currentYear)
+                ->whereMonth('created_at', $currentMonth)
+                ->count() + 1;
 
-        $inquiry->save();
+            $kodeInquiry = sprintf('%s/%02d/%04d/%03d', $jenisInquiry, $currentMonth, $currentYear, $nextNumber);
 
-        return redirect()->route('createinquiry');
+            // Gabungkan semua type dan size menjadi satu baris dengan format yang diinginkan
+            $types = implode(', ', $request->type);
+            $sizes = implode(', ', $request->size);
+
+            $inquiry = new InquirySales();
+            $inquiry->kode_inquiry = $kodeInquiry;
+            $inquiry->jenis_inquiry = $request->jenis_inquiry;
+            $inquiry->type = $types;
+            $inquiry->size = $sizes;
+            $inquiry->supplier = $request->supplier;
+            $inquiry->qty = $request->qty;
+            $inquiry->order_from = $request->order_from;
+            $inquiry->to_approve = 'Waiting';
+            $inquiry->to_validate = 'Waiting';
+            $inquiry->status = 2;
+            $inquiry->create_by = Auth::user()->name;
+            $inquiry->save();
+        }
+
+        return redirect()->route('createinquiry')->with('success', 'Inquiry berhasil disimpan.');
     }
+
+
+
+
+
+
 
     public function editInquiry($id)
     {
@@ -148,5 +208,33 @@ class InquirySalesController extends Controller
         $inquiry->save(); // Save the inquiry to update the database
 
         return redirect()->route('konfirmInquiry')->with('success', 'Inquiry updated successfully');
+    }
+
+    public function validateInquiry(Request $request, $id)
+    {
+        $inquiry = InquirySales::findOrFail($id);
+
+        if ($request->action_type == 'validated') {
+            $inquiry->to_validate = 'Validated';
+            $inquiry->status = 4;
+
+            // Save note
+            $inquiry->note = $request->note;
+
+            // Save attachment file
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $fileName = $file->getClientOriginalName(); // Menggunakan nama asli file
+                $file->move(public_path('assets/files'), $fileName); // Simpan di direktori public/assets/files
+                $inquiry->attach_file = $fileName;
+            }
+        } elseif ($request->action_type == 'not_validated') {
+            $inquiry->to_validate = 'Not Validated';
+            $inquiry->status = 1;
+        }
+
+        $inquiry->save(); // Simpan perubahan ke database
+
+        return redirect()->route('validasiInquiry')->with('success', 'Inquiry updated successfully');
     }
 }

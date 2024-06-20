@@ -109,7 +109,7 @@ class HeatTreatmentController extends Controller
                 }
             }
 
-            return response()->json(['success' => true, 'message' => 'Data berhasil diimpor.']);
+            return response()->json(['success' => true, 'message' => 'Import WO berhasil']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
@@ -119,6 +119,7 @@ class HeatTreatmentController extends Controller
     {
         // Mengambil nilai input dari request
         $searchWO = $request->input('searchWO');
+        $searchKodeOrNoWO = $request->input('searchKodeOrNoWO');
         $searchStatusWO = $request->input('searchStatusWO');
         $searchStatusDO = $request->input('searchStatusDO');
         $startMonth = $request->input('startMonth');
@@ -128,9 +129,15 @@ class HeatTreatmentController extends Controller
         $query = HeatTreatment::query();
 
         // Tambahkan kondisi pencarian
-        $query->where(function ($q) use ($searchWO, $searchStatusWO, $searchStatusDO, $startMonth, $endMonth) {
+        $query->where(function ($q) use ($searchWO, $searchKodeOrNoWO, $searchStatusWO, $searchStatusDO, $startMonth, $endMonth) {
             if ($searchWO) {
                 $q->where('cust', 'LIKE', '%' . $searchWO . '%');
+            }
+            if ($searchKodeOrNoWO) {
+                $q->where(function ($q2) use ($searchKodeOrNoWO) {
+                    $q2->where('kode', 'LIKE', '%' . $searchKodeOrNoWO . '%')
+                        ->orWhere('no_wo', 'LIKE', '%' . $searchKodeOrNoWO . '%');
+                });
             }
             if ($searchStatusWO && $searchStatusWO != 'All') {
                 $q->where('status_wo', 'LIKE', '%' . $searchStatusWO . '%');
@@ -159,6 +166,7 @@ class HeatTreatmentController extends Controller
             return $items->map(function ($item) {
                 return [
                     'no_wo' => $item->no_wo,
+                    'kode' => $item->kode,
                     'cust' => $item->cust,
                     'deskripsi' => $item->deskripsi,
                     'tgl_wo' => $item->tgl_wo,

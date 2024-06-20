@@ -22,93 +22,95 @@
                     <button id="exportReportBtn" class="btn btn-warning btn-sm mb-3">Report</button>
 
                     <!-- Table with stripped rows -->
-                    <table class="table table-striped" id="inquiryTable">
-                        <thead>
-                            <tr>
-                                <th scope="col">No</th>
-                                <th scope="col">Kode Inq.</th>
-                                <th scope="col">Type Inq.</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Size</th>
-                                <th scope="col">Supplier</th>
-                                <th scope="col">Qty</th>
-                                <th scope="col">Order From</th>
-                                <th scope="col">Create By</th>
-                                <th scope="col" class="text-center">To Approve</th>
-                                <th scope="col" class="text-center">To Validate</th>
-                                <th scope="col">Note</th>
-                                <th scope="col">File</th>
-                                <th scope="col">is Active</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($inquiries as $inquiry)
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="inquiryTable">
+                            <thead>
                                 <tr>
-                                    <th scope="row">{{ $loop->iteration }}</th>
-                                    <td>{{ $inquiry->kode_inquiry }}</td>
-                                    <td>{{ $inquiry->jenis_inquiry }}</td>
-                                    <td>{{ $inquiry->type }}</td>
-                                    <td>{{ $inquiry->size }}</td>
-                                    <td>{{ $inquiry->supplier }}</td>
-                                    <td>{{ $inquiry->qty }}</td>
-                                    <td>{{ $inquiry->order_from }}</td>
-                                    <td>{{ $inquiry->create_by }}</td>
-                                    <td class="text-center">
-                                        <button
-                                            class="btn btn-sm text-center {{ $inquiry->to_approve == 'Waiting' ? 'btn-warning' : ($inquiry->to_approve == 'Approved' ? 'btn-success' : 'btn-danger') }}">
-                                            {{ $inquiry->to_approve }}
-                                        </button>
-                                    </td>
-                                    <td class="text-center">
-                                        <button
-                                            class="btn btn-sm {{ $inquiry->to_validate == 'Waiting' ? 'btn-warning' : ($inquiry->to_validate == 'Validated' ? 'btn-success' : 'btn-danger') }}">
-                                            {{ $inquiry->to_validate }}
-                                        </button>
-                                    </td>
-                                    <td>{{ $inquiry->note }}</td>
-                                    <td>
-                                        @if ($inquiry->attach_file)
-                                            <a href="{{ asset('storage/' . $inquiry->attach_file) }}" target="_blank">View
-                                                File</a>
-                                        @else
-                                            No File
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($inquiry->status == 0)
-                                            <button type="button" class="btn btn-danger" title="Data tidak aktif">
-                                                <i class="bi bi-exclamation-octagon"></i>
-                                            </button>
-                                        @endif
-                                    </td>
-
-                                    <td>
-                                        @if (
-                                            $inquiry->status != 0 &&
-                                                $inquiry->status != 3 &&
-                                                $inquiry->status != 4 &&
-                                                $inquiry->status != 5 &&
-                                                $inquiry->status != 6 &&
-                                                $inquiry->status != 7)
-                                            <a class="btn btn-primary mt-1" title="Edit">
-                                                <i class="bi bi-pencil-fill"
-                                                    onclick="openEditInquiryModal({{ $inquiry->id }})"></i>
-                                            </a>
-                                            <a class="btn btn-danger mt-1" title="Delete">
-                                                <i class="bi bi-trash-fill"
-                                                    onclick="deleteInquiry({{ $inquiry->id }})"></i>
-                                            </a>
-                                        @endif
-
-                                        <a class="btn btn-warning mt-1" title="View Form">
-                                            <i class="bi bi-eye-fill"></i>
-                                        </a>
-                                    </td>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Kode Inq.</th>
+                                    <th scope="col">Type Inq.</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Size</th>
+                                    <th scope="col">Supplier</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Order From</th>
+                                    <th scope="col">Create By</th>
+                                    <th scope="col" class="text-center">To Approve</th>
+                                    <th scope="col" class="text-center">To Validate</th>
+                                    <th scope="col">Note</th>
+                                    <th scope="col">File</th>
+                                    <th scope="col">is Active</th>
+                                    <th scope="col">Actions</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($inquiries as $inquiry)
+                                    <tr>
+                                        <th scope="row">{{ $loop->iteration }}</th>
+                                        <td>{{ $inquiry->kode_inquiry }}</td>
+                                        <td>{{ $inquiry->jenis_inquiry }}</td>
+                                        <td>{{ $inquiry->type }}</td>
+                                        <td>{{ $inquiry->size }}</td>
+                                        <td>{{ $inquiry->supplier }}</td>
+                                        <td>{{ $inquiry->qty }}</td>
+                                        <td>{{ $inquiry->order_from }}</td>
+                                        <td>{{ $inquiry->create_by }}</td>
+                                        <td class="text-center">
+                                            <button
+                                                class="btn btn-sm text-center {{ $inquiry->to_approve == 'Waiting' ? 'btn-warning' : ($inquiry->to_approve == 'Approved' ? 'btn-success' : 'btn-danger') }}">
+                                                {{ $inquiry->to_approve }}
+                                            </button>
+                                        </td>
+                                        <td class="text-center">
+                                            <button
+                                                class="btn btn-sm {{ $inquiry->to_validate == 'Waiting' ? 'btn-warning' : ($inquiry->to_validate == 'Validated' ? 'btn-success' : 'btn-danger') }}">
+                                                {{ $inquiry->to_validate }}
+                                            </button>
+                                        </td>
+                                        <td>{{ $inquiry->note }}</td>
+                                        <td>
+                                            @if ($inquiry->attach_file)
+                                                <a href="{{ asset('assets/files/' . $inquiry->attach_file) }}"
+                                                    target="_blank">View File</a>
+                                            @else
+                                                No File
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($inquiry->status == 0)
+                                                <button type="button" class="btn btn-danger" title="Data tidak aktif">
+                                                    <i class="bi bi-exclamation-octagon"></i>
+                                                </button>
+                                            @endif
+                                        </td>
+
+                                        <td>
+                                            @if (
+                                                $inquiry->status != 0 &&
+                                                    $inquiry->status != 3 &&
+                                                    $inquiry->status != 4 &&
+                                                    $inquiry->status != 5 &&
+                                                    $inquiry->status != 6 &&
+                                                    $inquiry->status != 7)
+                                                <a class="btn btn-primary mt-1" title="Edit">
+                                                    <i class="bi bi-pencil-fill"
+                                                        onclick="openEditInquiryModal({{ $inquiry->id }})"></i>
+                                                </a>
+                                                <a class="btn btn-danger mt-1" title="Delete">
+                                                    <i class="bi bi-trash-fill"
+                                                        onclick="deleteInquiry({{ $inquiry->id }})"></i>
+                                                </a>
+                                            @endif
+
+                                            <a class="btn btn-warning mt-1" title="View Form">
+                                                <i class="bi bi-eye-fill"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                     <!-- End Table with stripped rows -->
 
                     <!-- Modal Add-->
@@ -132,15 +134,22 @@
                                                 <option value="SPOR">SPOR</option>
                                             </select>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="type" class="form-label">Type</label>
-                                            <input type="text" class="form-control" id="type" name="type"
-                                                required>
+                                        <div id="inputContainer">
+                                            <div class="mb-3">
+                                                <label for="supplier" class="form-label">Type</label>
+                                                <input type="text" class="form-control type-input" name="type[]"
+                                                    required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="supplier" class="form-label">Size</label>
+                                                <input type="text" class="form-control size-input" name="size[]"
+                                                    required>
+                                            </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="size" class="form-label">Size</label>
-                                            <input type="text" class="form-control" id="size" name="size"
-                                                required>
+                                        <div>
+                                            <button type="button" class="btn btn-primary" onclick="addInput()">
+                                                <i class="bi bi-plus"></i> Tambah Input
+                                            </button>
                                         </div>
                                         <div class="mb-3">
                                             <label for="supplier" class="form-label">Supplier</label>
@@ -456,9 +465,25 @@
                 // Write the workbook to a file
                 XLSX.writeFile(wb, 'Inquiry_Report.xlsx');
             });
-
-
         </script>
+
+        <script>
+            var inputCount = 1; // Untuk menghitung jumlah input yang ada
+
+            function addInput() {
+                inputCount++;
+                var html = `<div class="mb-3">
+                         <label for="supplier" class="form-label">Type</label>
+                        <input type="text" class="form-control type-input" name="type[]" required>
+                    </div>
+                    <div class="mb-3">
+                          <label for="supplier" class="form-label">Size</label>
+                        <input type="text" class="form-control size-input" name="size[]" required>
+                    </div>`;
+                $('#inputContainer').append(html);
+            }
+        </script>
+
 
     </main><!-- End #main -->
 @endsection
