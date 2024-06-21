@@ -180,8 +180,8 @@
                                 </table>
                             </div>
                             <div class="text-end">
-                                <button type="button" class="btn btn-danger" onclick="showCheckAgain()">Check
-                                    Again</button>
+                                <button type="button" class="btn btn-danger" onclick="showCheckAgain()">Cek Kembali
+                                </button>
                                 <button type="button" class="btn btn-primary" id="confirmedButton"
                                     onclick="showConfirmationAlert()">Closed</button>
                             </div>
@@ -353,7 +353,7 @@
         Swal.fire({
             title: 'Konfirmasi',
             text: 'Apakah Anda yakin ingin mengubah statusnya menjadi Closed?',
-            icon: 'question',
+            icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
