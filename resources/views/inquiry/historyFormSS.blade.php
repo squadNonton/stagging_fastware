@@ -92,10 +92,6 @@
                             <div class="form-value">{{ $inquiry->kode_inquiry }}</div>
                         </div>
                         <div class="form-group">
-                            <label>Supplier:</label>
-                            <div class="form-value">{{ $inquiry->supplier }}</div>
-                        </div>
-                        <div class="form-group">
                             <label>Order From:</label>
                             <div class="form-value">{{ $inquiry->order_from }}</div>
                         </div>
@@ -159,9 +155,8 @@
                 // Fetch the form data
                 const formData = {
                     kodeInquiry: document.querySelectorAll('.form-value')[0].innerText, // Kode Inquiry
-                    supplier: document.querySelectorAll('.form-value')[1].innerText, // Supplier
-                    orderFrom: document.querySelectorAll('.form-value')[2].innerText, // Order From
-                    createBy: document.querySelectorAll('.form-value')[3].innerText // Create By
+                    orderFrom: document.querySelectorAll('.form-value')[1].innerText, // Order From
+                    createBy: document.querySelectorAll('.form-value')[2].innerText // Create By
                 };
 
                 // Prepare table data
@@ -199,7 +194,6 @@
                         row[2], // Jenis
                         row[6], // Pcs
                         row[7], // Pcs
-                        formData.supplier,
                         formData.orderFrom,
                         formData.createBy,
                         row[8] // Tanggal Terakhir

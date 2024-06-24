@@ -92,10 +92,6 @@
                             <div class="form-value">{{ $inquiry->kode_inquiry }}</div>
                         </div>
                         <div class="form-group">
-                            <label>Supplier:</label>
-                            <div class="form-value">{{ $inquiry->supplier }}</div>
-                        </div>
-                        <div class="form-group">
                             <label>Order From:</label>
                             <div class="form-value">{{ $inquiry->order_from }}</div>
                         </div>
@@ -217,7 +213,6 @@
                 var data = {
                     id_inquiry: '{{ $inquiry->id }}', // Ensure id_inquiry from PHP to JavaScript
                     kode_inquiry: '{{ $inquiry->kode_inquiry }}',
-                    supplier: '{{ $inquiry->supplier }}',
                     order_from: '{{ $inquiry->order_from }}',
                     create_by: '{{ $inquiry->create_by }}',
                     materials: []

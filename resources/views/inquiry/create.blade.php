@@ -29,7 +29,7 @@
                                     <tr>
                                         <th scope="col">No</th>
                                         <th scope="col">Kode Inq.</th>
-                                        <th scope="col">Supplier</th>
+                                        {{-- <th scope="col">Supplier</th> --}}
                                         <th scope="col">Order From</th>
                                         <th scope="col">Create By</th>
                                         <th scope="col" class="text-center">To Approve</th>
@@ -45,7 +45,7 @@
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td>{{ $inquiry->kode_inquiry }}</td>
-                                            <td>{{ $inquiry->supplier }}</td>
+                                            {{-- <td>{{ $inquiry->supplier }}</td> --}}
                                             <td>{{ $inquiry->order_from }}</td>
                                             <td>{{ $inquiry->create_by }}</td>
                                             <td class="text-center">
@@ -134,10 +134,10 @@
                                             <option value="SPOR">SPOR</option>
                                         </select>
                                     </div>
-                                    <div class="mb-3">
+                                    {{-- <div class="mb-3">
                                         <label for="supplier" class="form-label">Supplier</label>
                                         <input type="text" class="form-control" id="supplier" name="supplier" required>
-                                    </div>
+                                    </div> --}}
                                     <div class="mb-3">
                                         <label for="order_from" class="form-label">Order From</label>
                                         <input type="text" class="form-control" id="order_from" name="order_from"
@@ -179,11 +179,11 @@
                                             <option value="SPOR">SPOR</option>
                                         </select>
                                     </div>
-                                    <div class="mb-3">
+                                    {{-- <div class="mb-3">
                                         <label for="editsupplier" class="form-label">Supplier</label>
                                         <input type="text" class="form-control" id="editsupplier" name="supplier"
                                             required>
-                                    </div>
+                                    </div> --}}
                                     <div class="mb-3">
                                         <label for="editorder_from" class="form-label">Order From</label>
                                         <input type="text" class="form-control" id="editorder_from" name="order_from"

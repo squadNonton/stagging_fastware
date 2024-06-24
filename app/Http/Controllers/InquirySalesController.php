@@ -87,7 +87,6 @@ class InquirySalesController extends Controller
     {
         $request->validate([
             'jenis_inquiry' => 'required',
-            'supplier' => 'required',
             'order_from' => 'required',
         ]);
 
@@ -98,7 +97,6 @@ class InquirySalesController extends Controller
 
         // Cek apakah ada inquiry yang sudah ada dengan kombinasi jenis_inquiry, supplier, dan order_from yang sama
         $lastInquiry = InquirySales::where('jenis_inquiry', $jenisInquiry)
-            ->where('supplier', $request->supplier)
             ->where('order_from', $request->order_from)
             ->first();
 
@@ -125,7 +123,6 @@ class InquirySalesController extends Controller
             $inquiry = new InquirySales();
             $inquiry->kode_inquiry = $kodeInquiry;
             $inquiry->jenis_inquiry = $jenisInquiry; // Menambahkan baris ini untuk menyimpan jenis_inquiry
-            $inquiry->supplier = $request->supplier;
             $inquiry->order_from = $request->order_from;
             $inquiry->to_approve = 'Waiting';
             $inquiry->to_validate = 'Waiting';
@@ -162,7 +159,6 @@ class InquirySalesController extends Controller
     {
         $request->validate([
             'jenis_inquiry' => 'required',
-            'supplier' => 'required',
             'order_from' => 'required',
         ]);
 
