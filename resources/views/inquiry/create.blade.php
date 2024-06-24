@@ -3,243 +3,204 @@
 @section('content')
     <main id="main" class="main">
 
-        {{-- <div class="pagetitle">
-            <h1>Halaman Tambah Data</h1>
+        <div class="pagetitle">
+            <h1>Halaman Inquiry</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('dashboardHandling') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('index') }}">Menu Handling</a></li>
-                    <li class="breadcrumb-item active">Halaman Tambah Data</li>
+                    <li class="breadcrumb-item active">Menu Inquiry Sales</li>
                 </ol>
             </nav>
-        </div> --}}
+        </div>
         <section class="section">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Inquiry Sales</h5>
+                    <h5 class="card-title">Tampilan Data Inquiry Sales</h5>
                     <button class="btn btn-primary btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#inquiryModal">Form
                         Inquiry</button>
                     <button id="exportReportBtn" class="btn btn-warning btn-sm mb-3">Report</button>
 
                     <!-- Table with stripped rows -->
-                    <div class="table-responsive">
-                        <table class="table table-striped" id="inquiryTable">
-                            <thead>
-                                <tr>
-                                    <th scope="col">No</th>
-                                    <th scope="col">Kode Inq.</th>
-                                    <th scope="col">Type Inq.</th>
-                                    <th scope="col">Type</th>
-                                    <th scope="col">Size</th>
-                                    <th scope="col">Supplier</th>
-                                    <th scope="col">Qty</th>
-                                    <th scope="col">Order From</th>
-                                    <th scope="col">Create By</th>
-                                    <th scope="col" class="text-center">To Approve</th>
-                                    <th scope="col" class="text-center">To Validate</th>
-                                    <th scope="col">Note</th>
-                                    <th scope="col">File</th>
-                                    <th scope="col">is Active</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($inquiries as $inquiry)
+                    @if ($inquiries->isEmpty())
+                        <p>Tidak ada inquiry yang ditemukan.</p>
+                    @else
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="inquiryTable">
+                                <thead>
                                     <tr>
-                                        <th scope="row">{{ $loop->iteration }}</th>
-                                        <td>{{ $inquiry->kode_inquiry }}</td>
-                                        <td>{{ $inquiry->jenis_inquiry }}</td>
-                                        <td>{{ $inquiry->type }}</td>
-                                        <td>{{ $inquiry->size }}</td>
-                                        <td>{{ $inquiry->supplier }}</td>
-                                        <td>{{ $inquiry->qty }}</td>
-                                        <td>{{ $inquiry->order_from }}</td>
-                                        <td>{{ $inquiry->create_by }}</td>
-                                        <td class="text-center">
-                                            <button
-                                                class="btn btn-sm text-center {{ $inquiry->to_approve == 'Waiting' ? 'btn-warning' : ($inquiry->to_approve == 'Approved' ? 'btn-success' : 'btn-danger') }}">
-                                                {{ $inquiry->to_approve }}
-                                            </button>
-                                        </td>
-                                        <td class="text-center">
-                                            <button
-                                                class="btn btn-sm {{ $inquiry->to_validate == 'Waiting' ? 'btn-warning' : ($inquiry->to_validate == 'Validated' ? 'btn-success' : 'btn-danger') }}">
-                                                {{ $inquiry->to_validate }}
-                                            </button>
-                                        </td>
-                                        <td>{{ $inquiry->note }}</td>
-                                        <td>
-                                            @if ($inquiry->attach_file)
-                                                <a href="{{ asset('assets/files/' . $inquiry->attach_file) }}"
-                                                    target="_blank">View File</a>
-                                            @else
-                                                No File
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if ($inquiry->status == 0)
-                                                <button type="button" class="btn btn-danger" title="Data tidak aktif">
-                                                    <i class="bi bi-exclamation-octagon"></i>
-                                                </button>
-                                            @endif
-                                        </td>
-
-                                        <td>
-                                            @if (
-                                                $inquiry->status != 0 &&
-                                                    $inquiry->status != 3 &&
-                                                    $inquiry->status != 4 &&
-                                                    $inquiry->status != 5 &&
-                                                    $inquiry->status != 6 &&
-                                                    $inquiry->status != 7)
-                                                <a class="btn btn-primary mt-1" title="Edit">
-                                                    <i class="bi bi-pencil-fill"
-                                                        onclick="openEditInquiryModal({{ $inquiry->id }})"></i>
-                                                </a>
-                                                <a class="btn btn-danger mt-1" title="Delete">
-                                                    <i class="bi bi-trash-fill"
-                                                        onclick="deleteInquiry({{ $inquiry->id }})"></i>
-                                                </a>
-                                            @endif
-
-                                            <a class="btn btn-warning mt-1" title="View Form">
-                                                <i class="bi bi-eye-fill"></i>
-                                            </a>
-                                        </td>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Kode Inq.</th>
+                                        <th scope="col">Supplier</th>
+                                        <th scope="col">Order From</th>
+                                        <th scope="col">Create By</th>
+                                        <th scope="col" class="text-center">To Approve</th>
+                                        <th scope="col" class="text-center">To Validate</th>
+                                        <th scope="col">Note</th>
+                                        <th scope="col">File</th>
+                                        <th scope="col">is Active</th>
+                                        <th scope="col">Actions</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- End Table with stripped rows -->
+                                </thead>
+                                <tbody>
+                                    @foreach ($inquiries as $inquiry)
+                                        <tr>
+                                            <th scope="row">{{ $loop->iteration }}</th>
+                                            <td>{{ $inquiry->kode_inquiry }}</td>
+                                            <td>{{ $inquiry->supplier }}</td>
+                                            <td>{{ $inquiry->order_from }}</td>
+                                            <td>{{ $inquiry->create_by }}</td>
+                                            <td class="text-center">
+                                                <button
+                                                    class="btn btn-sm text-center {{ $inquiry->to_approve == 'Waiting' ? 'btn-warning' : ($inquiry->to_approve == 'Approved' ? 'btn-success' : 'btn-danger') }}">
+                                                    {{ $inquiry->to_approve }}
+                                                </button>
+                                            </td>
+                                            <td class="text-center">
+                                                <button
+                                                    class="btn btn-sm {{ $inquiry->to_validate == 'Waiting' ? 'btn-warning' : ($inquiry->to_validate == 'Validated' ? 'btn-success' : 'btn-danger') }}">
+                                                    {{ $inquiry->to_validate }}
+                                                </button>
+                                            </td>
+                                            <td>{{ $inquiry->note }}</td>
+                                            <td>
+                                                @if ($inquiry->attach_file)
+                                                    <a href="{{ asset('assets/files/' . $inquiry->attach_file) }}"
+                                                        target="_blank">View File</a>
+                                                @else
+                                                    No File
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($inquiry->status == 0)
+                                                    <button type="button" class="btn btn-danger" title="Data tidak aktif">
+                                                        <i class="bi bi-exclamation-octagon"></i>
+                                                    </button>
+                                                @endif
+                                            </td>
 
-                    <!-- Modal Add-->
-                    <div class="modal fade" id="inquiryModal" tabindex="-1" aria-labelledby="inquiryModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="inquiryModalLabel">Form Inquiry</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="{{ route('storeinquiry') }}" method="POST"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="mb-3">
-                                            <label for="jenis_inquiry" class="form-label">Jenis Inquiry</label>
-                                            <select class="form-select" id="jenis_inquiry" name="jenis_inquiry" required>
-                                                <option value="RO">RO</option>
-                                                <option value="SPOR">SPOR</option>
-                                            </select>
-                                        </div>
-                                        <div id="inputContainer">
-                                            <div class="mb-3">
-                                                <label for="supplier" class="form-label">Type</label>
-                                                <input type="text" class="form-control type-input" name="type[]"
-                                                    required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="supplier" class="form-label">Size</label>
-                                                <input type="text" class="form-control size-input" name="size[]"
-                                                    required>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <button type="button" class="btn btn-primary" onclick="addInput()">
-                                                <i class="bi bi-plus"></i> Tambah Input
-                                            </button>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="supplier" class="form-label">Supplier</label>
-                                            <input type="text" class="form-control" id="supplier" name="supplier"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="qty" class="form-label">Qty</label>
-                                            <input type="number" class="form-control" id="qty" name="qty"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="order_from" class="form-label">Order From</label>
-                                            <input type="text" class="form-control" id="order_from" name="order_from"
-                                                required>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Save</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End Modal -->
+                                            <td>
+                                                @if (
+                                                    $inquiry->status != 0 &&
+                                                    $inquiry->status != 1 &&
+                                                        $inquiry->status != 3 &&
+                                                        $inquiry->status != 4 &&
+                                                        $inquiry->status != 5 &&
+                                                        $inquiry->status != 6 &&
+                                                        $inquiry->status != 7)
+                                                    <a class="btn btn-primary mt-1" title="Edit">
+                                                        <i class="bi bi-pencil-fill"
+                                                            onclick="openEditInquiryModal({{ $inquiry->id }})"></i>
+                                                    </a>
+                                                    <a class="btn btn-danger mt-1" title="Delete">
+                                                        <i class="bi bi-trash-fill"
+                                                            onclick="deleteInquiry({{ $inquiry->id }})"></i>
+                                                    </a>
+                                                    <a class="btn btn-info mt-1" href="{{ route('formulirInquiry', ['id' => $inquiry->id]) }}"
+                                                        title="Formulir Inquiry">
+                                                         <i class="bi bi-file-earmark-arrow-up-fill"></i>
+                                                     </a>
+                                                @endif
 
-                    <!-- Edit Inquiry Modal -->
-                    <div class="modal fade" id="editInquiryModal" tabindex="-1" aria-labelledby="editInquiryModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editInquiryModalLabel">Edit Inquiry</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="editInquiryForm"
-                                        action="{{ route('updateinquiry', ['id' => $inquiry->id]) }}" method="POST"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        @method('PUT')
-                                        <input type="hidden" id="editInquiryId" name="inquiry_id">
-                                        <div class="mb-3">
-                                            <label for="editjenis_inquiry" class="form-label">Jenis Inquiry</label>
-                                            <select class="form-select" id="editjenis_inquiry" name="jenis_inquiry"
-                                                required>
-                                                <option value="RO">RO</option>
-                                                <option value="SPOR">SPOR</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="edittype" class="form-label">Type</label>
-                                            <input type="text" class="form-control" id="edittype" name="type"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editsize" class="form-label">Size</label>
-                                            <input type="text" class="form-control" id="editsize" name="size"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editsupplier" class="form-label">Supplier</label>
-                                            <input type="text" class="form-control" id="editsupplier" name="supplier"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editqty" class="form-label">Qty</label>
-                                            <input type="number" class="form-control" id="editqty" name="qty"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editorder_from" class="form-label">Order From</label>
-                                            <input type="text" class="form-control" id="editorder_from"
-                                                name="order_from" required>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Save</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+                                                <a class="btn btn-warning mt-1" title="View Form" href="{{ route('historyFormSS', $inquiry->id) }}">
+                                                    <i class="bi bi-eye-fill"></i>
+                                                </a>
+                                                
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-                    <!-- End Edit Inquiry Modal -->
+                    @endif
                 </div>
+                <!-- End Table with stripped rows -->
+
+                <!-- Modal Add-->
+                <div class="modal fade" id="inquiryModal" tabindex="-1" aria-labelledby="inquiryModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="inquiryModalLabel">Form Inquiry</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ route('storeinquiry') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label for="jenis_inquiry" class="form-label">Jenis Inquiry</label>
+                                        <select class="form-select" id="jenis_inquiry" name="jenis_inquiry" required>
+                                            <option value="RO">RO</option>
+                                            <option value="SPOR">SPOR</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="supplier" class="form-label">Supplier</label>
+                                        <input type="text" class="form-control" id="supplier" name="supplier" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="order_from" class="form-label">Order From</label>
+                                        <input type="text" class="form-control" id="order_from" name="order_from"
+                                            required>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Modal -->
+
+                <!-- Edit Inquiry Modal -->
+                <div class="modal fade" id="editInquiryModal" tabindex="-1" aria-labelledby="editInquiryModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editInquiryModalLabel">Edit Inquiry</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editInquiryForm"
+                                    action="{{ route('updateinquiry', ['id' => $inquiries->first()->id ?? 0]) }}"
+                                    method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" id="editInquiryId" name="inquiry_id">
+                                    <div class="mb-3">
+                                        <label for="editjenis_inquiry" class="form-label">Jenis Inquiry</label>
+                                        <select class="form-select" id="editjenis_inquiry" name="jenis_inquiry" required>
+                                            <option value="RO">RO</option>
+                                            <option value="SPOR">SPOR</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editsupplier" class="form-label">Supplier</label>
+                                        <input type="text" class="form-control" id="editsupplier" name="supplier"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editorder_from" class="form-label">Order From</label>
+                                        <input type="text" class="form-control" id="editorder_from" name="order_from"
+                                            required>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Edit Inquiry Modal -->
+            </div>
             </div>
         </section>
 
@@ -290,11 +251,7 @@
 
                         // Isi form modal dengan data yang diperoleh
                         $('#editkode_inquiry').val(response.kode_inquiry);
-                        $('#editjenis_inquiry').val(response.jenis_inquiry);
-                        $('#edittype').val(response.type);
-                        $('#editsize').val(response.size);
                         $('#editsupplier').val(response.supplier);
-                        $('#editqty').val(response.qty);
                         $('#editorder_from').val(response.order_from);
                         $('#editcreate_by').val(response.create_by);
                         $('#editto_approve').val(response.to_approve);
@@ -391,7 +348,7 @@
 
                 // Filter out unwanted columns (Note, File, is Active, Actions)
                 // Define the columns we want to keep (1-based index: No, Kode Inq., Type Inq., Type, Size, Supplier, Qty, Order From, Create By, To Approve, To Validate)
-                var columnsToKeep = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+                var columnsToKeep = [1, 2, 3, 4, 5, 6, 7];
 
                 // Get the range of the worksheet
                 var range = XLSX.utils.decode_range(ws['!ref']);
@@ -429,21 +386,11 @@
                     {
                         wpx: 100
                     }, // Kode Inq.
-                    {
-                        wpx: 100
-                    }, // Type Inq.
-                    {
-                        wpx: 100
-                    }, // Type
-                    {
-                        wpx: 60
-                    }, // Size
+
                     {
                         wpx: 120
                     }, // Supplier
-                    {
-                        wpx: 60
-                    }, // Qty
+
                     {
                         wpx: 100
                     }, // Order From

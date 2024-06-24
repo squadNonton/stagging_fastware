@@ -115,186 +115,198 @@
                             </div>
                         </div><!-- End Customers Card -->
 
-                        <!-- Reports -->
-                        <div class="row">
-                            <div class="col-sm-9">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Chart Bar Klaim dan Komplain <span></span></h5>
-                                        <div>
-                                            <label for="yearDropdown">Pilih Tahun:</label>
-                                            <select id='date-dropdown' style="width: 20%"></select>
-                                            <canvas id="myChart" style="height:24.5vh; width:100%"></canvas>
+                        <div class="container-fluid">
+                            <!-- Row for the first set of charts -->
+                            <div class="row">
+                                <!-- Bar chart for claims and complaints -->
+                                <div class="col-sm-12 col-md-9 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Chart Bar Klaim dan Komplain</h5>
+                                            <div>
+                                                <label for="yearDropdown">Pilih Tahun:</label>
+                                                <select id='date-dropdown' class="form-control"
+                                                    style="width: 100%; max-width: 200px;"></select>
+                                                <canvas id="myChart" style="height:24.5vh; width:100%"></canvas>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Chart Bar Periode</h5>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="start_periode">Bulan Mulai:</label>
-                                                <input type="date" id="start_periode" name="start_periode"
-                                                    class="form-control">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="end_periode">Bulan Akhir:</label>
-                                                <input type="date" id="end_periode" name="end_periode"
-                                                    class="form-control">
-                                            </div>
-                                            <div id="chartAllPeriode" style="height:21.5vh; width:100%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Chart Pie Tipe Material<span></span></h5>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="start_month">Bulan Mulai:</label>
-                                                <input type="date" id="start_month" name="start_month"
-                                                    class="form-control">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="end_month">Bulan Akhir:</label>
-                                                <input type="date" id="end_month" name="end_month" class="form-control">
-                                            </div>
-                                            {{-- filternya --}}
-                                            <div class="col-lg-6" style="margin-top: 1%">
-                                                <label for="jenis">Jenis:</label>
-                                                <select id="jenis" class="form-select form-select-sm"
-                                                    aria-label=".form-select-sm example" onchange="FilterPieChartTipe()">
-                                                    <option selected>--- Pilih Jenis ---</option>
-                                                    <option value="frekuensi">Frekuensi Jenis</option>
-                                                    <option value="qty">QTY</option>
-                                                    <option value="pcs">PCS</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-lg-6" style="margin-top: 1%">
-                                                <label for="tipe">Kategori:</label>
-                                                <select id="type" class="form-select form-select-sm"
-                                                    aria-label=".form-select-sm example" onchange="FilterPieChartTipe()">
-                                                    <option selected>--- Pilih Kategori ---</option>
-                                                    <option value="kategori">All Kategori</option>
-                                                    <option value="type_1">Komplain</option>
-                                                    <option value="type_2">Klaim</option>
-                                                </select>
-                                            </div>
-                                            <div id="ChartPieTypeMaterial"
-                                                style="width: 100%; height: 300px; margin-top: 5%;">
+                                <!-- Bar chart for period -->
+                                <div class="col-sm-12 col-md-3 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Chart Bar Periode</h5>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-2">
+                                                    <label for="start_periode">Bulan Mulai:</label>
+                                                    <input type="date" id="start_periode" name="start_periode"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="col-md-6 mb-2">
+                                                    <label for="end_periode">Bulan Akhir:</label>
+                                                    <input type="date" id="end_periode" name="end_periode"
+                                                        class="form-control">
+                                                </div>
+                                                <div id="chartAllPeriode" style="height:21.5vh; width:100%"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Chart Pie Proses<span></span></h5>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="start_month3">Bulan Mulai:</label>
-                                                <input type="date" id="start_month3" name="start_month3"
-                                                    class="form-control">
+
+                            <!-- Row for the pie charts -->
+                            <div class="row">
+                                <!-- Pie chart for material type -->
+                                <div class="col-sm-12 col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Chart Pie Tipe Material</h5>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-2">
+                                                    <label for="start_month">Bulan Mulai:</label>
+                                                    <input type="date" id="start_month" name="start_month"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="col-md-6 mb-2">
+                                                    <label for="end_month">Bulan Akhir:</label>
+                                                    <input type="date" id="end_month" name="end_month"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <label for="jenis">Jenis:</label>
+                                                    <select id="jenis" class="form-select form-select-sm"
+                                                        onchange="FilterPieChartTipe()">
+                                                        <option selected>--- Pilih Jenis ---</option>
+                                                        <option value="frekuensi">Frekuensi Jenis</option>
+                                                        <option value="qty">QTY</option>
+                                                        <option value="pcs">PCS</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <label for="tipe">Kategori:</label>
+                                                    <select id="type" class="form-select form-select-sm"
+                                                        onchange="FilterPieChartTipe()">
+                                                        <option selected>--- Pilih Kategori ---</option>
+                                                        <option value="kategori">All Kategori</option>
+                                                        <option value="type_1">Komplain</option>
+                                                        <option value="type_2">Klaim</option>
+                                                    </select>
+                                                </div>
+                                                <div id="ChartPieTypeMaterial"
+                                                    style="width: 100%; height: 300px; margin-top: 5%;"></div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <label for="end_month3">Bulan Akhir:</label>
-                                                <input type="date" id="end_month3" name="end_month3"
-                                                    class="form-control">
-                                            </div>
-                                            {{-- filternya --}}
-                                            <div class="col-lg-6" style="margin-top: 1%">
-                                                <label for="jenis2">Jenis:</label>
-                                                <select id="jenis2" class="form-select form-select-sm"
-                                                    aria-label=".form-select-sm example" onchange="updatePieChart();">
-                                                    <option selected>--- Pilih Jenis ---</option>
-                                                    <option value="frekuensi2">Frekuensi Jenis</option>
-                                                    <option value="qty">QTY</option>
-                                                    <option value="pcs">PCS</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-lg-6" style="margin-top: 1%">
-                                                <label for="tipe2">Kategori:</label>
-                                                <select id="tipe2" class="form-select form-select-sm"
-                                                    aria-label=".form-select-sm example" onchange="updatePieChart();">
-                                                    <option selected>--- Pilih Kategori ---</option>
-                                                    <option value="kategori_2">All Kategori</option>
-                                                    <option value="type_1">Komplain</option>
-                                                    <option value="type_2">Klaim</option>
-                                                </select>
-                                            </div>
-                                            <div id="ChartPieProses" style="width: 100%; height: 300px; margin-top: 5%;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Pie chart for process -->
+                                <div class="col-sm-12 col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Chart Pie Proses</h5>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-2">
+                                                    <label for="start_month3">Bulan Mulai:</label>
+                                                    <input type="date" id="start_month3" name="start_month3"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="col-md-6 mb-2">
+                                                    <label for="end_month3">Bulan Akhir:</label>
+                                                    <input type="date" id="end_month3" name="end_month3"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <label for="jenis2">Jenis:</label>
+                                                    <select id="jenis2" class="form-select form-select-sm"
+                                                        onchange="updatePieChart();">
+                                                        <option selected>--- Pilih Jenis ---</option>
+                                                        <option value="frekuensi2">Frekuensi Jenis</option>
+                                                        <option value="qty">QTY</option>
+                                                        <option value="pcs">PCS</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <label for="tipe2">Kategori:</label>
+                                                    <select id="tipe2" class="form-select form-select-sm"
+                                                        onchange="updatePieChart();">
+                                                        <option selected>--- Pilih Kategori ---</option>
+                                                        <option value="kategori_2">All Kategori</option>
+                                                        <option value="type_1">Komplain</option>
+                                                        <option value="type_2">Klaim</option>
+                                                    </select>
+                                                </div>
+                                                <div id="ChartPieProses"
+                                                    style="width: 100%; height: 300px; margin-top: 5%;"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Chart Pie Kategori (NG)<span></span></h5>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="start_month4">Bulan Mulai:</label>
-                                                <input type="date" id="start_month4" name="start_month4"
-                                                    class="form-control">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="end_month4">Bulan Akhir:</label>
-                                                <input type="date" id="end_month4" name="end_month4"
-                                                    class="form-control">
-                                            </div>
-                                            <div class="col-lg-6" style="margin-top: 1%">
-                                                <label for="jenis3">Jenis:</label>
-                                                <select id="jenis3" class="form-select form-select-sm"
-                                                    aria-label=".form-select-sm example" onchange="updatePieChart();">
-                                                    <option selected>--- Pilih Jenis (NG) ---</option>
-                                                    <option value="CT - Ukuran Minus">CT - Ukuran Minus</option>
-                                                    <option value="CT - Potongan Miring">CT - Potongan Miring</option>
-                                                    <option value="CT - NG Dimensi">CT - NG Dimensi</option>
-                                                    <option value="MCH - Dimensi NG">MCH - Dimensi NG</option>
-                                                    <option value="MCH - Ada Step">MCH - Ada Step</option>
-                                                    <option value="MCH - NG Paralelism">MCH - NG Paralelism</option>
-                                                    <option value="MCH - NG Siku">MCH - NG Siku</option>
-                                                    <option value="HT - NG Siku">HT - NG Siku</option>
-                                                    <option value="HT - Retak/Patah">HT - Retak/Patah</option>
-                                                    <option value="HT - Bending">HT - Bending</option>
-                                                    <option value="HT - Kekerasan Minus">HT - Kekerasan Minus</option>
-                                                    <option value="HT - Kekerasan Lebih">HT - Kekerasan Lebih</option>
-                                                    <option value="HT - Scratch/Gores">HT - Scratch/Gores</option>
-                                                    <option value="HT - Aus">HT - Aus</option>
-                                                    <option value="HT - Appearance">HT - Appearance</option>
-                                                    <option value="MKT - Jumlah Tidak Sesuai">MKT - Jumlah Tidak Sesuai
-                                                    </option>
-                                                    <option value="MKT - Dimensi Tidak Sesuai">MKT - Dimensi Tidak Sesuai
-                                                    </option>
-                                                    <option value="MKT - Type Material Tidak Sesuai">MKT - Type Material
-                                                        Tidak
-                                                        Sesuai</option>
-                                                    <option value="MTRL - Pin Hole">MTRL - Pin Hole</option>
-                                                    <option value="MTRL - Inklusi">MTRL - Inklusi</option>
-                                                    <option value="MTRL - Sulit Machining">MTRL - Sulit Machining</option>
-                                                    <option value="MTRL - Karat">MTRL - Karat</option>
-                                                    <option value="Others">Others</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-lg-6" style="margin-top: 1%">
-                                                <label for="tipe3">Kategori:</label>
-                                                <select id="tipe3" class="form-select form-select-sm"
-                                                    aria-label=".form-select-sm example" onchange="updatePieChart();">
-                                                    <option selected>--- Pilih Kategori ---</option>
-                                                    <option value="kategori_3">All Kategori</option>
-                                                    <option value="type_1">Komplain</option>
-                                                    <option value="type_2">Klaim</option>
-                                                </select>
-                                            </div>
-                                            <div id="ChartPieNG" style="width: 100%; height: 300px; margin-top: 5%;">
+
+                            <!-- Row for the NG pie chart -->
+                            <div class="row">
+                                <!-- Pie chart for NG categories -->
+                                <div class="col-sm-12 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Chart Pie Kategori (NG)</h5>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-2">
+                                                    <label for="start_month4">Bulan Mulai:</label>
+                                                    <input type="date" id="start_month4" name="start_month4"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="col-md-6 mb-2">
+                                                    <label for="end_month4">Bulan Akhir:</label>
+                                                    <input type="date" id="end_month4" name="end_month4"
+                                                        class="form-control">
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <label for="jenis3">Jenis:</label>
+                                                    <select id="jenis3" class="form-select form-select-sm"
+                                                        onchange="updatePieChart();">
+                                                        <option selected>--- Pilih Jenis (NG) ---</option>
+                                                        <option value="CT - Ukuran Minus">CT - Ukuran Minus</option>
+                                                        <option value="CT - Potongan Miring">CT - Potongan Miring</option>
+                                                        <option value="CT - NG Dimensi">CT - NG Dimensi</option>
+                                                        <option value="MCH - Dimensi NG">MCH - Dimensi NG</option>
+                                                        <option value="MCH - Ada Step">MCH - Ada Step</option>
+                                                        <option value="MCH - NG Paralelism">MCH - NG Paralelism</option>
+                                                        <option value="MCH - NG Siku">MCH - NG Siku</option>
+                                                        <option value="HT - NG Siku">HT - NG Siku</option>
+                                                        <option value="HT - Retak/Patah">HT - Retak/Patah</option>
+                                                        <option value="HT - Bending">HT - Bending</option>
+                                                        <option value="HT - Kekerasan Minus">HT - Kekerasan Minus</option>
+                                                        <option value="HT - Kekerasan Lebih">HT - Kekerasan Lebih</option>
+                                                        <option value="HT - Scratch/Gores">HT - Scratch/Gores</option>
+                                                        <option value="HT - Aus">HT - Aus</option>
+                                                        <option value="HT - Appearance">HT - Appearance</option>
+                                                        <option value="MKT - Jumlah Tidak Sesuai">MKT - Jumlah Tidak Sesuai
+                                                        </option>
+                                                        <option value="MKT - Dimensi Tidak Sesuai">MKT - Dimensi Tidak
+                                                            Sesuai</option>
+                                                        <option value="MKT - Type Material Tidak Sesuai">MKT - Type
+                                                            Material Tidak Sesuai</option>
+                                                        <option value="MTRL - Pin Hole">MTRL - Pin Hole</option>
+                                                        <option value="MTRL - Inklusi">MTRL - Inklusi</option>
+                                                        <option value="MTRL - Sulit Machining">MTRL - Sulit Machining
+                                                        </option>
+                                                        <option value="MTRL - Karat">MTRL - Karat</option>
+                                                        <option value="Others">Others</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-6 mb-2">
+                                                    <label for="tipe3">Kategori:</label>
+                                                    <select id="tipe3" class="form-select form-select-sm"
+                                                        onchange="updatePieChart();">
+                                                        <option selected>--- Pilih Kategori ---</option>
+                                                        <option value="kategori_3">All Kategori</option>
+                                                        <option value="type_1">Komplain</option>
+                                                        <option value="type_2">Klaim</option>
+                                                    </select>
+                                                </div>
+                                                <div id="ChartPieNG" style="width: 100%; height: 300px; margin-top: 5%;">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -661,8 +661,8 @@ class SumbangSaranController extends Controller
             'keadaan_sebelumnya' => 'required|string',
             'usulan_ide' => 'required|string',
             'keuntungan_ide' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,ppt,pptx,xls,xlsx|max:2048',
+            'image_2' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,ppt,pptx,xls,xlsx|max:2048',
         ]);
 
         // Simpan data

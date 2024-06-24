@@ -14,11 +14,7 @@
                                 <tr>
                                     <th scope="col">No</th>
                                     <th scope="col">Kode Inq.</th>
-                                    <th scope="col">Type Inq.</th>
-                                    <th scope="col">Type</th>
-                                    <th scope="col">Size</th>
                                     <th scope="col">Supplier</th>
-                                    <th scope="col">Qty</th>
                                     <th scope="col">Order From</th>
                                     <th scope="col">Create By</th>
                                     <th scope="col" class="text-center">To Approve</th>
@@ -31,15 +27,11 @@
                             </thead>
                             <tbody>
                                 @foreach ($inquiries as $inquiry)
-                                    @if ($inquiry->status == 3)
+                                    @if ($inquiry->status == 4)
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td>{{ $inquiry->kode_inquiry }}</td>
-                                            <td>{{ $inquiry->jenis_inquiry }}</td>
-                                            <td>{{ $inquiry->type }}</td>
-                                            <td>{{ $inquiry->size }}</td>
                                             <td>{{ $inquiry->supplier }}</td>
-                                            <td>{{ $inquiry->qty }}</td>
                                             <td>{{ $inquiry->order_from }}</td>
                                             <td>{{ $inquiry->create_by }}</td>
                                             <td class="text-center">
@@ -73,13 +65,13 @@
                                             </td>
 
                                             <td>
-                                                @if ($inquiry->status == 3)
+                                                @if ($inquiry->status == 4)
                                                     <a class="btn btn-success mt-1" title="Edit">
                                                         <i class="bi bi-check2-all"
                                                             onclick="openViewInquiryModal({{ $inquiry->id }})"></i>
                                                     </a>
                                                 @endif
-                                                <a class="btn btn-warning mt-1" title="View Form">
+                                                <a class="btn btn-warning mt-1" href="{{ route('historyFormSS', $inquiry->id) }}" title="View Form">
                                                     <i class="bi bi-eye-fill"></i>
                                                 </a>
                                             </td>
@@ -109,31 +101,13 @@
                                         <input type="hidden" id="viewInquiryId" name="inquiry_id">
                                         <input type="hidden" id="action_type" name="action_type">
                                         <div class="mb-3">
-                                            <label for="viewjenis_inquiry" class="form-label">Jenis Inquiry</label>
-                                            <select class="form-select" id="viewjenis_inquiry" name="jenis_inquiry" required
-                                                disabled>
-                                                <option value="RO">RO</option>
-                                                <option value="SPOR">SPOR</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="viewtype" class="form-label">Type</label>
-                                            <input type="text" class="form-control" id="viewtype" name="type"
-                                                required disabled>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="viewsize" class="form-label">Size</label>
-                                            <input type="text" class="form-control" id="viewsize" name="size"
+                                            <label for="viewjenis_inquiry" class="form-label">Kode Inquiry</label>
+                                            <input type="text" class="form-control" id="viewkode_inquiry" name="kode_inquiry"
                                                 required disabled>
                                         </div>
                                         <div class="mb-3">
                                             <label for="viewsupplier" class="form-label">Supplier</label>
                                             <input type="text" class="form-control" id="viewsupplier" name="supplier"
-                                                required disabled>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="viewqty" class="form-label">Qty</label>
-                                            <input type="number" class="form-control" id="viewqty" name="qty"
                                                 required disabled>
                                         </div>
                                         <div class="mb-3">

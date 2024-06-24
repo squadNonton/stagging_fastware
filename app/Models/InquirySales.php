@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany; 
 
 class InquirySales extends Model
 {
@@ -13,16 +14,19 @@ class InquirySales extends Model
     protected $fillable = [
         'kode_inquiry',
         'jenis_inquiry',
-        'type',
-        'size',
         'supplier',
-        'qty',
         'order_from',
         'create_by',
         'to_approve',
         'to_validate',
         'note',
         'attach_file',
-        'status'
+        'status',
+        'modified_by',
     ];
+
+    public function details()
+    {
+        return $this->hasMany(DetailInquiry::class, 'id_inquiry');
+    }
 }
