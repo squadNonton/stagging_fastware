@@ -100,19 +100,21 @@
                             <div class="form-value">{{ $inquiry->create_by }}</div>
                         </div>
                     </div>
-    
+
                     <div class="table-responsive">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama Material</th>
-                                    <th>Jenis</th>
-                                    <th>Thickness</th>
-                                    <th>Weight</th>
-                                    <th>Length</th>
-                                    <th>Pcs</th>
-                                    <th>Qty</th>
+                                    <th style="width: 30px;">No</th>
+                                    <th style="width: 150px;">Nama Material</th>
+                                    <th style="width: 50px;">Jenis</th>
+                                    <th style="width: 50px;">Thickness</th>
+                                    <th style="width: 50px;">Weight</th>
+                                    <th style="width: 50px;">Inner Diameter</th>
+                                    <th style="width: 50px;">Outer Diameter</th>
+                                    <th style="width: 50px;">Length</th>
+                                    <th style="width: 50px;">Pcs</th>
+                                    <th style="width: 50px;">Qty</th>
                                 </tr>
                             </thead>
                             <tbody id="table-body">
@@ -123,29 +125,31 @@
                                         <td>{{ $material['jenis'] }}</td>
                                         <td>{{ $material['thickness'] }}</td>
                                         <td>{{ $material['weight'] }}</td>
+                                        <td>{{ $material['inner_diameter'] }}</td>
+                                        <td>{{ $material['outer_diameter'] }}</td>
                                         <td>{{ $material['length'] }}</td>
                                         <td>{{ $material['pcs'] }}</td>
                                         <td>{{ $material['qty'] }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" style="text-align: center;">Data tidak ditemukan</td>
+                                        <td colspan="10" style="text-align: center;">Data tidak ditemukan</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-    
-                    <a href="{{ route('formulirInquiry', $inquiry->id) }}" class="btn btn-secondary add-row-button">Kembali</a>
+
+                    <a href="{{ route('formulirInquiry', $inquiry->id) }}"
+                        class="btn btn-secondary add-row-button">Kembali</a>
                     <a href="{{ route('createinquiry') }}" class="btn btn-primary delete-row-button">Finish</a>
                 </div>
             </div>
         </section>
-    
+
         <!-- jQuery -->
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <!-- excel -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     </main><!-- End #main -->
-    
 @endsection

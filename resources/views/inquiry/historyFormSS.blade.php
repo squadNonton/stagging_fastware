@@ -105,15 +105,17 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama Material</th>
-                                    <th>Jenis</th>
-                                    <th>Thickness</th>
-                                    <th>Weight</th>
-                                    <th>Length</th>
-                                    <th>Pcs</th>
-                                    <th>Qty</th>
-                                    <th>Tanggal Terakhir</th>
+                                    <th style="width: 30px;">No</th>
+                                    <th style="width: 150px;">Nama Material</th>
+                                    <th style="width: 50px;">Jenis</th>
+                                    <th style="width: 50px;">Thickness</th>
+                                    <th style="width: 50px;">Weight</th>
+                                    <th style="width: 50px;">Inner Diameter</th>
+                                    <th style="width: 50px;">Outer Diameter</th>
+                                    <th style="width: 50px;">Length</th>
+                                    <th style="width: 50px;">Pcs</th>
+                                    <th style="width: 50px;">Qty</th>
+                                    <th style="width: 50px;">Pembaruan Terakhir</th>
                                 </tr>
                             </thead>
                             <tbody id="table-body">
@@ -124,6 +126,8 @@
                                         <td>{{ $material['jenis'] }}</td>
                                         <td>{{ $material['thickness'] }}</td>
                                         <td>{{ $material['weight'] }}</td>
+                                        <td>{{ $material['inner_diameter'] }}</td>
+                                        <td>{{ $material['outer_diameter'] }}</td>
                                         <td>{{ $material['length'] }}</td>
                                         <td>{{ $material['pcs'] }}</td>
                                         <td>{{ $material['qty'] }}</td>
@@ -131,7 +135,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" style="text-align: center;">Data tidak ditemukan</td>
+                                        <td colspan="10" style="text-align: center;">Data tidak ditemukan</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -179,8 +183,8 @@
 
                 // Add custom header
                 data.push([
-                    'Kode Inquiry', 'Nama Material', 'Thickness', 'Weight', 'Length', 'Jenis', 'Pcs', 'Qty',
-                    'Supplier', 'Order From', 'Create By', 'Tanggal Terakhir'
+                    'Kode Inquiry', 'Nama Material', 'Thickness', 'Weight', 'Inner Diameter', 'Outer Diameter',
+                    'Length', 'Jenis', 'Pcs', 'Qty', 'Order From', 'Create By', 'Tanggal Terakhir'
                 ]);
 
                 // Add form data horizontally
@@ -190,13 +194,15 @@
                         row[1], // Nama Material
                         row[3], // Thickness
                         row[4], // Weight
-                        row[5], // Length
+                        row[5], // Inner Diameter
+                        row[6], // Outer Diameter
+                        row[7], // Length
                         row[2], // Jenis
-                        row[6], // Pcs
-                        row[7], // Pcs
+                        row[8], // Pcs
+                        row[9], // Qty
                         formData.orderFrom,
                         formData.createBy,
-                        row[8] // Tanggal Terakhir
+                        row[10] // Tanggal Terakhir
                     ]);
                 });
 
@@ -217,6 +223,12 @@
                     {
                         wpx: 80
                     }, // Weight
+                    {
+                        wpx: 100
+                    }, // Inner Diameter
+                    {
+                        wpx: 100
+                    }, // Outer Diameter
                     {
                         wpx: 80
                     }, // Length
@@ -239,7 +251,7 @@
                         wpx: 100
                     }, // Create By
                     {
-                        wpx: 120
+                        wpx: 125
                     } // Tanggal Terakhir
                 ];
 
@@ -247,7 +259,7 @@
                 XLSX.utils.book_append_sheet(wb, ws, 'InquiryData');
 
                 // Prepare file name with inquiry code and latest date
-                const lastDate = tableData.length > 1 ? tableData[tableData.length - 1][8] : new Date().toISOString().slice(0,
+                const lastDate = tableData.length > 1 ? tableData[tableData.length - 1][10] : new Date().toISOString().slice(0,
                     10);
                 const fileName = `Report_Inquiry_${formData.kodeInquiry}.xlsx`;
 

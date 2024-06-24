@@ -15,6 +15,8 @@ class DetailInquiry extends Model
         'nama_material',
         'jenis',
         'thickness',
+        'inner_diameter',
+        'outer_diameter',
         'weight',
         'length',
         'qty',
