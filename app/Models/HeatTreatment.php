@@ -9,6 +9,7 @@ class HeatTreatment extends Model
 {
     use HasFactory;
     protected $table = 'wo_heat';
+
     protected $fillable = [
         'no_wo',
         'no_so',

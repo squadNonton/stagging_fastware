@@ -831,6 +831,7 @@
                                             <th scope="col">No.WO</th>
                                             <th scope="col">No.SO</th>
                                             <th scope="col">Tgl. WO</th>
+                                            <th scope="col">Deskripsi</th>
                                             <th scope="col">Area</th>
                                             <th scope="col">Kode</th>
                                             <th scope="col">Customer</th>
@@ -854,6 +855,7 @@
                                                 <td>{{ $data->no_wo }}</td>
                                                 <td>{{ $data->no_so }}</td>
                                                 <td>{{ $data->tgl_wo }}</td>
+                                                <td>{{ $data->deskripsi }}</td>
                                                 <td>{{ $data->area }}</td>
                                                 <td>{{ $data->kode }}</td>
                                                 <td>{{ $data->cust }}</td>
@@ -903,7 +905,6 @@
     <!-- Template Main JS File -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 
     <script>
         $(document).ready(function() {
@@ -994,7 +995,6 @@
             });
         });
     </script>
-
 
 </body>
 

@@ -1250,8 +1250,6 @@
             });
         </script>
 
-
-
         <style>
             #detailProcessTable td {
                 padding: 8px;
@@ -1286,7 +1284,6 @@
             }
         </style>
     </main>
-
 
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
