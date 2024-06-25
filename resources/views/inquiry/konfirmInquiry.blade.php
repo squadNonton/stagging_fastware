@@ -100,7 +100,6 @@
                                         <tr>
                                             <th scope="col">No</th>
                                             <th scope="col">Kode Inq.</th>
-                                            <th scope="col">Supplier</th>
                                             <th scope="col">Order From</th>
                                             <th scope="col">Create By</th>
                                             <th scope="col" class="text-center">To Approve</th>
