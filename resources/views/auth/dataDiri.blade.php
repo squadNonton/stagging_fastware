@@ -12,6 +12,7 @@
                 </ol>
             </nav>
         </div><!-- End Page Title -->
+        <!-- End Page Title -->
 
         <section class="section profile">
             <div class="row">

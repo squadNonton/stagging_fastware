@@ -13,6 +13,7 @@
                 </ol>
             </nav>
         </div><!-- End Page Title -->
+        <!-- End Page Title -->
         <section class="section">
             <div class="row">
                 <div class="card mb-2">
