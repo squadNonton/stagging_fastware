@@ -51,15 +51,10 @@
                                                 <th class="text-center" width="100px">Kode Pelanggan</th>
                                                 <th class="text-center" width="150px">Nama Pelanggan</th>
                                                 <th class="text-center" width="100px">Area Pelanggan</th>
+                                                <th class="text-center" width="100px">Request</th>
                                                 <th class="text-center" width="100px">Tipe Bahan</th>
-                                                <th class="text-center" width="30px">T</th>
-                                                <th class="text-center" width="30px">W</th>
-                                                <th class="text-center" width="30px">OD</th>
-                                                <th class="text-center" width="30px">ID</th>
-                                                <th class="text-center" width="30px">L</th>
-                                                <th class="text-center" width="95px">Jumlah(/Kg)</th>
-                                                <th class="text-center" width="98px">Jumlah(/Pcs)</th>
                                                 <th class="text-center" width="105px">Kategori (NG)</th>
+                                                <th class="text-center" width="105px">Jenis Test</th>
                                                 <th class="text-center" width="100px">Tipe proses</th>
                                                 <th class="text-center" width="95px">Jenis 1</th>
                                                 <th class="text-center" width="95px">Jenis 2</th>
@@ -79,16 +74,12 @@
                                                     <td class="text-center py-3">{{ $row->customers->name_customer ?? '' }}
                                                     </td>
                                                     <td class="text-center py-3">{{ $row->customers->area ?? '' }}</td>
-                                                    <td class="text-center py-3">{{ $row->type_materials->type_name ?? '' }}
+                                                    <td class="text-center py-3">{{ $row->notes }}</td>
+                                                    <td class="text-center py-3">
+                                                        {{ $row->type_materials->type_name ?? $row->nama_barang }}
                                                     </td>
-                                                    <td class="text-center py-3">{{ $row->thickness }}</td>
-                                                    <td class="text-center py-3">{{ $row->weight }}</td>
-                                                    <td class="text-center py-3">{{ $row->outer_diameter }}</td>
-                                                    <td class="text-center py-3">{{ $row->inner_diameter }}</td>
-                                                    <td class="text-center py-3">{{ $row->length }}</td>
-                                                    <td class="text-center py-3">{{ $row->qty }}</td>
-                                                    <td class="text-center py-3">{{ $row->pcs }}</td>
                                                     <td class="text-center py-3">{{ $row->category }}</td>
+                                                    <td class="text-center py-3">{{ $row->jenis_test }}</td>
                                                     <td class="text-center py-3">{{ $row->process_type }}</td>
                                                     <td class="text-center py-3">{{ $row->type_1 }}</td>
                                                     <td class="text-center py-3">{{ $row->type_2 }}</td>
@@ -135,7 +126,8 @@
                                                                         Auth::user()->role_id == 13 ||
                                                                         Auth::user()->role_id == 14)
                                                                     <a href="{{ route('showHistory', $row->id) }}"
-                                                                        class="btn btn-sm btn-success" title="Lihat Progres">
+                                                                        class="btn btn-sm btn-success"
+                                                                        title="Lihat Progres">
                                                                         <i class="fa fa-eye fa-1x" aria-hidden="true"></i>
                                                                     </a>
                                                                 @endif
@@ -149,7 +141,8 @@
                                                                         Auth::user()->role_id == 2 ||
                                                                         Auth::user()->role_id == 3 ||
                                                                         Auth::user()->role_id == 4)
-                                                                    <button type="button" class="btn btn-sm btn-success" title="CLose Proses"
+                                                                    <button type="button" class="btn btn-sm btn-success"
+                                                                        title="CLose Proses"
                                                                         onclick="confirmStatusChange({{ $row->id }})">
                                                                         <i class="fa fa-window-close fa-1x"></i>
                                                                     </button>

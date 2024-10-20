@@ -93,6 +93,26 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
+                                            <label for="notes" class="col-sm-5 col-form-label">Request:<span
+                                                    style="color: red;">*</span></label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <select name="notes" class="form-control" id="notes" style="width: 100%;">
+                                                <option value="">-------------Pilih Request ------------
+                                                </option>
+                                                <option value="Testing"
+                                                    {{ $handlings->notes == 'Testing' ? 'selected' : '' }}>Testing</option>
+                                                <option value="Trial"
+                                                    {{ $handlings->notes == 'Trial' ? 'selected' : '' }}>Trial</option>
+                                                <option value="Klaim / Komplain"
+                                                    {{ $handlings->notes == 'Klaim / Komplain' ? 'selected' : '' }}>Klaim /
+                                                    Komplain</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
                                             <label for="area" class="col-sm-5 col-form-label">Tipe Bahan:<span
                                                     style="color: red;">*</span></label>
                                         </div>
@@ -105,6 +125,18 @@
                                                     </option>
                                                 @endforeach
                                             </select>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label for="category" class="col-sm-6 col-form-label">Nama Barang:<span
+                                                    style="color: red;">*</span></label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <input type="text" class="form-control" id="nama_barang"
+                                                name="nama_barang" style="width: 100%; max-width: 100%;"
+                                                value="{{ $handlings->nama_barang }}">
                                         </div>
                                     </div>
                                     <br>
@@ -146,11 +178,10 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <label for="qty" class="form-label">QTY (Kg):<span
-                                                    style="color: red;">*</span></label>
+                                            <label for="qty" class="form-label">QTY (Kg):</label>
                                             <input type="text" class="form-control input-sm" id="qty"
                                                 name="qty" style="max-width: 100%;" value="{{ $handlings->qty }}"
-                                                 onkeypress="hanyaAngka(event)">
+                                                onkeypress="hanyaAngka(event)">
                                         </div>
                                         <div class="col-md-3">
                                             <label for="pcs" class="form-label">Unit (Pcs):<span
@@ -240,6 +271,42 @@
                                                 <option value="Others"
                                                     {{ $handlings->category == 'Others' ? 'selected' : '' }}>Others
                                                 </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label for="category" class="col-sm-6 col-form-label">Nama Project:<span
+                                                    style="color: red;">*</span></label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <input type="text" class="form-control" id="category_input"
+                                                name="category" style="width: 100%; max-width: 100%;"
+                                                value="{{ $handlings->category }}">
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row" id="jenisTestRow" style="display: none;">
+                                        <div class="col-lg-6">
+                                            <label for="jenis_test" class="col-sm-5 col-form-label">Jenis test
+                                                <span style="color: red;">*</span></label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <select name="jenis_test" class="form-control" id="jenis_test"
+                                                style="width: 100%;">
+                                                <option value="">------------- Pilih jenis Test ------------
+                                                </option>
+                                                <option value="Spectro"
+                                                    {{ $handlings->jenis_test == 'Spectro' ? 'selected' : '' }}>
+                                                    Spectro</option>
+                                                <option value="Kekerasan"
+                                                    {{ $handlings->jenis_test == 'Kekerasan' ? 'selected' : '' }}>
+                                                    Kekerasan
+                                                </option>
+                                                <option value="Micro Structure"
+                                                    {{ $handlings->jenis_test == 'Micro Structure' ? 'selected' : '' }}>
+                                                    Micro Structure</option>
                                             </select>
                                         </div>
                                     </div>
@@ -351,9 +418,9 @@
                                         <button type="submit" class="btn btn-primary mb-4 me-3">
                                             <i class="fas fa-save"></i> Simpan
                                         </button>
-                                        <button type="button" class="btn btn-primary mb-4" onclick="goToIndex()">
+                                        <a href="{{ route('index') }}" class="btn btn-primary mb-4 me-2">
                                             <i class="fas fa-arrow-left"></i> Kembali
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                         </form>
@@ -374,6 +441,54 @@
         </section>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const requestDropdown = document.getElementById('notes');
+                const categorySelectRow = document.getElementById('category')?.parentElement?.parentElement;
+                const categoryInputRow = document.getElementById('category_input')?.parentElement?.parentElement;
+                const typeMaterialRow = document.getElementById('type_id')?.parentElement?.parentElement;
+                const jenisTestRow = document.getElementById('jenis_test')?.parentElement?.parentElement;
+                const namaBarangRow = document.getElementById('nama_barang')?.parentElement?.parentElement;
+                const prosesTypeSelect = document.getElementById('process_type');
+                const prosesTypeCheckbox1 = document.getElementById('type_1');
+                const prosesTypeCheckbox2 = document.getElementById('type_2');
+
+                function updateUIBasedOnRequest(value) {
+                    if (value === "Trial") {
+                        categoryInputRow.style.display = "flex";
+                        categorySelectRow.style.display = "none";
+                        typeMaterialRow.style.display = "flex";
+                        jenisTestRow.style.display = "none";
+                        namaBarangRow.style.display = "none";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = false;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = true;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = true;
+                    } else if (value === "Testing") {
+                        categoryInputRow.style.display = "none";
+                        categorySelectRow.style.display = "none";
+                        typeMaterialRow.style.display = "none";
+                        jenisTestRow.style.display = "flex";
+                        namaBarangRow.style.display = "flex";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = true;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = true;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = true;
+                    } else {
+                        categoryInputRow.style.display = "none";
+                        categorySelectRow.style.display = "flex";
+                        typeMaterialRow.style.display = "flex";
+                        jenisTestRow.style.display = "none";
+                        namaBarangRow.style.display = "none";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = false;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = false;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = false;
+                    }
+                }
+
+                updateUIBasedOnRequest(requestDropdown.value);
+                requestDropdown.addEventListener('change', function() {
+                    updateUIBasedOnRequest(this.value);
+                });
+            });
+
             function updateCustomerInfo() {
                 var customerIdCodeSelect = document.getElementById('customer_id_code');
                 var customerNameInput = document.getElementById('customer_name');
@@ -397,6 +512,7 @@
             // Initialize the customer info on page load
             document.addEventListener('DOMContentLoaded', function() {
                 updateCustomerInfo();
+                handleRequestChange();
             });
 
             document.getElementById('updateForm').addEventListener('submit', function(event) {
@@ -404,8 +520,7 @@
 
                 // Check for required fields
                 let isValid = true;
-                const requiredFields = ['no_wo', 'customer_id_code', 'type_id', 'qty', 'pcs', 'category',
-                    'process_type'];
+                const requiredFields = ['no_wo', 'customer_id_code', 'type_id', 'qty', 'pcs'];
 
                 requiredFields.forEach(function(fieldId) {
                     const field = document.getElementById(fieldId);

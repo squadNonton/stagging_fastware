@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-//relasi
+// relasi
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
@@ -17,5 +17,16 @@ class Role extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'role_id');
+    }
+
+    public function jobPositions()
+    {
+        return $this->hasMany(TcJobPosition::class, 'id_role');
+    }
+
+    // Relasi ke TcPeopleDevelopment
+    public function peopleDevelopments()
+    {
+        return $this->hasMany(TcPeopleDevelopment::class, 'id_role');
     }
 }

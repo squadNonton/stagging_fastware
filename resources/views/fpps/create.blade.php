@@ -106,7 +106,7 @@
                                             Unggah Gambar (Jika Ada)<span style="color: red;"></span>
                                         </label>
                                         <input type="file" class="form-control" id="gambar" name="gambar"
-                                            onchange="previewImage()">
+                                            onchange="previewImage()" accept=".jpg,.jpeg,.png">
                                     </div>
 
                                     <!-- Modal -->
@@ -118,7 +118,8 @@
                                     <input type="hidden" name="note" id="note" value="">
 
                                     <div class="mb-3">
-                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                        <button type="button" class="btn btn-primary"
+                                            onclick="handleSaveButtonClick()">Simpan</button>
                                         <button type="button" class="btn btn-secondary"
                                             onclick="resetForm()">Reset</button>
                                     </div>
@@ -180,6 +181,50 @@
             function resetForm() {
                 document.getElementById('FPPForm').reset();
                 document.getElementById('gambarPreview').style.display = 'none';
+            }
+        </script>
+
+        <script>
+            function handleSaveButtonClick() {
+                // Validate file size
+                const fileInput = document.getElementById('gambar');
+                const file = fileInput.files[0];
+                if (file && file.size > 15 * 1024 * 1024) { // 15 MB in bytes
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'File Terlalu Besar',
+                        text: 'Ukuran file tidak boleh melebihi 15MB!',
+                    });
+                    fileInput.value = ''; // Clear the file input
+                    return; // Stop further execution
+                }
+
+                // Show SweetAlert confirmation
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin menyimpan perubahan?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show success notification
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Perubahan berhasil disimpan!',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            didClose: () => {
+                                // Submit the form after the success notification is closed
+                                document.getElementById('FPPForm').submit();
+                            }
+                        });
+                    }
+                });
             }
         </script>
 

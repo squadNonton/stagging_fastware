@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\TcJobPosition;
+use App\Models\TcPeopleDevelopment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -19,9 +23,15 @@ class AuthController extends Controller
     public function showDataDiri()
     {
         $user = Auth::user();
-        $role = $user->roles; // Ini mengambil peran pengguna
+        $role = $user->roles;
+        $jobPositions = $user->jobPositions;
 
-        return view('auth.dataDiri', compact('user', 'role'));
+        // Query TcPeopleDevelopment untuk pengguna yang sedang login
+        $dataTcPeopleDevelopment = TcPeopleDevelopment::where('id_user', $user->id)
+            ->where('status_2', 'Done')
+            ->get();
+
+        return view('auth.dataDiri', compact('user', 'role', 'jobPositions', 'dataTcPeopleDevelopment'));
     }
 
     public function login(Request $request)
@@ -44,7 +54,7 @@ class AuthController extends Controller
 
         if ($user && $user->is_active == 1) {
             // Jika is_active adalah 1, artinya pengguna tidak dapat login
-            return redirect()->route('login')->with('error', 'Akun Anda tidak aktif. Silakan hubungi Departemen IT.');
+            return redirect()->route('login')->with('error', 'Akun Anda tidak aktif. Silakan hubungi Section IT.');
         }
 
         if (Auth::attempt($credentials)) {
@@ -98,9 +108,36 @@ class AuthController extends Controller
         $user->npk = $request->npk;
         $user->telp = $request->telp;
         $user->email = $request->email;
+
+        // Cek apakah ada file yang di-upload
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+
+            // Menghasilkan nama file dengan UUID
+            $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $fileHash = hash_file('sha256', $file->getPathname()); // Menghitung hash file
+            $destinationPath = public_path('assets/data_diri');
+
+            // Hapus file lama jika ada
+            if ($user->file_name) {
+                $oldFile = public_path('assets/data_diri/' . $user->file_name);
+                if (File::exists($oldFile)) {
+                    File::delete($oldFile);
+                }
+            }
+
+            // Pindahkan file ke folder tujuan
+            $file->move($destinationPath, $fileName);
+
+            // Simpan nama file yang dihasilkan UUID dan hash file
+            $user->file = $fileHash; // Simpan hash untuk keperluan lain
+            $user->file_name = $fileName; // Simpan nama file yang menggunakan UUID
+        }
+
+
         $user->save();
 
         // Redirect ke halaman profil dengan pesan sukses
-        return redirect()->route('showDataDiri')->with('success', 'Password berhasil diubah.');
+        return redirect()->route('showDataDiri')->with('success', 'Data diri berhasil diubah.');
     }
 }

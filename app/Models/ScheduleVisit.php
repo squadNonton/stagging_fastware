@@ -16,6 +16,7 @@ class ScheduleVisit extends Model
         'schedule',
         'results',
         'due_date',
+        'notes',
         'pic',
         'file',
         'file_name',

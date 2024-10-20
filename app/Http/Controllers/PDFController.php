@@ -24,36 +24,37 @@ use PDF;
 use Illuminate\Support\Facades\Storage;
 
 class PDFController extends Controller
-{           
+{
     //GA JADI PKE GINIAAN PAKE JSAJA
-        public function showDetail($no_wo)
-        {
-            // Mengambil data detail berdasarkan nomor WO
-            $record = Handling::where('no_wo', $no_wo)->first();
+    public function showDetail($no_wo)
+    {
+        // Mengambil data detail berdasarkan nomor WO
+        $record = Handling::where('no_wo', $no_wo)->first();
 
-            // Memastikan data ditemukan
-            if ($record) {
-                dd($record);
-                // Jika data ditemukan, tampilkan halaman detail
-                return view('template.pdf', compact('record'));
-            } else {
-                // Jika data tidak ditemukan, redirect atau tampilkan pesan error
-                return redirect()->back()->with('error', 'Record not found.');
-            }   
+        // Memastikan data ditemukan
+        if ($record) {
+            dd($record);
+            // Jika data ditemukan, tampilkan halaman detail
+            return view('template.pdf', compact('record'));
+        } else {
+            // Jika data tidak ditemukan, redirect atau tampilkan pesan error
+            return redirect()->back()->with('error', 'Record not found.');
         }
+    }
 
-        public function downloadPdf($id) {
-            // Dapatkan data berdasarkan id
-            $data = Handling::find($id);
-        
-            // Buat PDF menggunakan data tersebut
-            $pdf = PDF::loadView('pdf_view', compact('data'));
-        
-            // Unduh PDF
-            return $pdf->download('file.pdf');
-        }
+    public function downloadPdf($id)
+    {
+        // Dapatkan data berdasarkan id
+        $data = Handling::find($id);
 
-        public function generatePDF(Mesin $mesin)
+        // Buat PDF menggunakan data tersebut
+        $pdf = PDF::loadView('pdf_view', compact('data'));
+
+        // Unduh PDF
+        return $pdf->download('file.pdf');
+    }
+
+    public function generatePDF(Mesin $mesin)
     {
         // Mengambil formperbaikans berdasarkan status 3 dan nomor_mesin dari mesin yang sama dengan mesin di formperbaikan
         $formperbaikans = FormFPP::where('status', '3')

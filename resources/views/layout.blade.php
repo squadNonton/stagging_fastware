@@ -8,7 +8,7 @@
     <title>Astra Daido Steel Indonesia</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
-    <meta name="csrf-token">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="assets/img/logo-menu.png" rel="icon">
     <link href="assets/img/logo-menu.png" rel="apple-touch-icon">
@@ -51,13 +51,14 @@
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                         data-bs-toggle="dropdown">
-                        <img src="assets/img/user.png" alt="Profile" class="rounded-circle">
+                        <img src="{{ Auth::user()->file_name ? asset('assets/data_diri/' . Auth::user()->file_name) : asset('assets/img/user.png') }}"
+                            alt="Profile" class="rounded-circle">
                         <span class="d-none d-md-block ps-2">{{ Auth::user()->name }}
                             <br>{{ Auth::user()->roles->role }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile mt-3">
                         <li class="dropdown-header">
-                            <h6>{{ Auth::user()->name }}</h6>
+                            <h6>{{ Auth::user()->name }} - {{ Auth::user()->km_total_poin }} Poin</h6>
                             <span>{{ Auth::user()->roles->role }}</span>
                         </li>
                         <li>
@@ -129,25 +130,13 @@
                 </a>
                 @if (Auth::check())
                     <ul id="dashboard-menu-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                        @if (Auth::user()->role_id == 1 ||
-                                Auth::user()->role_id == 2 ||
-                                Auth::user()->role_id == 3 ||
-                                Auth::user()->role_id == 4 ||
-                                Auth::user()->role_id == 5 ||
-                                Auth::user()->role_id == 6 ||
-                                Auth::user()->role_id == 7 ||
-                                Auth::user()->role_id == 9 ||
-                                Auth::user()->role_id == 11 ||
-                                Auth::user()->role_id == 12 ||
-                                Auth::user()->role_id == 13 ||
-                                Auth::user()->role_id == 14 ||
-                                Auth::user()->role_id == 16 ||
-                                Auth::user()->role_id == 17 ||
-                                Auth::user()->role_id == 22 ||
-                                Auth::user()->role_id == 30 ||
-                                Auth::user()->role_id == 31)
+                        {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 4 || Auth::user()->role_id == 5 || Auth::user()->role_id == 6 || Auth::user()->role_id == 7 || Auth::user()->role_id == 9 || Auth::user()->role_id == 11 || Auth::user()->role_id == 12 || Auth::user()->role_id == 13 || Auth::user()->role_id == 14 || Auth::user()->role_id == 16 || Auth::user()->role_id == 17 || Auth::user()->role_id == 22 || Auth::user()->role_id == 30 || Auth::user()->role_id == 31) --}}
+                        @php
+                            $acsrole = [1, 2, 3, 4, 5, 6, 7, 9, 11, 12, 13, 14, 15, 16, 17, 22, 30, 31];
+                        @endphp
+                        @if (in_array(Auth::user()->role_id, $acsrole))
                             <li>
-                                <a class="nav-link collapsed" href="{{ route('dashboardHandling') }}">
+                                <a class="nav-link collapsed" href="{{ route('dashboardMaintenance') }}">
                                     <i class="bi bi-bar-chart-line-fill fs-6"></i>
                                     <span>Maintenance</span>
                                 </a>
@@ -171,17 +160,21 @@
                                 <span>Sumbang Saran</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('dsKnowlege') }}">
+                                <i class="bi bi-bar-chart-line-fill fs-6"></i>
+                                <span>Knowledge System</span>
+                            </a>
+                        </li>
                     </ul>
                 @endif
             </li>
             {{-- Maintenance dan Handling --}}
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 7 ||
-                    Auth::user()->role_id == 8 ||
-                    Auth::user()->role_id == 9 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 30 ||
-                    Auth::user()->role_id == 31)
+            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 8 || Auth::user()->role_id == 9 || Auth::user()->role_id == 14 || Auth::user()->role_id == 22 || Auth::user()->role_id == 30 || Auth::user()->role_id == 31 || Auth::user()->role_id == 42 || Auth::user()->role_id == 45 || Auth::user()->role_id == 51 || Auth::user()->role_id == 48) --}}
+            @php
+                $acsrole = [1, 5, 8, 9, 14, 22, 30, 31, 42, 45, 48, 51, 58];
+            @endphp
+            @if (in_array(Auth::user()->role_id, $acsrole))
                 <li class="nav-heading">Productions</li>
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-toggle="collapse" href="#prod-forms-nav">
@@ -205,11 +198,11 @@
                     </ul>
                 </li>
             @endif
-            @if (Auth::user()->role_id == 6 ||
-                    Auth::user()->role_id == 5 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 22 ||
-                    Auth::user()->role_id == 1)
+            {{-- @if (Auth::user()->role_id == 6 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 22 || Auth::user()->role_id == 1) --}}
+            @php
+                $acsrole = [6, 5, 14, 22, 1];
+            @endphp
+            @if (in_array(Auth::user()->role_id, $acsrole))
                 <li class="nav-heading">Maintenance</li>
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#maint-korektif-nav" data-bs-toggle="collapse"
@@ -247,7 +240,11 @@
                 </li><!-- End Maint Received Nav -->
             @endif
             <!-- End Prod Forms Nav -->
-            @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1 || Auth::user()->role_id == 14)
+            {{-- @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1 || Auth::user()->role_id == 14) --}}
+            @php
+                $acsrole = [1, 5, 14];
+            @endphp
+            @if (in_array(Auth::user()->role_id, $acsrole))
                 {{-- Role ID untuk Maintenance --}}
                 {{-- Tampilkan sidebar untuk Maintenance --}}
                 <li class="nav-heading">Engineering</li>
@@ -255,7 +252,7 @@
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#dept-maint-nav" data-bs-toggle="collapse"
                         href="#">
-                        <i class="bi bi-journal-text"></i><span>Bag. Maintenance</span><i
+                        <i class="bi bi-journal-text"></i><span>Bagian Maintenance</span><i
                             class="bi bi-chevron-down ms-auto"></i>
                     </a>
                     <ul id="dept-maint-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
@@ -288,7 +285,7 @@
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#dept-complain-nav" data-bs-toggle="collapse"
                         href="#">
-                        <i class="bi bi-journal-text"></i><span>Bag. Engineering</span><i
+                        <i class="bi bi-journal-text"></i><span>Bagian Engineering</span><i
                             class="bi bi-chevron-down ms-auto"></i>
                     </a>
                     <ul id="dept-complain-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
@@ -310,14 +307,11 @@
                     </ul>
                 </li><!-- End Dept Complain & Claim Nav -->
             @endif
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 2 ||
-                    Auth::user()->role_id == 3 ||
-                    Auth::user()->role_id == 4 ||
-                    Auth::user()->role_id == 11 ||
-                    Auth::user()->role_id == 12 ||
-                    Auth::user()->role_id == 13 ||
-                    Auth::user()->role_id == 14)
+            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 4 || Auth::user()->role_id == 11 || Auth::user()->role_id == 12 || Auth::user()->role_id == 13 || Auth::user()->role_id == 14) --}}
+            @php
+                $acsrole = [1, 2, 3, 4, 11, 12, 13, 14];
+            @endphp
+            @if (in_array(Auth::user()->role_id, $acsrole))
                 {{-- Role ID untuk Sales --}}
                 <li class="nav-heading">Sales</li>
                 <li class="nav-item">
@@ -406,98 +400,360 @@
                         </a>
                     </li>
                 </ul>
-                @if (Auth::user()->role_id == 1 ||
-                        Auth::user()->role_id == 2 ||
-                        Auth::user()->role_id == 3 ||
-                        Auth::user()->role_id == 5 ||
-                        Auth::user()->role_id == 7 ||
-                        Auth::user()->role_id == 9 ||
-                        Auth::user()->role_id == 11 ||
-                        Auth::user()->role_id == 12 ||
-                        Auth::user()->role_id == 14 ||
-                        Auth::user()->role_id == 16 ||
-                        Auth::user()->role_id == 22 ||
-                        Auth::user()->role_id == 30 ||
-                        Auth::user()->role_id == 31)
-                    <a class="nav-link collapsed" data-bs-target="#nav-conf" data-bs-toggle="collapse"
-                        href="#">
-                        <i class="bi bi-layout-wtf"></i><span>Persetujuan</span><i
-                            class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                @endif
-                <ul id="nav-conf" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    @if (Auth::user()->role_id == 1 ||
-                            Auth::user()->role_id == 3 ||
-                            Auth::user()->role_id == 9 ||
-                            Auth::user()->role_id == 12 ||
-                            Auth::user()->role_id == 14 ||
-                            Auth::user()->role_id == 30 ||
-                            Auth::user()->role_id == 31 ||
-                            Auth::user()->role_id == 16)
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiForeman') }}">
-                                <i class="bi bi-kanban fs-6"></i>
-                                <span>By Sect. Head</span>
-                            </a>
-                        </li>
-                    @endif
-                    @if (Auth::user()->role_id == 1 ||
-                            Auth::user()->role_id == 2 ||
-                            Auth::user()->role_id == 3 ||
-                            Auth::user()->role_id == 5 ||
-                            Auth::user()->role_id == 7 ||
-                            Auth::user()->role_id == 9 ||
-                            Auth::user()->role_id == 11 ||
-                            Auth::user()->role_id == 14 ||
-                            Auth::user()->role_id == 22 ||
-                            Auth::user()->role_id == 30 ||
-                            Auth::user()->role_id == 31)
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiDeptHead') }}">
-                                <i class="bi bi-kanban-fill fs-6"></i>
-                                <span>By Dept. Head</span>
-                            </a>
-                        </li>
-                    @endif
-                </ul>
-                @if (Auth::user()->role_id == 1 ||
-                        Auth::user()->role_id == 5 ||
-                        Auth::user()->role_id == 14 ||
-                        Auth::user()->role_id == 15 ||
-                        Auth::user()->role_id == 20)
-                    <a class="nav-link collapsed" data-bs-target="#nav-pic" data-bs-toggle="collapse"
-                        href="#">
-                        <i class="bi bi-layout-wtf"></i><span>PIC Penilaian</span><i
-                            class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                @endif
-                <ul id="nav-pic" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-
-                    @if (Auth::user()->role_id == 1 ||
-                            Auth::user()->role_id == 5 ||
-                            Auth::user()->role_id == 14 ||
-                            Auth::user()->role_id == 16 ||
-                            Auth::user()->role_id == 20)
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiKomite') }}">
-                                <i class="bi-person-lines-fill fs-6"></i>
-                                <span>PIC Penilai SS | Komite</span>
-                            </a>
-                        </li>
-                    @endif
-                    @if (Auth::user()->role_id == 1 ||
-                            Auth::user()->role_id == 14 ||
-                            Auth::user()->role_id == 16 ||
-                            Auth::user()->role_id == 20)
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" href="{{ route('showKonfirmasiHRGA') }}">
-                                <i class="bi-person-lines-fill fs-6"></i>
-                                <span>PIC Penilai SS | HRGA</span>
-                            </a>
-                        </li>
-                    @endif
-                </ul>
             </li>
+
+            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 5 || Auth::user()->role_id == 7 || Auth::user()->role_id == 9 || Auth::user()->role_id == 11 || Auth::user()->role_id == 12 || Auth::user()->role_id == 14 || Auth::user()->role_id == 16 || Auth::user()->role_id == 22 || Auth::user()->role_id == 30 || Auth::user()->role_id == 31 || Auth::user()->role_id == 32) --}}
+
+            @php
+                $acsrole = [1, 2, 3, 5, 7, 9, 11, 12, 14, 15, 16, 20, 22, 30, 31, 32];
+            @endphp
+            @if (in_array(Auth::user()->role_id, $acsrole))
+                <a class="nav-link collapsed" data-bs-target="#nav-approval-ss" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-layout-wtf"></i><span>Persetujuan</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+            @endif
+            <ul id="nav-approval-ss" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 3 || Auth::user()->role_id == 9 || Auth::user()->role_id == 12 || Auth::user()->role_id == 14 || Auth::user()->role_id == 22 || Auth::user()->role_id == 30 || Auth::user()->role_id == 31 || Auth::user()->role_id == 32) --}}
+                @php
+                    $acsrole = [1, 3, 9, 12, 14, 15, 22, 30, 31, 32];
+                @endphp
+                @if (in_array(Auth::user()->role_id, $acsrole))
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('showKonfirmasiForeman') }}">
+                            <i class="bi bi-kanban fs-6"></i>
+                            <span>By Sect. Head</span>
+                        </a>
+                    </li>
+                @endif
+                {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 5 || Auth::user()->role_id == 9 || Auth::user()->role_id == 11 || Auth::user()->role_id == 12 || Auth::user()->role_id == 14 || Auth::user()->role_id == 22 || Auth::user()->role_id == 30 || Auth::user()->role_id == 31 || Auth::user()->role_id == 31) --}}
+                @php
+                    $acsrole = [1, 2, 3, 5, 7, 9, 11, 12, 14, 15, 22, 30, 31];
+                @endphp
+                @if (in_array(Auth::user()->role_id, $acsrole))
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('showKonfirmasiDeptHead') }}">
+                            <i class="bi bi-kanban-fill fs-6"></i>
+                            <span>By Dept. Head</span>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+
+            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 15 || Auth::user()->role_id == 20) --}}
+            @php
+                $acsrole = [1, 5, 14, 15, 20];
+            @endphp
+            @if (in_array(Auth::user()->role_id, $acsrole))
+                <a class="nav-link collapsed" data-bs-target="#nav-pic" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-wtf"></i><span>PIC Penilaian</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+            @endif
+            <ul id="nav-pic" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 15 || Auth::user()->role_id == 16 || Auth::user()->role_id == 20) --}}
+                @php
+                    $acsrole = [1, 5, 14, 15, 16, 20];
+                @endphp
+                @if (in_array(Auth::user()->role_id, $acsrole))
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('showKonfirmasiKomite') }}">
+                            <i class="bi-person-lines-fill fs-6"></i>
+                            <span>PIC Penilai SS | Komite</span>
+                        </a>
+                    </li>
+                @endif
+                {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 14 || Auth::user()->role_id == 15 || Auth::user()->role_id == 16 || Auth::user()->role_id == 20) --}}
+                @php
+                    $acsrole = [1, 5, 14, 15, 16, 20];
+                @endphp
+                @if (in_array(Auth::user()->role_id, $acsrole))
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('showKonfirmasiHRGA') }}">
+                            <i class="bi-person-lines-fill fs-6"></i>
+                            <span>PIC Penilai SS | HRGA</span>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+
+            @php
+                $acsrole = [1, 2, 3, 5, 7, 9, 11, 12, 14, 15, 22, 30, 31];
+            @endphp
+            @if (in_array(Auth::user()->role_id, $acsrole))
+                <li class="nav-heading">Knowledge Management</li>
+                <a class="nav-link collapsed" data-bs-target="#nav-km-pengajuan" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-layout-wtf"></i><span>Pengajuan Knowledge Management</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+            @endif
+            <ul id="nav-km-pengajuan" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                @php
+                    $acsrole = [1, 2, 3, 5, 7, 9, 11, 12, 14, 15, 22, 30, 31];
+                @endphp
+                @if (in_array(Auth::user()->role_id, $acsrole))
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('pengajuanKM') }}">
+                            <i class="bi bi-kanban fs-6"></i>
+                            <span>Pengajuan Form Knowledge Management</span>
+                        </a>
+                    </li>
+                @endif
+                @php
+                    $acsrole = [1, 14, 15];
+                @endphp
+                @if (in_array(Auth::user()->role_id, $acsrole))
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="{{ route('persetujuanKM') }}">
+                            <i class="bi bi-kanban-fill fs-6"></i>
+                            <span>Persetujuan Knowledge Management</span>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+
+            {{-- @php
+                $acsrole = [1, 2, 4, 5, 7, 8, 10, 11, 13, 14, 15, 16, 19, 20, 23, 25, 27];
+                $hrgarole = [1, 14, 15]; // Roles for accessing Technical Competency Management
+            @endphp
+            @if (in_array(Auth::user()->role_id, $acsrole))
+                <li class="nav-heading">People Development</li>
+                <a class="nav-link collapsed" data-bs-target="#nav-tech-competency" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-tools"></i><span>Base Competency</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+            @endif
+            <ul id="nav-tech-competency" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('historiDept') }}">
+                        <i class="bi bi-hourglass-bottom fs-6"></i>
+                        <span>Histori Development</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-toggle="collapse" href="#formSubsectionOne">
+                        <i class="bi bi-file-earmark-text fs-6"></i>
+                        <span>Forms</span>
+                        <i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+
+                    <ul id="formSubsectionOne" class="nav-content collapse" data-bs-parent="#nav-tech-competency">
+                        @if (in_array(Auth::user()->role_id, $hrgarole))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('jobShow') }}">
+                                    <i class="bi bi-briefcase fs-6"></i>
+                                    <span>Form Job Position</span>
+                                </a>
+                            </li>
+                        @endif
+                        @if (in_array(Auth::user()->role_id, $acsrole))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('tcShow') }}">
+                                    <i class="bi bi-check2-circle fs-6"></i>
+                                    <span>Form Competency</span>
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    @php
+                        $secHeadRoles = [1, 3, 9, 31, 22, 30, 12, 14, 15]; // Roles for accessing Technical Competency by Sec. Head
+                        $deptHeadRoles = [1, 2, 5, 11, 7, 14, 15]; // Roles for accessing Technical Competency by Dept. Head
+                    @endphp
+                    @if (in_array(Auth::user()->role_id, $secHeadRoles) || in_array(Auth::user()->role_id, $deptHeadRoles))
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#evaluationSubsectionTwo">
+                            <i class="bi bi-check-circle-fill fs-6"></i>
+                            <span>Penilaian</span>
+                            <i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                    @endif
+                    <ul id="evaluationSubsectionTwo" class="nav-content collapse"
+                        data-bs-parent="#nav-tech-competency">
+                        @if (in_array(Auth::user()->role_id, $deptHeadRoles))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('penilaian.index') }}">
+                                    <i class="bi bi-person-check-fill fs-6"></i>
+                                    <span>Penilaian Technical Competency by Dept. Head</span>
+                                </a>
+                            </li>
+                        @endif
+
+                    </ul>
+                </li>
+            </ul>
+
+            @php
+                $deptrole = [1, 2, 5, 11, 7, 14, 15]; // Roles for accessing Training Management
+            @endphp
+            @if (in_array(Auth::user()->role_id, $deptrole))
+                <a class="nav-link collapsed" data-bs-target="#nav-training" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-journal-text"></i><span>Training</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+            @endif
+            <ul id="nav-training" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                @if (in_array(Auth::user()->role_id, $deptrole))
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#formSubsectionTraining">
+                            <i class="bi bi-file-earmark-text fs-6"></i>
+                            <span>Forms Pengajuan</span>
+                            <i class="bi bi-chevron-down ms-auto fs-6"></i>
+                        </a>
+                        <ul id="formSubsectionTraining" class="nav-content collapse" data-bs-parent="#nav-training">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('indexPD') }}">
+                                    <i class="bi bi-file-earmark-plus fs-6"></i>
+                                    <span>Form Pengajuan Training</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+                @php
+                    $hrgarole = [1, 14, 15]; // Roles for accessing Training Management
+                @endphp
+                @if (in_array(Auth::user()->role_id, $hrgarole))
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#evaluationSubsectionTraining">
+                            <i class="bi bi-bar-chart-line fs-6"></i>
+                            <span>Penilaian</span>
+                            <i class="bi bi-chevron-down ms-auto fs-6"></i>
+                        </a>
+                        <ul id="evaluationSubsectionTraining" class="nav-content collapse"
+                            data-bs-parent="#nav-training">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('indexPD2') }}">
+                                    <i class="bi bi-check-circle fs-6"></i>
+                                    <span>Persetujuan Development</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+                @endif
+            </ul> --}}
+
+            @php
+                $secHeadRoles = [1, 3, 9, 31, 22, 30, 12, 14, 15]; // Roles for accessing PO Pengajuan Management
+                $deptHeadRoles = [1, 2, 5, 11, 7, 14, 15]; // Department Head Roles
+                $userRoles = [1, 14, 15, 50, 30, 40, 11, 39]; // User Roles
+                $finnRole = [1, 14, 11, 12]; // Finance Roles
+                $procRoles = [1, 14, 41]; // Procurement Roles
+
+                // Gabungkan semua roles ke dalam satu array
+                $allRoles = array_merge($secHeadRoles, $deptHeadRoles, $userRoles, $finnRole, $procRoles);
+            @endphp
+
+            @if (in_array(Auth::user()->role_id, $allRoles))
+                <li class="nav-heading">Form Pengajuan Barang/Jasa</li>
+
+                <a class="nav-link collapsed" data-bs-target="#nav-po-pengajuan" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-journal-text"></i><span>Pengajuan Form</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+
+                <ul id="nav-po-pengajuan" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    @if (in_array(Auth::user()->role_id, $secHeadRoles))
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('index.PO') }}">
+                                <i class="bi bi-file-earmark-plus fs-6"></i>
+                                <span>Form Permintaan Barang/Jasa</span>
+                            </a>
+                        </li>
+                    @endif
+
+                    @if (in_array(Auth::user()->role_id, $deptHeadRoles))
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" data-bs-toggle="collapse"
+                                href="#approvalSubsectionPoPengajuanDeptHead">
+                                <i class="bi bi-bar-chart-line fs-6"></i>
+                                <span>Approval</span>
+                                <i class="bi bi-chevron-down ms-auto fs-6"></i>
+                            </a>
+                            <ul id="approvalSubsectionPoPengajuanDeptHead" class="nav-content collapse"
+                                data-bs-parent="#nav-po-pengajuan">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('index.PO.Dept') }}">
+                                        <i class="bi bi-check-circle fs-6"></i>
+                                        <span>Persetujuan FPB by Dept. Head</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+
+                    @if (in_array(Auth::user()->role_id, $userRoles))
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" data-bs-toggle="collapse"
+                                href="#approvalSubsectionPoPengajuanUser">
+                                <i class="bi bi-bar-chart-line fs-6"></i>
+                                <span>Approval</span>
+                                <i class="bi bi-chevron-down ms-auto fs-6"></i>
+                            </a>
+                            <ul id="approvalSubsectionPoPengajuanUser" class="nav-content collapse"
+                                data-bs-parent="#nav-po-pengajuan">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('index.PO.user') }}">
+                                        <i class="bi bi-check-circle fs-6"></i>
+                                        <span>Persetujuan FPB by User</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+
+                    @if (in_array(Auth::user()->role_id, $finnRole))
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" data-bs-toggle="collapse"
+                                href="#approvalSubsectionPoPengajuanFinance">
+                                <i class="bi bi-bar-chart-line fs-6"></i>
+                                <span>Approval</span>
+                                <i class="bi bi-chevron-down ms-auto fs-6"></i>
+                            </a>
+                            <ul id="approvalSubsectionPoPengajuanFinance" class="nav-content collapse"
+                                data-bs-parent="#nav-po-pengajuan">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('index.PO.finance') }}">
+                                        <i class="bi bi-check-circle fs-6"></i>
+                                        <span>Persetujuan FPB by Finance</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+
+                    @if (in_array(Auth::user()->role_id, $procRoles))
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" data-bs-toggle="collapse"
+                                href="#approvalSubsectionPoPengajuanProcurement">
+                                <i class="bi bi-bar-chart-line fs-6"></i>
+                                <span>Approval</span>
+                                <i class="bi bi-chevron-down ms-auto fs-6"></i>
+                            </a>
+                            <ul id="approvalSubsectionPoPengajuanProcurement" class="nav-content collapse"
+                                data-bs-parent="#nav-po-pengajuan">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('index.PO.procurement') }}">
+                                        <i class="bi bi-check-circle fs-6"></i>
+                                        <span>Persetujuan Pengajuan Form by Procurement Menu 1</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('index.PO.procurement2') }}">
+                                        <i class="bi bi-check-circle fs-6"></i>
+                                        <span>Persetujuan Pengajuan Form by Procurement Menu 2</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+                </ul>
+            @endif
+
             @if (Auth::user()->role_id == 1)
                 <li class="nav-heading">Safety Patrol</li>
                 <li class="nav-item">
@@ -512,12 +768,6 @@
                         <span>Data Safety Patrol</span>
                     </a>
                 </li><!-- End Profile Page Nav -->
-                {{-- <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('reportpatrol') }}">
-                    <i class="bi bi-bar-chart-steps"></i>
-                    <span>Report Form Safety Patrol</span>
-                </a>
-            </li><!-- End Profile Page Nav --> --}}
                 {{-- Menu Inventory-PPC --}}
                 <li class="nav-heading">PPIC</li>
                 <li class="nav-item">
@@ -538,13 +788,13 @@
                         <span>Incoming Shipment</span>
                     </a>
                 </li>
-                {{-- @endif --}}
             @endif
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 5 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 22 ||
-                    Auth::user()->role_id == 26)
+
+            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 22 || Auth::user()->role_id == 26) --}}
+            @php
+                $acsrole = [1, 5, 14, 22, 26];
+            @endphp
+            @if (in_array(Auth::user()->role_id, $acsrole))
                 <li class="nav-heading">WO Heat Treatment</li>
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="{{ route('dashboardImportWO') }}">
@@ -553,16 +803,11 @@
                     </a>
                 </li><!-- End Profile Page Nav -->
             @endif
-            @if (Auth::user()->role_id == 1 ||
-                    Auth::user()->role_id == 5 ||
-                    Auth::user()->role_id == 14 ||
-                    Auth::user()->role_id == 22 ||
-                    Auth::user()->role_id == 26 ||
-                    Auth::user()->role_id == 2 ||
-                    Auth::user()->role_id == 3 ||
-                    Auth::user()->role_id == 4 ||
-                    Auth::user()->role_id == 28 ||
-                    Auth::user()->role_id == 30)
+            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 22 || Auth::user()->role_id == 26 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 4 || Auth::user()->role_id == 28 || Auth::user()->role_id == 30) --}}
+            @php
+                $acsrole = [1, 2, 3, 4, 5, 14, 22, 26, 28, 30];
+            @endphp
+            @if (in_array(Auth::user()->role_id, $acsrole))
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="{{ route('dashboardTracingWO') }}">
                         <i class="bi bi-search"></i>
@@ -572,7 +817,6 @@
 
                 {{-- <hr> --}}
             @endif
-        </ul>
         </ul>
 
         <!-- Footer Sidebar -->
@@ -1002,9 +1246,9 @@
 
             // searchdropdown
             // Inisialisasi Select2 pada semua dropdown dengan class "select2"
-            $(document).ready(function() {
-                $('.select2').select2();
-            });
+            // $(document).ready(function() {
+            //     $('.select2').select2();
+            // });
 
             //backButonDeptMan
             function goToSubmission() {
@@ -1014,9 +1258,9 @@
 
             // searchdropdown
             // Inisialisasi Select2 pada semua dropdown dengan class "select2"
-            $(document).ready(function() {
-                $('.select2').select2();
-            });
+            // $(document).ready(function() {
+            //     $('.select2').select2();
+            // });
         </script>
     @endif
     <style>

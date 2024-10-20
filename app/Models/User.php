@@ -25,12 +25,16 @@ class User extends Authenticatable
     protected $fillable = [
         'role_id',
         'name',
+        'section',
         'npk',
         'username',
         'password',
         'pass',
         'email',
         'telp',
+        'km_total_poin',
+        'file',
+        'file_name',
         'is_active',
     ];
 
@@ -67,5 +71,44 @@ class User extends Authenticatable
     public function penilaians(): HasMany
     {
         return $this->hasMany(PenilaianSS::class);
+    }
+
+    // Relasi dengan KmPengajuan
+    public function kmPengajuan()
+    {
+        return $this->hasMany(KmPengajuan::class, 'id_user');
+    }
+
+    // Relasi dengan KmTransaksi
+    public function kmTransaksi()
+    {
+        return $this->hasMany(KmTransaksi::class, 'id_user');
+    }
+
+    public function kmSukas()
+    {
+        return $this->hasMany(KmSuka::class, 'id_user');
+    }
+
+    public function insights()
+    {
+        return $this->hasMany(Insight::class, 'id_user');
+    }
+
+    public function jobPositions()
+    {
+        return $this->hasMany(TcJobPosition::class, 'id_user');
+    }
+
+    // Relasi ke model TrsPenilaianTcs
+    public function penilaianTcs()
+    {
+        return $this->hasMany(TrsPenilaianTc::class, 'id_user');
+    }
+
+    // Relasi ke TcPeopleDevelopment
+    public function peopleDevelopments()
+    {
+        return $this->hasMany(TcPeopleDevelopment::class, 'id_user');
     }
 }

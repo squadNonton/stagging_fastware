@@ -50,6 +50,13 @@
                                     </div>
 
                                     <div class="mb-3">
+                                        <label for="name" class="form-label">Section<span
+                                                style="color: red;">*</span></label>
+                                        <input type="text" class="form-control" id="section" name="section"
+                                            value="{{ $user->section }}">
+                                    </div>
+
+                                    <div class="mb-3">
                                         <label for="npk" class="form-label">NPK<span
                                                 style="color: red;">*</span></label>
                                         <input type="text" class="form-control" id="npk" name="npk"

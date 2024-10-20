@@ -93,7 +93,8 @@
                         </div>
                         <div class="form-group">
                             <label>Order From:</label>
-                            <div class="form-value">{{ $inquiry->order_from }}</div>
+                            <div class="form-value">{{ $inquiry->customer ? $inquiry->customer->name_customer : 'N/A' }}
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Create By:</label>
@@ -101,13 +102,18 @@
                         </div>
                     </div>
 
+
+                    <script>
+                        var typeMaterials = {!! json_encode($typeMaterials) !!};
+                        console.log(typeMaterials); // Untuk memastikan data benar
+                    </script>
                     <div class="table-responsive">
                         <table>
                             <thead>
                                 <tr>
                                     <th style="width: 50px;"><input type="checkbox" onclick="toggle(this);"></th>
                                     <th style="width: 30px;">No</th>
-                                    <th style="width: 150px;">Nama Material</th>
+                                    <th style="width: 190px;">Nama Material</th>
                                     <th style="width: 50px;">Jenis</th>
                                     <th style="width: 50px;">Thickness</th>
                                     <th style="width: 50px;">Weight</th>
@@ -122,7 +128,7 @@
                                 @foreach ($materials as $index => $material)
                                     <tr>
                                         <td>
-                                            @if (empty($material['nama_material']) &&
+                                            @if (empty($material['id_type']) &&
                                                     empty($material['thickness']) &&
                                                     empty($material['weight']) &&
                                                     empty($material['inner_diameter']) &&
@@ -134,8 +140,17 @@
                                             @endif
                                         </td>
                                         <td>{{ $index + 1 }}</td>
-                                        <td><input type="text" name="nama_material"
-                                                value="{{ $material['nama_material'] }}" size="20" required></td>
+                                        <td>
+                                            <select name="id_type" class="material-dropdown" style="width: 180px;">
+                                                <option value="" disabled selected>Cari Material...</option>
+                                                @foreach ($typeMaterials as $type)
+                                                    <option value="{{ $type->id }}"
+                                                        {{ $material->id_type == $type->id ? 'selected' : '' }}>
+                                                        {{ $type->type_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
                                         <td>
                                             <select name="jenis" class="jenis-dropdown" style="width: 80px;">
                                                 <option value="Flat" {{ $material['jenis'] == 'Flat' ? 'selected' : '' }}>
@@ -152,9 +167,9 @@
                                         <td><input type="text" name="weight" value="{{ $material['weight'] }}"
                                                 size="5"></td>
                                         <td><input type="text" name="inner_diameter"
-                                                value="{{ $material['inner_diameter'] }}" size="10"></td>
+                                                value="{{ $material['inner_diameter'] }}" size="10" disabled></td>
                                         <td><input type="text" name="outer_diameter"
-                                                value="{{ $material['outer_diameter'] }}" size="10"></td>
+                                                value="{{ $material['outer_diameter'] }}" size="10" disabled></td>
                                         <td><input type="text" name="length" value="{{ $material['length'] }}"
                                                 size="10"></td>
                                         <td><input type="text" name="pcs" value="{{ $material['pcs'] }}"
@@ -177,6 +192,7 @@
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <!-- excel -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             function toggle(source) {
                 checkboxes = document.getElementsByName('record');
@@ -196,30 +212,143 @@
                 });
             }
 
+            function addRow() {
+                var tableBody = document.getElementById('table-body');
+                var rowCount = tableBody.rows.length;
+                var newRow = tableBody.insertRow(rowCount);
+
+                var cell1 = newRow.insertCell(0);
+                var cell2 = newRow.insertCell(1);
+                var cell3 = newRow.insertCell(2);
+                var cell4 = newRow.insertCell(3);
+                var cell5 = newRow.insertCell(4);
+                var cell6 = newRow.insertCell(5);
+                var cell7 = newRow.insertCell(6);
+                var cell8 = newRow.insertCell(7);
+                var cell9 = newRow.insertCell(8);
+                var cell10 = newRow.insertCell(9);
+                var cell11 = newRow.insertCell(10);
+
+                cell1.innerHTML = '<input type="checkbox" name="record">';
+                cell2.innerHTML = rowCount + 1;
+
+                var idTypeDropdown = `<select name="id_type" class="material-dropdown" style="width: 180px;">
+        <option value="" disabled selected>Cari Material...</option>`;
+                typeMaterials.forEach(function(type) {
+                    idTypeDropdown += `<option value="${type.id}">${type.type_name}</option>`;
+                });
+                idTypeDropdown += `</select>`;
+                cell3.innerHTML = idTypeDropdown;
+
+                cell4.innerHTML = `
+        <select name="jenis" class="jenis-dropdown" style="width: 80px;">
+            <option value="Flat">Flat</option>
+            <option value="Round">Round</option>
+            <option value="Honed Tube">Honed Tube</option>
+        </select>
+    `;
+                cell5.innerHTML = '<input type="text" name="thickness" size="10">';
+                cell6.innerHTML = '<input type="text" name="weight" size="5">';
+                cell7.innerHTML = '<input type="text" name="inner_diameter" size="10">';
+                cell8.innerHTML = '<input type="text" name="outer_diameter" size="10">';
+                cell9.innerHTML = '<input type="text" name="length" size="10">';
+                cell10.innerHTML = '<input type="text" name="pcs" size="10" required>';
+                cell11.innerHTML = '<input type="text" name="qty" size="10" required>';
+
+                updateDropdownListeners(); // Memastikan listener dropdown diperbarui
+            }
+
+            function updateDropdownListeners() {
+                var dropdowns = document.querySelectorAll('.jenis-dropdown');
+                dropdowns.forEach(function(dropdown) {
+                    dropdown.addEventListener('change', function() {
+                        var row = dropdown.closest('tr');
+                        var thickness = row.querySelector('input[name="thickness"]');
+                        var weight = row.querySelector('input[name="weight"]');
+                        var innerDiameter = row.querySelector('input[name="inner_diameter"]');
+                        var outerDiameter = row.querySelector('input[name="outer_diameter"]');
+
+                        if (dropdown.value === 'Flat') {
+                            thickness.disabled = false;
+                            weight.disabled = false;
+                            innerDiameter.disabled = true;
+                            outerDiameter.disabled = true;
+                        } else if (dropdown.value === 'Round') {
+                            thickness.disabled = true;
+                            weight.disabled = false;
+                            innerDiameter.disabled = true;
+                            outerDiameter.disabled = true;
+                        } else if (dropdown.value === 'Honed Tube') {
+                            thickness.disabled = true;
+                            weight.disabled = true;
+                            innerDiameter.disabled = false;
+                            outerDiameter.disabled = false;
+                        } else {
+                            thickness.disabled = false;
+                            weight.disabled = false;
+                            innerDiameter.disabled = false;
+                            outerDiameter.disabled = false;
+                        }
+                    });
+
+                    // Trigger change event to set initial state
+                    dropdown.dispatchEvent(new Event('change'));
+                });
+            }
+
             function saveTable() {
                 var tableBody = document.getElementById('table-body');
                 var rows = tableBody.querySelectorAll('tr');
                 var data = {
-                    id_inquiry: '{{ $inquiry->id }}', // Ensure id_inquiry from PHP to JavaScript
+                    id_inquiry: '{{ $inquiry->id }}',
                     kode_inquiry: '{{ $inquiry->kode_inquiry }}',
-                    order_from: '{{ $inquiry->order_from }}',
+                    order_from: '{{ $inquiry->customer ? $inquiry->customer->name_customer : 'N/A' }}',
                     create_by: '{{ $inquiry->create_by }}',
                     materials: []
                 };
 
-                rows.forEach(function(row) {
-                    var rowData = {
-                        nama_material: row.querySelector('input[name="nama_material"]').value,
-                        jenis: row.querySelector('select[name="jenis"]').value,
-                        thickness: row.querySelector('input[name="thickness"]').value,
-                        weight: row.querySelector('input[name="weight"]').value,
-                        inner_diameter: row.querySelector('input[name="inner_diameter"]').value,
-                        outer_diameter: row.querySelector('input[name="outer_diameter"]').value,
-                        length: row.querySelector('input[name="length"]').value,
-                        pcs: row.querySelector('input[name="pcs"]').value,
-                        qty: row.querySelector('input[name="qty"]').value
-                    };
-                    data.materials.push(rowData);
+                rows.forEach(function(row, index) {
+                    var idTypeElement = row.querySelector('select[name="id_type"]');
+                    var jenisElement = row.querySelector('select[name="jenis"]');
+                    var thicknessElement = row.querySelector('input[name="thickness"]');
+                    var weightElement = row.querySelector('input[name="weight"]');
+                    var innerDiameterElement = row.querySelector('input[name="inner_diameter"]');
+                    var outerDiameterElement = row.querySelector('input[name="outer_diameter"]');
+                    var lengthElement = row.querySelector('input[name="length"]');
+                    var pcsElement = row.querySelector('input[name="pcs"]');
+                    var qtyElement = row.querySelector('input[name="qty"]');
+
+                    // Log all elements to see if they are found
+                    console.log(`Row ${index + 1}:`);
+                    console.log('idTypeElement:', idTypeElement ? idTypeElement.value : 'not found');
+                    console.log('jenisElement:', jenisElement ? jenisElement.value : 'not found');
+                    console.log('thicknessElement:', thicknessElement ? thicknessElement.value : 'not found');
+                    console.log('weightElement:', weightElement ? weightElement.value : 'not found');
+                    console.log('innerDiameterElement:', innerDiameterElement ? innerDiameterElement.value :
+                        'not found');
+                    console.log('outerDiameterElement:', outerDiameterElement ? outerDiameterElement.value :
+                        'not found');
+                    console.log('lengthElement:', lengthElement ? lengthElement.value : 'not found');
+                    console.log('pcsElement:', pcsElement ? pcsElement.value : 'not found');
+                    console.log('qtyElement:', qtyElement ? qtyElement.value : 'not found');
+
+                    if (idTypeElement && jenisElement && thicknessElement && weightElement && innerDiameterElement &&
+                        outerDiameterElement && lengthElement && pcsElement && qtyElement) {
+                        var rowData = {
+                            id_type: idTypeElement.value,
+                            jenis: jenisElement.value,
+                            thickness: thicknessElement.value,
+                            weight: weightElement.value,
+                            inner_diameter: innerDiameterElement.value,
+                            outer_diameter: outerDiameterElement.value,
+                            length: lengthElement.value,
+                            pcs: pcsElement.value,
+                            qty: qtyElement.value
+                        };
+                        data.materials.push(rowData);
+                    } else {
+                        console.error("One or more elements are missing in the row:", row);
+                    }
                 });
 
                 $.ajax({
@@ -241,94 +370,9 @@
                 });
             }
 
+            // Panggil updateDropdownListeners untuk menginisialisasi listener pada dropdown yang sudah ada
             document.addEventListener('DOMContentLoaded', function() {
-                function updateDropdownListeners() {
-                    var dropdowns = document.querySelectorAll('.jenis-dropdown');
-
-                    dropdowns.forEach(function(dropdown) {
-                        dropdown.addEventListener('change', function() {
-                            var row = dropdown.closest('tr');
-                            var thicknessInput = row.querySelector('input[name="thickness"]');
-                            var weightInput = row.querySelector('input[name="weight"]');
-                            var innerDiameterInput = row.querySelector('input[name="inner_diameter"]');
-                            var outerDiameterInput = row.querySelector('input[name="outer_diameter"]');
-
-                            if (dropdown.value === 'Round') {
-                                thicknessInput.disabled = true;
-                                thicknessInput.value = ''; // Clear the value if you want
-                                weightInput.disabled = true;
-                                weightInput.value = ''; // Clear the value if you want
-                                innerDiameterInput.disabled = true;
-                                innerDiameterInput.value = ''; // Clear the value if you want
-                                outerDiameterInput.disabled = false;
-                            } else if (dropdown.value === 'Honed Tube') {
-                                thicknessInput.disabled = true;
-                                thicknessInput.value = ''; // Clear the value if you want
-                                weightInput.disabled = true;
-                                weightInput.value = ''; // Clear the value if you want
-                                innerDiameterInput.disabled = false;
-                                outerDiameterInput.disabled = false;
-                            } else {
-                                thicknessInput.disabled = false;
-                                weightInput.disabled = false;
-                                innerDiameterInput.disabled = true;
-                                innerDiameterInput.value = ''; // Clear the value if you want
-                                outerDiameterInput.disabled = true;
-                                outerDiameterInput.value = ''; // Clear the value if you want
-                            }
-                        });
-
-                        // Trigger change event to set initial state
-                        dropdown.dispatchEvent(new Event('change'));
-                    });
-                }
-
-                // Initial call to setup listeners on existing rows
                 updateDropdownListeners();
-
-                // Add row function updated to include the new columns
-                function addRow() {
-                    var tableBody = document.getElementById('table-body');
-                    var rowCount = tableBody.rows.length;
-                    var newRow = tableBody.insertRow(rowCount);
-
-                    var cell1 = newRow.insertCell(0);
-                    var cell2 = newRow.insertCell(1);
-                    var cell3 = newRow.insertCell(2);
-                    var cell4 = newRow.insertCell(3);
-                    var cell5 = newRow.insertCell(4);
-                    var cell6 = newRow.insertCell(5);
-                    var cell7 = newRow.insertCell(6);
-                    var cell8 = newRow.insertCell(7);
-                    var cell9 = newRow.insertCell(8);
-                    var cell10 = newRow.insertCell(9);
-                    var cell11 = newRow.insertCell(10);
-
-                    cell1.innerHTML = '<input type="checkbox" name="record">';
-                    cell2.innerHTML = rowCount + 1;
-                    cell3.innerHTML = '<input type="text" name="nama_material" size="20" required>';
-                    cell4.innerHTML = `
-        <select name="jenis" class="jenis-dropdown" style="width: 80px;">
-            <option value="Flat">Flat</option>
-            <option value="Round">Round</option>
-            <option value="Honed Tube">Honed Tube</option>
-        </select>
-    `;
-                    cell5.innerHTML = '<input type="text" name="thickness" size="10">';
-                    cell6.innerHTML = '<input type="text" name="weight" size="5">';
-                    cell7.innerHTML = '<input type="text" name="inner_diameter" size="10">';
-                    cell8.innerHTML = '<input type="text" name="outer_diameter" size="10">';
-                    cell9.innerHTML = '<input type="text" name="length" size="10">';
-                    cell10.innerHTML = '<input type="text" name="pcs" size="10" required>';
-                    cell11.innerHTML = '<input type="text" name="qty" size="10" required>';
-
-                    // Re-attach listeners to include the new row
-                    updateDropdownListeners();
-                }
-
-
-                // Make the addRow function available globally if needed
-                window.addRow = addRow;
             });
         </script>
     </main><!-- End #main -->

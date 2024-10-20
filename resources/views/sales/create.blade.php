@@ -1,8 +1,6 @@
 @extends('layout')
 
 @section('content')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-
     <main id="main" class="main">
 
         <div class="pagetitle">
@@ -28,7 +26,7 @@
                                 <div class="col lg-6">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="modified_by" class="col-sm-2 col-form-label">User : <span
+                                            <label for="modified_by" class="col-sm-4 col-form-label">User : <span
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
@@ -52,33 +50,39 @@
                                         </div>
                                     </div>
                                     <br>
-
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <label for="customer_code" class="col-sm-5 col-form-label">Kode Pelanggan:<span
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
-                                            <select id="customer_id" name="customer_id" class="select2" style="width: 100%;"
-                                                required>
-                                                <option value="" disabled selected></option>
-                                                @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->id }}"
-                                                        data-name_customer="{{ $customer->name_customer }}"
-                                                        data-area="{{ $customer->area }}">{{ $customer->customer_code }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            <div class="searchable-dropdown">
+                                                <input type="text" id="search_customer"
+                                                    placeholder="🔍 Search or select customer code"
+                                                    style="width: 100%; margin-bottom: 10px;">
+                                                <select id="customer_id" name="customer_id" class="form-control"
+                                                    style="width: 100%;" required>
+                                                    <option value="" disabled selected>🔍 Search or select customer
+                                                        code</option>
+                                                    @foreach ($customers as $customer)
+                                                        <option value="{{ $customer->id }}"
+                                                            data-name_customer="{{ $customer->name_customer }}"
+                                                            data-area="{{ $customer->area }}">
+                                                            {{ $customer->customer_code }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="name_customer" class="col-sm-5 col-form-label">Nama Pelanggan:<span
+                                            <label for="name_customer" class="col-sm-6 col-form-label">Nama Pelanggan:<span
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
-                                            <select name="name_customer" class="select2" id="name_customer"
+                                            <select name="name_customer" class="form-control" id="name_customer"
                                                 style="width: 100%;" required disabled>
                                                 <option>🔍 Search or select customer</option>
                                                 @foreach ($customers as $customer)
@@ -96,7 +100,7 @@
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
-                                            <select name="area" class="select2" id="area" style="width: 100%"
+                                            <select name="area" class="form-control" id="area" style="width: 100%"
                                                 required disabled>
                                                 <option>🔍 Search or select area</option>
                                                 @foreach ($customers as $customer)
@@ -111,18 +115,47 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="type_material" class="col-sm-5 col-form-label">Tipe Bahan:<span
+                                            <label for="notes" class="col-sm-5 col-form-label">Request:<span
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
-                                            <select id="type_id" name="type_id" class="form-select" style="width: 100%"
+                                            <select name="notes" class="form-control" id="notes" style="width: 100%;"
                                                 required>
+                                                <option value="">------------- Pilih Request ------------
+                                                </option>
+                                                <option value="Testing">Testing</option>
+                                                <option value="Trial">Trial</option>
+                                                <option value="Klaim / Komplain">Klaim / Komplain</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label for="type_material" class="col-sm-5 col-form-label">Tipe Bahan:</label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <select id="type_id" name="type_id" class="form-select"
+                                                style="width: 100%">
                                                 <option value="">------------- Type Material ------------</option>
                                                 @foreach ($type_materials as $typematerial)
-                                                    <option value="{{ $typematerial->id }}">{{ $typematerial->type_name }}
+                                                    <option value="{{ $typematerial->id }}">
+                                                        {{ $typematerial->type_name }}
                                                     </option>
                                                 @endforeach
                                             </select>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label for="category" class="col-sm-6 col-form-label">Nama Barang:<span
+                                                    style="color: red;">*</span></label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <input type="text" class="form-control" id="nama_barang"
+                                                name="nama_barang" style="width: 100%; max-width: 100%;">
                                         </div>
                                     </div>
                                     <br>
@@ -167,7 +200,7 @@
                                             <label for="qty" class="form-label">QTY (Kg):<span
                                                     style="color: red;">*</span></label>
                                             <input type="text" class="form-control input-sm" id="qty"
-                                                name="qty" style="max-width: 80%;" required pattern="[0-9]+" required
+                                                name="qty" style="max-width: 80%;" required pattern="[0-9]+"
                                                 onkeypress="hanyaAngka(event)">
                                         </div>
                                         <div class="col-md-3">
@@ -187,7 +220,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <select name="category" class="form-control" id="category" name="category"
-                                                style="width: 100%;" required>
+                                                style="width: 100%;">
                                                 <option value="" class="text-center">-------- Silahkan Pilih
                                                     Kategori --------
                                                 </option>
@@ -221,6 +254,33 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label for="category_input" class="col-sm-6 col-form-label">Nama Project:<span
+                                                    style="color: red;">*</span></label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <input type="text" class="form-control" id="category_input"
+                                                name="category" style="width: 100%; max-width: 100%;">
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row" id="jenisTestRow" style="display: none;">
+                                        <div class="col-lg-6">
+                                            <label for="jenis_test" class="col-sm-5 col-form-label">Jenis test
+                                                <span style="color: red;">*</span></label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <select name="jenis_test" class="form-control" id="jenis_test"
+                                                style="width: 100%;">
+                                                <option value="">------------- Pilih jenis Test ------------
+                                                </option>
+                                                <option value="Spectro">Spectro</option>
+                                                <option value="Kekerasan">Kekerasan</option>
+                                                <option value="Micro Structure">Micro Structure</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -234,12 +294,12 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="process_type" class="col-sm-5 col-form-label">Jenis Proses:<span
-                                                    style="color: red;">*</span></label>
+                                            <label for="process_type" class="col-sm-5 col-form-label">Jenis
+                                                Proses:</label>
                                         </div>
                                         <div class="col-lg-6">
                                             <select name="process_type" class="form-control" id="process_type"
-                                                style="width: 100%;" required>
+                                                style="width: 100%;">
                                                 <option value="">------------------- Tipe Proses -----------------
                                                 </option>
                                                 <option value="Heat Treatment">Heat treatment</option>
@@ -251,8 +311,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="proses_type" class="col-sm-5 col-form-label">Jenis:<span
-                                                    style="color: red;">*</span></label>
+                                            <label for="proses_type" class="col-sm-5 col-form-label">Jenis:</label>
                                         </div>
                                         <div class="col-lg-6" @required(true)>
                                             <div class="form-check">
@@ -269,7 +328,6 @@
                                     </div>
                                 </div>
                                 <br>
-
                                 <div class="col lg-6">
                                     <div class="col lg-6">
                                         <div class="row">
@@ -313,9 +371,9 @@
                                         onclick="validateCreate()">
                                         <i class="fas fa-save"></i> Simpan
                                     </button>
-                                    <button type="button" class="btn btn-primary mb-4 me-3" onclick="goToIndex()">
+                                    <a href="{{ route('index') }}" class="btn btn-primary mb-4 me-2">
                                         <i class="fas fa-arrow-left"></i> Kembali
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </form>
@@ -323,22 +381,34 @@
                 </div>
             </div>
         </section>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
         <script>
             document.getElementById('process_type').addEventListener('change', function() {
                 var dropdownValue = this.value;
                 var checkBox1 = document.getElementById('type_2');
+                var requestDropdown = document.getElementById('notes').value; // Ambil nilai dari elemen notes
 
-                if (dropdownValue === 'Cutting') {
-                    checkBox1.checked = true;
+                // Cek jika notes bernilai 'Klaim / Komplain'
+                if (requestDropdown === 'Klaim / Komplain') {
+                    checkBox1.disabled = false; // Aktifkan checkbox jika notes bernilai 'Klaim / Komplain'
+
+                    // Cek jika nilai dari process_type adalah 'Cutting', maka centang checkbox
+                    if (dropdownValue === 'Cutting') {
+                        checkBox1.checked = true;
+                    } else {
+                        checkBox1.checked = false;
+                    }
                 } else {
-                    checkBox1.checked = false;
+                    checkBox1.checked = false; // Hapus centang checkbox jika tidak memenuhi syarat
+                    checkBox1.disabled = true; // Nonaktifkan checkbox
                 }
             });
+
 
             var imageError = document.getElementById('imageError');
             imageError.style.display = 'none';
 
-            // Fungsi untuk menampilkan modal saat gambar di klik
             // Fungsi untuk menampilkan modal saat gambar di klik
             function showModal(imageSrc) {
                 var modal = document.getElementById("imageModal");
@@ -398,19 +468,46 @@
             }
             //ddlselect
             document.addEventListener('DOMContentLoaded', function() {
-                // Ambil elemen-elemen yang diperlukan
-                var customerIdSelect = document.querySelector('select[name="customer_id"]');
-                var nameCustomerSelect = document.querySelector('select[name="name_customer"]');
-                var areaCustomerSelect = document.querySelector('select[name="area"]');
+                var searchCustomerInput = document.getElementById('search_customer');
+                var customerSelect = document.getElementById('customer_id');
+                var customerOptions = customerSelect.options;
 
-                // Tambahkan event listener untuk perubahan pada pilihan customer_id
-                customerIdSelect.addEventListener('change', function() {
-                    // Ambil opsi yang dipilih
-                    var selectedOption = customerIdSelect.options[customerIdSelect.selectedIndex];
+                var nameCustomerSelect = document.getElementById('name_customer');
+                var areaCustomerSelect = document.getElementById('area');
 
-                    // Set nilai name_customer dan area sesuai dengan data yang dipilih
-                    nameCustomerSelect.value = selectedOption.getAttribute('data-name_customer');
-                    areaCustomerSelect.value = selectedOption.getAttribute('data-area');
+                // Show the dropdown items when input is focused
+                searchCustomerInput.addEventListener('focus', function() {
+                    customerSelect.style.display = 'block';
+                });
+
+                // Hide the dropdown items when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!searchCustomerInput.contains(e.target) && !customerSelect.contains(e.target)) {
+                        customerSelect.style.display = 'none';
+                    }
+                });
+
+                // Filter the dropdown items based on input
+                searchCustomerInput.addEventListener('input', function() {
+                    var filter = searchCustomerInput.value.toLowerCase();
+                    for (var i = 1; i < customerOptions.length; i++) {
+                        var option = customerOptions[i];
+                        var text = option.text.toLowerCase();
+                        option.style.display = text.includes(filter) ? '' : 'none';
+                    }
+                });
+
+                // Set the input and update other selects when an item is selected
+                customerSelect.addEventListener('change', function() {
+                    var selectedOption = customerSelect.options[customerSelect.selectedIndex];
+
+                    searchCustomerInput.value = selectedOption.text;
+
+                    var selectedNameCustomer = selectedOption.getAttribute('data-name_customer');
+                    var selectedArea = selectedOption.getAttribute('data-area');
+
+                    nameCustomerSelect.value = selectedNameCustomer;
+                    areaCustomerSelect.value = selectedArea;
                 });
             });
 
@@ -421,16 +518,13 @@
                 var no_wo = document.getElementById('no_wo').value.trim();
                 var customerCode = document.getElementById('customer_id').value.trim();
                 var customerName = document.getElementById('name_customer').value.trim();
+                var notes = document.getElementById('notes').value.trim();
                 var area = document.getElementById('area').value.trim();
                 var qty = document.getElementById('qty').value.trim();
                 var pcs = document.getElementById('pcs').value.trim();
-                var category = document.getElementById('category').value.trim();
-                var process_type = document.getElementById('process_type').value.trim();
-                var type_1 = document.getElementById('type_1').value.trim();
 
                 // Memeriksa apakah ada input yang kosong
-                if (!no_wo || !customerName || !customerCode || !area || !qty || !pcs || !category || !process_type ||
-                    type_1.length === 0) {
+                if (!no_wo || !customerName || !customerCode || !area || !pcs || !notes) {
                     // Menampilkan sweet alert error jika ada input yang kosong
                     Swal.fire({
                         icon: 'error',
@@ -457,11 +551,6 @@
                 validateCreate();
             });
 
-            $(document).ready(function() {
-                $('select').selectize({
-                    sortField: 'text'
-                });
-            });
 
             function hanyaAngka(evt) {
                 // Mendapatkan karakter yang ditekan
@@ -472,6 +561,54 @@
                     evt.preventDefault();
                 }
             }
+
+            document.addEventListener("DOMContentLoaded", function() {
+                const requestDropdown = document.getElementById('notes');
+                const categorySelectRow = document.getElementById('category')?.parentElement?.parentElement;
+                const categoryInputRow = document.getElementById('category_input')?.parentElement?.parentElement;
+                const typeMaterialRow = document.getElementById('type_id')?.parentElement?.parentElement;
+                const jenisTestRow = document.getElementById('jenis_test')?.parentElement?.parentElement;
+                const namaBarangRow = document.getElementById('nama_barang')?.parentElement?.parentElement;
+                const prosesTypeSelect = document.getElementById('process_type');
+                const prosesTypeCheckbox1 = document.getElementById('type_1');
+                const prosesTypeCheckbox2 = document.getElementById('type_2');
+
+                function updateUIBasedOnRequest(value) {
+                    if (value === "Trial") {
+                        categoryInputRow.style.display = "flex";
+                        categorySelectRow.style.display = "none";
+                        typeMaterialRow.style.display = "flex";
+                        jenisTestRow.style.display = "none";
+                        namaBarangRow.style.display = "none";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = false;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = true;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = true;
+                    } else if (value === "Testing") {
+                        categoryInputRow.style.display = "none";
+                        categorySelectRow.style.display = "none";
+                        typeMaterialRow.style.display = "none";
+                        jenisTestRow.style.display = "flex";
+                        namaBarangRow.style.display = "flex";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = true;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = true;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = true;
+                    } else {
+                        categoryInputRow.style.display = "none";
+                        categorySelectRow.style.display = "flex";
+                        typeMaterialRow.style.display = "flex";
+                        jenisTestRow.style.display = "none";
+                        namaBarangRow.style.display = "none";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = false;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = false;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = false;
+                    }
+                }
+
+                updateUIBasedOnRequest(requestDropdown.value);
+                requestDropdown.addEventListener('change', function() {
+                    updateUIBasedOnRequest(this.value);
+                });
+            });
         </script>
     </main><!-- End #main -->
 @endsection

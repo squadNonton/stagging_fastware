@@ -23,7 +23,7 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Daftar Pelanggan</h5>
+                            <h5 class="card-title">Daftar Customer</h5>
                             <div class="text-right mb-3">
                                 <a class="btn btn-success float-right" href="{{ route('customers.create') }}">
                                     <i class="bi bi-plus"></i> Tambah Pelanggan

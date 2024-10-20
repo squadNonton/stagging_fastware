@@ -2,18 +2,24 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\DetailPreventiveController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FormFPPController;
 use App\Http\Controllers\HandlingController;
 use App\Http\Controllers\HeatTreatmentController;
 use App\Http\Controllers\InquirySalesController;
+use App\Http\Controllers\KmPengajuanController;
 use App\Http\Controllers\MesinController;
+use App\Http\Controllers\PenilaianTCController;
+use App\Http\Controllers\PdController;
 use App\Http\Controllers\PreventiveController;
 use App\Http\Controllers\SafetyController;
 use App\Http\Controllers\SparepartController;
 use App\Http\Controllers\SumbangSaranController;
+use App\Http\Controllers\TcController;
+use App\Http\Controllers\TcJobController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MadingController;
+use App\Http\Controllers\PoPengajuanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,8 +41,6 @@ Route::resource('receivedfpps', FormFPPController::class);
 Route::resource('approvedfpps', FormFPPController::class);
 Route::resource('tindaklanjuts', FormFPPController::class);
 Route::resource('preventives', PreventiveController::class);
-Route::resource('detailpreventive', DetailPreventiveController::class);
-Route::resource('events', EventController::class);
 Route::resource('spareparts', SparepartController::class);
 
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
@@ -73,6 +77,7 @@ Route::middleware(['web', 'auth'])->group(function () {
 
     // Production
     Route::get('dashboardproduction', [FormFPPController::class, 'DashboardProduction'])->name('fpps.index');
+    Route::post('store', [FormFPPController::class, 'store'])->name('formperbaikans.store');
     Route::get('historyfpp', [FormFPPController::class, 'HistoryFPP'])->name('fpps.history');
     Route::get('lihatform/{formperbaikan}', [FormFPPController::class, 'LihatFPP'])
         ->name('fpps.show');
@@ -98,11 +103,6 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('dashboardmesins', [MesinController::class, 'index'])->name('dashboardmesins');
     Route::get('dashboardgamesin', [MesinController::class, 'dashboardGAMesin'])->name('dashboardgamesin');
     Route::get('/mesins/showMesinGA/{mesin}', [MesinController::class, 'showMesinGA'])->name('mesins.showMesinGA');
-
-    Route::put('mesins/{mesin}/update-issue', [DetailPreventiveController::class, 'updateIssue'])
-        ->name('detailpreventives.updateIssue');
-    Route::put('mesins/{mesin}/update-perbaikan', [DetailPreventiveController::class, 'updatePerbaikan'])
-        ->name('detailpreventives.updatePerbaikan');
 
     // Dept Maintenance
     Route::get('dashboarddeptmtce', [FormFPPController::class, 'DashboardDeptMTCE'])
@@ -135,6 +135,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('download-excel/{tindaklanjut}', [FormFPPController::class, 'downloadAttachment'])->name('download.attachment');
     // DashboardforALL
     Route::get('/dashboardHandling', 'App\Http\Controllers\DsController@dashboardHandling')->name('dashboardHandling');
+    Route::get('/dashboardMaintenance', 'App\Http\Controllers\DsController@dashboardMaintenance')->name('dashboardMaintenance');
     Route::get('/dshandling', 'App\Http\Controllers\DsController@dshandling')->name('dshandling');
     Route::get('/getChartData', 'App\Http\Controllers\HandlingController@getChartData')->name('getChartData');
     Route::get('/get-data-by-year', 'App\Http\Controllers\HandlingController@getDataByYear')->name('getDataByYear');
@@ -143,11 +144,14 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/api/FilterPieChartProses', 'App\Http\Controllers\HandlingController@FilterPieChartProses')->name('FilterPieChartProses');
     Route::get('/api/filterPieChartNG', [HandlingController::class, 'filterPieChartNG'])->name('filterPieChartNG');
     Route::get('/api/getChartStatusHandling', 'App\Http\Controllers\HandlingController@getChartStatusHandling')->name('getChartStatusHandling');
+    Route::get('/export-handlings', 'App\Http\Controllers\HandlingController@export')->name('export.handlings');
 
     // Grafik Repair Maintenance
-    Route::get('/getRepairMaintenance', 'App\Http\Controllers\MaintenanceController@getRepairMaintenance')->name('getRepairMaintenance');
+    // Route::get('/getRepairMaintenance', 'App\Http\Controllers\MaintenanceController@getRepairMaintenance')->name('getRepairMaintenance');
+    Route::get('/getMaintenanceData', 'App\Http\Controllers\MaintenanceController@getMaintenanceData')->name('getMaintenanceData');
+    Route::get('/getMaintenanceDataAlat', 'App\Http\Controllers\MaintenanceController@getMaintenanceDataAlat')->name('getMaintenanceDataAlat');
     Route::get('/getRepairAlatBantu', 'App\Http\Controllers\MaintenanceController@getRepairAlatBantu')->name('getRepairAlatBantu');
-    Route::get('/getPeriodeWaktuPengerjaan', 'App\Http\Controllers\MaintenanceController@getPeriodeWaktuPengerjaan')->name('getPeriodeWaktuPengerjaan');
+    // Route::get('/getPeriodeWaktuPengerjaan', 'App\Http\Controllers\MaintenanceController@getPeriodeWaktuPengerjaan')->name('getPeriodeWaktuPengerjaan');
     Route::get('/getPeriodeWaktuAlat', 'App\Http\Controllers\MaintenanceController@getPeriodeWaktuAlat')->name('getPeriodeWaktuAlat');
     Route::get('/getPeriodeMesin', 'App\Http\Controllers\MaintenanceController@getPeriodeMesin')->name('getPeriodeMesin');
     Route::get('/getPeriodeAlat', 'App\Http\Controllers\MaintenanceController@getPeriodeAlat')->name('getPeriodeAlat');
@@ -171,6 +175,8 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('scheduleVisit', 'App\Http\Controllers\DeptManController@scheduleVisit')->name('scheduleVisit');
     Route::get('showHistoryCLaimComplain', 'App\Http\Controllers\DeptManController@showHistoryCLaimComplain')->name('showHistoryCLaimComplain');
     Route::get('/showCloseProgres/{id}', 'App\Http\Controllers\DeptManController@showCloseProgres')->name('showCloseProgres');
+    // Route untuk update notes berdasarkan due_date
+    Route::post('/update-notes', 'App\Http\Controllers\DeptManController@updateNotes')->name('schedule.updateNotes');
 
     // SS
     Route::get('/showSS', 'App\Http\Controllers\SumbangSaranController@showSS')->name('showSS');
@@ -230,16 +236,19 @@ Route::middleware(['web', 'auth'])->group(function () {
         ->name('dashboardImportWO');
     Route::get('dashboardTracingWO', [HeatTreatmentController::class, 'dashboardTracingWO'])
         ->name('dashboardTracingWO');
+    Route::get('landingWO', [HeatTreatmentController::class, 'landingWO'])
+        ->name('landingWO');
+    Route::get('/filter-wo', [HeatTreatmentController::class, 'filterWO'])->name('filter-wo');
     Route::post('importWO', [HeatTreatmentController::class, 'WOHeat'])->name('importWO');
     Route::get('/searchWO', [HeatTreatmentController::class, 'searchWO'])->name('searchWO');
     Route::get('downtimeExport', [FormFPPController::class, 'downtimeExport']);
     Route::get('/getBatchData', [HeatTreatmentController::class, 'getBatchData'])->name('getBatchData');
 
     // Inquiry Sales
-
     // view
     Route::get('createinquiry', [InquirySalesController::class, 'createInquirySales'])->name('createinquiry');
     Route::get('formulirInquiry/{id}', [InquirySalesController::class, 'formulirInquiry'])->name('formulirInquiry');
+    Route::get('tindakLanjutInquiry/{id}', [InquirySalesController::class, 'tindakLanjutInquiry'])->name('tindakLanjutInquiry');
     Route::get('showFormSS/{id}', [InquirySalesController::class, 'showFormSS'])->name('showFormSS');
     Route::get('historyFormSS/{id}', [InquirySalesController::class, 'historyFormSS'])->name('historyFormSS');
 
@@ -249,10 +258,165 @@ Route::middleware(['web', 'auth'])->group(function () {
     // fungsi
     Route::post('storeinquiry', [InquirySalesController::class, 'storeInquirySales'])->name('storeinquiry');
     Route::post('/inquiry/previewSS', [InquirySalesController::class, 'previewSS'])->name('inquiry.previewSS');
+    Route::post('/inquiry/tindakLanjutInquiry', [InquirySalesController::class, 'saveTindakLanjut'])->name('inquiry.tindakLanjutInquiry');
     Route::put('/inquiry/{id}', [InquirySalesController::class, 'update'])->name('updateinquiry');
     Route::get('/editInquiry/{id}', [InquirySalesController::class, 'editInquiry'])->name('editInquiry');
     Route::delete('/deleteinquiry/{id}', [InquirySalesController::class, 'delete'])->name('deleteinquiry');
 
     Route::put('/approvedInquiry/{id}', [InquirySalesController::class, 'approvedInquiry'])->name('approvedInquiry');
     Route::put('/validateInquiry/{id}', [InquirySalesController::class, 'validateInquiry'])->name('validateInquiry');
+
+    // km
+    Route::get('/km', [KmPengajuanController::class, 'pengajuanKM'])->name('pengajuanKM');
+    Route::get('/dsKnowlege', [KmPengajuanController::class, 'dsKnowlege'])->name('dsKnowlege');
+    Route::get('/persetujuanKM', [KmPengajuanController::class, 'persetujuanKM'])->name('persetujuanKM');
+    Route::post('/kmTransaksi/markAsRead', [KmPengajuanController::class, 'markAsRead'])->name('kmTransaksi.markAsRead');
+    Route::post('/kmTransaksi/saveTransaction', [KmPengajuanController::class, 'saveTransaction'])->name('kmTransaksi.saveTransaction');
+
+    // fungsi
+    Route::post('/km', [KmPengajuanController::class, 'storeKM'])->name('storeKM');
+    Route::put('/knowledge-management/update', [KmPengajuanController::class, 'update'])->name('updateKM');
+    Route::get('/km/{id}/edit', [KmPengajuanController::class, 'edit'])->name('editKM');
+
+    Route::get('/km/{id}/showPersetujuan', [KmPengajuanController::class, 'showPersetujuan'])->name('showPersetujuan');
+    Route::put('/knowledge-management/approveKM', [KmPengajuanController::class, 'approveKM'])->name('approveKM');
+
+    Route::patch('/km/{id}/update-status', [KmPengajuanController::class, 'updateStatus'])->name('updateStatusKM');
+    Route::post('/kirimKM/{id}', [KmPengajuanController::class, 'kirimKM'])->name('kirimKM');
+    Route::post('/like', [KmPengajuanController::class, 'like'])->name('kmSuka.like');
+    Route::post('/unlike', [KmPengajuanController::class, 'unlike'])->name('kmSuka.unlike');
+    Route::post('/insights/add', [KmPengajuanController::class, 'addInsight'])->name('insights.add');
+
+    // tc
+    // Route::get('/job', [TcJobController::class, 'jobShow'])->name('jobShow');
+
+    // Route::get('/tcShow', [TcController::class, 'tcShow'])->name('tcShow');
+    // Route::get('/tcCreate', [TcController::class, 'createTC'])->name('tcCreate');
+    // Route::post('/mst_tc/store', [TcController::class, 'storeTC'])->name('mst_tc.store');
+
+    // Route::get('mst_tc/{id}/edit', [TcController::class, 'edit'])->name('mst_tc.edit');
+    // Route::get('mst_sk/{id}/editSoftSKills', [TcController::class, 'editSoftSKills'])->name('mst_sk.editSoftSKills');
+    // Route::get('mst_ad/{id}/editAdditionals', [TcController::class, 'editAdditional'])->name('mst_ad.editAdditionals');
+    // Route::get('/job-position/{id}/edit', [TcJobController::class, 'getJobPositionData'])->name('getJobPosition');
+
+    // Route::delete('/job-positions/delete-row', [TcJobController::class, 'deleteRow'])->name('jobPositions.deleteRow');
+
+    // Route::put('mst_tc/{id}', [TcController::class, 'update'])->name('mst_tc.update');
+    // Route::put('mst_sk/{id}/updateSoftSkills', [TcController::class, 'updateSoftSkills'])->name('mst_sk.updateSoftSkills');
+    // Route::put('mst_ad/{id}/updateAdditionals', [TcController::class, 'updateAdditionals'])->name('mst_ad.updateAdditionals');
+    // Route::get('/employees-by-job-position', [TcController::class, 'fetchEmployeesByJobPosition'])->name('employees.by.job.position');
+
+    
+
+    // Route::get('/users/{userId}/role', [TcJobController::class, 'getUserRole'])->name('users.role');
+    // Route::post('/job-positions', [TcJobController::class, 'store'])->name('jobPositions.store');
+    // Route::put('/job-positions/{id}', [TcJobController::class, 'updateJob'])->name('jobPositions.update');
+    // Route::delete('/job-positions/{id}', [TcJobController::class, 'deleteRow'])->name('jobPositions.destroy');
+    // Route::delete('/delete-tc-row/{id}', [TcController::class, 'deleteTcRow'])->name('tc.deleteRow');
+    // Route::delete('/delete-sk-row/{id}', [TcController::class, 'deleteSkRow'])->name('sk.deleteRow');
+    // Route::delete('/delete-ad-row/{id}', [TcController::class, 'deleteAdRow'])->name('ad.deleteRow');
+
+    // Route untuk menampilkan halaman penilaian (index)
+    // Route::get('/penilaian', [PenilaianTCController::class, 'indexTrs'])->name('penilaian.index');
+    // Route::get('/penilaian-dept', [PenilaianTCController::class, 'indexTrs2'])->name('penilaian.index2');
+    // Route::get('/dashboard-competency', [PenilaianTCController::class, 'dsCompetency'])->name('dsCompetency');
+    // Route::get('/dashboard-detail-competency', [PenilaianTCController::class, 'dsDetailCompetency'])->name('dsDetailCompetency');
+
+    // Route::get('/dashboard-people-development', [PdController::class, 'indexPD'])->name('indexPD');
+    // Route::get('/dashboard-people-development-hrga', [PdController::class, 'indexPD2'])->name('indexPD2');
+    // Route::get('/dashboard-histori-development', [PdController::class, 'historiDevelop'])->name('historiDept');
+
+
+    // Route::get('/buat-penilaian', [PenilaianTCController::class, 'createPenilaian'])->name('create.penilaian');
+    // Route::get('/buat-training', [PdController::class, 'createPD'])->name('createPD');
+
+    // Route::get('/get-job-position-data', [PenilaianTCController::class, 'getJobPositionData'])->name('getJobPositionData');
+    // Route::get('/get-job-position-data-edit', [PenilaianTCController::class, 'getJobPositionDataEdit'])->name('getJobPositionDataEdit');
+    // Route::get('/get-nilai-data-edit', [PenilaianTCController::class, 'getNilaiDataEdit'])->name('getNilaiDataEdit');
+    // Route::get('/get-job-point-kategori', [PenilaianTCController::class, 'getJobPointKategori'])->name('getJobPointKategori');
+
+    // Route::get('/view-pd/{modified_at}', [PdController::class, 'viewPD'])->name('viewPD');
+    // Route::get('/view-pd-HRGA/{id}', [PdController::class, 'viewPD2'])->name('viewPD2');
+
+    // Route::post('/save-penilaian', [PenilaianTCController::class, 'savePenilaian'])->name('savePenilaian');
+    // Route::post('/save-pd-pengajuan', [PdController::class, 'savePdPengajuan'])->name('savePdPengajuan');
+    // Route::put('/updated-pd-hrga', [PdController::class, 'updatePdPlan'])->name('updatePdPlan');
+
+    // Route::post('/update-status/{id_job_position}', [PenilaianTCController::class, 'kirimSC'])->name('update.status');
+    // Route::post('/update-status-dept/{id}', [PenilaianTCController::class, 'kirimDept'])->name('update.status2');
+
+    // Route::get('/editPdPengajuan/{modified_at}', [PdController::class, 'editPdPengajuan'])->name('editPdPengajuan');
+    // Route::get('/editPdPengajuan-HRGA/{id}', [PdController::class, 'editPdPengajuanHRGA'])->name('editPdPengajuanHRGA');
+
+    // Route::put('/update-pd', [PdController::class, 'update'])->name('updatePD');
+
+    // Route::get('/send-pd/{modified_at}', [PdController::class, 'sendPD'])->name('sendPD');
+    // Route::get('/send-pd2/{tahun_aktual}', [PdController::class, 'sendPD2'])->name('sendPD2');
+
+    // Route::get('/people-development/filter', [PdController::class, 'getFilteredData'])->name('people_development.filter');
+
+
+    // Route::get('/trs/edit-penilaian/{id_job_position}', [PenilaianTCController::class, 'editTrs'])->name('penilaian.edit');
+    // Route::get('/trs/edit-dept/{id_job_position}', [PenilaianTCController::class, 'editTrs2'])->name('penilaian.edit2');
+    // Route::get('/trs/view-penilaian/{id_job_position}', [PenilaianTCController::class, 'viewTrs'])->name('penilaian.view');
+    // Route::get('/trs/preview-penilaian/{id_job_position}', [PenilaianTCController::class, 'previewTrs'])->name('penilaian.preview');
+
+    // Route::get('/get-edit-Trs', [PenilaianTCController::class, 'getDataTrs'])->name('getDataTrs');
+    // Route::put('/penilaian/update/{id}', [PenilaianTCController::class, 'updateTrs'])->name('updatePenilaian');
+    // Route::put('/penilaian/dept/{id_job_position}', [PenilaianTCController::class, 'updateTrs2'])->name('updateDept');
+
+    // Route::put('/penilaian/{id}', [PenilaianTCController::class, 'update'])->name('penilaian.update');
+    // Route::delete('/penilaian/{id}', [PenilaianTCController::class, 'destroy'])->name('penilaian.destroy');
+
+    // Route::get('/download-pdf/{id}', [PdController::class, 'downloadPDF'])->name('download.pdf');
+    // // web.php
+    // Route::post('/update-button-status', [PdController::class, 'updateBtn'])->name('updateButtonStatus');
+
+
+    // //chartTC
+    // Route::get('/get-competency-data', [PenilaianTCController::class, 'getCompetencyData'])->name('get-competency-data');
+    // Route::get('/get-competency-filter', [PenilaianTCController::class, 'getCompetencyFilter'])->name('get-competency-filter');
+    // Route::get('/get-detail-filter', [PenilaianTCController::class, 'getDetailCompetency'])->name('get-detail-filter');
+
+    //Po
+    Route::get('/index-po', [PoPengajuanController::class, 'indexPoPengajuan'])->name('index.PO');
+    Route::get('/index-po-depthead', [PoPengajuanController::class, 'indexPoDeptHead'])->name('index.PO.Dept');
+    Route::get('/index-po-user', [PoPengajuanController::class, 'indexPoUser'])->name('index.PO.user');
+    Route::get('/index-po-finance', [PoPengajuanController::class, 'indexPoFinance'])->name('index.PO.finance');
+    Route::get('/index-po-procurement', [PoPengajuanController::class, 'indexPoProcurement'])->name('index.PO.procurement');
+    Route::get('/index-po-procurement2', [PoPengajuanController::class, 'indexPoProcurement2'])->name('index.PO.procurement2');
+
+    Route::get('/po-pengajuan/{id}/edit', [PoPengajuanController::class, 'edit'])->name('edit.PoPengajuan');
+    Route::get('/po-pengajuan-dept/{id}/edit', [PoPengajuanController::class, 'editDept'])->name('edit.PoPengajuan.dept');
+
+    Route::get('/create-po', [PoPengajuanController::class, 'createPoPengajuan'])->name('createPO');
+    Route::get('/form-po-secHead/{id}', [PoPengajuanController::class, 'showFPBForm'])->name('view.FormPo');
+    Route::get('/form-po-dept/{id}', [PoPengajuanController::class, 'showFPBForm2'])->name('view.FormPo.2');
+    Route::get('/form-po-user/{id}', [PoPengajuanController::class, 'showFPBForm3'])->name('view.FormPo.3');
+    Route::get('/form-po-finn/{id}', [PoPengajuanController::class, 'showFPBForm4'])->name('view.FormPo.4');
+    Route::get('/form-po-proc/{id}', [PoPengajuanController::class, 'showFPBProc'])->name('view.FormPo.proc');
+
+    Route::post('/store-po', [PoPengajuanController::class, 'store'])->name('store.po');
+    Route::put('/po-pengajuan/{id}', [PoPengajuanController::class, 'update'])->name('update.PoPengajuan');
+    Route::put('/po-pengajuan-dept/{id}', [PoPengajuanController::class, 'updateDept'])->name('update.PoPengajuan.dept');
+    Route::post('/update-status-by-fpb/{no_fpb}', [PoPengajuanController::class, 'updateStatusByNoFPB'])->name('kirim.fpb.secHead');
+    Route::post('/update-FPB-DeptHead/{no_fpb}', [PoPengajuanController::class, 'updateStatusByDeptHead'])->name('kirim.fpb.deptHead');
+    Route::post('/update-FPB-User/{no_fpb}', [PoPengajuanController::class, 'updateStatusByUser'])->name('kirim.fpb.user');
+    Route::post('/update-FPB-Finance/{no_fpb}', [PoPengajuanController::class, 'updateStatusByFinance'])->name('kirim.fpb.finance');
+    Route::post('/update-FPB-procurement/{no_fpb}', [PoPengajuanController::class, 'updateStatusByProcurement'])->name('kirim.fpb.procurement');
+    Route::post('/update-FPB-progres/{id}', [PoPengajuanController::class, 'updateConfirmByProcurment'])->name('kirim.fpb.progres');
+    Route::post('/reject-item/{id}', [PoPengajuanController::class, 'rejectItem'])->name('kirim.fpb.reject');
+    Route::post('/cancel-item/{id}', [PoPengajuanController::class, 'updateCancelByProcurment'])->name('kirim.fpb.cancel');
+    Route::post('/cancel-item2/{id}', [PoPengajuanController::class, 'updateCancelBySecHead'])->name('kirim.fpb.cancel2');
+    Route::post('/po_pengajuan/finish/{no_fpb}', [PoPengajuanController::class, 'updateFinishByProcurment'])->name('update.PoPengajuan.finish');
+
+
+    Route::get('/po-history/{no_fpb}', [PoPengajuanController::class, 'getPoHistory'])->name('po.history');
+    Route::delete('/po_pengajuan/delete_multiple', [PoPengajuanController::class, 'deletePoPengajuanMultiple'])->name('delete.PoPengajuanMultiple');
+
+    Route::get('/download-pdf-2/{no_fpb}', [PoPengajuanController::class, 'downloadPdfByNoFpb'])->name('download.pdf.2');
+    Route::get('/download-file/{id}', [PoPengajuanController::class, 'downloadFile'])->name('download.file');
+
+    //E-Mading Adasi
+    Route::get('/ds-E-Mading-Adasi', [MadingController::class, 'dsMading'])->name('dsMading');
 });

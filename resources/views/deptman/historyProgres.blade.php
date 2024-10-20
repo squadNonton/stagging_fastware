@@ -32,7 +32,7 @@
                                         <div class="col-lg-6">
                                             <input type="text" class="form-control" id="modified_by" name="modified_by"
                                                 maxlength="6" style="width: 100%; max-width: 100%;"
-                                                placeholder="{{ $handling->user->name}}" disabled>
+                                                placeholder="{{ $handling->user->name }}" disabled>
                                         </div>
                                     </div>
                                     <br>
@@ -93,11 +93,33 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
+                                            <label for="notes" class="col-sm-5 col-form-label">Request:<span
+                                                    style="color: red;">*</span></label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <select name="notes" class="form-control" id="notes" style="width: 100%;"
+                                                disabled>
+                                                <option value="">------------- Pilih Request ------------
+                                                </option>
+                                                <option value="Testing"
+                                                    {{ $handling->notes == 'Testing' ? 'selected' : '' }}>Testing</option>
+                                                <option value="Trial" {{ $handling->notes == 'Trial' ? 'selected' : '' }}>
+                                                    Trial</option>
+                                                <option value="Klaim / Komplain"
+                                                    {{ $handling->notes == 'Klaim / Komplain' ? 'selected' : '' }}>Klaim /
+                                                    Komplain</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
                                             <label for="area" class="col-sm-5 col-form-label">Tipe Bahan:<span
                                                     style="color: red;">*</span></label>
                                         </div>
                                         <div class="col-lg-6">
-                                            <select name="type_id" id="type_id" class="select2" style="width: 100%">
+                                            <select name="type_id" id="type_id" class="select2" style="width: 100%"
+                                                disabled>
                                                 @foreach ($type_materials as $typeMaterial)
                                                     <option value="{{ $typeMaterial->id }}"
                                                         @if ($typeMaterial->id == $handling->type_id) selected @endif>
@@ -105,6 +127,18 @@
                                                     </option>
                                                 @endforeach
                                             </select>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label for="category" class="col-sm-6 col-form-label">Nama Barang:<span
+                                                    style="color: red;">*</span></label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <input type="text" class="form-control" id="nama_barang" name="nama_barang"
+                                                style="width: 100%; max-width: 100%;" value="{{ $handling->nama_barang }}"
+                                                disabled>
                                         </div>
                                     </div>
                                     <br>
@@ -242,6 +276,42 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-lg-6">
+                                            <label for="category" class="col-sm-6 col-form-label">Nama Project:<span
+                                                    style="color: red;">*</span></label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <input type="text" class="form-control" id="category_input" name="category"
+                                                style="width: 100%; max-width: 100%;" value="{{ $handling->category }}"
+                                                disabled>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row" id="jenisTestRow" style="display: none;">
+                                        <div class="col-lg-6">
+                                            <label for="jenis_test" class="col-sm-5 col-form-label">Jenis test
+                                                <span style="color: red;">*</span></label>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <select name="jenis_test" class="form-control" id="jenis_test"
+                                                style="width: 100%;" disabled>
+                                                <option value="">------------- Pilih jenis Test ------------
+                                                </option>
+                                                <option value="Spectro"
+                                                    {{ $handling->jenis_test == 'Spectro' ? 'selected' : '' }}>
+                                                    Spectro</option>
+                                                <option value="Kekerasan"
+                                                    {{ $handling->jenis_test == 'Kekerasan' ? 'selected' : '' }}>
+                                                    Kekerasan
+                                                </option>
+                                                <option value="Micro Structure"
+                                                    {{ $handling->jenis_test == 'Micro Structure' ? 'selected' : '' }}>
+                                                    Micro Structure</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-lg-6">
                                             <label for="hasil_tindak_lanjut" class="col-sm-5 col-form-label">Keterangan:
                                                 (Jika ada)</label>
                                         </div>
@@ -257,7 +327,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <select name="process_type" class="form-control" id="process_type"
-                                                style="width: 25%" required disabled>
+                                                style="width: 100%" @disabled(true)>
                                                 <option value="">------------------- Jenis Proses -----------------
                                                 </option>
                                                 <option value="Heat Treatment"
@@ -300,7 +370,8 @@
                                 <div class="col-lg-6">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar: (Jika ada)</span></label>
+                                            <label for="image_upload" class="col-sm-5 col-form-label">Unggah Gambar: (Jika
+                                                ada)</span></label>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="row mt-3">
@@ -359,10 +430,12 @@
                                                     <th style="text-align: center;">Jadwal Kunjungan</th>
                                                     <th style="text-align: center;">PIC</th>
                                                     <th style="text-align: center;">Tenggat waktu</th>
+                                                    <th style="text-align: center;">Catatan</th>
                                                     <th style="text-align: center;">Jenis 1</th>
                                                     <th style="text-align: center;">Jenis 2</th>
                                                     <th style="text-align: center;">Unggahan (File)</th>
                                                     <th style="text-align: center;">Pembaruan Terakhir</th>
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -372,7 +445,11 @@
                                                         <td class="text-center py-3">{{ $row->results }}</td>
                                                         <td class="text-center py-3">{{ $row->schedule }}</td>
                                                         <td class="text-center py-3">{{ $row->pic }}</td>
-                                                        <td class="text-center py-3">{{ $row->due_date }}</td>
+                                                        <td class="text-center py-3"
+                                                            data-due-date="{{ $row->due_date ? \Carbon\Carbon::parse($row->due_date)->format('Y-m-d') : '' }}">
+                                                            {{ $row->due_date ? \Carbon\Carbon::parse($row->due_date)->format('Y-m-d') : '' }}
+                                                        </td>
+                                                        <td class="text-center py-3" style="color: red">{{ $row->notes }}</td>
                                                         <td class="text-center py-3">
                                                             @if ($row->history_type == 1)
                                                                 Komplain
@@ -384,17 +461,22 @@
                                                             @endif
                                                         </td>
                                                         <td class="text-center pt-3">
-                                                            @if (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['pdf', 'pptx', 'ppt']))
+                                                            @if (pathinfo($row->file, PATHINFO_EXTENSION) == 'pdf')
                                                                 <a href="{{ asset('assets/image/' . $row->file) }}"
-                                                                    download="{{ $row->file_name }}">
+                                                                    target="_blank">
                                                                     <i class="fas fa-file-pdf fs-4"></i>
                                                                 </a>
-                                                            @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['xlsx', 'xls']))
+                                                            @elseif (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['ppt', 'pptx']))
+                                                                <a href="{{ asset('assets/image/' . $row->file) }}"
+                                                                    download="{{ $row->file_name }}">
+                                                                    <i class="fas fa-file-powerpoint fs-4"></i>
+                                                                </a>
+                                                            @elseif (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['xlsx', 'xls']))
                                                                 <a href="{{ asset('assets/image/' . $row->file) }}"
                                                                     download="{{ $row->file_name }}">
                                                                     <i class="fas fa-file-excel fs-4"></i>
                                                                 </a>
-                                                            @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
+                                                            @elseif (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
                                                                 <a href="{{ asset('assets/image/' . $row->file) }}"
                                                                     download="{{ $row->file_name }}">
                                                                     <img src="{{ asset('assets/image/' . $row->file) }}"
@@ -435,6 +517,55 @@
                 </div>
         </section>
         <script>
+           //read data control
+           document.addEventListener("DOMContentLoaded", function() {
+                const requestDropdown = document.getElementById('notes');
+                const categorySelectRow = document.getElementById('category')?.parentElement?.parentElement;
+                const categoryInputRow = document.getElementById('category_input')?.parentElement?.parentElement;
+                const typeMaterialRow = document.getElementById('type_id')?.parentElement?.parentElement;
+                const jenisTestRow = document.getElementById('jenis_test')?.parentElement?.parentElement;
+                const namaBarangRow = document.getElementById('nama_barang')?.parentElement?.parentElement;
+                const prosesTypeSelect = document.getElementById('process_type');
+                const prosesTypeCheckbox1 = document.getElementById('type_1');
+                const prosesTypeCheckbox2 = document.getElementById('type_2');
+
+                function updateUIBasedOnRequest(value) {
+                    if (value === "Trial") {
+                        categoryInputRow.style.display = "flex";
+                        categorySelectRow.style.display = "none";
+                        typeMaterialRow.style.display = "flex";
+                        jenisTestRow.style.display = "none";
+                        namaBarangRow.style.display = "none";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = true;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = true;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = true;
+                    } else if (value === "Testing") {
+                        categoryInputRow.style.display = "none";
+                        categorySelectRow.style.display = "none";
+                        typeMaterialRow.style.display = "none";
+                        jenisTestRow.style.display = "flex";
+                        namaBarangRow.style.display = "flex";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = true;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = true;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = true;
+                    } else {
+                        categoryInputRow.style.display = "none";
+                        categorySelectRow.style.display = "flex";
+                        typeMaterialRow.style.display = "flex";
+                        jenisTestRow.style.display = "none";
+                        namaBarangRow.style.display = "none";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = true;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = true;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = true;
+                    }
+                }
+
+                updateUIBasedOnRequest(requestDropdown.value);
+                requestDropdown.addEventListener('change', function() {
+                    updateUIBasedOnRequest(this.value);
+                });
+            });
+
             function updateCustomerInfo() {
                 var customerIdCodeSelect = document.getElementById('customer_id_code');
                 var customerNameInput = document.getElementById('customer_name');
@@ -458,6 +589,8 @@
             // Initialize the customer info on page load
             document.addEventListener('DOMContentLoaded', function() {
                 updateCustomerInfo();
+                handleRequestChange();
+                updateDueDateNotes();
             });
 
             function showModal(imageSrc) {
@@ -515,6 +648,85 @@
                     imageContainer.style.width = containerWidth;
                 }, 100); // Beri sedikit waktu agar gambar ditampilkan sebelum menyesuaikan lebar kontainer
             }
+
+            $(document).ready(function() {
+                // Fungsi untuk memperbarui catatan terkait due_date
+                function updateDueDateNotes() {
+                    const today = new Date(); // Tanggal hari ini
+                    const rows = document.querySelectorAll("#followUpTbl tbody tr"); // Semua baris dalam tbody
+
+                    if (rows.length === 0) {
+                        console.warn("Tidak ada baris data dalam tabel.");
+                        return; // Tidak ada data
+                    }
+
+                    // Identifikasi baris terakhir (terbaru)
+                    const latestRow = rows[rows.length - 1];
+                    const dueDateCell = latestRow.querySelector(
+                        "td:nth-child(5)"); // Kolom "Tenggat waktu" adalah yang ke-5
+                    const noteCell = latestRow.querySelector("td:nth-child(6)"); // Kolom "Catatan" adalah yang ke-6
+
+                    if (!dueDateCell || !noteCell) {
+                        console.error("Kolom Tenggat waktu atau Catatan tidak ditemukan pada baris terakhir.");
+                        return;
+                    }
+
+                    // Ambil nilai due_date dari atribut data
+                    const dueDateStr = dueDateCell.getAttribute('data-due-date') || dueDateCell.textContent.trim();
+                    console.log(`Nilai due_date yang diambil: "${dueDateStr}"`); // Log nilai due_date yang diambil
+
+                    // Cek jika dueDateStr kosong
+                    if (!dueDateStr) {
+                        console.warn("due_date kosong, tidak menampilkan catatan atau tanggal.");
+                        noteCell.innerHTML = ''; // Pastikan catatan tetap kosong
+                        dueDateCell.innerHTML = ''; // Kosongkan kolom due_date juga
+                        return; // Jika kosong, hentikan fungsi
+                    }
+
+                    const dueDate = new Date(dueDateStr);
+                    console.log(`Tanggal due_date yang diparse: ${dueDate}`); // Log tanggal yang diparse
+
+                    if (isNaN(dueDate)) {
+                        console.error(`Tanggal due_date tidak valid: ${dueDateStr}`);
+                        return;
+                    }
+
+                    // Hitung selisih hari antara due_date dan hari ini
+                    const utcToday = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+                    const utcDueDate = Date.UTC(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate());
+                    const diffInMillis = utcDueDate - utcToday;
+                    const diffInDays = Math.floor(diffInMillis / (1000 * 60 * 60 * 24));
+
+                    // Log detail selisih hari
+                    console.log(`Tanggal Hari Ini: ${today}`);
+                    console.log(`Due Date dalam UTC: ${utcDueDate}`);
+                    console.log(`Tanggal Hari Ini dalam UTC: ${utcToday}`);
+                    console.log(`Selisih dalam milidetik: ${diffInMillis}`);
+                    console.log(`Selisih Hari: ${diffInDays}`);
+
+                    // Bersihkan semua catatan sebelumnya
+                    rows.forEach(row => {
+                        const cell = row.querySelector("td:nth-child(6)");
+                        if (cell) {
+                            cell.innerHTML = ''; // Kosongkan isi catatan
+                        }
+                    });
+
+                    // Tambahkan catatan pada baris terbaru jika due_date telah terlewati
+                    if (diffInDays < 0) {
+                        noteCell.innerHTML =
+                            `<span class="catatan-overdue">Due date telah terlewati ${Math.abs(diffInDays)} hari</span>`;
+                        console.log(
+                            `Catatan ditambahkan: Due date telah terlewati ${Math.abs(diffInDays)} hari`
+                        ); // Log catatan yang ditambahkan
+                    } else {
+                        console.log("Due date masih di masa depan, tidak ada catatan yang ditampilkan.");
+                    }
+                }
+
+                // Panggil fungsi updateDueDateNotes setelah DataTables selesai menginisialisasi
+                updateDueDateNotes();
+            });
         </script>
     </main><!-- End #main -->
 @endsection

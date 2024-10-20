@@ -51,7 +51,7 @@ class SumbangSaranController extends Controller
             penilaians.tambahan_nilai,
             ((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) AS total_nilai,
         CASE 
-            WHEN penilaians.nilai = 1 THEN (1 * 2.5 * 2000)
+            WHEN penilaians.belum_diterapkan = "1" THEN (1 * 2.5 * 2000)
             ELSE (((penilaians.nilai + COALESCE(penilaians.tambahan_nilai, 0))) * 2000)
         END AS hasil_akhir,
             users.name,
@@ -72,7 +72,7 @@ class SumbangSaranController extends Controller
 
         $dataQuery .= '
         ORDER BY 
-            FIELD(sumbang_sarans.status, 7, 6, 5, 4, 3, 2, 1),
+            FIELD(sumbang_sarans.status, 1, 2, 3, 4, 5, 6, 7),
             sumbang_sarans.updated_at DESC
     ';
 
@@ -143,28 +143,31 @@ class SumbangSaranController extends Controller
         $userRole = Auth::user()->role_id;
 
         // Tentukan apakah pengguna memiliki role 1, 14, 16, atau 20
-        $isAdmin = in_array($userRole, [1, 14, 16, 20]);
+        $isAdmin = in_array($userRole, [1, 14, 16]);
 
         // Tentukan role yang bisa dilihat berdasarkan role pengguna yang sedang login
         $rolesToView = [];
         switch ($userRole) {
             case 3:
-                $rolesToView = [2, 3, 4];
-                break;
-            case 22:
-                $rolesToView = [5, 6, 22, 26];
+                $rolesToView = [2, 3, 4, 44];
                 break;
             case 9:
-                $rolesToView = [8, 9, 18, 21, 27];
+                $rolesToView = [5, 9, 8, 18, 21, 42, 43, 52];
+                break;
+            case 22:
+                $rolesToView = [5, 6, 9, 22, 48, 26];
                 break;
             case 12:
-                $rolesToView = [13];
+                $rolesToView = [11, 12, 13];
                 break;
             case 30:
-                $rolesToView = [28];
+                $rolesToView = [7, 29, 30, 28, 47, 49, 50, 51];
                 break;
             case 31:
-                $rolesToView = [29];
+                $rolesToView = [5, 9, 27, 31, 45, 46];
+                break;
+            case 32:
+                $rolesToView = [11, 32, 37];
                 break;
                 // Tidak perlu menambahkan case untuk 1 dan 14 karena $isAdmin sudah menghandle
         }
@@ -211,7 +214,7 @@ class SumbangSaranController extends Controller
 
         $dataQuery .= '
     ORDER BY 
-        FIELD(sumbang_sarans.status, 5, 4, 3, 2),
+        FIELD(sumbang_sarans.status, 2, 3, 4, 5),
         sumbang_sarans.created_at DESC
     ';
 
@@ -238,27 +241,31 @@ class SumbangSaranController extends Controller
         $userRole = Auth::user()->role_id;
 
         // Tentukan apakah pengguna memiliki role 1 atau 14
-        $isAdmin = in_array($userRole, [1, 14, 16, 20]);
+        $isAdmin = in_array($userRole, [1, 14, 16]);
 
         // Tentukan role yang bisa dilihat berdasarkan role pengguna yang sedang login
         $rolesToView = [];
         switch ($userRole) {
             case 2:
             case 3:
-                $rolesToView = [3, 4];
+                $rolesToView = [3, 4, 44];
                 break;
             case 5:
+            case 9:
             case 22:
-                $rolesToView = [22, 6, 26];
+            case 31:
+                $rolesToView = [5, 6, 8, 9, 18, 21, 22, 26, 27, 31, 42, 43, 45, 46, 48, 52];
                 break;
             case 7:
             case 30:
-            case 31:
-                $rolesToView = [9, 8, 18, 21, 28, 29, 30, 31];
+                $rolesToView = [7, 29, 30, 28, 47, 49, 50, 51];
                 break;
             case 11:
+            case 12:
             case 14:
-                $rolesToView = [12, 13, 14, 15, 20];
+            case 15:
+            case 32:
+                $rolesToView = [11, 12, 13, 14, 15, 16, 20, 32, 39, 40, 41];
                 break;
                 // Tidak perlu menambahkan case untuk 1 dan 14 karena $isAdmin sudah menghandle
         }
@@ -305,7 +312,7 @@ class SumbangSaranController extends Controller
 
         $dataQuery .= '
     ORDER BY 
-        FIELD(sumbang_sarans.status, 7, 6, 5, 4, 3),
+        FIELD(sumbang_sarans.status, 3, 4, 5, 6, 7),
         sumbang_sarans.updated_at DESC
     ';
 
@@ -354,7 +361,7 @@ class SumbangSaranController extends Controller
             WHERE 
                 sumbang_sarans.status IN (4, 5, 6, 7)
             ORDER BY 
-                FIELD(sumbang_sarans.status, 7, 6, 5, 4),
+                FIELD(sumbang_sarans.status, 4, 5, 6, 7),
                 sumbang_sarans.created_at DESC
         ');
 
@@ -427,19 +434,19 @@ class SumbangSaranController extends Controller
     public function chartSection(Request $request)
     {
         // Eksekusi query untuk mengambil data dari database
-        $dataFromSQL = SumbangSaran::whereIn('modified_by', ['DH Finance', 'Engineering', 'DH Sales', 'DH Supply Chain'])
-            ->selectRaw("MONTH(tgl_pengajuan) as month,
-                 CASE 
-                    WHEN modified_by = 'DH Finance' THEN 'FIN ACC HRGA IT'
-                    WHEN modified_by = 'Engineering' THEN 'HT'
-                    WHEN modified_by = 'DH Sales' THEN 'Sales'
-                    WHEN modified_by = 'DH Supply Chain' THEN 'Supply Chain & Productions'
-                    ELSE modified_by
-                 END AS modified_by,
-                 COUNT(*) as jumlah")
-            ->groupBy('month', 'modified_by')
-            ->orderBy('month')
-            ->get();
+        $dataFromSQL = SumbangSaran::whereIn('modified_by', ['11', '5', '2', '7'])
+        ->selectRaw("MONTH(tgl_pengajuan) as month,
+         CASE 
+            WHEN modified_by = '11' THEN 'FIN ACC HRGA IT'
+            WHEN modified_by = '5' THEN 'HT'
+            WHEN modified_by = '2' THEN 'Sales'
+            WHEN modified_by = '7' THEN 'Supply Chain & Productions'
+            ELSE modified_by
+         END AS modified_by,
+         COUNT(*) as jumlah")
+        ->groupBy('month', 'modified_by')
+        ->orderBy('month')
+        ->get();
 
         // Format hasil query menjadi format yang dapat digunakan oleh Highcharts
         $categories = [
@@ -477,12 +484,12 @@ class SumbangSaranController extends Controller
     {
         $roles = $request->input('roles');
 
-        // Define categories
+        // Define categories with IDs
         $categories = [
-            'Sales' => ['DH Sales', 'SC Sales', 'UR Sales'],
-            'HT' => ['Engineering', 'UR Maintenance', 'SC HT', 'UR HT'],
-            'SupplyChainProduction' => ['DH Supply Chain', 'UR Productions', 'SC Productions', 'FM Productions', 'UR CT', 'UR MCH', 'UR MC-CUSTOME', 'UR PPIC', 'UR LOGISTIC', 'SC PPIC', 'SC WHS'],
-            'FinnAccHrgaIT' => ['DH Finance', 'SC HRGA', 'UR Finance', 'SC Finance', 'UR HRGA', 'IT'],
+            'Sales' => [2, 3, 4, 44],
+            'HT' => [5, 9, 31, 22, 42, 27, 26, 45, 46, 6, 18, 21, 43, 28],
+            'SupplyChainProduction' => [7, 30, 29, 50, 49, 47, 51],
+            'FinnAccHrgaIT' => [11, 14, 32, 12, 15, 40, 13, 39, 41],
         ];
 
         $query = DB::table('sumbang_sarans')
@@ -598,12 +605,12 @@ class SumbangSaranController extends Controller
         $startMonth = $request->input('start_periode');
         $endMonth = $request->input('end_periode');
 
-        // Define categories
+        // Define categories with IDs
         $categories = [
-           'Sales' => ['DH Sales', 'SC Sales', 'UR Sales'],
-            'HT' => ['Engineering', 'UR Maintenance', 'SC HT', 'UR HT'],
-            'SupplyChainProduction' => ['DH Supply Chain', 'UR Productions', 'SC Productions', 'FM Productions', 'UR CT', 'UR MCH', 'UR MC-CUSTOME', 'UR PPIC', 'UR LOGISTIC', 'SC PPIC', 'SC WHS'],
-            'FinnAccHrgaIT' => ['DH Finance', 'SC HRGA', 'UR Finance', 'SC Finance', 'UR HRGA', 'IT'],
+            'Sales' => [2, 3, 4, 44],
+            'HT' => [5, 9, 31, 22, 42, 27, 26, 45, 46, 6, 18, 21, 43, 28],
+            'SupplyChainProduction' => [7, 30, 29, 50, 49, 47, 51],
+            'FinnAccHrgaIT' => [11, 14, 32, 12, 15, 40, 13, 39, 41],
         ];
 
         $query = DB::table('sumbang_sarans')
@@ -661,8 +668,8 @@ class SumbangSaranController extends Controller
             'keadaan_sebelumnya' => 'required|string',
             'usulan_ide' => 'required|string',
             'keuntungan_ide' => 'required|string',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,ppt,pptx,xls,xlsx|max:2048',
-            'image_2' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,ppt,pptx,xls,xlsx|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,ppt,pptx,xls,xlsx|max:12048',
+            'image_2' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,ppt,pptx,xls,xlsx|max:12048',
         ]);
 
         // Simpan data
@@ -1010,7 +1017,6 @@ class SumbangSaranController extends Controller
                 $penilaian->telah_direvisi = true;
                 break;
             case 'belum_diterapkan':
-                $penilaian->nilai = 1;
                 $penilaian->belum_diterapkan = true;
                 break;
             case 'sedang_diterapkan':
@@ -1032,7 +1038,7 @@ class SumbangSaranController extends Controller
         $sumbangSaran = SumbangSaran::findOrFail($request->ss_id);
         $sumbangSaran->status = 4;
         $sumbangSaran->tgl_verifikasi = Carbon::now(); // Simpan tanggal verifikasi
-        $sumbangSaran->modified_by = $request->user()->roles->role;
+        $sumbangSaran->modified_by = $request->user()->roles->id;
         $sumbangSaran->save();
 
         // Jika penyimpanan berhasil, kembalikan respons berhasil
@@ -1046,7 +1052,7 @@ class SumbangSaranController extends Controller
         // Validasi data yang diterima dari formulir
         $request->validate([
             'ss_id' => 'required|integer',
-            'nilai' => 'required|integer',
+            'nilai' => 'required|string',
         ]);
 
         // Cari entri PenilaianSS yang ada berdasarkan ss_id

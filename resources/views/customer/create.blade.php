@@ -23,7 +23,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">FOrm Customer</h5>
+                            <h5 class="card-title">Form Customer</h5>
 
                             <form id="customerForm" action="{{ route('customers.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf

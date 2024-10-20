@@ -10,8 +10,14 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-// import Facade "Storage"
 use Illuminate\View\View;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+// import Facade "Storage"
 
 class HandlingController extends Controller
 {
@@ -23,10 +29,10 @@ class HandlingController extends Controller
     public function index()
     {
         $data = Handling::with(['customers', 'type_materials', 'user'])
-        ->whereIn('status', [2, 1, 0, 3])
-        ->orderByRaw('FIELD(status, 2, 1, 0, 3)') // Urutkan berdasarkan urutan status yang diinginkan
+        ->whereIn('status', [0,1,2,3])
+        ->orderByRaw('FIELD(status, 0,1,2,3)') // Urutkan berdasarkan urutan status yang diinginkan
         ->orderByDesc('created_at') // Urutkan berdasarkan created_at dalam setiap status
-        ->paginate();
+        ->get(); // Ambil semua data tanpa pagination
 
         return view('sales.handling', compact('data'));
     }
@@ -266,6 +272,129 @@ class HandlingController extends Controller
         return response()->json($data);
     }
 
+    public function export(Request $request)
+    {
+        $startMonth = $request->input('start_month');
+        $endMonth = $request->input('end_month');
+
+        // Query data from the database with joins
+        $data = DB::table('handlings')
+            ->join('customers', 'handlings.customer_id', '=', 'customers.id')
+            ->join('type_materials', 'handlings.type_id', '=', 'type_materials.id')
+            ->whereBetween('handlings.created_at', [$startMonth, $endMonth])
+            ->orderBy('handlings.created_at', 'asc')
+            ->select([
+                'handlings.no_wo', 'customers.customer_code', 'customers.name_customer', 'customers.area',
+                'type_materials.type_name', 'handlings.thickness', 'handlings.weight', 'handlings.outer_diameter',
+                'handlings.inner_diameter', 'handlings.length', 'handlings.qty', 'handlings.pcs',
+                'handlings.category', 'handlings.process_type', 'handlings.type_1', 'handlings.type_2',
+                'handlings.modified_by', 'handlings.created_at', 'handlings.status',
+            ])
+            ->get();
+
+        // Create a new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Define the columns
+        $columns = [
+            'No WO', 'Customer Code', 'Name Customer', 'Area',
+            'Type Name', 'Thickness', 'Weight', 'Outer Diameter', 'Inner Diameter', 'Length', 'Qty', 'Pcs',
+            'Category', 'Process Type', 'Type 1', 'Type 2', 'Modified By', 'Created At', 'Status',
+        ];
+
+        // Write the column headers
+        foreach ($columns as $index => $column) {
+            $sheet->setCellValueByColumnAndRow($index + 1, 1, $column);
+            // Set header style
+            $sheet->getStyleByColumnAndRow($index + 1, 1)->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => [
+                        'rgb' => 'FFFF00',
+                    ],
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+        }
+
+        // Write the data rows
+        foreach ($data as $rowIndex => $row) {
+            $row = (array) $row; // Ensure row is an array
+            foreach ($columns as $colIndex => $column) {
+                $value = $row[strtolower(str_replace(' ', '_', $column))];
+                if ($column === 'Status') {
+                    switch ($value) {
+                        case 0:
+                            $value = 'Open';
+                            break;
+                        case 1:
+                            $value = 'On Progress';
+                            break;
+                        case 2:
+                            $value = 'Finish';
+                            break;
+                        case 3:
+                            $value = 'Close';
+                            break;
+                    }
+                }
+                $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex + 2, $value);
+            }
+        }
+
+        // Add filters to the header row
+        $sheet->setAutoFilter($sheet->calculateWorksheetDimension());
+
+        // Set number format for specific columns
+        $sheet->getStyle('G2:G'.($data->count() + 1))
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+        $sheet->getStyle('H2:H'.($data->count() + 1))
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+        $sheet->getStyle('I2:I'.($data->count() + 1))
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+        $sheet->getStyle('J2:J'.($data->count() + 1))
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+        $sheet->getStyle('K2:K'.($data->count() + 1))
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+        $sheet->getStyle('L2:L'.($data->count() + 1))
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER);
+        $sheet->getStyle('M2:M'.($data->count() + 1))
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER);
+
+        // Adjust column widths
+        foreach (range(1, count($columns)) as $colIndex) {
+            $sheet->getColumnDimensionByColumn($colIndex)->setAutoSize(true);
+        }
+
+        // Create a Writer to save the file
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'Report-handlings_'.'.xlsx';
+
+        // Return the response as a download
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment;filename="'.$fileName.'"',
+            'Cache-Control' => 'max-age=0',
+        ]);
+    }
+
     /**
      * create.
      */
@@ -290,8 +419,8 @@ class HandlingController extends Controller
         if ($request->hasFile('image')) {
             // Validasi file gambar
             $request->validate([
-                'image.*' => 'image|mimes:jpeg,jpg,png',
-            ]);
+                'image.*' => 'mimes:jpeg,jpg,png,pdf',
+            ]);            
 
             // Loop melalui setiap gambar yang diunggah
             foreach ($request->file('image') as $image) {
@@ -319,6 +448,8 @@ class HandlingController extends Controller
         $handling->user_id = $request->user()->id;
         $handling->customer_id = $request->customer_id;
         $handling->type_id = $request->type_id;
+        $handling->nama_barang = $request->nama_barang;
+        $handling->notes = $request->notes;
         $handling->thickness = $request->thickness;
         $handling->weight = $request->weight;
         $handling->outer_diameter = $request->outer_diameter;
@@ -327,6 +458,7 @@ class HandlingController extends Controller
         $handling->qty = $request->qty;
         $handling->pcs = $request->pcs;
         $handling->category = $request->category;
+        $handling->jenis_test = $request->jenis_test;
         $handling->results = $request->results;
         $handling->process_type = $request->process_type;
         $handling->type_1 = $request->type_1;
@@ -424,6 +556,8 @@ class HandlingController extends Controller
             'user_id' => $request->user()->id,
             'customer_id' => $request->customer_id,
             'type_id' => $request->type_id,
+            'nama_barang' => $request->nama_barang,
+            'notes' => $request->notes,
             'thickness' => $request->thickness,
             'weight' => $request->weight,
             'outer_diameter' => $request->outer_diameter,
@@ -432,6 +566,7 @@ class HandlingController extends Controller
             'qty' => $request->qty,
             'pcs' => $request->pcs,
             'category' => $request->category,
+            'jenis_test' => $request->jenis_test,
             'results' => $request->results,
             'process_type' => $request->process_type,
             'type_1' => $request->type_1,

@@ -2,7 +2,22 @@
 
 @section('content')
     <main id="main" class="main">
+        <style>
+            .highlight-notes {
+                background-color: red !important;
+                color: white !important;
+            }
 
+            /* Gaya untuk pesan catatan */
+            .catatan-overdue {
+                color: red;
+                font-weight: bold;
+            }
+
+            .hidden-column {
+                display: none;
+            }
+        </style>
         <div class="pagetitle">
             <h1>Tindak Lanjut</h1>
             <nav>
@@ -13,7 +28,6 @@
                 </ol>
             </nav>
         </div><!-- End Page Title -->
-        <!-- End Page Title -->
         <section class="section">
             <div class="row">
                 <div class="card mb-2">
@@ -96,11 +110,33 @@
                                 <br>
                                 <div class="row">
                                     <div class="col-lg-6">
+                                        <label for="notes" class="col-sm-5 col-form-label">Request:<span
+                                                style="color: red;">*</span></label>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <select name="notes" class="form-control" id="notes" style="width: 100%;"
+                                            disabled>
+                                            <option value="">------------- Pilih Request ------------
+                                            </option>
+                                            <option value="Testing"
+                                                {{ $handlings->notes == 'Testing' ? 'selected' : '' }}>Testing</option>
+                                            <option value="Trial" {{ $handlings->notes == 'Trial' ? 'selected' : '' }}>
+                                                Trial</option>
+                                            <option value="Klaim / Komplain"
+                                                {{ $handlings->notes == 'Klaim / Komplain' ? 'selected' : '' }}>Klaim /
+                                                Komplain</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
                                         <label for="area" class="col-sm-5 col-form-label">Tipe Bahan:<span
                                                 style="color: red;">*</span></label>
                                     </div>
                                     <div class="col-lg-6">
-                                        <select name="type_id" id="type_id" class="select2" style="width: 100%" disabled>
+                                        <select name="type_id" id="type_id" class="select2" style="width: 100%"
+                                            disabled>
                                             @foreach ($type_materials as $typeMaterial)
                                                 <option value="{{ $typeMaterial->id }}"
                                                     @if ($typeMaterial->id == $handlings->type_id) selected @endif>
@@ -108,6 +144,18 @@
                                                 </option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label for="category" class="col-sm-6 col-form-label">Nama Barang:<span
+                                                style="color: red;">*</span></label>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="nama_barang" name="nama_barang"
+                                            style="width: 100%; max-width: 100%;" value="{{ $handlings->nama_barang }}"
+                                            disabled>
                                     </div>
                                 </div>
                                 <br>
@@ -239,6 +287,42 @@
                                             <option value="Others"
                                                 {{ $handlings->category == 'Others' ? 'selected' : '' }}>Others
                                             </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label for="category" class="col-sm-6 col-form-label">Nama Project:<span
+                                                style="color: red;">*</span></label>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="category_input" name="category"
+                                            style="width: 100%; max-width: 100%;" value="{{ $handlings->category }}"
+                                            disabled>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row" id="jenisTestRow" style="display: none;">
+                                    <div class="col-lg-6">
+                                        <label for="jenis_test" class="col-sm-5 col-form-label">Jenis test
+                                            <span style="color: red;">*</span></label>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <select name="jenis_test" class="form-control" id="jenis_test"
+                                            style="width: 100%;" disabled>
+                                            <option value="">------------- Pilih jenis Test ------------
+                                            </option>
+                                            <option value="Spectro"
+                                                {{ $handlings->jenis_test == 'Spectro' ? 'selected' : '' }}>
+                                                Spectro</option>
+                                            <option value="Kekerasan"
+                                                {{ $handlings->jenis_test == 'Kekerasan' ? 'selected' : '' }}>
+                                                Kekerasan
+                                            </option>
+                                            <option value="Micro Structure"
+                                                {{ $handlings->jenis_test == 'Micro Structure' ? 'selected' : '' }}>
+                                                Micro Structure</option>
                                         </select>
                                     </div>
                                 </div>
@@ -389,7 +473,7 @@
                             </div>
                         </div>
                         <div class="ps-3 mb-3 mt-3 d-flex justify-content-end">
-                            @if (!$hasType2)
+                            @if (!$handlings && !in_array($notes, ['Testing', 'Trial']))
                                 <button type="button" class="btn btn-success mb-4 me-2"
                                     onclick="submitFollowUp('claim')">
                                     <i class="fas fa-save"></i> Klaim
@@ -416,33 +500,50 @@
                                 data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                 History Progres
                             </button>
+
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
+                                <a href="{{ route('showFollowUp', ['id' => $handlings]) }}"
+                                    class="btn btn-primary mb-4 me-2">
+                                    <i class="fa fa-refresh"></i> Refresh Tabel
+                                </a>
                                 <div class="table-responsive">
-                                    <table id="" class="datatable table">
+                                    <table id="followUpTbl" class="datatable table">
                                         <thead>
                                             <tr>
                                                 <th style="text-align: center;">NO</th>
+                                                <th style="text-align: center;" hidden>ID</th>
                                                 <th style="text-align: center;">Hasil dan Tindak Lanjut</th>
                                                 <th style="text-align: center;">Jadwal Kunjungan</th>
                                                 <th style="text-align: center;">PIC</th>
                                                 <th style="text-align: center;">Tenggat waktu</th>
+                                                <th style="text-align: center;">Catatan</th>
                                                 <th style="text-align: center;">Jenis 1</th>
                                                 <th style="text-align: center;">Jenis 2</th>
                                                 <th style="text-align: center;">Unggahan (File)</th>
                                                 <th style="text-align: center;">Pembaruan Terakhir</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($data as $row)
                                                 <tr>
                                                     <td class="text-center py-3">{{ $loop->iteration }}</td>
+                                                    <td class="text-center py-3" hidden>{{ $row->id }}</td>
                                                     <td class="text-center py-3">{{ $row->results }}</td>
                                                     <td class="text-center py-3">{{ $row->schedule }}</td>
                                                     <td class="text-center py-3">{{ $row->pic }}</td>
-                                                    <td class="text-center py-3">{{ $row->due_date }}</td>
+
+                                                    <td class="text-center py-3"
+                                                        data-due-date="{{ $row->due_date ? \Carbon\Carbon::parse($row->due_date)->format('Y-m-d') : '' }}">
+                                                        {{ $row->due_date ? \Carbon\Carbon::parse($row->due_date)->format('Y-m-d') : '' }}
+                                                    </td>
+                                                    <td class="text-center py-3" style="color: red">
+                                                        {{ $row->notes }}
+                                                    </td>
+                                                    <!-- Kolom Lainnya -->
                                                     <td class="text-center py-3">
                                                         @if ($row->history_type == 1)
                                                             Komplain
@@ -454,17 +555,22 @@
                                                         @endif
                                                     </td>
                                                     <td class="text-center pt-3">
-                                                        @if (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['pdf', 'pptx', 'ppt']))
+                                                        @if (pathinfo($row->file, PATHINFO_EXTENSION) == 'pdf')
                                                             <a href="{{ asset('assets/image/' . $row->file) }}"
-                                                                download="{{ $row->file_name }}">
+                                                                target="_blank">
                                                                 <i class="fas fa-file-pdf fs-4"></i>
                                                             </a>
-                                                        @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['xlsx', 'xls']))
+                                                        @elseif (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['ppt', 'pptx']))
+                                                            <a href="{{ asset('assets/image/' . $row->file) }}"
+                                                                download="{{ $row->file_name }}">
+                                                                <i class="fas fa-file-powerpoint fs-4"></i>
+                                                            </a>
+                                                        @elseif (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['xlsx', 'xls']))
                                                             <a href="{{ asset('assets/image/' . $row->file) }}"
                                                                 download="{{ $row->file_name }}">
                                                                 <i class="fas fa-file-excel fs-4"></i>
                                                             </a>
-                                                        @elseif(in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
+                                                        @elseif (in_array(pathinfo($row->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']))
                                                             <a href="{{ asset('assets/image/' . $row->file) }}"
                                                                 download="{{ $row->file_name }}">
                                                                 <img src="{{ asset('assets/image/' . $row->file) }}"
@@ -486,7 +592,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Modal -->
             <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel"
                 aria-hidden="true">
@@ -505,6 +610,10 @@
                 </div>
             </div>
         </section>
+        <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             function updateCustomerInfo() {
@@ -527,34 +636,94 @@
                 customerIdAreaSelect.value = customerArea;
             }
 
+            //read data control
+            document.addEventListener("DOMContentLoaded", function() {
+                const requestDropdown = document.getElementById('notes');
+                const categorySelectRow = document.getElementById('category')?.parentElement?.parentElement;
+                const categoryInputRow = document.getElementById('category_input')?.parentElement?.parentElement;
+                const typeMaterialRow = document.getElementById('type_id')?.parentElement?.parentElement;
+                const jenisTestRow = document.getElementById('jenis_test')?.parentElement?.parentElement;
+                const namaBarangRow = document.getElementById('nama_barang')?.parentElement?.parentElement;
+                const prosesTypeSelect = document.getElementById('process_type');
+                const prosesTypeCheckbox1 = document.getElementById('type_1');
+                const prosesTypeCheckbox2 = document.getElementById('type_2');
+
+                function updateUIBasedOnRequest(value) {
+                    if (value === "Trial") {
+                        categoryInputRow.style.display = "flex";
+                        categorySelectRow.style.display = "none";
+                        typeMaterialRow.style.display = "flex";
+                        jenisTestRow.style.display = "none";
+                        namaBarangRow.style.display = "none";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = true;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = true;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = true;
+                    } else if (value === "Testing") {
+                        categoryInputRow.style.display = "none";
+                        categorySelectRow.style.display = "none";
+                        typeMaterialRow.style.display = "none";
+                        jenisTestRow.style.display = "flex";
+                        namaBarangRow.style.display = "flex";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = true;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = true;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = true;
+                    } else {
+                        categoryInputRow.style.display = "none";
+                        categorySelectRow.style.display = "flex";
+                        typeMaterialRow.style.display = "flex";
+                        jenisTestRow.style.display = "none";
+                        namaBarangRow.style.display = "none";
+                        if (prosesTypeSelect) prosesTypeSelect.disabled = true;
+                        if (prosesTypeCheckbox1) prosesTypeCheckbox1.disabled = true;
+                        if (prosesTypeCheckbox2) prosesTypeCheckbox2.disabled = true;
+                    }
+                }
+
+                updateUIBasedOnRequest(requestDropdown.value);
+                requestDropdown.addEventListener('change', function() {
+                    updateUIBasedOnRequest(this.value);
+                });
+            });
+
             // Initialize the customer info on page load
             document.addEventListener('DOMContentLoaded', function() {
                 updateCustomerInfo();
+                handleRequestChange();
+                updateDueDateNotes();
             });
 
             function submitFollowUp(action) {
+                var formFollowUp = document.getElementById('formFollowUp');
+                var fileInput = document.getElementById('upload_file');
+                var maxFileSize = 15 * 1024 * 1024; // 15 MB
+
                 // Validasi berdasarkan tindakan
-                if (action === 'save') {
-                    if (!document.getElementById('pic').value.trim() || !document.getElementById('results').value.trim()) {
+                if (action === 'save' || action === 'claim') {
+                    if (!document.getElementById('pic').value.trim() || !document.getElementById('results').value.trim() ||
+                        (action === 'save' && fileInput.files.length === 0)) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: 'Silakan isi PIC dan Catatan Hasil sebelum menyimpan!',
+                            text: 'Silakan isi PIC, Catatan Hasil, dan Unggah File sebelum menyimpan!',
                         });
                         return;
                     }
-                } else if (action === 'claim') {
-                    if (!document.getElementById('pic').value.trim() || !document.getElementById('results').value.trim()) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal!',
-                            text: 'Silakan isi PIC dan Catatan Hasil sebelum mengklaim!',
-                        });
-                        return;
+
+                    // Validasi ukuran file maksimal 15 MB untuk tindakan save dan claim
+                    if (fileInput.files.length > 0) {
+                        var file = fileInput.files[0];
+                        if (file.size > maxFileSize) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Ukuran file harus lebih kecil dari 15 MB!',
+                            });
+                            return;
+                        }
                     }
                 } else if (action === 'finish') {
                     if (!document.getElementById('pic').value.trim() || !document.getElementById('results').value.trim() ||
-                        document.getElementById('upload_file').files.length === 0) {
+                        fileInput.files.length === 0) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
@@ -562,15 +731,26 @@
                         });
                         return;
                     }
+
+                    // Validasi ukuran file maksimal 15 MB untuk tindakan finish
+                    var file = fileInput.files[0];
+                    if (file.size > maxFileSize) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Ukuran file harus lebih kecil dari 15 MB!',
+                        });
+                        return;
+                    }
                 }
 
                 // Tambahkan action ke form data
-                var formData = new FormData(document.getElementById('formFollowUp'));
+                var formData = new FormData(formFollowUp);
                 formData.append('action', action);
 
                 // Kirim data ke server menggunakan AJAX
                 $.ajax({
-                    url: document.getElementById('formFollowUp').action,
+                    url: formFollowUp.action,
                     method: 'POST',
                     data: formData,
                     contentType: false,
@@ -591,23 +771,25 @@
                     },
                     error: function(xhr, status, error) {
                         // Kesalahan dari server
-                        // Bagian ini ditambahkan untuk menampilkan pesan kesalahan spesifik dari controller
                         var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message :
                             'Terjadi kesalahan saat menyimpan data!';
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: errorMessage, // Pesan kesalahan spesifik ditampilkan di sini
+                            text: errorMessage,
                         });
                     }
                 });
             }
 
+            //back page
+            var submissionUrl = '{{ route('submission') }}';
 
-            // Fungsi untuk kembali ke halaman sebelumnya
             function goToSubmission() {
-                // Kode untuk kembali ke halaman sebelumnya
+                // Redirect ke URL route
+                window.location.href = submissionUrl;
             }
+            //end
 
             function showModal(imageSrc) {
                 var modal = document.getElementById("imageModal");
@@ -664,6 +846,86 @@
                     imageContainer.style.width = containerWidth;
                 }, 100); // Beri sedikit waktu agar gambar ditampilkan sebelum menyesuaikan lebar kontainer
             }
+
+            $(document).ready(function() {
+                var latestDueDate = null; // Variabel untuk menyimpan due_date terbaru
+                var latestRow = null; // Variabel untuk menyimpan baris dengan due_date terbaru
+
+                // Fungsi untuk mendapatkan tanggal dalam WIB
+                function getWIBDate(dateString) {
+                    var date = new Date(dateString);
+                    // WIB adalah UTC+7
+                    var utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+                    var wib = new Date(utc + (7 * 3600000));
+                    return wib;
+                }
+
+                // Cari ID yang memiliki due_date terbaru
+                $('td[data-due-date]').each(function() {
+                    var dueDate = $(this).data('due-date');
+                    var dueDateObj = getWIBDate(dueDate);
+
+                    // Jika due_date valid dan lebih baru dari yang sebelumnya ditemukan
+                    if (dueDate && (latestDueDate === null || dueDateObj > latestDueDate)) {
+                        latestDueDate = dueDateObj;
+                        latestRow = $(this).closest('tr'); // Simpan baris dengan due_date terbaru
+                    }
+                });
+
+                // Hanya lanjutkan jika ada due_date terbaru yang ditemukan
+                if (latestRow && latestDueDate) {
+                    var today = new Date();
+
+                    // Konversi tanggal hari ini ke WIB
+                    var utcToday = today.getTime() + (today.getTimezoneOffset() * 60000);
+                    var wibToday = new Date(utcToday + (7 * 3600000));
+
+                    // Hitung selisih waktu antara hari ini dan due_date terbaru
+                    var diffTime = wibToday - latestDueDate;
+                    var diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                    console.log("Latest Due Date:", latestDueDate);
+                    console.log("WIB Today:", wibToday);
+                    console.log("Diff Time:", diffTime);
+                    console.log("Diff Days:", diffDays);
+
+                    // Tampilkan catatan 'Telat Melewati Tenggat Waktu dalam ... Hari'
+                    var modalText = "Telat Melewati Tenggat Waktu dalam " + diffDays + " Hari";
+                    $('#modalNotes').text(modalText);
+
+                    // Ambil catatan dari baris dengan due_date terbaru
+                    var notesColumn = latestRow.find('td').eq(5); // Asumsi kolom ke-6 adalah 'Catatan'
+                    var currentNotes = notesColumn.text().trim();
+
+                    // Jika due_date telah melewati hari ini dan belum ada catatan "Telat", tambahkan catatan baru
+                    if (latestDueDate < wibToday && !currentNotes.includes('Telat')) {
+                        // Menampilkan modal
+                        $('#dueDateModal').modal('show');
+
+                        // Kirim data ke server menggunakan Ajax untuk update catatan
+                        var rowId = latestRow.find('td').eq(1).text(); // Ambil ID dari kolom kedua
+                        $.ajax({
+                            url: '{{ route('schedule.updateNotes') }}', // Pastikan route ini benar
+                            type: 'POST',
+                            data: {
+                                id: rowId,
+                                notes: modalText,
+                                _token: '{{ csrf_token() }}' // Jangan lupa CSRF token jika diperlukan
+                            },
+                            success: function(response) {
+                                console.log('Data berhasil dikirim:', response);
+                            },
+                            error: function(xhr) {
+                                console.log('Terjadi kesalahan:', xhr.responseText);
+                            }
+                        });
+                    } else {
+                        // Jika catatan sudah ada, tampilkan catatan yang ada
+                        $('#modalNotes').text(currentNotes);
+                        $('#dueDateModal').modal('show');
+                    }
+                }
+            });
         </script>
     </main><!-- End #main -->
 @endsection

@@ -19,9 +19,9 @@ $(document).ready(function() {
            $('#eventModal #eventDetails').html(
             '<p><strong>' + calEvent.title + '</strong></p>' +
             '<p><strong>Tanggal:</strong> ' + calEvent.start.format('YYYY-MM-DD') + '</p>' +
-            '<p><strong>Jadwal Kunjungan:</strong> ' + calEvent.schedule + '</p>' +
-            '<p><strong>Catatan Hasil:</strong> ' + (calEvent.results ? calEvent.results : 'Belum adanya hasil') + '</p>' +
-            '<p><strong>Batas Akhir:</strong> ' + calEvent.duedate + '</p>' +
+            '<p><strong>Schedule:</strong> ' + calEvent.schedule + '</p>' +
+            '<p><strong>Results:</strong> ' + (calEvent.results ? calEvent.results : 'Belum adanya hasil') + '</p>' +
+            '<p><strong>Due Date:</strong> ' + calEvent.duedate + '</p>' +
             '<p><strong>PIC:</strong> ' + (calEvent.pic ? calEvent.pic : 'Belum adanya PIC') + '</p>'
         );
         $('#eventModal').modal('show');

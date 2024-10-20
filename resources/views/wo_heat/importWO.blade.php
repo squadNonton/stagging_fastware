@@ -782,15 +782,17 @@
                         <div class="card-body">
                             <h5 class="card-title text-center">Import WO Heat Treatment</h5>
 
-                            <form id="importForm" enctype="multipart/form-data">
+                            <form id="importForm" action="{{ route('importWO') }}" method="POST"
+                                enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
                                     <input type="file" name="excelFile" class="form-control" required>
                                 </div>
-                                <button type="submit" class="btn btn-danger mt-3">
+                                <button type="button" class="btn btn-danger mt-3" id="submitBtn">
                                     <i class="bi bi-upload"></i> Import Data
                                 </button>
                             </form>
+
 
                             @if (isset($data))
                                 <!-- Table for imported data -->
@@ -820,7 +822,6 @@
                                     </table>
                                 </div>
                             @endif
-
                             <!-- Table for heat treatments -->
                             <div class="table-responsive table-responsive-sm">
                                 <table class="datatables datatable"
@@ -875,7 +876,6 @@
                                     </tbody>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -907,92 +907,89 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            $('#importForm').on('submit', function(event) {
-                event.preventDefault(); // Prevent default form submission
+        $('#submitBtn').on('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
 
-                let formData = new FormData(this);
+            let formData = new FormData($('#importForm')[0]); // Mengambil form data dari form
 
-                // Show the SweetAlert loading with progress bar and percentage
-                Swal.fire({
-                    title: "Importing WO...",
-                    html: '<div id="progress-container" style="margin-top: 20px;"><div id="progress-bar" style="width: 0%; height: 20px; background-color: #3085d6;"></div><div id="progress-percent" style="margin-top: 10px;">0%</div></div><br>Please wait while we process your data.',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+            // Show the SweetAlert loading with progress bar and percentage
+            Swal.fire({
+                title: "Importing WO...",
+                html: '<div id="progress-container" style="margin-top: 20px;"><div id="progress-bar" style="width: 0%; height: 20px; background-color: #3085d6;"></div><div id="progress-percent" style="margin-top: 10px;">0%</div></div><br>Please wait while we process your data.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
-                $.ajax({
-                    url: "{{ route('importWO') }}",
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    xhr: function() {
-                        var xhr = new window.XMLHttpRequest();
+            $.ajax({
+                url: "{{ route('importWO') }}", // Mengarahkan ke route yang mendukung POST
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                xhr: function() {
+                    var xhr = new window.XMLHttpRequest();
 
-                        // Upload progress
-                        xhr.upload.addEventListener("progress", function(evt) {
-                            if (evt.lengthComputable) {
-                                var percentComplete = evt.loaded / evt.total * 100;
-                                updateProgressBar(percentComplete);
-                            }
-                        }, false);
-
-                        return xhr;
-                    },
-                    success: function(response) {
-                        updateProgressBar(100);
-
-                        if (response.success) {
-                            setTimeout(function() {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Success',
-                                    text: response.message,
-                                    timer: 2000,
-                                    timerProgressBar: true,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    window.location
-                                        .reload(); // Reload the page after success
-                                });
-                            }, 500); // Small delay to show 100% completion
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: response.message
-                            });
+                    // Upload progress
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total * 100;
+                            updateProgressBar(percentComplete);
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        Swal.close(); // Close the loading alert
+                    }, false);
 
-                        let errorMessage = xhr.status + ': ' + xhr.statusText;
+                    return xhr;
+                },
+                success: function(response) {
+                    updateProgressBar(100);
+
+                    if (response.success) {
+                        setTimeout(function() {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('dashboardImportWO') }}"; // Redirect ke dashboardImportWO setelah sukses
+                            });
+                        }, 500); // Small delay to show 100% completion
+                    } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: 'Error - ' + errorMessage
+                            text: response.message
                         });
                     }
-                });
-
-                let currentPercent = 0;
-
-                function updateProgressBar(percentComplete) {
-                    let interval = setInterval(function() {
-                        if (currentPercent >= percentComplete) {
-                            clearInterval(interval);
-                        } else {
-                            currentPercent++;
-                            $('#progress-bar').css('width', currentPercent + '%');
-                            $('#progress-percent').text(currentPercent + '%');
-                        }
-                    }, 10); // Update interval for smooth progress
+                },
+                error: function(xhr, status, error) {
+                    Swal.close(); // Close the loading alert
+                    let errorMessage = xhr.status + ': ' + xhr.statusText;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error - ' + errorMessage
+                    });
                 }
             });
+
+            let currentPercent = 0;
+
+            function updateProgressBar(percentComplete) {
+                let interval = setInterval(function() {
+                    if (currentPercent >= percentComplete) {
+                        clearInterval(interval);
+                    } else {
+                        currentPercent++;
+                        $('#progress-bar').css('width', currentPercent + '%');
+                        $('#progress-percent').text(currentPercent + '%');
+                    }
+                }, 10); // Update interval for smooth progress
+            }
         });
     </script>
 
