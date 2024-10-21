@@ -35,7 +35,8 @@
                                         <div class="col-lg-3">
                                             <select id="kategori_po" name="kategori_po" class="form-select"
                                                 style="width: 100%;" required>
-                                                <option value="">------------- Pilih Kategori FPB ------------</option>
+                                                <option value="">------------- Pilih Kategori FPB ------------
+                                                </option>
                                                 <option value="Consumable"
                                                     {{ $pengajuanPo->kategori_po == 'Consumable' ? 'selected' : '' }}>
                                                     Consumable (Bandsaw, insert, OTH)</option>
@@ -64,9 +65,14 @@
                                     <br>
                                     <!-- "Hapus Item" button -->
                                     <div class="row mt-4">
-                                        <div class="col-md-12">
-                                            <button type="button" id="delete-selected-items" class="btn btn-danger"><i
-                                                    class="fa fa-trash"></i> Hapus Item</button>
+                                        <div class="col-md-12 d-flex align-items-center">
+                                            <button type="button" id="delete-selected-items" class="btn btn-danger me-2">
+                                                <i class="fa fa-trash"></i> Hapus Item
+                                            </button>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="select-all">
+                                                <label class="form-check-label" for="select-all">Pilih Semua</label>
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- Fields Container -->
@@ -78,12 +84,12 @@
                                             <!-- Fields for regular data (fieldsContainer) -->
                                             <div class="row field-group" id="field-group-{{ $pengajuanPoItem->id }}">
                                                 <input type="hidden" name="id[]" value="{{ $pengajuanPoItem->id }}">
-                                     
+
                                                 <div class="col-md-2">
                                                     <input type="checkbox" class="form-check-input delete-checkbox"
                                                         name="delete_item[]" value="{{ $pengajuanPoItem->id }}"
                                                         id="delete_item_{{ $pengajuanPoItem->id }}">
-                                                        
+
                                                     <label for="nama_barang" class="form-label">Nama Barang:<span
                                                             style="color: red;">*</span></label>
                                                     <input type="text" class="form-control" name="nama_barang[]"
@@ -259,7 +265,9 @@
                                             'Item yang dipilih telah berhasil dihapus.',
                                             'success'
                                         );
-                                        
+                                        // Redirect to the specified route after the alert is closed
+                                        window.location.href =
+                                            '{{ route('index.PO') }}'; // Use Laravel's route helper
                                     },
                                     error: function(xhr) {
                                         Swal.fire(
@@ -275,6 +283,13 @@
                         Swal.fire('Tidak ada item yang dipilih!',
                             'Pilih item yang ingin dihapus terlebih dahulu.', 'warning');
                     }
+                });
+            });
+
+            document.getElementById('select-all').addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('.delete-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
                 });
             });
 

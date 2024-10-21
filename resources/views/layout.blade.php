@@ -242,7 +242,7 @@
             <!-- End Prod Forms Nav -->
             {{-- @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1 || Auth::user()->role_id == 14) --}}
             @php
-                $acsrole = [1, 5, 14];
+                $acsrole = [1, 22, 5, 14];
             @endphp
             @if (in_array(Auth::user()->role_id, $acsrole))
                 {{-- Role ID untuk Maintenance --}}

@@ -386,7 +386,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                {{-- <div class="card">
                     <div class="card mt-3">
                         <div class="card-header">
                             <div style="justify-content: space-between; align-items: center;">
@@ -441,7 +441,7 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </section>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -540,12 +540,6 @@
                     });
                 });
             });
-
-            function downloadPdf(id) {
-                var downloadPdfUrl = "{{ route('download.pdf', ['id' => ':id']) }}";
-                var url = downloadPdfUrl.replace(':id', id);
-                window.location.href = url; // Redirect to the download URL
-            }
 
             // Tambahkan event listener untuk fitur pencarian
             document.getElementById('searchInput').addEventListener('input', function() {
