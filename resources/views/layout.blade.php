@@ -514,76 +514,77 @@
             </ul>
 
             {{-- @php
-                $acsrole = [1, 2, 4, 5, 7, 8, 10, 11, 13, 14, 15, 16, 19, 20, 23, 25, 27];
                 $hrgarole = [1, 14, 15]; // Roles for accessing Technical Competency Management
+                $secHeadRoles = [1, 3, 9, 31, 22, 30, 12, 14, 15]; // Roles for accessing Technical Competency by Sec. Head
+                $deptHeadRoles = [1, 2, 5, 11, 7, 14, 15]; // Roles for accessing Technical Competency by Dept. Head
             @endphp
-            @if (in_array(Auth::user()->role_id, $acsrole))
+
+            @if (in_array(Auth::user()->role_id, $hrgarole) ||
+                    in_array(Auth::user()->role_id, $secHeadRoles))
                 <li class="nav-heading">People Development</li>
                 <a class="nav-link collapsed" data-bs-target="#nav-tech-competency" data-bs-toggle="collapse"
                     href="#">
                     <i class="bi bi-tools"></i><span>Base Competency</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            @endif
-            <ul id="nav-tech-competency" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('historiDept') }}">
-                        <i class="bi bi-hourglass-bottom fs-6"></i>
-                        <span>Histori Development</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link collapsed" data-bs-toggle="collapse" href="#formSubsectionOne">
-                        <i class="bi bi-file-earmark-text fs-6"></i>
-                        <span>Forms</span>
-                        <i class="bi bi-chevron-down ms-auto"></i>
-                    </a>
 
-                    <ul id="formSubsectionOne" class="nav-content collapse" data-bs-parent="#nav-tech-competency">
-                        @if (in_array(Auth::user()->role_id, $hrgarole))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('jobShow') }}">
-                                    <i class="bi bi-briefcase fs-6"></i>
-                                    <span>Form Job Position</span>
-                                </a>
-                            </li>
-                        @endif
-                        @if (in_array(Auth::user()->role_id, $acsrole))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('tcShow') }}">
-                                    <i class="bi bi-check2-circle fs-6"></i>
-                                    <span>Form Competency</span>
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </li>
-
-                <li class="nav-item">
-                    @php
-                        $secHeadRoles = [1, 3, 9, 31, 22, 30, 12, 14, 15]; // Roles for accessing Technical Competency by Sec. Head
-                        $deptHeadRoles = [1, 2, 5, 11, 7, 14, 15]; // Roles for accessing Technical Competency by Dept. Head
-                    @endphp
-                    @if (in_array(Auth::user()->role_id, $secHeadRoles) || in_array(Auth::user()->role_id, $deptHeadRoles))
-                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#evaluationSubsectionTwo">
-                            <i class="bi bi-check-circle-fill fs-6"></i>
-                            <span>Penilaian</span>
+                <ul id="nav-tech-competency" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('historiDept') }}">
+                            <i class="bi bi-hourglass-bottom fs-6"></i>
+                            <span>Histori Development</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#formSubsectionOne">
+                            <i class="bi bi-file-earmark-text fs-6"></i>
+                            <span>Forms Pengajuan Competency</span>
                             <i class="bi bi-chevron-down ms-auto"></i>
                         </a>
-                    @endif
-                    <ul id="evaluationSubsectionTwo" class="nav-content collapse"
-                        data-bs-parent="#nav-tech-competency">
-                        @if (in_array(Auth::user()->role_id, $deptHeadRoles))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('penilaian.index') }}">
-                                    <i class="bi bi-person-check-fill fs-6"></i>
-                                    <span>Penilaian Technical Competency by Dept. Head</span>
-                                </a>
-                            </li>
-                        @endif
 
-                    </ul>
-                </li>
-            </ul>
+                        <ul id="formSubsectionOne" class="nav-content collapse"
+                            data-bs-parent="#nav-tech-competency">
+                            @if (in_array(Auth::user()->role_id, $hrgarole))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('jobShow') }}">
+                                        <i class="bi bi-briefcase fs-6"></i>
+                                        <span>Form Job Position</span>
+                                    </a>
+                                </li>
+                            @endif
+                            @if (in_array(Auth::user()->role_id, $secHeadRoles))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('tcShow') }}">
+                                        <i class="bi bi-check2-circle fs-6"></i>
+                                        <span>Form Competency</span>
+                                    </a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        @if (in_array(Auth::user()->role_id, $deptHeadRoles))
+                            <a class="nav-link collapsed" data-bs-toggle="collapse" href="#evaluationSubsectionTwo">
+                                <i class="bi bi-check-circle-fill fs-6"></i>
+                                <span>Penilaian Technical Competency</span>
+                                <i class="bi bi-chevron-down ms-auto"></i>
+                            </a>
+                        @endif
+                        <ul id="evaluationSubsectionTwo" class="nav-content collapse"
+                            data-bs-parent="#nav-tech-competency">
+                            @if (in_array(Auth::user()->role_id, $deptHeadRoles))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('penilaian.index') }}">
+                                        <i class="bi bi-person-check-fill fs-6"></i>
+                                        <span>Penilaian Technical Competency by Dept. Head</span>
+                                    </a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
+                </ul>
+            @endif
+
 
             @php
                 $deptrole = [1, 2, 5, 11, 7, 14, 15]; // Roles for accessing Training Management
@@ -591,7 +592,8 @@
             @if (in_array(Auth::user()->role_id, $deptrole))
                 <a class="nav-link collapsed" data-bs-target="#nav-training" data-bs-toggle="collapse"
                     href="#">
-                    <i class="bi bi-journal-text"></i><span>Training</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-journal-text"></i><span>Training Development</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
                 </a>
             @endif
             <ul id="nav-training" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -637,12 +639,11 @@
             </ul> --}}
 
             @php
-                $secHeadRoles = [1, 3, 9, 31, 22, 30, 12, 14, 15]; // Roles for accessing PO Pengajuan Management
+                $secHeadRoles = [1, 3, 4, 9, 12, 14, 15, 22, 30, 31, 39, 44]; // Roles for accessing PO Pengajuan Management
                 $deptHeadRoles = [1, 2, 5, 11, 7, 14, 15]; // Department Head Roles
                 $userRoles = [1, 14, 15, 50, 30, 40, 11, 39]; // User Roles
                 $finnRole = [1, 14, 11, 12]; // Finance Roles
                 $procRoles = [1, 14, 41]; // Procurement Roles
-
                 // Gabungkan semua roles ke dalam satu array
                 $allRoles = array_merge($secHeadRoles, $deptHeadRoles, $userRoles, $finnRole, $procRoles);
             @endphp

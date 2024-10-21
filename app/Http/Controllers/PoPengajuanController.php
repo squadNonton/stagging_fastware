@@ -60,7 +60,7 @@ class PoPengajuanController extends Controller
         } elseif ($roleId == 5) {
             $allowedNames = ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'];
         } elseif ($roleId == 2) {
-            $allowedNames = ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN'];
+            $allowedNames = ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN', 'WULYO EKO PRASETYO', 'SENDY PRABOWO', 'YAN WELEM MANGINSELA', 'HEXAPA DARMADI', 'SARAH EGA BUDI ASTUTI', 'SONY STIAWAN', 'DIMAS ADITYA PRIANDANA', 'DANIA ISNAWATI', 'FRISILIA CLAUDIA HUTAMA', 'DWI KUNTORO', 'YUNASIS PALGUNADI', 'RISFAN FAISAL'];
         } elseif ($roleId == 7) {
             $allowedNames = ['RANGGA FADILLAH'];
         }
@@ -158,14 +158,14 @@ class PoPengajuanController extends Controller
                 ->groupBy('mst_po_pengajuans.no_fpb') // Kelompokkan berdasarkan no_fpb untuk mendapatkan data unik
                 ->orderBy(DB::raw('MAX(mst_po_pengajuans.id)'), 'desc') // Urutkan berdasarkan id maksimal secara descending
                 ->get();
-        
+
             // Jika terdapat banyak entri untuk no_fpb yang sama, ambil hanya yang pertama
             $data = $data->unique('no_fpb'); // Ambil hanya entri unik berdasarkan no_fpb
         } else {
             // Jika role_id tidak sesuai dengan yang ditentukan, return data kosong atau handle sesuai kebutuhan
             $data = collect(); // atau bisa return redirect dengan pesan error
         }
-        
+
 
         // Mengirim data ke view
         return view('po_pengajuan.index_po_user', compact('data'));
@@ -325,8 +325,10 @@ class PoPengajuanController extends Controller
             $deptHead = 'MARTINUS CAHYO RAHASTO';
         } elseif (in_array($poPengajuan->modified_at, ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'])) {
             $deptHead = 'ARY RODJO PRASETYO';
-        } elseif (in_array($poPengajuan->modified_at, ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN'])) {
+        } elseif (in_array($poPengajuan->modified_at, ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN', 'WULYO EKO PRASETYO', 'SENDY PRABOWO', 'YAN WELEM MANGINSELA', 'HEXAPA DARMADI', 'SARAH EGA BUDI ASTUTI', 'SONY STIAWAN', 'DIMAS ADITYA PRIANDANA'])) {
             $deptHead = 'YULMAI RIDO WINANDA';
+        } elseif (in_array($poPengajuan->modified_at, ['DANIA ISNAWATI', 'FRISILIA CLAUDIA HUTAMA', 'DWI KUNTORO', 'YUNASIS PALGUNADI', 'RISFAN FAISAL'])) {
+            $deptHead = 'ANDIK TOTOK SISWOYO';
         } elseif ($poPengajuan->modified_at == 'RANGGA FADILLAH') {
             $deptHead = 'VITRI HANDAYANI';
         }
@@ -368,8 +370,8 @@ class PoPengajuanController extends Controller
             }
         }
         $matchingTrsPoPengajuans = TrsPoPengajuan::where('id_fpb', $poPengajuan->id)
-        ->select('created_at', 'status') // Pastikan kolom 'status' benar-benar ada
-        ->get();
+            ->select('created_at', 'status') // Pastikan kolom 'status' benar-benar ada
+            ->get();
 
         // Mengirimkan data ke view, termasuk $trsPoPengajuan
         return view('po_pengajuan.view_form_FPB', compact('mstPoPengajuans', 'deptHead', 'userAccHeader', 'userAccbody', 'trsPoPengajuan', 'matchingTrsPoPengajuans'));
@@ -393,8 +395,10 @@ class PoPengajuanController extends Controller
             $deptHead = 'MARTINUS CAHYO RAHASTO';
         } elseif (in_array($poPengajuan->modified_at, ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'])) {
             $deptHead = 'ARY RODJO PRASETYO';
-        } elseif (in_array($poPengajuan->modified_at, ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN'])) {
+        } elseif (in_array($poPengajuan->modified_at, ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN', 'WULYO EKO PRASETYO', 'SENDY PRABOWO', 'YAN WELEM MANGINSELA', 'HEXAPA DARMADI', 'SARAH EGA BUDI ASTUTI', 'SONY STIAWAN', 'DIMAS ADITYA PRIANDANA'])) {
             $deptHead = 'YULMAI RIDO WINANDA';
+        } elseif (in_array($poPengajuan->modified_at, ['DANIA ISNAWATI', 'FRISILIA CLAUDIA HUTAMA', 'DWI KUNTORO', 'YUNASIS PALGUNADI', 'RISFAN FAISAL'])) {
+            $deptHead = 'ANDIK TOTOK SISWOYO';
         } elseif ($poPengajuan->modified_at == 'RANGGA FADILLAH') {
             $deptHead = 'VITRI HANDAYANI';
         }
@@ -437,8 +441,8 @@ class PoPengajuanController extends Controller
         }
 
         $matchingTrsPoPengajuans = TrsPoPengajuan::where('id_fpb', $poPengajuan->id)
-        ->select('created_at', 'status') // Pastikan kolom 'status' benar-benar ada
-        ->get();
+            ->select('created_at', 'status') // Pastikan kolom 'status' benar-benar ada
+            ->get();
 
         // Mengirimkan data ke view
         return view('po_pengajuan.view_form_FPB_dept', compact('mstPoPengajuans', 'deptHead', 'userAccHeader', 'userAccbody', 'matchingTrsPoPengajuans'));
@@ -462,8 +466,10 @@ class PoPengajuanController extends Controller
             $deptHead = 'MARTINUS CAHYO RAHASTO';
         } elseif (in_array($poPengajuan->modified_at, ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'])) {
             $deptHead = 'ARY RODJO PRASETYO';
-        } elseif (in_array($poPengajuan->modified_at, ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN'])) {
+        } elseif (in_array($poPengajuan->modified_at, ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN', 'WULYO EKO PRASETYO', 'SENDY PRABOWO', 'YAN WELEM MANGINSELA', 'HEXAPA DARMADI', 'SARAH EGA BUDI ASTUTI', 'SONY STIAWAN', 'DIMAS ADITYA PRIANDANA'])) {
             $deptHead = 'YULMAI RIDO WINANDA';
+        } elseif (in_array($poPengajuan->modified_at, ['DANIA ISNAWATI', 'FRISILIA CLAUDIA HUTAMA', 'DWI KUNTORO', 'YUNASIS PALGUNADI', 'RISFAN FAISAL'])) {
+            $deptHead = 'ANDIK TOTOK SISWOYO';
         } elseif ($poPengajuan->modified_at == 'RANGGA FADILLAH') {
             $deptHead = 'VITRI HANDAYANI';
         }
@@ -506,8 +512,8 @@ class PoPengajuanController extends Controller
         }
 
         $matchingTrsPoPengajuans = TrsPoPengajuan::where('id_fpb', $poPengajuan->id)
-        ->select('created_at', 'status') // Pastikan kolom 'status' benar-benar ada
-        ->get();
+            ->select('created_at', 'status') // Pastikan kolom 'status' benar-benar ada
+            ->get();
 
         // Mengirimkan data ke view
         return view('po_pengajuan.view_form_FPB_user', compact('mstPoPengajuans', 'deptHead', 'userAccHeader', 'userAccbody', 'matchingTrsPoPengajuans'));
@@ -531,8 +537,10 @@ class PoPengajuanController extends Controller
             $deptHead = 'MARTINUS CAHYO RAHASTO';
         } elseif (in_array($poPengajuan->modified_at, ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'])) {
             $deptHead = 'ARY RODJO PRASETYO';
-        } elseif (in_array($poPengajuan->modified_at, ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN'])) {
+        } elseif (in_array($poPengajuan->modified_at, ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN', 'WULYO EKO PRASETYO', 'SENDY PRABOWO', 'YAN WELEM MANGINSELA', 'HEXAPA DARMADI', 'SARAH EGA BUDI ASTUTI', 'SONY STIAWAN', 'DIMAS ADITYA PRIANDANA'])) {
             $deptHead = 'YULMAI RIDO WINANDA';
+        } elseif (in_array($poPengajuan->modified_at, ['DANIA ISNAWATI', 'FRISILIA CLAUDIA HUTAMA', 'DWI KUNTORO', 'YUNASIS PALGUNADI', 'RISFAN FAISAL'])) {
+            $deptHead = 'ANDIK TOTOK SISWOYO';
         } elseif ($poPengajuan->modified_at == 'RANGGA FADILLAH') {
             $deptHead = 'VITRI HANDAYANI';
         }
@@ -575,8 +583,8 @@ class PoPengajuanController extends Controller
         }
 
         $matchingTrsPoPengajuans = TrsPoPengajuan::where('id_fpb', $poPengajuan->id)
-        ->select('created_at', 'status') // Pastikan kolom 'status' benar-benar ada
-        ->get();
+            ->select('created_at', 'status') // Pastikan kolom 'status' benar-benar ada
+            ->get();
 
         // Mengirimkan data ke view
         return view('po_pengajuan.view_form_FPB_finn', compact('mstPoPengajuans', 'deptHead', 'userAccHeader', 'userAccbody', 'matchingTrsPoPengajuans'));
@@ -600,8 +608,10 @@ class PoPengajuanController extends Controller
             $deptHead = 'MARTINUS CAHYO RAHASTO';
         } elseif (in_array($poPengajuan->modified_at, ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'])) {
             $deptHead = 'ARY RODJO PRASETYO';
-        } elseif (in_array($poPengajuan->modified_at, ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN'])) {
+        } elseif (in_array($poPengajuan->modified_at, ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN', 'WULYO EKO PRASETYO', 'SENDY PRABOWO', 'YAN WELEM MANGINSELA', 'HEXAPA DARMADI', 'SARAH EGA BUDI ASTUTI', 'SONY STIAWAN', 'DIMAS ADITYA PRIANDANA'])) {
             $deptHead = 'YULMAI RIDO WINANDA';
+        } elseif (in_array($poPengajuan->modified_at, ['DANIA ISNAWATI', 'FRISILIA CLAUDIA HUTAMA', 'DWI KUNTORO', 'YUNASIS PALGUNADI', 'RISFAN FAISAL'])) {
+            $deptHead = 'ANDIK TOTOK SISWOYO';
         } elseif ($poPengajuan->modified_at == 'RANGGA FADILLAH') {
             $deptHead = 'VITRI HANDAYANI';
         }
@@ -643,8 +653,8 @@ class PoPengajuanController extends Controller
         }
 
         $matchingTrsPoPengajuans = TrsPoPengajuan::where('id_fpb', $poPengajuan->id)
-        ->select('created_at', 'status') // Pastikan kolom 'status' benar-benar ada
-        ->get();
+            ->select('created_at', 'status') // Pastikan kolom 'status' benar-benar ada
+            ->get();
 
         // Mengirimkan data ke view
         return view('po_pengajuan.trs_po_procurment', compact('mstPoPengajuans', 'deptHead',  'userAccHeader', 'userAccbody', 'matchingTrsPoPengajuans'));
