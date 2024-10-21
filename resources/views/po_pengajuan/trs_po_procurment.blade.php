@@ -402,19 +402,25 @@
                                                         ($item->status_1 == 6 || $item->status_1 == 7 || $item->status_1 == 8 || $item->status_1 == 10) &&
                                                             $item->status_2 != 8)
                                                         <div class="d-flex align-items-center gap-3">
-                                                            <button type="button"
-                                                                class="btn btn-success btn-sm btn-save ml-2" title="Save"
-                                                                data-id="{{ $item->id }}">
-                                                                <i class="fas fa-save"></i> Save
-                                                            </button>
+
+                                                            @if (in_array(auth()->user()->role_id, [1, 14, 41, 54]))
+                                                                <button type="button"
+                                                                    class="btn btn-success btn-sm btn-save ml-2"
+                                                                    title="Save" data-id="{{ $item->id }}">
+                                                                    <i class="fas fa-save"></i> Save
+                                                                </button>
+                                                            @endif
+                                                            @if (in_array(auth()->user()->role_id, [1, 14, 41]))
+                                                                <button type="button"
+                                                                    class="btn btn-danger btn-sm btn-cancel ml-2"
+                                                                    title="Reject Item" data-id="{{ $item->id }}">
+                                                                    <i class="fas fa-close"></i> Reject Item
+                                                                </button>
+                                                            @endif
+
                                                             <button type="button" class="btn btn-info btn-sm btn-view ml-2"
                                                                 title="View Details" data-id="{{ $item->id }}">
                                                                 <i class="fas fa-eye"></i> View
-                                                            </button>
-                                                            <button type="button"
-                                                                class="btn btn-danger btn-sm btn-cancel ml-2"
-                                                                title="Reject Item" data-id="{{ $item->id }}">
-                                                                <i class="fas fa-close"></i> Reject Item
                                                             </button>
                                                         </div>
                                                     @endif
@@ -530,16 +536,20 @@
                             <i class="fas fa-arrow-left"></i> Back
                         </a>
                         @if ($item->status_1 == 5)
-                            <button type="button" class="btn btn-primary btn-sm btn-kirim ml-2"
-                                data-no_fpb="{{ $item->no_fpb }}" title="Kirim">
-                                <i class="fas fa-check"></i> Confirm
-                            </button>
+                            @if (in_array(auth()->user()->role_id, [1, 14, 41]))
+                                <button type="button" class="btn btn-primary btn-sm btn-kirim ml-2"
+                                    data-no_fpb="{{ $item->no_fpb }}" title="Kirim">
+                                    <i class="fas fa-check"></i> Confirm
+                                </button>
+                            @endif
                         @endif
                         @if ($item->status_1 != 9)
-                            <button type="button" class="btn btn-success btn-sm btn-finish ml-2"
-                                data-no_fpb="{{ $item->no_fpb }}" title="Finish">
-                                <i class="fas fa-thumbs-up"></i> Finish
-                            </button>
+                            @if (in_array(auth()->user()->role_id, [1, 14, 41]))
+                                <button type="button" class="btn btn-success btn-sm btn-finish ml-2"
+                                    data-no_fpb="{{ $item->no_fpb }}" title="Finish">
+                                    <i class="fas fa-thumbs-up"></i> Finish
+                                </button>
+                            @endif
                         @endif
                         <button type="button" class="btn btn-primary" onclick="printTable()">
                             <i class="fas fa-print"></i>Print PDF</button>

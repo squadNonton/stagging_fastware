@@ -520,7 +520,8 @@
             @endphp
 
             @if (in_array(Auth::user()->role_id, $hrgarole) ||
-                    in_array(Auth::user()->role_id, $secHeadRoles))
+                    in_array(Auth::user()->role_id, $secHeadRoles)||
+                    in_array(Auth::user()->role_id, $deptHeadRoles))
                 <li class="nav-heading">People Development</li>
                 <a class="nav-link collapsed" data-bs-target="#nav-tech-competency" data-bs-toggle="collapse"
                     href="#">
@@ -643,7 +644,7 @@
                 $deptHeadRoles = [1, 2, 5, 11, 7, 14, 15]; // Department Head Roles
                 $userRoles = [1, 14, 15, 50, 30, 40, 11, 39]; // User Roles
                 $finnRole = [1, 14, 11, 12]; // Finance Roles
-                $procRoles = [1, 14, 41]; // Procurement Roles
+                $procRoles = [1, 14, 41, 54]; // Procurement Roles
                 // Gabungkan semua roles ke dalam satu array
                 $allRoles = array_merge($secHeadRoles, $deptHeadRoles, $userRoles, $finnRole, $procRoles);
             @endphp
