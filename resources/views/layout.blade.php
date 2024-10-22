@@ -520,7 +520,7 @@
             @endphp
 
             @if (in_array(Auth::user()->role_id, $hrgarole) ||
-                    in_array(Auth::user()->role_id, $secHeadRoles)||
+                    in_array(Auth::user()->role_id, $secHeadRoles) ||
                     in_array(Auth::user()->role_id, $deptHeadRoles))
                 <li class="nav-heading">People Development</li>
                 <a class="nav-link collapsed" data-bs-target="#nav-tech-competency" data-bs-toggle="collapse"
@@ -552,7 +552,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @if (in_array(Auth::user()->role_id, $secHeadRoles))
+                            @if (in_array(Auth::user()->role_id, $deptHeadRoles))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('tcShow') }}">
                                         <i class="bi bi-check2-circle fs-6"></i>
@@ -564,7 +564,7 @@
                     </li>
 
                     <li class="nav-item">
-                        @if (in_array(Auth::user()->role_id, $deptHeadRoles))
+                        @if (in_array(Auth::user()->role_id, $deptHeadRoles) || in_array(Auth::user()->role_id, $secHeadRoles))
                             <a class="nav-link collapsed" data-bs-toggle="collapse" href="#evaluationSubsectionTwo">
                                 <i class="bi bi-check-circle-fill fs-6"></i>
                                 <span>Penilaian Technical Competency</span>
@@ -573,6 +573,14 @@
                         @endif
                         <ul id="evaluationSubsectionTwo" class="nav-content collapse"
                             data-bs-parent="#nav-tech-competency">
+                            @if (in_array(Auth::user()->role_id, $secHeadRoles))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('penilaian.index') }}">
+                                        <i class="bi bi-person-check-fill fs-6"></i>
+                                        <span>Penilaian Technical Competency by Sec. Head</span>
+                                    </a>
+                                </li>
+                            @endif
                             @if (in_array(Auth::user()->role_id, $deptHeadRoles))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('penilaian.index') }}">
@@ -640,7 +648,7 @@
             </ul> --}}
 
             @php
-                $secHeadRoles = [1, 3, 4, 9, 12, 14, 15, 22, 30, 31, 39, 44]; // Roles for accessing PO Pengajuan Management
+                $secHeadRoles = [1, 3, 4, 9, 12, 14, 15, 22, 30, 31, 39, 40, 41, 44]; // Roles for accessing PO Pengajuan Management
                 $deptHeadRoles = [1, 2, 5, 11, 7, 14, 15]; // Department Head Roles
                 $userRoles = [1, 14, 15, 50, 30, 40, 11, 39]; // User Roles
                 $finnRole = [1, 14, 11, 12]; // Finance Roles

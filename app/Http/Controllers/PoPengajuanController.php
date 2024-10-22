@@ -93,7 +93,7 @@ class PoPengajuanController extends Controller
 
             // Logika pemilihan nama berdasarkan role_id
             if ($roleId == 11 || $roleId == 14) {
-                $allowedNames = ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI'];
+                $allowedNames = ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI', 'MEDI KRISNANTO', 'VIVIAN ANGELIKA'];
             } elseif ($roleId == 5) {
                 $allowedNames = ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'];
             } elseif ($roleId == 2) {
@@ -370,7 +370,6 @@ class PoPengajuanController extends Controller
         return view('po_pengajuan.index_po_procurment', compact('data', 'pengajuanCancel', 'noFpbTerbaru'));
     }
 
-
     public function showFPBForm($id)
     {
         // Mengambil data berdasarkan id
@@ -385,7 +384,7 @@ class PoPengajuanController extends Controller
 
         // Tentukan Dept. Head berdasarkan nilai modified_at
         $deptHead = '';
-        if (in_array($poPengajuan->modified_at, ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI'])) {
+        if (in_array($poPengajuan->modified_at, ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI', 'MEDI KRISNANTO', 'VIVIAN ANGELIKA'])) {
             $deptHead = 'MARTINUS CAHYO RAHASTO';
         } elseif (in_array($poPengajuan->modified_at, ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'])) {
             $deptHead = 'ARY RODJO PRASETYO';
@@ -407,7 +406,7 @@ class PoPengajuanController extends Controller
         } elseif ($poPengajuan->kategori_po == 'GA') {
             $userAccHeader = 'GA';
             $userAccbody = 'MUHAMMAD DINAR FARISI';
-        } elseif (in_array($poPengajuan->kategori_po, ['Consumable', 'Subcont', 'Spareparts', 'Indirect Material'])) {
+        } elseif (in_array($poPengajuan->kategori_po, ['Consumable', 'Spareparts', 'Indirect Material'])) {
             $userAccHeader = 'Warehouse';
 
             // Mengambil data dari TrsPoPengajuan berdasarkan status 4 dan id_fpb yang diambil dari id di $poPengajuan
@@ -455,7 +454,7 @@ class PoPengajuanController extends Controller
 
         // Tentukan Dept. Head berdasarkan nilai modified_at
         $deptHead = '';
-        if (in_array($poPengajuan->modified_at, ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI'])) {
+        if (in_array($poPengajuan->modified_at, ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI', 'MEDI KRISNANTO', 'VIVIAN ANGELIKA'])) {
             $deptHead = 'MARTINUS CAHYO RAHASTO';
         } elseif (in_array($poPengajuan->modified_at, ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'])) {
             $deptHead = 'ARY RODJO PRASETYO';
@@ -526,7 +525,7 @@ class PoPengajuanController extends Controller
 
         // Tentukan Dept. Head berdasarkan nilai modified_at
         $deptHead = '';
-        if (in_array($poPengajuan->modified_at, ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI'])) {
+        if (in_array($poPengajuan->modified_at, ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI', 'MEDI KRISNANTO', 'VIVIAN ANGELIKA'])) {
             $deptHead = 'MARTINUS CAHYO RAHASTO';
         } elseif (in_array($poPengajuan->modified_at, ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'])) {
             $deptHead = 'ARY RODJO PRASETYO';
@@ -597,7 +596,7 @@ class PoPengajuanController extends Controller
 
         // Tentukan Dept. Head berdasarkan nilai modified_at
         $deptHead = '';
-        if (in_array($poPengajuan->modified_at, ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI'])) {
+        if (in_array($poPengajuan->modified_at, ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI', 'MEDI KRISNANTO', 'VIVIAN ANGELIKA'])) {
             $deptHead = 'MARTINUS CAHYO RAHASTO';
         } elseif (in_array($poPengajuan->modified_at, ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'])) {
             $deptHead = 'ARY RODJO PRASETYO';
@@ -668,7 +667,7 @@ class PoPengajuanController extends Controller
 
         // Tentukan Dept. Head berdasarkan nilai modified_at
         $deptHead = '';
-        if (in_array($poPengajuan->modified_at, ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI'])) {
+        if (in_array($poPengajuan->modified_at, ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI', 'MEDI KRISNANTO', 'VIVIAN ANGELIKA'])) {
             $deptHead = 'MARTINUS CAHYO RAHASTO';
         } elseif (in_array($poPengajuan->modified_at, ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'])) {
             $deptHead = 'ARY RODJO PRASETYO';
