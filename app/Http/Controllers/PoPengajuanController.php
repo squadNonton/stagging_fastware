@@ -17,30 +17,50 @@ class PoPengajuanController extends Controller
     public function indexPoPengajuan()
     {
 
-        // Mendapatkan nama user yang sedang login
-        $loggedInUserName = auth()->user()->name;
+        // Mendapatkan role_id dari pengguna yang sedang login
+        $roleId = auth()->user()->role_id;
 
-        $data = MstPoPengajuan::where('mst_po_pengajuans.modified_at', $loggedInUserName) // Filter berdasarkan modified_at
-            ->whereIn('mst_po_pengajuans.id', function ($query) {
-                $query->select(DB::raw('MAX(id)')) // Ambil id maksimal (yang terbaru)
-                    ->from('mst_po_pengajuans') // Dari mst_po_pengajuans
-                    ->groupBy('no_fpb'); // Kelompokkan berdasarkan no_fpb
-            })
-            ->leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id') // Menggunakan LEFT JOIN agar data mst_po_pengajuans tetap ditampilkan
-            ->select(
-                'mst_po_pengajuans.no_fpb',
-                DB::raw('MAX(mst_po_pengajuans.id) as id'),
-                DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'), // Ambil nilai modified_at terbaru
-                DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'), // Ambil kategori_po terbaru
-                DB::raw('MAX(mst_po_pengajuans.catatan) as catatan'), // Ambil catatan_po terbaru
-                DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'),
-                DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
-                DB::raw('COALESCE(MAX(trs.updated_at), "-") as trs_updated_at') // COALESCE untuk menangani null pada trs_po_pengajuans
-            )
-            ->groupBy('mst_po_pengajuans.no_fpb') // Kelompokkan berdasarkan no_fpb untuk mendapatkan data unik
-            ->orderBy(DB::raw('MAX(mst_po_pengajuans.id)'), 'desc') // Urutkan berdasarkan id maksimal secara descending
-            ->get();
+        // Jika role_id adalah 1, 14, atau 15, ambil semua data
+        if (in_array($roleId, [1, 14, 15])) {
+            $data = MstPoPengajuan::leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id') // Menggunakan LEFT JOIN
+                ->select(
+                    'mst_po_pengajuans.no_fpb',
+                    DB::raw('MAX(mst_po_pengajuans.id) as id'),
+                    DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'),
+                    DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'),
+                    DB::raw('MAX(mst_po_pengajuans.catatan) as catatan'),
+                    DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'),
+                    DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
+                    DB::raw('COALESCE(MAX(trs.updated_at), "-") as trs_updated_at')
+                )
+                ->groupBy('mst_po_pengajuans.no_fpb')
+                ->orderBy(DB::raw('MAX(mst_po_pengajuans.id)'), 'desc')
+                ->get();
+        } else {
+            // Mendapatkan nama user yang sedang login
+            $loggedInUserName = auth()->user()->name;
 
+            $data = MstPoPengajuan::where('mst_po_pengajuans.modified_at', $loggedInUserName)
+                ->whereIn('mst_po_pengajuans.id', function ($query) {
+                    $query->select(DB::raw('MAX(id)'))
+                        ->from('mst_po_pengajuans')
+                        ->groupBy('no_fpb');
+                })
+                ->leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id')
+                ->select(
+                    'mst_po_pengajuans.no_fpb',
+                    DB::raw('MAX(mst_po_pengajuans.id) as id'),
+                    DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'),
+                    DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'),
+                    DB::raw('MAX(mst_po_pengajuans.catatan) as catatan'),
+                    DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'),
+                    DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
+                    DB::raw('COALESCE(MAX(trs.updated_at), "-") as trs_updated_at')
+                )
+                ->groupBy('mst_po_pengajuans.no_fpb')
+                ->orderBy(DB::raw('MAX(mst_po_pengajuans.id)'), 'desc')
+                ->get();
+        }
 
         // Mengirim data ke view
         return view('po_pengajuan.index_po_pengajuan', compact('data'));
@@ -51,48 +71,63 @@ class PoPengajuanController extends Controller
         // Mendapatkan role_id dari pengguna yang sedang login
         $roleId = auth()->user()->role_id;
 
-        // Array mapping antara role_id dan nama yang diizinkan untuk ditampilkan
-        $allowedNames = [];
-
-        // Logika pemilihan nama berdasarkan role_id
-        if ($roleId == 11) {
-            $allowedNames = ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI'];
-        } elseif ($roleId == 5) {
-            $allowedNames = ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'];
-        } elseif ($roleId == 2) {
-            $allowedNames = ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN', 'WULYO EKO PRASETYO', 'SENDY PRABOWO', 'YAN WELEM MANGINSELA', 'HEXAPA DARMADI', 'SARAH EGA BUDI ASTUTI', 'SONY STIAWAN', 'DIMAS ADITYA PRIANDANA', 'DANIA ISNAWATI', 'FRISILIA CLAUDIA HUTAMA', 'DWI KUNTORO', 'YUNASIS PALGUNADI', 'RISFAN FAISAL'];
-        } elseif ($roleId == 7) {
-            $allowedNames = ['RANGGA FADILLAH'];
-        }
-
-        // Mengambil data dari model MstPoPengajuan berdasarkan role_id dan nama yang diperbolehkan
-        if (!empty($allowedNames)) {
-            // Mengambil data no_fpb unik dengan updated_at terbaru menggunakan subquery
-            $data = MstPoPengajuan::whereIn('mst_po_pengajuans.modified_at', $allowedNames) // Filter berdasarkan nama yang diizinkan
-                ->whereIn('mst_po_pengajuans.id', function ($query) {
-                    $query->select(DB::raw('MAX(id)')) // Ambil id maksimal (yang terbaru)
-                        ->from('mst_po_pengajuans')
-                        ->groupBy('no_fpb'); // Kelompokkan berdasarkan no_fpb
-                })
-                ->join('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id') // Join dengan TrsPoPengajuan untuk mendapatkan updated_at
+        // Jika role_id adalah 1, 14, atau 15, ambil semua data
+        if (in_array($roleId, [1, 14, 15])) {
+            $data = MstPoPengajuan::join('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id') // Join dengan TrsPoPengajuan untuk mendapatkan updated_at
                 ->select(
                     'mst_po_pengajuans.no_fpb',
                     DB::raw('MAX(mst_po_pengajuans.id) as id'),
-                    DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'), // Ambil nilai modified_at terbaru
-                    DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'), // Ambil kategori_po terbaru
-                    DB::raw('MAX(mst_po_pengajuans.catatan) as catatan_po'), // Ambil catatan_po terbaru
+                    DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'),
+                    DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'),
+                    DB::raw('MAX(mst_po_pengajuans.catatan) as catatan_po'),
                     DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'),
                     DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
-                    DB::raw('MAX(trs.updated_at) as trs_updated_at') // Ambil updated_at terbaru dari trs_po_pengajuans
+                    DB::raw('MAX(trs.updated_at) as trs_updated_at')
                 )
-                ->groupBy('mst_po_pengajuans.no_fpb') // Kelompokkan berdasarkan no_fpb untuk mendapatkan data unik
-                ->orderBy('mst_po_pengajuans.no_fpb', 'desc') // Urutkan berdasarkan updated_at terbaru
+                ->groupBy('mst_po_pengajuans.no_fpb')
+                ->orderBy('mst_po_pengajuans.no_fpb', 'desc')
                 ->get();
         } else {
-            // Jika role_id tidak sesuai dengan yang ditentukan, return data kosong atau handle sesuai kebutuhan
-            $data = collect(); // atau bisa return redirect dengan pesan error
-        }
+            // Array mapping antara role_id dan nama yang diizinkan untuk ditampilkan
+            $allowedNames = [];
 
+            // Logika pemilihan nama berdasarkan role_id
+            if ($roleId == 11 || $roleId == 14) {
+                $allowedNames = ['JESSICA PAUNE', 'SITI MARIA ULFA', 'MUHAMMAD DINAR FARISI'];
+            } elseif ($roleId == 5) {
+                $allowedNames = ['MUGI PRAMONO', 'ABDUR RAHMAN AL FAAIZ', 'RAGIL ISHA RAHMANTO'];
+            } elseif ($roleId == 2) {
+                $allowedNames = ['ILHAM CHOLID', 'JUN JOHAMIN PD', 'HERY HERMAWAN', 'WULYO EKO PRASETYO', 'SENDY PRABOWO', 'YAN WELEM MANGINSELA', 'HEXAPA DARMADI', 'SARAH EGA BUDI ASTUTI', 'SONY STIAWAN', 'DIMAS ADITYA PRIANDANA', 'DANIA ISNAWATI', 'FRISILIA CLAUDIA HUTAMA', 'DWI KUNTORO', 'YUNASIS PALGUNADI', 'RISFAN FAISAL'];
+            } elseif ($roleId == 7) {
+                $allowedNames = ['RANGGA FADILLAH'];
+            }
+
+            // Mengambil data dari model MstPoPengajuan berdasarkan role_id dan nama yang diperbolehkan
+            if (!empty($allowedNames)) {
+                $data = MstPoPengajuan::whereIn('mst_po_pengajuans.modified_at', $allowedNames)
+                    ->whereIn('mst_po_pengajuans.id', function ($query) {
+                        $query->select(DB::raw('MAX(id)'))
+                            ->from('mst_po_pengajuans')
+                            ->groupBy('no_fpb');
+                    })
+                    ->join('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id')
+                    ->select(
+                        'mst_po_pengajuans.no_fpb',
+                        DB::raw('MAX(mst_po_pengajuans.id) as id'),
+                        DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'),
+                        DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'),
+                        DB::raw('MAX(mst_po_pengajuans.catatan) as catatan_po'),
+                        DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'),
+                        DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
+                        DB::raw('MAX(trs.updated_at) as trs_updated_at')
+                    )
+                    ->groupBy('mst_po_pengajuans.no_fpb')
+                    ->orderBy('mst_po_pengajuans.no_fpb', 'desc')
+                    ->get();
+            } else {
+                $data = collect(); // atau bisa return redirect dengan pesan error
+            }
+        }
 
         // Mengirim data ke view
         return view('po_pengajuan.index_po_deptHead', compact('data'));
@@ -103,69 +138,98 @@ class PoPengajuanController extends Controller
         // Mendapatkan role_id dari pengguna yang sedang login
         $roleId = auth()->user()->role_id;
 
-        // Array untuk menyimpan kategori yang diperbolehkan untuk ditampilkan
-        $allowedCategories = [];
-
-        // Logika pemilihan kategori_po berdasarkan role_id
-        if (in_array($roleId, [50, 30])) {
-            // Untuk role_id 50 & 30, hanya menampilkan kategori Consumable, Subcont, Spareparts
-            $allowedCategories = ['Consumable', 'Subcont', 'Spareparts'];
-        } elseif (in_array($roleId, [40, 14])) {
-            // Untuk role_id 40 & 14, hanya menampilkan kategori IT
-            $allowedCategories = ['IT'];
-        } elseif (in_array($roleId, [39, 14])) {
-            // Untuk role_id 39 & 14, hanya menampilkan kategori GA
-            $allowedCategories = ['GA'];
-        }
-
-        // Mengambil data dari model MstPoPengajuan berdasarkan role_id dan kategori_po yang diperbolehkan
-        if (!empty($allowedCategories)) {
-            // Mengambil data dengan filter kategori PO yang diizinkan
-            $data = MstPoPengajuan::whereIn('mst_po_pengajuans.kategori_po', $allowedCategories)
-                ->whereIn('mst_po_pengajuans.id', function ($query) {
-                    $query->select(DB::raw('MAX(id)')) // Ambil id maksimal (yang terbaru)
-                        ->from('mst_po_pengajuans') // Dari mst_po_pengajuans
-                        ->groupBy('no_fpb'); // Kelompokkan berdasarkan no_fpb
-                })
-                ->leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id') // LEFT JOIN agar tetap ambil mst_po_pengajuans meskipun trs kosong
+        // Jika role_id adalah 1, 14, atau 15, ambil semua data
+        if (in_array($roleId, [1, 14, 15])) {
+            $data = MstPoPengajuan::leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id') // LEFT JOIN
                 ->select(
                     'mst_po_pengajuans.no_fpb',
                     DB::raw('MAX(mst_po_pengajuans.id) as id'),
-                    DB::raw('MAX(mst_po_pengajuans.no_po) as no_po'), // Ambil no_po terbaru
-                    DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'), // Ambil kategori_po terbaru
-                    DB::raw('MAX(mst_po_pengajuans.nama_barang) as nama_barang'), // Ambil nama_barang terbaru
-                    DB::raw('MAX(mst_po_pengajuans.qty) as qty'), // Ambil qty terbaru
-                    DB::raw('MAX(mst_po_pengajuans.pcs) as pcs'), // Ambil pcs terbaru
-                    DB::raw('MAX(mst_po_pengajuans.price_list) as price_list'), // Ambil price_list terbaru
-                    DB::raw('MAX(mst_po_pengajuans.total_harga) as total_harga'), // Ambil total_harga terbaru
-                    DB::raw('MAX(mst_po_pengajuans.spesifikasi) as spesifikasi'), // Ambil spesifikasi terbaru
-                    DB::raw('MAX(mst_po_pengajuans.file) as file'), // Ambil file terbaru
-                    DB::raw('MAX(mst_po_pengajuans.file_name) as file_name'), // Ambil file_name terbaru
-                    DB::raw('MAX(mst_po_pengajuans.amount) as amount'), // Ambil amount terbaru
-                    DB::raw('MAX(mst_po_pengajuans.rekomendasi) as rekomendasi'), // Ambil rekomendasi terbaru
-                    DB::raw('MAX(mst_po_pengajuans.due_date) as due_date'), // Ambil due_date terbaru
-                    DB::raw('MAX(mst_po_pengajuans.target_cost) as target_cost'), // Ambil target_cost terbaru
-                    DB::raw('MAX(mst_po_pengajuans.lead_time) as lead_time'), // Ambil lead_time terbaru
-                    DB::raw('MAX(mst_po_pengajuans.nama_customer) as nama_customer'), // Ambil nama_customer terbaru
-                    DB::raw('MAX(mst_po_pengajuans.nama_project) as nama_project'), // Ambil nama_project terbaru
-                    DB::raw('MAX(mst_po_pengajuans.catatan) as catatan'), // Ambil catatan terbaru
-                    DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'), // Ambil status_1 terbaru
-                    DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'), // Ambil status_2 terbaru
-                    DB::raw('MAX(mst_po_pengajuans.created_at) as created_at'), // Ambil created_at terbaru
-                    DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'), // Ambil modified_at terbaru
-                    DB::raw('COALESCE(MAX(trs.updated_at), "-") as trs_updated_at') // Gunakan COALESCE untuk menangani null pada trs_po_pengajuans
+                    DB::raw('MAX(mst_po_pengajuans.no_po) as no_po'),
+                    DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'),
+                    DB::raw('MAX(mst_po_pengajuans.nama_barang) as nama_barang'),
+                    DB::raw('MAX(mst_po_pengajuans.qty) as qty'),
+                    DB::raw('MAX(mst_po_pengajuans.pcs) as pcs'),
+                    DB::raw('MAX(mst_po_pengajuans.price_list) as price_list'),
+                    DB::raw('MAX(mst_po_pengajuans.total_harga) as total_harga'),
+                    DB::raw('MAX(mst_po_pengajuans.spesifikasi) as spesifikasi'),
+                    DB::raw('MAX(mst_po_pengajuans.file) as file'),
+                    DB::raw('MAX(mst_po_pengajuans.file_name) as file_name'),
+                    DB::raw('MAX(mst_po_pengajuans.amount) as amount'),
+                    DB::raw('MAX(mst_po_pengajuans.rekomendasi) as rekomendasi'),
+                    DB::raw('MAX(mst_po_pengajuans.due_date) as due_date'),
+                    DB::raw('MAX(mst_po_pengajuans.target_cost) as target_cost'),
+                    DB::raw('MAX(mst_po_pengajuans.lead_time) as lead_time'),
+                    DB::raw('MAX(mst_po_pengajuans.nama_customer) as nama_customer'),
+                    DB::raw('MAX(mst_po_pengajuans.nama_project) as nama_project'),
+                    DB::raw('MAX(mst_po_pengajuans.catatan) as catatan'),
+                    DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'),
+                    DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
+                    DB::raw('MAX(mst_po_pengajuans.created_at) as created_at'),
+                    DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'),
+                    DB::raw('COALESCE(MAX(trs.updated_at), "-") as trs_updated_at')
                 )
-                ->groupBy('mst_po_pengajuans.no_fpb') // Kelompokkan berdasarkan no_fpb untuk mendapatkan data unik
-                ->orderBy(DB::raw('MAX(mst_po_pengajuans.id)'), 'desc') // Urutkan berdasarkan id maksimal secara descending
+                ->groupBy('mst_po_pengajuans.no_fpb')
+                ->orderBy(DB::raw('MAX(mst_po_pengajuans.id)'), 'desc')
                 ->get();
-
-            // Jika terdapat banyak entri untuk no_fpb yang sama, ambil hanya yang pertama
-            $data = $data->unique('no_fpb'); // Ambil hanya entri unik berdasarkan no_fpb
         } else {
-            // Jika role_id tidak sesuai dengan yang ditentukan, return data kosong atau handle sesuai kebutuhan
-            $data = collect(); // atau bisa return redirect dengan pesan error
-        }
+            // Array untuk menyimpan kategori yang diperbolehkan untuk ditampilkan
+            $allowedCategories = [];
 
+            // Logika pemilihan kategori_po berdasarkan role_id
+            if (in_array($roleId, [50, 30])) {
+                $allowedCategories = ['Consumable', 'Subcont', 'Spareparts'];
+            } elseif (in_array($roleId, [40, 14])) {
+                $allowedCategories = ['IT'];
+            } elseif (in_array($roleId, [39, 14])) {
+                $allowedCategories = ['GA'];
+            }
+
+            // Mengambil data dari model MstPoPengajuan berdasarkan role_id dan kategori_po yang diperbolehkan
+            if (!empty($allowedCategories)) {
+                $data = MstPoPengajuan::whereIn('mst_po_pengajuans.kategori_po', $allowedCategories)
+                    ->whereIn('mst_po_pengajuans.id', function ($query) {
+                        $query->select(DB::raw('MAX(id)'))
+                            ->from('mst_po_pengajuans')
+                            ->groupBy('no_fpb');
+                    })
+                    ->leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id')
+                    ->select(
+                        'mst_po_pengajuans.no_fpb',
+                        DB::raw('MAX(mst_po_pengajuans.id) as id'),
+                        DB::raw('MAX(mst_po_pengajuans.no_po) as no_po'),
+                        DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'),
+                        DB::raw('MAX(mst_po_pengajuans.nama_barang) as nama_barang'),
+                        DB::raw('MAX(mst_po_pengajuans.qty) as qty'),
+                        DB::raw('MAX(mst_po_pengajuans.pcs) as pcs'),
+                        DB::raw('MAX(mst_po_pengajuans.price_list) as price_list'),
+                        DB::raw('MAX(mst_po_pengajuans.total_harga) as total_harga'),
+                        DB::raw('MAX(mst_po_pengajuans.spesifikasi) as spesifikasi'),
+                        DB::raw('MAX(mst_po_pengajuans.file) as file'),
+                        DB::raw('MAX(mst_po_pengajuans.file_name) as file_name'),
+                        DB::raw('MAX(mst_po_pengajuans.amount) as amount'),
+                        DB::raw('MAX(mst_po_pengajuans.rekomendasi) as rekomendasi'),
+                        DB::raw('MAX(mst_po_pengajuans.due_date) as due_date'),
+                        DB::raw('MAX(mst_po_pengajuans.target_cost) as target_cost'),
+                        DB::raw('MAX(mst_po_pengajuans.lead_time) as lead_time'),
+                        DB::raw('MAX(mst_po_pengajuans.nama_customer) as nama_customer'),
+                        DB::raw('MAX(mst_po_pengajuans.nama_project) as nama_project'),
+                        DB::raw('MAX(mst_po_pengajuans.catatan) as catatan'),
+                        DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'),
+                        DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
+                        DB::raw('MAX(mst_po_pengajuans.created_at) as created_at'),
+                        DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'),
+                        DB::raw('COALESCE(MAX(trs.updated_at), "-") as trs_updated_at')
+                    )
+                    ->groupBy('mst_po_pengajuans.no_fpb')
+                    ->orderBy(DB::raw('MAX(mst_po_pengajuans.id)'), 'desc')
+                    ->get();
+
+                // Jika terdapat banyak entri untuk no_fpb yang sama, ambil hanya yang pertama
+                $data = $data->unique('no_fpb');
+            } else {
+                $data = collect(); // atau bisa return redirect dengan pesan error
+            }
+        }
 
         // Mengirim data ke view
         return view('po_pengajuan.index_po_user', compact('data'));
