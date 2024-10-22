@@ -177,7 +177,7 @@ class PoPengajuanController extends Controller
 
             // Logika pemilihan kategori_po berdasarkan role_id
             if (in_array($roleId, [50, 30])) {
-                $allowedCategories = ['Consumable', 'Subcont', 'Spareparts'];
+                $allowedCategories = ['Consumable', 'Spareparts'];
             } elseif (in_array($roleId, [40, 14])) {
                 $allowedCategories = ['IT'];
             } elseif (in_array($roleId, [39, 14])) {
@@ -477,7 +477,7 @@ class PoPengajuanController extends Controller
         } elseif ($poPengajuan->kategori_po == 'GA') {
             $userAccHeader = 'GA';
             $userAccbody = 'MUHAMMAD DINAR FARISI';
-        } elseif (in_array($poPengajuan->kategori_po, ['Consumable', 'Subcont', 'Spareparts', 'Indirect Material'])) {
+        } elseif (in_array($poPengajuan->kategori_po, ['Consumable', 'Spareparts', 'Indirect Material'])) {
             $userAccHeader = 'Warehouse';
 
             // Mengambil data dari TrsPoPengajuan berdasarkan status 4 dan id_fpb yang diambil dari id di $poPengajuan
@@ -548,7 +548,7 @@ class PoPengajuanController extends Controller
         } elseif ($poPengajuan->kategori_po == 'GA') {
             $userAccHeader = 'GA';
             $userAccbody = 'MUHAMMAD DINAR FARISI';
-        } elseif (in_array($poPengajuan->kategori_po, ['Consumable', 'Subcont', 'Spareparts', 'Indirect Material'])) {
+        } elseif (in_array($poPengajuan->kategori_po, ['Consumable', 'Spareparts', 'Indirect Material'])) {
             $userAccHeader = 'Warehouse';
 
             // Mengambil data dari TrsPoPengajuan berdasarkan status 4 dan id_fpb yang diambil dari id di $poPengajuan
@@ -619,7 +619,7 @@ class PoPengajuanController extends Controller
         } elseif ($poPengajuan->kategori_po == 'GA') {
             $userAccHeader = 'GA';
             $userAccbody = 'MUHAMMAD DINAR FARISI';
-        } elseif (in_array($poPengajuan->kategori_po, ['Consumable', 'Subcont', 'Spareparts', 'Indirect Material'])) {
+        } elseif (in_array($poPengajuan->kategori_po, ['Consumable', 'Spareparts', 'Indirect Material'])) {
             $userAccHeader = 'Warehouse';
 
             // Mengambil data dari TrsPoPengajuan berdasarkan status 4 dan id_fpb yang diambil dari id di $poPengajuan
@@ -689,7 +689,7 @@ class PoPengajuanController extends Controller
         } elseif ($poPengajuan->kategori_po == 'GA') {
             $userAccHeader = 'GA';
             $userAccbody = 'MUHAMMAD DINAR FARISI';
-        } elseif (in_array($poPengajuan->kategori_po, ['Consumable', 'Subcont', 'Spareparts', 'Indirect Material'])) {
+        } elseif (in_array($poPengajuan->kategori_po, ['Consumable', 'Spareparts', 'Indirect Material'])) {
             $userAccHeader = 'Warehouse';
 
             // Mengambil data dari TrsPoPengajuan berdasarkan status 4 dan id_fpb yang diambil dari id di $poPengajuan
@@ -1207,27 +1207,40 @@ class PoPengajuanController extends Controller
 
         // Update status data yang sesuai
         foreach ($pengajuanList as $pengajuan) {
-            if ($pengajuan->status_2 == 8) {
-                // Jika status_2 adalah 8, update hanya status_1
-                $pengajuan->update(['status_1' => 3]);
-
-                \Log::info('Only updated status_1 for no_fpb: ' . $no_fpb . ' because status_2 is 8');
-            } else {
-                // Jika status_2 bukan 8, update status_1
-                $pengajuan->update(['status_1' => 3]);
-                \Log::info('Updated status_1 for no_fpb: ' . $no_fpb);
+            // Tambahkan kondisi jika kategori_po adalah 'Subcont'
+            if ($pengajuan->kategori_po == 'Subcont') {
+                // Update status_1 menjadi 4 jika kategori_po adalah Subcont
+                $pengajuan->update(['status_1' => 4]);
+                \Log::info('Updated status_1 to 4 for no_fpb: ' . $no_fpb . ' because kategori_po is Subcont');
 
                 // Tambah data ke dalam model TrsPoPengajuan
                 TrsPoPengajuan::create([
                     'id_fpb' => $pengajuan->id,
                     'nama_barang' => $pengajuan->nama_barang, // Menggunakan id dari setiap data MstPoPengajuan
                     'modified_at' => auth()->user()->name, // Menyimpan nama user yang login
-                    'status' => 3,
+                    'status' => 4, // Set status menjadi 4 karena kategori_po adalah Subcont
                 ]);
+            } else {
+                if ($pengajuan->status_2 == 8) {
+                    // Jika status_2 adalah 8, update hanya status_1
+                    $pengajuan->update(['status_1' => 3]);
+
+                    \Log::info('Only updated status_1 for no_fpb: ' . $no_fpb . ' because status_2 is 8');
+                } else {
+                    // Jika status_2 bukan 8, update status_1
+                    $pengajuan->update(['status_1' => 3]);
+                    \Log::info('Updated status_1 for no_fpb: ' . $no_fpb);
+
+                    // Tambah data ke dalam model TrsPoPengajuan
+                    TrsPoPengajuan::create([
+                        'id_fpb' => $pengajuan->id,
+                        'nama_barang' => $pengajuan->nama_barang, // Menggunakan id dari setiap data MstPoPengajuan
+                        'modified_at' => auth()->user()->name, // Menyimpan nama user yang login
+                        'status' => 3,
+                    ]);
+                }
             }
         }
-
-        return redirect()->back()->with('success', 'Status updated successfully for no_fpb: ' . $no_fpb);
     }
 
     //user
