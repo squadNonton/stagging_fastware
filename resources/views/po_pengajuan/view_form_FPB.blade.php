@@ -448,15 +448,6 @@
                                                             <i class="fas fa-close"></i> Pengajuan Reject
                                                         </button>
                                                     @endif
-                                                    @if (in_array(auth()->user()->role_id, [1, 5, 11, 2, 7, 40, 50, 30, 39, 12, 14]))
-                                                        @if ($item->status_2 != 8 && $item->status_1 != 9)
-                                                            <button type="button"
-                                                                class="btn btn-danger btn-sm btn-cancel-2 ml-2"
-                                                                title="Reject Item" data-id="{{ $item->id }}">
-                                                                <i class="fas fa-close"></i> Reject Item
-                                                            </button>
-                                                        @endif
-                                                    @endif
                                                 </td>
                                             </tr>
                                         @empty
@@ -521,7 +512,15 @@
                                             </td>
                                             <td style="vertical-align: top; height: 60px;">
                                                 @if ($mstPoPengajuans->first()->status_1 >= 5 && $mstPoPengajuans->first()->status_1 <= 13)
-                                                    <p><b>APPROVED by ADHI PRASETIYO</b></p>
+                                                <p>
+                                                    <b>APPROVED by&nbsp;
+                                                        @if ($trsPoPengajuanStatus4)
+                                                            {{ $trsPoPengajuanStatus4->modified_at }}
+                                                        @else
+                                                            &nbsp;
+                                                        @endif
+                                                    </b>
+                                                </p>
                                                 @else
                                                     <p>&nbsp;</p>
                                                 @endif
@@ -636,17 +635,25 @@
                                             let modifiedLabel =
                                                 ''; // Label yang akan digunakan
 
-                                            // Cek modified_at dan tampilkan label sesuai
+                                            // Cek modified_at dan kategori_po, kemudian tampilkan label sesuai
                                             if (['NURSALIM', 'RANGGA FADILLAH']
-                                                .includes(item.modified_at)) {
+                                                .includes(item.modified_at) && [
+                                                    'Consumable', 'Spareparts',
+                                                    'Indirect Material'
+                                                ].includes(item.kategori_po)) {
                                                 modifiedLabel = 'Warehouse';
                                             } else if (['MEDI KRISNANTO',
                                                     'JESSICA PAUNE'
-                                                ].includes(item.modified_at)) {
+                                                ].includes(item.modified_at) && [
+                                                    'IT'
+                                                ].includes(item.kategori_po)) {
                                                 modifiedLabel = 'IT';
                                             } else if (['MUHAMMAD DINAR FARISI',
-                                                    'MARTINUS CAHYO RAHASTO'
-                                                ].includes(item.modified_at)) {
+                                                    'MARTINUS CAHYO RAHASTO',
+                                                    'JESSICA PAUNE'
+                                                ].includes(item.modified_at) && [
+                                                    'GA'
+                                                ].includes(item.kategori_po)) {
                                                 modifiedLabel = 'GA';
                                             } else {
                                                 modifiedLabel = item
@@ -768,75 +775,6 @@
                                         Swal.fire(
                                             'Gagal!',
                                             'Terjadi kesalahan saat Diajukan item.',
-                                            'error'
-                                        );
-                                    }
-                                });
-                            }
-                        });
-                    });
-                });
-
-                document.querySelectorAll('.btn-cancel-2').forEach(button => {
-                    button.addEventListener('click', function() {
-                        var id = this.getAttribute('data-id'); // Mengambil id dari tombol
-                        console.log("ID to cancel:", id); // Log id yang diambil
-
-                        // SweetAlert untuk memasukkan keterangan pembatalan
-                        Swal.fire({
-                            title: 'Masukkan Keterangan Reject Item',
-                            html: `
-                                <textarea id="textarea-keterangan" class="swal2-input" placeholder="Masukkan Keterangan Reject Item" style="width: 300px; height: 100px; font-size: 16px;"></textarea>
-                            `,
-                            focusConfirm: false,
-                            preConfirm: () => {
-                                const keterangan = document.getElementById(
-                                    'textarea-keterangan').value;
-
-                                if (!keterangan) {
-                                    Swal.showValidationMessage(
-                                        'Keterangan tidak boleh kosong');
-                                }
-
-                                return keterangan;
-                            }
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                var keterangan = result.value;
-                                console.log("Keterangan pembatalan:",
-                                    keterangan); // Log keterangan pembatalan yang dipilih
-
-                                // Jika konfirmasi, lakukan AJAX POST request untuk membatalkan item
-                                $.ajax({
-                                    url: "{{ route('kirim.fpb.reject', ':id') }}"
-                                        .replace(':id',
-                                            id), // Menggunakan id yang diambil
-                                    type: 'POST',
-                                    data: {
-                                        _token: '{{ csrf_token() }}', // CSRF Token Laravel
-                                        keterangan: keterangan // Data keterangan yang dimasukkan
-                                    },
-                                    success: function(response) {
-                                        console.log("Response from server:",
-                                            response); // Log response dari server
-
-                                        Swal.fire(
-                                            'Dibatalkan!',
-                                            'Item berhasil dibatalkan.',
-                                            'success'
-                                        ).then(() => {
-                                            location
-                                                .reload(); // Refresh halaman setelah sukses
-                                        });
-                                    },
-                                    error: function(xhr) {
-                                        console.log("Error occurred:", xhr
-                                            .responseText
-                                        ); // Log error jika terjadi kesalahan
-
-                                        Swal.fire(
-                                            'Gagal!',
-                                            'Terjadi kesalahan saat membatalkan item.',
                                             'error'
                                         );
                                     }

@@ -178,8 +178,170 @@ class PdController extends Controller
             ->with('role', 'user', 'jobPosition') // Mengambil relasi yang dibutuhkan
             ->get();
 
-        // Mengirim data ke view
-        return view('people_development.view_develop', compact('data'));
+        // Mengambil role_id pengguna yang sedang login
+        $roleId = auth()->user()->role_id;
+
+        // Menentukan sections berdasarkan role_id
+        $sections = [];
+
+        // Role 11: Finance, Accounting, HRGA, IT
+        if ($roleId == 11) {
+            $sections = [
+                'Finance, Accounting',
+                'PDCA, HR, GA, Legal, Procurement, IT',
+                'Fin, Acc, Proc, HRGA & IT',
+                'HR, GA & Legal',
+                'PDCA, Procurement, IT',
+            ];
+        }
+
+        // Role 5: Production-related sections
+        if ($roleId == 5) {
+            $sections = [
+                'PPC, Production CT',
+                'Production HT',
+                'Production MC & Machining Custom',
+                'Technical Support QC & Maintenance',
+            ];
+        }
+
+        // Role 2: Sales-related sections
+        if ($roleId == 2) {
+            $sections = [
+                'Sales Region I, II, III, IV',
+                'Sales Region I, II',
+                'Sales Region III, IV',
+                'Sales Region II',
+                'Sales Region I'
+            ];
+        }
+
+        // Role 2: Sales-related sections
+        if ($roleId == 7) {
+            $sections = [
+                'Logistics'
+            ];
+        }
+
+        // Role 1, 14, 15: Can access all sections
+        if (in_array($roleId, [1, 14, 15])) {
+            $sections = array_merge(
+                [
+                    'Finance, Accounting',
+                    'PDCA, HR, GA, Legal, Procurement, IT',
+                    'Fin, Acc, Proc, HRGA & IT',
+                    'HR, GA & Legal',
+                    'PDCA, Procurement, IT',
+                ],
+                [
+                    'PPC, Production CT',
+                    'Production HT',
+                    'Production MC & Machining Custom',
+                    'Technical Support QC & Maintenance',
+                ],
+                [
+                    'Sales Region I, II, III, IV',
+                    'Sales Region I, II',
+                    'Sales Region III, IV',
+                    'Sales Region II',
+                    'Sales Region I'
+                ],
+                [
+                    'Logistics'
+                ]
+            );
+        }
+
+        // Mengambil job positions beserta relasinya
+        $jobPositions = TcJobPosition::with('role', 'user')->get();
+
+        // Mengambil data TrsPenilaian dengan kategori Technical
+        $technicalPenilaians = DB::table('trs_penilaian_tcs as p')
+            ->join('mst_tcs as tc', 'p.id_tc', '=', 'tc.id')
+            ->select(
+                DB::raw("'Technical' as category"),
+                'tc.keterangan_tc as keterangan',
+                'tc.nilai as nilai_standard',
+                'p.nilai_tc as nilai_aktual',
+                'p.id_user',
+                'p.id_tc'
+            )
+            ->whereNotNull('p.id_tc')
+            ->get();
+
+        // Mengambil data TrsPenilaian dengan kategori Non-Technical
+        $nonTechnicalPenilaians = DB::table('trs_penilaian_tcs as p')
+            ->join('mst_soft_skills as sk', 'p.id_sk', '=', 'sk.id')
+            ->select(
+                DB::raw("'Non-Technical' as category"),
+                'sk.keterangan_sk as keterangan',
+                'sk.nilai as nilai_standard',
+                'p.nilai_sk as nilai_aktual',
+                'p.id_user',
+                'p.id_sk'
+            )
+            ->whereNotNull('p.id_sk')
+            ->get();
+
+        // Mengambil data TrsPenilaian dengan kategori Additional
+        $additionalPenilaians = DB::table('trs_penilaian_tcs as p')
+            ->join('mst_additionals as ad', 'p.id_ad', '=', 'ad.id')
+            ->select(
+                DB::raw("'Additional' as category"),
+                'ad.keterangan_ad as keterangan',
+                'ad.nilai as nilai_standard',
+                'p.nilai_ad as nilai_aktual',
+                'p.id_user',
+                'p.id_ad'
+            )
+            ->whereNotNull('p.id_ad')
+            ->get();
+
+        // Gabungkan semua hasil penilaian
+        $penilaians = $technicalPenilaians->merge($nonTechnicalPenilaians)->merge($additionalPenilaians);
+
+        // Mengambil semua data TcPeopleDevelopment tanpa filter modified_at
+        $data = TcPeopleDevelopment::with('user')->get();
+
+        // Menghitung jumlah total data
+        $totalRecords = $data->count();
+
+        // Menghitung jumlah data berdasarkan status
+        $countStatusBlue = $data->where('status_2', 'Mencari Vendor')->count();
+        $countStatusOrange = $data->where('status_2', 'Proses Pendaftaran')->count();
+        $countStatusYellow = $data->where('status_2', 'On Progress')->count();
+        $countStatusGreen = $data->where('status_2', 'Done')->count();
+        $countStatusGray = $data->where('status_2', 'Pending')->count();
+        $countStatusRed = $data->where('status_2', 'Ditolak')->count();
+
+        // Menghitung persentase masing-masing status
+        $percentageStatusBlue = $totalRecords > 0 ? ($countStatusBlue / $totalRecords) * 100 : 0;
+        $percentageStatusOrange = $totalRecords > 0 ? ($countStatusOrange / $totalRecords) * 100 : 0;
+        $percentageStatusYellow = $totalRecords > 0 ? ($countStatusYellow / $totalRecords) * 100 : 0;
+        $percentageStatusGreen = $totalRecords > 0 ? ($countStatusGreen / $totalRecords) * 100 : 0;
+        $percentageStatusGray = $totalRecords > 0 ? ($countStatusGray / $totalRecords) * 100 : 0;
+        $percentageStatusRed = $totalRecords > 0 ? ($countStatusRed / $totalRecords) * 100 : 0;
+
+        // Kirim data ke view
+        return view('people_development.view_develop', compact(
+            'data',
+            'sections',
+            'jobPositions',
+            'penilaians',
+            'totalRecords',
+            'countStatusBlue',
+            'countStatusOrange',
+            'countStatusYellow',
+            'countStatusGreen',
+            'countStatusGray',
+            'countStatusRed',
+            'percentageStatusBlue',
+            'percentageStatusOrange',
+            'percentageStatusYellow',
+            'percentageStatusGreen',
+            'percentageStatusGray',
+            'percentageStatusRed'
+        ));
     }
 
     public function viewPD2()
@@ -741,6 +903,53 @@ class PdController extends Controller
                 } else {
                     \Log::warning("Data not found for ID: $id");
                 }
+            }
+        }
+
+        return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui']);
+    }
+
+    public function updatePdPlan2(Request $request)
+    {
+        $data = $request->all();
+        $userName = Auth::user()->name;
+        $currentYear = date('Y');
+
+        // Mengolah data baru
+        if (isset($data['new_section'])) {
+            foreach ($data['new_section'] as $index => $section) {
+                $tcPeopleDevelopment = new TcPeopleDevelopment();
+                $tcPeopleDevelopment->status_1 = 2;
+                $tcPeopleDevelopment->tahun_aktual = $currentYear + 1;
+                $tcPeopleDevelopment->tahun_usulan = $currentYear;
+                $tcPeopleDevelopment->section = $section;
+                $tcPeopleDevelopment->id_job_position = $data['new_id_job_position'][$index];
+                $tcPeopleDevelopment->id_user = $data['new_id_user'][$index];
+                $tcPeopleDevelopment->kategori_competency = $data['new_kategori_competency'][$index];
+                $tcPeopleDevelopment->competency = $data['new_competency'][$index];
+
+                // Set data lainnya, with null handling
+                $tcPeopleDevelopment->program_training = $data['new_program_training'][$index] ?? null;
+                $tcPeopleDevelopment->due_date = $data['new_due_date'][$index] ?? null;
+                $tcPeopleDevelopment->biaya = $data['new_biaya'][$index] ?? null;
+                $tcPeopleDevelopment->lembaga = $data['new_lembaga'][$index] ?? null;
+                $tcPeopleDevelopment->keterangan_tujuan = $data['new_keterangan_tujuan'][$index] ?? null;
+
+                // Menyimpan modified_at berdasarkan section
+                if (in_array($section, ['Sales Region I', 'Sales Region II', 'Sales Region I, II'])) {
+                    $tcPeopleDevelopment->modified_at = 'YULMAI RIDO WINANDA';
+                } elseif (in_array($section, ['Sales Region III', 'Sales Region IV'])) {
+                    $tcPeopleDevelopment->modified_at = 'ANDIK TOTOK SISWOYO';
+                } elseif (in_array($section, ['Finance, Accounting', 'PDCA, HR, GA, Legal, Procurement, IT', 'HR, GA & Legal ', 'PDCA, Procurement, IT'])) {
+                    $tcPeopleDevelopment->modified_at = 'MARTINUS CAHYO RAHASTO';
+                } elseif ($section === 'Logistics') {
+                    $tcPeopleDevelopment->modified_at = 'VITRI HANDAYANI';
+                } elseif (in_array($section, ['PPC, Production CT', 'Production HT', 'Production MC & Machining Custom', 'Technical Support QC & Maintenance'])) {
+                    $tcPeopleDevelopment->modified_at = 'ARY RODJO PRASETYO';
+                }
+
+                $tcPeopleDevelopment->modified_updated = $userName;
+                $tcPeopleDevelopment->save();
             }
         }
 

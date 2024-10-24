@@ -329,7 +329,6 @@
                                 <img id="signature-section" src="{{ asset('assets/pre_order/logo-adasi.png') }}"
                                     alt="Logo Adasi" style="width: 330px; height: auto;">
                             </div>
-
                             <!-- Ambil no_fpb dari item pertama dalam koleksi -->
                             @if ($mstPoPengajuans->isNotEmpty())
                                 <p>PIC : {{ $mstPoPengajuans->first()->modified_at }}</p>
@@ -520,7 +519,15 @@
                                             </td>
                                             <td style="vertical-align: top; height: 60px;">
                                                 @if ($mstPoPengajuans->first()->status_1 >= 5 && $mstPoPengajuans->first()->status_1 <= 13)
-                                                    <p><b>APPROVED by ADHI PRASETIYO</b></p>
+                                                <p>
+                                                    <b>APPROVED by&nbsp;
+                                                        @if ($trsPoPengajuanStatus4)
+                                                            {{ $trsPoPengajuanStatus4->modified_at }}
+                                                        @else
+                                                            &nbsp;
+                                                        @endif
+                                                    </b>
+                                                </p>
                                                 @else
                                                     <p>&nbsp;</p>
                                                 @endif
@@ -636,17 +643,25 @@
                                             let modifiedLabel =
                                                 ''; // Label yang akan digunakan
 
-                                            // Cek modified_at dan tampilkan label sesuai
+                                            // Cek modified_at dan kategori_po, kemudian tampilkan label sesuai
                                             if (['NURSALIM', 'RANGGA FADILLAH']
-                                                .includes(item.modified_at)) {
+                                                .includes(item.modified_at) && [
+                                                    'Consumable', 'Spareparts',
+                                                    'Indirect Material'
+                                                ].includes(item.kategori_po)) {
                                                 modifiedLabel = 'Warehouse';
                                             } else if (['MEDI KRISNANTO',
                                                     'JESSICA PAUNE'
-                                                ].includes(item.modified_at)) {
+                                                ].includes(item.modified_at) && [
+                                                    'IT'
+                                                ].includes(item.kategori_po)) {
                                                 modifiedLabel = 'IT';
                                             } else if (['MUHAMMAD DINAR FARISI',
-                                                    'MARTINUS CAHYO RAHASTO'
-                                                ].includes(item.modified_at)) {
+                                                    'MARTINUS CAHYO RAHASTO',
+                                                    'JESSICA PAUNE'
+                                                ].includes(item.modified_at) && [
+                                                    'GA'
+                                                ].includes(item.kategori_po)) {
                                                 modifiedLabel = 'GA';
                                             } else {
                                                 modifiedLabel = item
