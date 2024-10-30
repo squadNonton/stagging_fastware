@@ -20,6 +20,7 @@ use App\Http\Controllers\TcJobController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MadingController;
 use App\Http\Controllers\PoPengajuanController;
+use App\Http\Controllers\PengajuanSubcontController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -287,7 +288,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/unlike', [KmPengajuanController::class, 'unlike'])->name('kmSuka.unlike');
     Route::post('/insights/add', [KmPengajuanController::class, 'addInsight'])->name('insights.add');
 
-    // tc
+    // // tc
     // Route::get('/job', [TcJobController::class, 'jobShow'])->name('jobShow');
 
     // Route::get('/tcShow', [TcController::class, 'tcShow'])->name('tcShow');
@@ -306,7 +307,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     // Route::put('mst_ad/{id}/updateAdditionals', [TcController::class, 'updateAdditionals'])->name('mst_ad.updateAdditionals');
     // Route::get('/employees-by-job-position', [TcController::class, 'fetchEmployeesByJobPosition'])->name('employees.by.job.position');
 
-    
+
 
     // Route::get('/users/{userId}/role', [TcJobController::class, 'getUserRole'])->name('users.role');
     // Route::post('/job-positions', [TcJobController::class, 'store'])->name('jobPositions.store');
@@ -316,7 +317,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     // Route::delete('/delete-sk-row/{id}', [TcController::class, 'deleteSkRow'])->name('sk.deleteRow');
     // Route::delete('/delete-ad-row/{id}', [TcController::class, 'deleteAdRow'])->name('ad.deleteRow');
 
-    // Route untuk menampilkan halaman penilaian (index)
+    // //Route untuk menampilkan halaman penilaian (index)
     // Route::get('/penilaian', [PenilaianTCController::class, 'indexTrs'])->name('penilaian.index');
     // Route::get('/penilaian-dept', [PenilaianTCController::class, 'indexTrs2'])->name('penilaian.index2');
     // Route::get('/dashboard-competency', [PenilaianTCController::class, 'dsCompetency'])->name('dsCompetency');
@@ -340,8 +341,13 @@ Route::middleware(['web', 'auth'])->group(function () {
 
     // Route::post('/save-penilaian', [PenilaianTCController::class, 'savePenilaian'])->name('savePenilaian');
     // Route::post('/save-pd-pengajuan', [PdController::class, 'savePdPengajuan'])->name('savePdPengajuan');
-    // Route::put('/updated-pd-hrga', [PdController::class, 'updatePdPlan'])->name('updatePdPlan');
+    // Route::post('/save-pd-pengajuan-Dept', [PdController::class, 'savePdPengajuanDept'])->name('savePdPengajuanDept');
 
+    // // Route::put('/updated-pd-hrga', [PdController::class, 'updatePdPlan'])->name('updatePdPlan');
+
+    // Route::post('/update-data', [PdController::class, 'updateData'])->name('updateData');
+
+    // Route::put('/updated-pd-hrga2', [PdController::class, 'updatePdPlan2'])->name('updatePdPlan2');
     // Route::post('/update-status/{id_job_position}', [PenilaianTCController::class, 'kirimSC'])->name('update.status');
     // Route::post('/update-status-dept/{id}', [PenilaianTCController::class, 'kirimDept'])->name('update.status2');
 
@@ -355,7 +361,6 @@ Route::middleware(['web', 'auth'])->group(function () {
 
     // Route::get('/people-development/filter', [PdController::class, 'getFilteredData'])->name('people_development.filter');
 
-
     // Route::get('/trs/edit-penilaian/{id_job_position}', [PenilaianTCController::class, 'editTrs'])->name('penilaian.edit');
     // Route::get('/trs/edit-dept/{id_job_position}', [PenilaianTCController::class, 'editTrs2'])->name('penilaian.edit2');
     // Route::get('/trs/view-penilaian/{id_job_position}', [PenilaianTCController::class, 'viewTrs'])->name('penilaian.view');
@@ -363,7 +368,7 @@ Route::middleware(['web', 'auth'])->group(function () {
 
     // Route::get('/get-edit-Trs', [PenilaianTCController::class, 'getDataTrs'])->name('getDataTrs');
     // Route::put('/penilaian/update/{id}', [PenilaianTCController::class, 'updateTrs'])->name('updatePenilaian');
-    // Route::put('/penilaian/dept/{id_job_position}', [PenilaianTCController::class, 'updateTrs2'])->name('updateDept');
+    // Route::put('/penilaian/dept/{id}', [PenilaianTCController::class, 'updateTrs2'])->name('updateDept');
 
     // Route::put('/penilaian/{id}', [PenilaianTCController::class, 'update'])->name('penilaian.update');
     // Route::delete('/penilaian/{id}', [PenilaianTCController::class, 'destroy'])->name('penilaian.destroy');
@@ -378,7 +383,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     // Route::get('/get-competency-filter', [PenilaianTCController::class, 'getCompetencyFilter'])->name('get-competency-filter');
     // Route::get('/get-detail-filter', [PenilaianTCController::class, 'getDetailCompetency'])->name('get-detail-filter');
 
-    //Po
+    //FPB
     Route::get('/index-po', [PoPengajuanController::class, 'indexPoPengajuan'])->name('index.PO');
     Route::get('/index-po-depthead', [PoPengajuanController::class, 'indexPoDeptHead'])->name('index.PO.Dept');
     Route::get('/index-po-user', [PoPengajuanController::class, 'indexPoUser'])->name('index.PO.user');
@@ -410,7 +415,6 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/cancel-item2/{id}', [PoPengajuanController::class, 'updateCancelBySecHead'])->name('kirim.fpb.cancel2');
     Route::post('/po_pengajuan/finish/{no_fpb}', [PoPengajuanController::class, 'updateFinishByProcurment'])->name('update.PoPengajuan.finish');
 
-
     Route::get('/po-history/{no_fpb}', [PoPengajuanController::class, 'getPoHistory'])->name('po.history');
     Route::delete('/po_pengajuan/delete_multiple', [PoPengajuanController::class, 'deletePoPengajuanMultiple'])->name('delete.PoPengajuanMultiple');
 
@@ -419,4 +423,23 @@ Route::middleware(['web', 'auth'])->group(function () {
 
     //E-Mading Adasi
     Route::get('/ds-E-Mading-Adasi', [MadingController::class, 'dsMading'])->name('dsMading');
+
+    //Pengajuan Subcont
+    Route::get('/dashboard-pengajuan-sales', [PengajuanSubcontController::class, 'indexSales'])->name('indexSales');
+    Route::get('/dashboard-pengajuan-procurment', [PengajuanSubcontController::class, 'indexProc'])->name('indexProc');
+    Route::get('/pengajuan-subcont/create', [PengajuanSubcontController::class, 'create'])->name('pengajuan-subcont.create');
+    Route::get('/pengajuan-subcont/{id}/edit', [PengajuanSubcontController::class, 'edit'])->name('pengajuan-subcont.edit');
+    Route::get('/pengajuan-subcont/{id}/editProc', [PengajuanSubcontController::class, 'editProc'])->name('pengajuan-subcont.editProc');
+    Route::get('/pengajuan-subcont/{id}/view', [PengajuanSubcontController::class, 'viewSales'])->name('pengajuan-subcont.view');
+    Route::get('/get-history/{id}', [PengajuanSubcontController::class, 'getHistory'])->name('get.history');
+
+    Route::post('/pengajuan-subcont/store', [PengajuanSubcontController::class, 'store'])->name('pengajuan-subcont.store');
+    // Route untuk mengubah status menjadi 2 (kirim)
+    Route::post('/pengajuan-subcont/{id}/kirim', [PengajuanSubcontController::class, 'kirimSales'])->name('pengajuan-subcont.kirim');
+    Route::post('/pengajuan-subcont/{id}/kirim-proc', [PengajuanSubcontController::class, 'kirimProc'])->name('pengajuan-subcont.kirim2');
+    Route::post('/submit-data/{id}/submit-proc', [PengajuanSubcontController::class, 'submitData'])->name('submit.data');
+    Route::post('/submit-data/{id}/finish-proc', [PengajuanSubcontController::class, 'FinishProc'])->name('FinishProc');
+    // Route untuk update data
+    Route::put('/pengajuan-subcont/{id}', [PengajuanSubcontController::class, 'update'])->name('pengajuan-subcont.update');
+    Route::delete('/pengajuan-subcont/{id}', [PengajuanSubcontController::class, 'delete'])->name('pengajuan-subcont.destroy');
 });

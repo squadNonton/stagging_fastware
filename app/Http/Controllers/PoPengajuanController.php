@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Str;
 use App\Models\MstPoPengajuan;
 use App\Models\TrsPoPengajuan;
 
@@ -318,8 +318,10 @@ class PoPengajuanController extends Controller
         $pengajuanTerbaru = $data->firstWhere('status_1', 5); // Mencari pengajuan terbaru dari data yang sudah diambil
         $noFpbTerbaru = $pengajuanTerbaru ? $pengajuanTerbaru->no_fpb : null;
 
+        $showNamaBarang = false;
+
         // Mengirim data ke view
-        return view('po_pengajuan.index_po_procurment', compact('data', 'pengajuanCancel', 'noFpbTerbaru'));
+        return view('po_pengajuan.index_po_procurment', compact('data', 'pengajuanCancel', 'noFpbTerbaru', 'showNamaBarang'));
     }
 
     public function indexPoProcurement2()
@@ -392,8 +394,10 @@ class PoPengajuanController extends Controller
         $pengajuanTerbaru = $data->firstWhere('status_1', 5);
         $noFpbTerbaru = $pengajuanTerbaru ? $pengajuanTerbaru->no_fpb : null;
 
+        $showNamaBarang = true;
+
         // Mengirim data ke view
-        return view('po_pengajuan.index_po_procurment', compact('data', 'pengajuanCancel', 'noFpbTerbaru'));
+        return view('po_pengajuan.index_po_procurment', compact('data', 'pengajuanCancel', 'noFpbTerbaru', 'showNamaBarang'));
     }
 
     public function showFPBForm($id)
@@ -1631,12 +1635,6 @@ class PoPengajuanController extends Controller
     //2 save procurment
     public function updateConfirmByProcurment($id)
     {
-        // Validate the incoming request
-        request()->validate([
-            'keterangan' => 'required|string',
-            'no_po' => 'nullable|string', // Tambahkan validasi opsional untuk no_po
-        ]);
-
         // Log id yang diterima
         \Log::info('Received id: ' . $id);
 
@@ -1648,31 +1646,49 @@ class PoPengajuanController extends Controller
             return response()->json(['message' => 'Data not found'], 404);
         }
 
-        // Jika no_po diisi, ubah status menjadi 7
-        if (request()->filled('no_po')) {
-            \Log::info('No PO filled for id: ' . $id);
+        // Jika file quotation_file diunggah, update data tanpa mengubah status
+        if (request()->hasFile('quotation_file')) {
+            $file = request()->file('quotation_file');
+            $uuid = (string) Str::uuid(); // Generate UUID untuk nama file
+            $extension = $file->getClientOriginalExtension(); // Dapatkan ekstensi file asli
+
+            // Nama file menggunakan UUID dan ekstensi file asli
+            $fileName = $uuid . '.' . $extension;
+
+            // Simpan file di public/assets/pre_order
+            $filePath = $file->move(public_path('assets/pre_order'), $fileName);
+
+            // Simpan path file di database
             $pengajuan->update([
-                'no_po' => request('no_po'),
-                'status_1' => 7, // Ubah status menjadi 7
-                'status_2' => 7,
+                'quotation_file' => 'assets/pre_order/' . $fileName, // Simpan path file yang diunggah
             ]);
         } else {
-            // Jika no_po tidak diisi, tetap simpan keterangan dan status
-            $pengajuan->update([
-                'status_1' => 6,
-                'status_2' => 6, // Ubah status menjadi 6
+            // Jika no_po diisi, ubah status menjadi 7
+            if (request()->filled('no_po')) {
+                \Log::info('No PO filled for id: ' . $id);
+                $pengajuan->update([
+                    'no_po' => request('no_po'),
+                    'status_1' => 7, // Ubah status menjadi 7
+                    'status_2' => 7,
+                ]);
+            } else {
+                // Jika no_po tidak diisi, tetap simpan keterangan dan status
+                $pengajuan->update([
+                    'status_1' => 6,
+                    'status_2' => 6, // Ubah status menjadi 6
+                ]);
+            }
+
+            // Save the keterangan in TrsPoPengajuan
+            TrsPoPengajuan::create([
+                'id_fpb' => $pengajuan->id,
+                'no_po' => $pengajuan->no_po, // Tambahkan no_po di sini
+                'nama_barang' => $pengajuan->nama_barang,
+                'modified_at' => auth()->user()->name, // Menyimpan nama user yang login
+                'keterangan' => request('keterangan'), // Get keterangan from request body
+                'status' => $pengajuan->status_1, // Simpan status yang terbaru
             ]);
         }
-
-        // Save the keterangan in TrsPoPengajuan
-        TrsPoPengajuan::create([
-            'id_fpb' => $pengajuan->id,
-            'no_po' => $pengajuan->no_po, // Tambahkan no_po di sini
-            'nama_barang' => $pengajuan->nama_barang,
-            'modified_at' => auth()->user()->name, // Menyimpan nama user yang login
-            'keterangan' => request('keterangan'), // Get keterangan from request body
-            'status' => $pengajuan->status_1, // Simpan status yang terbaru
-        ]);
 
         return response()->json(['message' => 'Status updated successfully for id: ' . $id]);
     }

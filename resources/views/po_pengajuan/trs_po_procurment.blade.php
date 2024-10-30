@@ -324,6 +324,8 @@
                                         <th>Tgl Dibuat</th>
                                         <th class="no-print">Status</th>
                                         <th class="no-print">Aksi</th> <!-- Kolom baru untuk aksi -->
+                                        <th class="no-print">Unggah Quotation</th> <!-- Kolom baru untuk upload -->
+                                        <th class="no-print">Unduh</th> <!-- Kolom baru untuk download -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -429,6 +431,46 @@
                                                             title="View Details" data-id="{{ $item->id }}">
                                                             <i class="fas fa-eye"></i> View
                                                         </button>
+                                                    @endif
+                                                </td>
+                                                <td class="no-print">
+                                                    @if (empty($item->quotation_file))
+                                                        <input type="file" name="quotation_file_{{ $item->id }}"
+                                                            class="form-control form-control-sm">
+                                                    @endif
+                                                </td>
+                                                <td class="no-print">
+                                                    @if (in_array(auth()->user()->role_id, [1, 14, 41]))
+                                                        @if ($item->quotation_file)
+                                                            <p>
+                                                                <a href="{{ asset($item->quotation_file) }}"
+                                                                    target="_blank">
+                                                                    @php
+                                                                        // Mendapatkan ekstensi file
+                                                                        $fileExtension = pathinfo(
+                                                                            $item->quotation_file,
+                                                                            PATHINFO_EXTENSION,
+                                                                        );
+                                                                    @endphp
+
+                                                                    @if ($fileExtension == 'pdf')
+                                                                        <!-- Ikon untuk file PDF -->
+                                                                        <i class="fas fa-file-pdf fa-2x"
+                                                                            style="color: #e74c3c;"></i>
+                                                                    @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
+                                                                        <!-- Ikon untuk file gambar -->
+                                                                        <i class="fas fa-file-image fa-2x"
+                                                                            style="color: #3498db;"></i>
+                                                                    @else
+                                                                        <!-- Ikon untuk file umum -->
+                                                                        <i class="fas fa-file-alt fa-2x"
+                                                                            style="color: #2ecc71;"></i>
+                                                                    @endif
+                                                                </a>
+                                                            </p>
+                                                        @else
+                                                            <span class="text-muted">No Quotation File</span>
+                                                        @endif
                                                     @endif
                                                 </td>
                                             </tr>
@@ -656,64 +698,117 @@
                         console.log("ID to save:", id, "No PO:",
                             no_po); // Log id dan no_po yang diambil
 
-                        // SweetAlert untuk mengisi keterangan
-                        Swal.fire({
-                            title: 'Masukkan Keterangan',
-                            input: 'textarea',
-                            inputPlaceholder: 'Tuliskan keterangan Update Progres di sini...',
-                            showCancelButton: true,
-                            confirmButtonText: 'Save',
-                            cancelButtonText: 'Batal',
-                            preConfirm: (keterangan) => {
-                                if (!keterangan) {
-                                    Swal.showValidationMessage(
-                                        'Keterangan tidak boleh kosong');
+                        // Cek apakah ada quotation_file
+                        var quotationFileInput = document.querySelector(
+                            `input[name="quotation_file_${id}"]`);
+                        var hasQuotationFile = quotationFileInput.files.length > 0;
+
+                        if (hasQuotationFile) {
+                            // Jika ada quotation_file, ambil file dan log informasi
+                            var quotationFile = quotationFileInput.files[0];
+                            console.log("File akan dikirim:", quotationFile
+                                .name); // Log nama file yang akan dikirim
+
+                            // Buat FormData untuk mengirim file dan data lainnya
+                            var formData = new FormData();
+                            formData.append('quotation_file', quotationFile);
+                            formData.append('_token', '{{ csrf_token() }}'); // CSRF Token Laravel
+                            formData.append('no_po', no_po); // Tambahkan data no_po
+
+                            // Lakukan AJAX POST request
+                            $.ajax({
+                                url: "{{ route('kirim.fpb.progres', ':id') }}".replace(':id',
+                                    id),
+                                type: 'POST',
+                                data: formData,
+                                processData: false, // Agar jQuery tidak memproses data
+                                contentType: false, // Agar jQuery tidak mengatur Content-Type
+
+                                success: function(response) {
+                                    console.log("Response from server:",
+                                        response); // Log response dari server
+
+                                    Swal.fire(
+                                        'Tersimpan!',
+                                        'Data berhasil disimpan.',
+                                        'success'
+                                    ).then(() => {
+                                        location
+                                            .reload(); // Refresh halaman setelah sukses
+                                    });
+                                },
+                                error: function(xhr) {
+                                    console.log("Error occurred:", xhr
+                                        .responseText); // Log error jika terjadi kesalahan
+
+                                    Swal.fire(
+                                        'Gagal!',
+                                        'Terjadi kesalahan saat menyimpan data.',
+                                        'error'
+                                    );
                                 }
-                                return keterangan;
-                            }
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                var keterangan = result.value;
-                                console.log("Keterangan:",
-                                    keterangan); // Log keterangan yang dimasukkan
-
-                                // Jika konfirmasi, lakukan AJAX POST request
-                                $.ajax({
-                                    url: "{{ route('kirim.fpb.progres', ':id') }}"
-                                        .replace(':id', id), // Menggunakan id yang ada
-                                    type: 'POST',
-                                    data: {
-                                        _token: '{{ csrf_token() }}', // CSRF Token Laravel
-                                        keterangan: keterangan, // Data keterangan yang diinput
-                                        no_po: no_po // Tambahkan data no_po
-                                    },
-                                    success: function(response) {
-                                        console.log("Response from server:",
-                                            response); // Log response dari server
-
-                                        Swal.fire(
-                                            'Tersimpan!',
-                                            'Data berhasil disimpan dan status diubah.',
-                                            'success'
-                                        ).then(() => {
-                                            location
-                                                .reload(); // Refresh halaman setelah sukses
-                                        });
-                                    },
-                                    error: function(xhr) {
-                                        console.log("Error occurred:", xhr
-                                            .responseText
-                                        ); // Log error jika terjadi kesalahan
-
-                                        Swal.fire(
-                                            'Gagal!',
-                                            'Terjadi kesalahan saat menyimpan data.',
-                                            'error'
-                                        );
+                            });
+                        } else {
+                            // SweetAlert untuk mengisi keterangan
+                            Swal.fire({
+                                title: 'Masukkan Keterangan',
+                                input: 'textarea',
+                                inputPlaceholder: 'Tuliskan keterangan Update Progres di sini...',
+                                showCancelButton: true,
+                                confirmButtonText: 'Save',
+                                cancelButtonText: 'Batal',
+                                preConfirm: (keterangan) => {
+                                    if (!keterangan) {
+                                        Swal.showValidationMessage(
+                                            'Keterangan tidak boleh kosong');
                                     }
-                                });
-                            }
-                        });
+                                    return keterangan;
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    var keterangan = result.value;
+                                    console.log("Keterangan:",
+                                        keterangan); // Log keterangan yang dimasukkan
+
+                                    // Jika konfirmasi, lakukan AJAX POST request
+                                    $.ajax({
+                                        url: "{{ route('kirim.fpb.progres', ':id') }}"
+                                            .replace(':id', id),
+                                        type: 'POST',
+                                        data: {
+                                            _token: '{{ csrf_token() }}', // CSRF Token Laravel
+                                            keterangan: keterangan, // Data keterangan yang diinput
+                                            no_po: no_po // Tambahkan data no_po
+                                        },
+                                        success: function(response) {
+                                            console.log("Response from server:",
+                                                response
+                                            ); // Log response dari server
+
+                                            Swal.fire(
+                                                'Tersimpan!',
+                                                'Data berhasil disimpan dan status diubah.',
+                                                'success'
+                                            ).then(() => {
+                                                location
+                                                    .reload(); // Refresh halaman setelah sukses
+                                            });
+                                        },
+                                        error: function(xhr) {
+                                            console.log("Error occurred:", xhr
+                                                .responseText
+                                            ); // Log error jika terjadi kesalahan
+
+                                            Swal.fire(
+                                                'Gagal!',
+                                                'Terjadi kesalahan saat menyimpan data.',
+                                                'error'
+                                            );
+                                        }
+                                    });
+                                }
+                            });
+                        }
                     });
                 });
 

@@ -25,6 +25,7 @@ class MstPoPengajuan extends Model
         'spesifikasi', 
         'file', 
         'file_name', 
+        'quotation_file',
         'amount', 
         'rekomendasi', 
         'due_date',
