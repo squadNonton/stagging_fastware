@@ -440,37 +440,34 @@
                                                     @endif
                                                 </td>
                                                 <td class="no-print">
-                                                    @if (in_array(auth()->user()->role_id, [1, 14, 41]))
-                                                        @if ($item->quotation_file)
-                                                            <p>
-                                                                <a href="{{ asset($item->quotation_file) }}"
-                                                                    target="_blank">
-                                                                    @php
-                                                                        // Mendapatkan ekstensi file
-                                                                        $fileExtension = pathinfo(
-                                                                            $item->quotation_file,
-                                                                            PATHINFO_EXTENSION,
-                                                                        );
-                                                                    @endphp
+                                                    @if ($item->quotation_file)
+                                                        <p>
+                                                            <a href="{{ asset($item->quotation_file) }}" target="_blank">
+                                                                @php
+                                                                    // Mendapatkan ekstensi file
+                                                                    $fileExtension = pathinfo(
+                                                                        $item->quotation_file,
+                                                                        PATHINFO_EXTENSION,
+                                                                    );
+                                                                @endphp
 
-                                                                    @if ($fileExtension == 'pdf')
-                                                                        <!-- Ikon untuk file PDF -->
-                                                                        <i class="fas fa-file-pdf fa-2x"
-                                                                            style="color: #e74c3c;"></i>
-                                                                    @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
-                                                                        <!-- Ikon untuk file gambar -->
-                                                                        <i class="fas fa-file-image fa-2x"
-                                                                            style="color: #3498db;"></i>
-                                                                    @else
-                                                                        <!-- Ikon untuk file umum -->
-                                                                        <i class="fas fa-file-alt fa-2x"
-                                                                            style="color: #2ecc71;"></i>
-                                                                    @endif
-                                                                </a>
-                                                            </p>
-                                                        @else
-                                                            <span class="text-muted">No Quotation File</span>
-                                                        @endif
+                                                                @if ($fileExtension == 'pdf')
+                                                                    <!-- Ikon untuk file PDF -->
+                                                                    <i class="fas fa-file-pdf fa-2x"
+                                                                        style="color: #e74c3c;"></i>
+                                                                @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
+                                                                    <!-- Ikon untuk file gambar -->
+                                                                    <i class="fas fa-file-image fa-2x"
+                                                                        style="color: #3498db;"></i>
+                                                                @else
+                                                                    <!-- Ikon untuk file umum -->
+                                                                    <i class="fas fa-file-alt fa-2x"
+                                                                        style="color: #2ecc71;"></i>
+                                                                @endif
+                                                            </a>
+                                                        </p>
+                                                    @else
+                                                        <span class="text-muted">No Quotation File</span>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -700,7 +697,7 @@
                         var quotationFileInput = document.querySelector(
                             `input[name="quotation_file_${id}"]`);
                         var hasQuotationFile = quotationFileInput && quotationFileInput.files.length >
-                        0;
+                            0;
 
                         if (hasQuotationFile) {
                             // Jika ada quotation_file, ambil file dan log informasi
