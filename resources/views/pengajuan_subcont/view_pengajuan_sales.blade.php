@@ -42,6 +42,12 @@
                                     required>
                             </div>
 
+                            <div class="mb-3">
+                                <label for="qty" class="form-label">QTY</label>
+                                <input type="text" class="form-control" id="qty" name="qty"
+                                    value="{{ $pengajuan->qty }}" placeholder="Masukkan qty" disabled required>
+                            </div>
+
                             <!-- Keterangan (Textarea) -->
                             <div class="mb-3">
                                 <label for="keterangan" class="form-label">Keterangan</label>
@@ -58,29 +64,18 @@
                             </div>
 
                             <!-- File -->
-                            <div class="mb-3">
+                            <div class="mb-4 p-3 border rounded shadow-sm bg-light">
                                 @if ($pengajuan->file)
-                                    <p>
-                                        <i class="fas fa-file-alt fa-3x"></i> <!-- Ikon untuk menunjukkan file -->
-                                        File saat ini: <a href="{{ asset($pengajuan->file) }}"
-                                            target="_blank">{{ $pengajuan->file_name }}</a>
-                                    </p>
+                                    <p class="fw-bold text-secondary mb-1">Unduh File</p>
+                                    <a href="{{ asset($pengajuan->file) }}" target="_blank"
+                                        class="btn btn-outline-secondary" data-bs-toggle="tooltip"
+                                        title="Click to download the file">
+                                        <i class="fas fa-file-alt fa-lg me-2"></i> View File
+                                    </a>
+                                @else
+                                    <span class="text-muted fst-italic">File belum tersedia</span>
                                 @endif
                             </div>
-
-                            <br>
-
-                            <!-- File Quotation -->
-                            @if ($pengajuan->quotation_file)
-                                <div class="mb-3">
-                                    <label for="quotation_file" class="form-label">File Quotation</label><br>
-                                    <p>
-                                        <i class="fas fa-file-pdf fa-3x"></i> <!-- Ikon PDF jika file adalah PDF -->
-                                        File saat ini: <a href="{{ asset($pengajuan->quotation_file) }}"
-                                            target="_blank">{{ $pengajuan->quotation_file }}</a>
-                                    </p>
-                                </div>
-                            @endif
 
                             <!-- Tombol Submit -->
                             <div class="d-flex justify-content-end">
@@ -182,7 +177,7 @@
                         historyTableBody.innerHTML = '';
 
                         let fileUploadedShown =
-                        false; // Flag untuk melacak apakah "File quotation telah diunggah" sudah ditampilkan
+                            false; // Flag untuk melacak apakah "File quotation telah diunggah" sudah ditampilkan
 
                         // Urutkan data secara descending
                         data.reverse(); // Ini membalik urutan data menjadi descending

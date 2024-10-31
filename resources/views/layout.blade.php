@@ -316,89 +316,71 @@
             {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 4 || Auth::user()->role_id == 11 || Auth::user()->role_id == 12 || Auth::user()->role_id == 13 || Auth::user()->role_id == 14) --}}
             @php
                 $acsrole = [1, 2, 3, 4, 11, 12, 13, 14];
-                $subcontRole = [1, 2, 3, 4, 9, 11, 12, 13, 14, 22, 31]; // Roles that can access the subcont menu
             @endphp
-            @if (in_array(Auth::user()->role_id, $acsrole) || in_array(Auth::user()->role_id, $subcontRole))
-                @if (in_array(Auth::user()->role_id, $acsrole))
-                    <li class="nav-heading">Sales</li>
-                @endif
+            @if (in_array(Auth::user()->role_id, $acsrole))
+                {{-- Role ID untuk Sales --}}
+                <li class="nav-heading">Sales</li>
                 <li class="nav-item">
-                    @if (in_array(Auth::user()->role_id, $acsrole))
-                        <a class="nav-link collapsed" data-bs-target="#sales-fpp-nav" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Form Permintaan Perbaikan</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="sales-fpp-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="{{ route('sales.index') }}">
-                                    <i class="bi bi-list-check fs-6"></i>
-                                    <span>Data Form Perbaikan</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link collapsed" href="{{ route('sales.history') }}">
-                                    <i class="bi bi-list-check fs-6"></i>
-                                    <span>Riwayat Form Perbaikan</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                            <li>
-                                <a href="{{ route('index') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Form Pengajuan Klaim dan Komplain</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('showHistoryCLaimComplain') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim dan Komplain</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('scheduleVisit') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <a class="nav-link collapsed" data-bs-target="#forms-nav-inquiry" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Inquiry Sales</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="forms-nav-inquiry" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                            <li>
-                                <a href="{{ route('createinquiry') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Buat Inquiry Sales</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('konfirmInquiry') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Approve Inquiry</span>
-                                </a>
-                            </li>
-                        </ul>
-                    @endif
+                    <a class="nav-link collapsed" data-bs-target="#sales-fpp-nav" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Form Permintaan Perbaikan</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="sales-fpp-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="{{ route('sales.index') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Data Form Perbaikan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link collapsed" href="{{ route('sales.history') }}">
+                                <i class="bi bi-list-check fs-6"></i>
+                                <span>Riwayat Form Perbaikan</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Handling Klaim dan Komplain</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a href="{{ route('index') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Form Pengajuan Klaim dan
+                                    Komplain</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('showHistoryCLaimComplain') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Riwayat Klaim dan Komplain</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('scheduleVisit') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Jadwal Kunjungan</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <a class="nav-link collapsed" data-bs-target="#forms-nav-inquiry" data-bs-toggle="collapse"
+                        href="#">
+                        <i class="bi bi-journal-text"></i><span>Inquiry Sales</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="forms-nav-inquiry" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a href="{{ route('createinquiry') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Buat Inquiry Sales</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('konfirmInquiry') }}">
+                                <i class="bi bi-list-check fs-6"></i><span>Approve Inquiry</span>
+                            </a>
+                        </li>
+                    </ul>
 
-                    <!-- Menu Baru: Pengajuan Penawaran Subcont -->
-                    @if (in_array(Auth::user()->role_id, $subcontRole))
-                        <a class="nav-link collapsed" data-bs-target="#forms-nav-subcont" data-bs-toggle="collapse"
-                            href="#">
-                            <i class="bi bi-journal-text"></i><span>Pengajuan Penawaran Subcont</span><i
-                                class="bi bi-chevron-down ms-auto"></i>
-                        </a>
-                        <ul id="forms-nav-subcont" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                            <li>
-                                <a href="{{ route('indexSales') }}">
-                                    <i class="bi bi-list-check fs-6"></i><span>Buat Penawaran Subcont</span>
-                                </a>
-                            </li>
-                        </ul>
-                    @endif
                 </li><!-- End Forms Nav -->
             @endif
 
@@ -800,7 +782,20 @@
                                 </li>
                             </ul>
                         </li>
+                        <!-- Menu Baru: Pengajuan Penawaran Subcont -->
                     @endif
+                </ul>
+                <a class="nav-link collapsed" data-bs-target="#forms-nav-subcont" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-journal-text"></i><span>Pengajuan Penawaran Subcont</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="forms-nav-subcont" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('indexSales') }}">
+                            <i class="bi bi-list-check fs-6"></i><span>Buat Penawaran Subcont</span>
+                        </a>
+                    </li>
                 </ul>
             @endif
 

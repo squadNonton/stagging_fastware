@@ -20,7 +20,14 @@ class PengajuanSubcontController extends Controller
         $userName = Auth::user()->name;
 
         // Mengambil data dari tabel mst_pengajuan_subconts sesuai dengan nama user yang login
-        $pengajuanSubconts = MstPengajuanSubcont::where('modified_at', $userName)->get();
+        $pengajuanSubconts = MstPengajuanSubcont::where('modified_at', $userName)
+            ->orderByDesc('id') // Order by id in descending order as a base sorting
+            ->get();
+
+        // Sort so that status_1 = 5 is moved to the bottom
+        $pengajuanSubconts = $pengajuanSubconts->sortBy(function ($item) {
+            return $item->status_1 == 5 ? 1 : 0; // Move items with status_1 = 5 to the end
+        })->values();
 
         // Mencari pengajuan dengan quotation_file yang tidak null dan status_1 = 4
         $pengajuanDenganFile = $pengajuanSubconts->firstWhere(function ($item) {
@@ -35,9 +42,10 @@ class PengajuanSubcontController extends Controller
 
     public function indexProc()
     {
-        // Ambil hanya pengajuan yang status_1 adalah 2, 3, 4, atau 5
-        $pengajuanSubconts = MstPengajuanSubcont::whereIn('status_1', [2, 3, 4, 5])->get();
-
+        // Ambil hanya pengajuan yang status_1 adalah 2, 3, 4, atau 5 dan urutkan secara descending berdasarkan created_at
+        $pengajuanSubconts = MstPengajuanSubcont::whereIn('status_1', [2, 3, 4, 5])
+            ->orderByDesc('created_at')
+            ->get();
         return view('pengajuan_subcont.index_pengajuan_proc', compact('pengajuanSubconts'));
     }
 
@@ -124,6 +132,7 @@ class PengajuanSubcontController extends Controller
         MstPengajuanSubcont::create([
             'nama_customer' => $data['nama_customer'],
             'nama_project' => $data['nama_project'],
+            'qty' => $data['qty'],
             'keterangan' => $data['keterangan'],
             'jenis_proses_subcont' => $data['jenis_proses_subcont'],
             'file' => $data['file'] ?? null, // Jika ada file, simpan
@@ -173,6 +182,7 @@ class PengajuanSubcontController extends Controller
         $pengajuan->update([
             'nama_customer' => $data['nama_customer'],
             'nama_project' => $data['nama_project'],
+            'qty' => $data['qty'],
             'keterangan' => $data['keterangan'],
             'jenis_proses_subcont' => $data['jenis_proses_subcont'],
             'file' => $data['file'] ?? $pengajuan->file, // Jika tidak ada file baru, tetap gunakan file lama

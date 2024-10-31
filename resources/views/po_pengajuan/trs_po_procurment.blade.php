@@ -692,28 +692,26 @@
 
                 document.querySelectorAll('.btn-save').forEach(button => {
                     button.addEventListener('click', function() {
-                        var id = this.getAttribute('data-id'); // Mengambil id yang tersembunyi
-                        var no_po = document.querySelector(`input[name="no_po_${id}"]`)
-                            .value; // Mengambil nilai no_po terkait
-                        console.log("ID to save:", id, "No PO:",
-                            no_po); // Log id dan no_po yang diambil
+                        var id = this.getAttribute('data-id');
+                        var no_po = document.querySelector(`input[name="no_po_${id}"]`).value;
+                        console.log("ID to save:", id, "No PO:", no_po);
 
                         // Cek apakah ada quotation_file
                         var quotationFileInput = document.querySelector(
                             `input[name="quotation_file_${id}"]`);
-                        var hasQuotationFile = quotationFileInput.files.length > 0;
+                        var hasQuotationFile = quotationFileInput && quotationFileInput.files.length >
+                        0;
 
                         if (hasQuotationFile) {
                             // Jika ada quotation_file, ambil file dan log informasi
                             var quotationFile = quotationFileInput.files[0];
-                            console.log("File akan dikirim:", quotationFile
-                                .name); // Log nama file yang akan dikirim
+                            console.log("File akan dikirim:", quotationFile.name);
 
                             // Buat FormData untuk mengirim file dan data lainnya
                             var formData = new FormData();
                             formData.append('quotation_file', quotationFile);
-                            formData.append('_token', '{{ csrf_token() }}'); // CSRF Token Laravel
-                            formData.append('no_po', no_po); // Tambahkan data no_po
+                            formData.append('_token', '{{ csrf_token() }}');
+                            formData.append('no_po', no_po);
 
                             // Lakukan AJAX POST request
                             $.ajax({
@@ -721,25 +719,22 @@
                                     id),
                                 type: 'POST',
                                 data: formData,
-                                processData: false, // Agar jQuery tidak memproses data
-                                contentType: false, // Agar jQuery tidak mengatur Content-Type
+                                processData: false,
+                                contentType: false,
 
                                 success: function(response) {
-                                    console.log("Response from server:",
-                                        response); // Log response dari server
+                                    console.log("Response from server:", response);
 
                                     Swal.fire(
                                         'Tersimpan!',
                                         'Data berhasil disimpan.',
                                         'success'
                                     ).then(() => {
-                                        location
-                                            .reload(); // Refresh halaman setelah sukses
+                                        location.reload();
                                     });
                                 },
                                 error: function(xhr) {
-                                    console.log("Error occurred:", xhr
-                                        .responseText); // Log error jika terjadi kesalahan
+                                    console.log("Error occurred:", xhr.responseText);
 
                                     Swal.fire(
                                         'Gagal!',
@@ -767,8 +762,7 @@
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     var keterangan = result.value;
-                                    console.log("Keterangan:",
-                                        keterangan); // Log keterangan yang dimasukkan
+                                    console.log("Keterangan:", keterangan);
 
                                     // Jika konfirmasi, lakukan AJAX POST request
                                     $.ajax({
@@ -776,28 +770,25 @@
                                             .replace(':id', id),
                                         type: 'POST',
                                         data: {
-                                            _token: '{{ csrf_token() }}', // CSRF Token Laravel
-                                            keterangan: keterangan, // Data keterangan yang diinput
-                                            no_po: no_po // Tambahkan data no_po
+                                            _token: '{{ csrf_token() }}',
+                                            keterangan: keterangan,
+                                            no_po: no_po
                                         },
                                         success: function(response) {
                                             console.log("Response from server:",
-                                                response
-                                            ); // Log response dari server
+                                                response);
 
                                             Swal.fire(
                                                 'Tersimpan!',
                                                 'Data berhasil disimpan dan status diubah.',
                                                 'success'
                                             ).then(() => {
-                                                location
-                                                    .reload(); // Refresh halaman setelah sukses
+                                                location.reload();
                                             });
                                         },
                                         error: function(xhr) {
                                             console.log("Error occurred:", xhr
-                                                .responseText
-                                            ); // Log error jika terjadi kesalahan
+                                                .responseText);
 
                                             Swal.fire(
                                                 'Gagal!',

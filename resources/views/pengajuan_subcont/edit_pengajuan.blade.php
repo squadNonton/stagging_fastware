@@ -40,6 +40,12 @@
                                     value="{{ $pengajuan->nama_project }}" placeholder="Masukkan nama project" required>
                             </div>
 
+                            <div class="mb-3">
+                                <label for="qty" class="form-label">QTY</label>
+                                <input type="text" class="form-control" id="qty" name="qty"
+                                    value="{{ $pengajuan->qty }}" placeholder="Masukkan QTY" required>
+                            </div>
+
                             <!-- Keterangan (Textarea) -->
                             <div class="mb-3">
                                 <label for="keterangan" class="form-label">Keterangan</label>
@@ -55,13 +61,22 @@
                             </div>
 
                             <!-- File -->
-                            <div class="mb-3">
-                                <label for="file" class="form-label">Drawing (Kosongkan jika tidak ingin mengubah
-                                    file)</label><br>
-                                <input type="file" class="form-control-file" id="file" name="file">
+                            <div class="mb-4 p-3 border rounded shadow-sm bg-light">
+                                <label for="file" class="form-label fw-bold text-primary">
+                                    <i class="fas fa-upload"></i> Upload Drawing <span class="text-muted">(Kosongkan jika
+                                        tidak ingin mengubah file)</span>
+                                </label>
+                                <input type="file" class="form-control" id="file" name="file">
+
                                 @if ($pengajuan->file)
-                                    <p>File saat ini: <a href="{{ asset($pengajuan->file) }}"
-                                            target="_blank">{{ $pengajuan->file_name }}</a></p>
+                                    <div class="mt-3">
+                                        <p class="mb-1 fw-bold text-secondary">File saat ini:</p>
+                                        <a href="{{ asset($pengajuan->file) }}" target="_blank"
+                                            class="btn btn-outline-secondary d-flex align-items-center"
+                                            style="text-decoration: none;">
+                                            <i class="fas fa-file-alt fa-lg me-2"></i> {{ $pengajuan->file_name }}
+                                        </a>
+                                    </div>
                                 @endif
                             </div>
 

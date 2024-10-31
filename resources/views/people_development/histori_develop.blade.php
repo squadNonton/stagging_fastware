@@ -241,12 +241,12 @@
                                 @else
                                     @foreach ($dataTcPeopleDevelopment as $data)
                                         <tr>
-                                            <td>{{ $data->user->name }}</td>
-                                            <td>{{ $data->program_training_plan }}</td>
-                                            <td>{{ $data->kategori_competency }}</td>
-                                            <td>{{ $data->competency }}</td>
-                                            <td>{{ $data->lembaga_plan }}</td>
-                                            <td>{{ $data->due_date_plan }}</td>
+                                            <td>{{ $data->user->name ?? '-' }}</td>
+                                            <td>{{ $data->program_training_plan ?? '-' }}</td>
+                                            <td>{{ $data->kategori_competency ?? '-' }}</td>
+                                            <td>{{ $data->competency ?? '-' }}</td>
+                                            <td>{{ $data->lembaga_plan ?? '-' }}</td>
+                                            <td>{{ $data->due_date_plan ?? '-' }}</td>
                                             <td>
                                                 <button onclick="downloadPdf({{ $data->id }})"
                                                     style="cursor: pointer; background-color: transparent; border: none; color: blue; text-decoration: underline;">

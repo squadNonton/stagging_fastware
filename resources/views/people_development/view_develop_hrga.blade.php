@@ -6,7 +6,6 @@
         <style>
             .container {
                 margin-top: 20px;
-                /* Remove or adjust margin as needed */
             }
 
             .card {
@@ -16,8 +15,15 @@
                 padding: 20px;
                 margin-bottom: 20px;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                width: 110%;
+                width: 100%;
+                /* Lebar card 100% */
                 box-sizing: border-box;
+                /* Memastikan padding tidak menambah lebar card */
+            }
+
+            .card-content {
+                display: flex;
+                flex-direction: column;
             }
 
             .form-group {
@@ -29,11 +35,11 @@
             }
 
             .styled-table {
-                width: 200%;
+                width: 100%;
                 border-collapse: collapse;
                 margin: 25px 0;
                 font-size: 14px;
-                text-align: center;
+                text-align: left;
                 box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
             }
 
@@ -64,8 +70,12 @@
                 font-weight: bold;
                 color: #009879;
             }
-        </style>
 
+            select.status-dropdown {
+                color: white;
+                /* Default text color */
+            }
+        </style>
         <div class="pagetitle">
             <h1>Halaman Form View Data Training HRGA</h1>
             <nav>
@@ -75,54 +85,56 @@
             </nav>
         </div>
         <section class="section">
-            <div class="container">
-                <!-- Card untuk Departemen dan Nama -->
-                <div class="card">
-                    <!-- Tabel di dalam card -->
-                    <div class="table-container" style="overflow-x:auto;">
-                        <table id="table" class="styled-table" style="width:100%;">
-                            <thead>
-                                <tr>
-                                    <th scope="col" rowspan="2">NO</th>
-                                    <th scope="col" rowspan="2">Section</th>
-                                    <th scope="col" rowspan="2">Job Position</th>
-                                    <th scope="col" rowspan="2">Nama Karyawan</th>
-                                    <th scope="col" rowspan="2">Program Training</th>
-                                    <th scope="col" rowspan="2">Kategori Competency</th>
-                                    <th scope="col" rowspan="2">Competency</th>
-                                    <th scope="col" rowspan="2">Due Date</th>
-                                    <th scope="col" rowspan="2">Budget</th>
-                                    <th scope="col" rowspan="2">Lembaga</th>
-                                    <th scope="col" rowspan="2">Keterangan Tujuan</th>
-                                </tr>
-                                <tr style="background-color: #f0ad4e;">
-                                    <th scope="col">Nama Program</th>
-                                    <th scope="col">Date Actual</th>
-                                    <th scope="col">Biaya Actual</th>
-                                    <th scope="col">Lembaga</th>
-                                    <th scope="col">Keterangan</th>
-                                    <th scope="col">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="table-body">
-                                @foreach ($data as $index => $item)
+            <!-- Card untuk Departemen dan Nama -->
+            <div class="card">
+                <!-- Tabel di dalam card -->
+                <div class="table-container" style="overflow-x:auto;">
+                    <table id="table" class="styled-table" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th scope="col" rowspan="2">NO</th>
+                                <th scope="col" rowspan="2">Section</th>
+                                <th scope="col" rowspan="2">Job Position</th>
+                                <th scope="col" rowspan="2">Nama Karyawan</th>
+                                <th scope="col" rowspan="2">Program Training</th>
+                                <th scope="col" rowspan="2">Kategori Competency</th>
+                                <th scope="col" rowspan="2">Competency</th>
+                                <th scope="col" rowspan="2" style="width: 10%">Due Date</th>
+                                <th scope="col" rowspan="2" style="width: 10%">Budget</th>
+                                <th scope="col" rowspan="2">Lembaga</th>
+                                <th scope="col" rowspan="2">Keterangan Tujuan</th>
+                            </tr>
+                            <tr style="background-color: #f0ad4e;">
+                                <th scope="col">Nama Program</th>
+                                <th scope="col">Date Actual</th>
+                                <th scope="col" style="width: 15%">Biaya Actual</th>
+                                <th scope="col">Lembaga</th>
+                                <th scope="col">Keterangan</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Tampilkan data yang tidak memiliki tahun_usulan -->
+                            @foreach ($data as $index => $item)
+                                @if (is_null($item->tahun_usulan))
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ $item->section }}</td>
-                                        <td>{{ $item->id_job_position }}</td>
-                                        <td>{{ $item->user->name ?? 'N/A' }}</td>
-                                        <td>{{ $item->program_training }}</td>
-                                        <td>{{ $item->kategori_competency }}</td>
-                                        <td>{{ $item->competency }}</td>
-                                        <td>{{ $item->due_date }}</td>
-                                        <td>{{ 'Rp ' . number_format($item->biaya, 0, ',', '.') }}</td>
-                                        <td>{{ $item->lembaga }}</td>
-                                        <td>{{ $item->keterangan_tujuan }}</td>
-                                        <td>{{ $item->program_training_plan }}</td>
-                                        <td>{{ $item->due_date_plan }}</td>
-                                        <td>{{ 'Rp ' . number_format($item->biaya_plan, 0, ',', '.') }}</td>
-                                        <td>{{ $item->lembaga_plan }}</td>
-                                        <td>{{ $item->keterangan_plan }}</td>
+                                        <td>{{ $item->section ?? '-' }}</td>
+                                        <td>{{ $item->id_job_position ?? '-' }}</td>
+                                        <td>{{ $item->user->name ?? '-' }}</td>
+                                        <td>{{ $item->program_training ?? '-' }}</td>
+                                        <td>{{ $item->kategori_competency ?? '-' }}</td>
+                                        <td>{{ $item->competency ?? '-' }}</td>
+                                        <td>{{ $item->due_date ?? '-' }}</td>
+                                        <td>{{ $item->biaya ? 'Rp ' . number_format($item->biaya, 0, ',', '.') : '-' }}</td>
+                                        <td>{{ $item->lembaga ?? '-' }}</td>
+                                        <td>{{ $item->keterangan_tujuan ?? '-' }}</td>
+                                        <td>{{ $item->program_training_plan ?? '-' }}</td>
+                                        <td>{{ $item->due_date_plan ?? '-' }}</td>
+                                        <td>{{ $item->biaya_plan ? 'Rp ' . number_format($item->biaya_plan, 0, ',', '.') : '-' }}
+                                        </td>
+                                        <td>{{ $item->lembaga_plan ?? '-' }}</td>
+                                        <td>{{ $item->keterangan_plan ?? '-' }}</td>
                                         <td>
                                             @php
                                                 $statusColor = '';
@@ -149,77 +161,189 @@
                                             @endphp
                                             <span
                                                 style="display: inline-block; padding: 5px 10px; border-radius: 5px; {{ $statusColor }}">
-                                                {{ $item->status_2 }}
+                                                {{ $item->status_2 ?? '-' }}
                                             </span>
                                         </td>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                @php
-                                    // Hitung total budget, total biaya actual, dan selisih biaya
-                                    $totalBudget = $data->sum('biaya');
-                                    $totalBiayaPlan = $data->sum('biaya_plan');
-                                    $selisihBiaya = $totalBudget - $totalBiayaPlan;
-                                @endphp
-                                <tr>
-                                    <th colspan="9" style="text-align:right;">Total Budget: Rp
-                                        {{ number_format($totalBudget, 0, ',', '.') }}</th>
+                                @endif
+                            @endforeach
 
-                                    <th colspan="5" style="text-align:right;">Total Biaya Actual: Rp
-                                        {{ number_format($totalBiayaPlan, 0, ',', '.') }}</th>
-                                    <th colspan="2"></th>
-                                </tr>
-                                <tr>
-                                    <th></th>
-                                    <th colspan="13" style="text-align:right;">Selisih Biaya: Rp
-                                        {{ number_format($selisihBiaya, 0, ',', '.') }}</th>
-                                    <th colspan="2"></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                    <div style="margin-top: 20px;">
-                        <strong>Keterangan Status:</strong>
-                        <ul
-                            style="list-style-type: none; padding-left: 0; margin-top: 10px; display: flex; gap: 15px; align-items: center;">
-                            <li style="display: flex; align-items: center;">
-                                <span
-                                    style="background-color: blue; color: white; padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Biru</b></span>
-                                - Mencari Vendor
-                            </li>
-                            <li style="display: flex; align-items: center;">
-                                <span
-                                    style="background-color: orange; color: white; padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Orange</b></span>
-                                - Proses Pendaftaran
-                            </li>
-                            <li style="display: flex; align-items: center;">
-                                <span
-                                    style="background-color: yellow; color: black; padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Kuning</b></span>
-                                - On Progress
-                            </li>
-                            <li style="display: flex; align-items: center;">
-                                <span
-                                    style="background-color: green; color: white; padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Hijau</b></span>
-                                - Done
-                            </li>
-                            <li style="display: flex; align-items: center;">
-                                <span
-                                    style="background-color: rgb(154, 150, 150); color: rgb(251, 251, 251); padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Abu</b></span>
-                                - Pending
-                            </li>
-                            <li style="display: flex; align-items: center;">
-                                <span
-                                    style="background-color: red; color: white; padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Merah</b></span>
-                                - Ditolak
-                            </li>
-                        </ul>
-                    </div>
-                    <div style="margin-top: 3%">
-                        <a href="{{ route('indexPD2') }}" class="btn btn-secondary">Close</a>
-                        <button onclick="exportTableToPDF()" class="btn btn-primary"><i
-                                class="bi bi-printer-fill"></i>Export PDF</button>
-                    </div>
+                            <!-- Tambahkan subtotal setelah iterasi data yang tidak memiliki tahun_usulan -->
+                            @php
+                                // Hitung total budget hanya jika tahun_usulan kosong
+                                $totalBudget = $data
+                                    ->filter(function ($item) {
+                                        return empty($item->tahun_usulan);
+                                    })
+                                    ->sum('biaya');
+
+                                $totalBudget2 = $data
+                                    ->filter(function ($item) {
+                                        return empty($item->tahun_usulan);
+                                    })
+                                    ->sum('biaya_plan');
+                            @endphp
+                            <tr>
+                                <td></td>
+                                <td colspan="8" style="text-align:right; font-weight:bold;">Sub Total 1: Rp
+                                    {{ number_format($totalBudget, 0, ',', '.') }}</td>
+                                <td colspan="5" style="text-align:right; font-weight:bold;">Sub Total Actual 1: Rp
+                                    {{ number_format($totalBudget2, 0, ',', '.') }}</td>
+                            </tr>
+
+                            <!-- Tampilkan judul "ADDITIONAL" sebelum data yang memiliki tahun_usulan -->
+                            <tr>
+                                <td colspan="17" style="text-align:left; font-weight:bold;">
+                                    <h3><b>ADDITIONAL</b> <i class="fas fa-chevron-down"></i></h3>
+                                </td>
+                            </tr>
+
+                            <!-- Tampilkan data yang memiliki tahun_usulan -->
+                            @foreach ($data as $index => $item)
+                                @if (!is_null($item->tahun_usulan))
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ !empty($item->section) ? $item->section : '-' }}</td>
+                                        <td>{{ !empty($item->id_job_position) ? $item->id_job_position : '-' }}</td>
+                                        <td>{{ !empty($item->user->name) ? $item->user->name : '-' }}</td>
+                                        <td>{{ !empty($item->program_training) ? $item->program_training : '-' }}</td>
+                                        <td>{{ !empty($item->kategori_competency) ? $item->kategori_competency : '-' }}
+                                        </td>
+                                        <td>{{ !empty($item->competency) ? $item->competency : '-' }}</td>
+                                        <td>{{ !empty($item->due_date) ? $item->due_date : '-' }}</td>
+                                        <td>{{ !empty($item->biaya) ? 'Rp ' . number_format($item->biaya, 0, ',', '.') : '-' }}
+                                        </td>
+                                        <td>{{ !empty($item->lembaga) ? $item->lembaga : '-' }}</td>
+                                        <td>{{ !empty($item->keterangan_tujuan) ? $item->keterangan_tujuan : '-' }}</td>
+                                        <td>{{ !empty($item->program_training_plan) ? $item->program_training_plan : '-' }}
+                                        </td>
+                                        <td>{{ !empty($item->due_date_plan) ? $item->due_date_plan : '-' }}</td>
+                                        <td>{{ !empty($item->biaya_plan) ? 'Rp ' . number_format($item->biaya_plan, 0, ',', '.') : '-' }}
+                                        </td>
+                                        <td>{{ !empty($item->lembaga_plan) ? $item->lembaga_plan : '-' }}</td>
+                                        <td>{{ !empty($item->keterangan_plan) ? $item->keterangan_plan : '-' }}</td>
+                                        <td>
+                                            @php
+                                                $statusColor = '';
+                                                switch ($item->status_2) {
+                                                    case 'Mencari Vendor':
+                                                        $statusColor = 'background-color: blue; color: white;';
+                                                        break;
+                                                    case 'Proses Pendaftaran':
+                                                        $statusColor = 'background-color: orange; color: white;';
+                                                        break;
+                                                    case 'On Progress':
+                                                        $statusColor = 'background-color: yellow; color: black;';
+                                                        break;
+                                                    case 'Done':
+                                                        $statusColor = 'background-color: green; color: white;';
+                                                        break;
+                                                    case 'Pending':
+                                                        $statusColor = 'background-color: gray; color: white;';
+                                                        break;
+                                                    case 'Ditolak':
+                                                        $statusColor = 'background-color: red; color: white;';
+                                                        break;
+                                                }
+                                            @endphp
+                                            <span
+                                                style="display: inline-block; padding: 5px 10px; border-radius: 5px; {{ $statusColor }}">
+                                                {{ !empty($item->status_2) ? $item->status_2 : '-' }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforeach
+
+                            <!-- Tambahkan subtotal setelah iterasi data yang memiliki tahun_usulan -->
+                            @php
+                                // Filter data yang memiliki tahun_usulan
+                                $filteredData = $data->filter(function ($item) {
+                                    return !is_null($item->tahun_usulan);
+                                });
+
+                                // Hitung total budget dan biaya_plan untuk data yang memiliki tahun_usulan
+                                $totalBudgetTabelKedua = $filteredData->sum('biaya');
+                                $totalBudgetTabelKeduasub2 = $filteredData->sum('biaya_plan');
+
+                                // Total budget dari tabel pertama (data tanpa tahun_usulan)
+                                $totalBudgetTabelPertama = $data
+                                    ->filter(function ($item) {
+                                        return is_null($item->tahun_usulan);
+                                    })
+                                    ->sum('biaya');
+                                $totalBudgetTabelPertama2 = $data
+                                    ->filter(function ($item) {
+                                        return is_null($item->tahun_usulan);
+                                    })
+                                    ->sum('biaya_plan');
+
+                                // Hitung total biaya keseluruhan
+                                $totalBiayaPlan = $totalBudgetTabelPertama + $totalBudgetTabelKedua;
+                                $totalBiayaPlan2 = $totalBudgetTabelPertama2 + $totalBudgetTabelKeduasub2;
+                            @endphp
+
+                            <!-- Baris Subtotal untuk data dengan tahun_usulan -->
+                            <tr>
+                                <td></td>
+                                <td colspan="8" style="text-align:right; font-weight:bold;">Sub Total 2: Rp
+                                    {{ number_format($totalBudgetTabelKedua, 0, ',', '.') }}</td>
+                                <td colspan="5" style="text-align:right; font-weight:bold;">Sub Total Actual 2: Rp
+                                    {{ number_format($totalBudgetTabelKeduasub2, 0, ',', '.') }}</td>
+                            </tr>
+
+                            <!-- Baris Total Keseluruhan -->
+                            <tr>
+                                <td></td>
+                                <td colspan="8" style="text-align:right; font-weight:bold;">Total: Rp
+                                    {{ number_format($totalBiayaPlan, 0, ',', '.') }}</td>
+                                <td colspan="5" style="text-align:right; font-weight:bold;">Total Actual: Rp
+                                    {{ number_format($totalBiayaPlan2, 0, ',', '.') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 20px;">
+                    <strong>Keterangan Status:</strong>
+                    <ul
+                        style="list-style-type: none; padding-left: 0; margin-top: 10px; display: flex; gap: 15px; align-items: center;">
+                        <li style="display: flex; align-items: center;">
+                            <span
+                                style="background-color: blue; color: white; padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Biru</b></span>
+                            - Mencari Vendor
+                        </li>
+                        <li style="display: flex; align-items: center;">
+                            <span
+                                style="background-color: orange; color: white; padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Orange</b></span>
+                            - Proses Pendaftaran
+                        </li>
+                        <li style="display: flex; align-items: center;">
+                            <span
+                                style="background-color: yellow; color: black; padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Kuning</b></span>
+                            - On Progress
+                        </li>
+                        <li style="display: flex; align-items: center;">
+                            <span
+                                style="background-color: green; color: white; padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Hijau</b></span>
+                            - Done
+                        </li>
+                        <li style="display: flex; align-items: center;">
+                            <span
+                                style="background-color: rgb(154, 150, 150); color: rgb(251, 251, 251); padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Abu</b></span>
+                            - Pending
+                        </li>
+                        <li style="display: flex; align-items: center;">
+                            <span
+                                style="background-color: red; color: white; padding: 5px 15px; border-radius: 5px; margin-right: 5px;"><b>Merah</b></span>
+                            - Ditolak
+                        </li>
+                    </ul>
+                </div>
+                <div style="margin-top: 3%">
+                    <a href="{{ route('indexPD2') }}" class="btn btn-secondary">Close</a>
+                    <button onclick="exportExcel()" class="btn btn-primary">
+                        <i class="bi bi-printer-fill"></i>Export Excel
+                    </button>
                 </div>
             </div>
         </section>
@@ -237,136 +361,45 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <script>
-            function exportTableToPDF() {
-                const {
-                    jsPDF
-                } = window.jspdf;
-                const doc = new jsPDF({
-                    orientation: 'landscape',
-                    unit: 'mm',
-                    format: 'a4' // Menggunakan ukuran kertas A4
-                });
+            function exportExcel() {
+                // Dapatkan elemen tabel
+                var table = document.getElementById("table");
 
-                const table = document.getElementById('table');
-                const rows = table.querySelectorAll('tbody tr');
+                // Buat elemen dengan tag <table> sebagai string
+                var html = table.outerHTML;
 
-                const pageWidth = doc.internal.pageSize.getWidth();
-                const pageHeight = doc.internal.pageSize.getHeight();
+                // Buat URI untuk format data Excel
+                var uri = 'data:application/vnd.ms-excel;base64,';
 
-                let startY = 20;
-                const startX = 10;
-                const cellPadding = 2;
-                const cellHeight = 8; // Tinggi sel yang lebih kecil agar lebih banyak data muat
-                const headerHeight = 10;
-                const rowHeight = cellHeight + cellPadding;
-                const fontSize = 7; // Ukuran font yang lebih kecil
+                // Fungsi untuk encoding string ke base64
+                function base64(s) {
+                    return window.btoa(unescape(encodeURIComponent(s)));
+                }
 
-                // Header tabel
-                const headers = [
-                    "NO", "Section", "Job Position", "Nama Karyawan", "Program Training",
-                    "Kategori Competency", "Competency", "Due Date", "Budget", "Lembaga", "Keterangan Tujuan"
-                ];
+                // Format sederhana untuk file Excel
+                var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+                    'xmlns:x="urn:schemas-microsoft-com:office:excel" ' +
+                    'xmlns="http://www.w3.org/TR/REC-html40"><head>' +
+                    '<meta charset="UTF-8"><style>table, td {border: 1px solid black;}</style></head><body>' +
+                    '<table>{table}</table></body></html>';
 
-                // Lebar kolom diatur ulang agar lebih sesuai dengan ukuran A4
-                const colWidths = [10, 25, 30, 30, 30, 30, 30, 20, 20, 25, 35];
+                // Gantikan placeholder dengan isi tabel
+                var excelHtml = template.replace(/{table}/g, html);
 
-                doc.setFontSize(10);
-                doc.setFont("helvetica", "bold");
-                doc.text('Training Competency Report', pageWidth / 2, 10, {
-                    align: 'center'
-                });
+                // Buat elemen <a> untuk download
+                var downloadLink = document.createElement("a");
 
-                doc.setFontSize(fontSize);
-                let currentX = startX;
-                headers.forEach((header, index) => {
-                    doc.setFont("helvetica", "bold");
-                    doc.rect(currentX, startY, colWidths[index], headerHeight); // Membuat header cell
-                    doc.text(header, currentX + cellPadding, startY + headerHeight / 2 + 2); // Adjust text position
-                    currentX += colWidths[index];
-                });
+                // Buat nama file untuk Excel
+                var fileName = "export_data.xls";
 
-                startY += headerHeight;
+                // Buat link download
+                downloadLink.href = uri + base64(excelHtml);
 
-                let totalBudget = 0; // Inisialisasi total budget
+                // Set nama file yang akan didownload
+                downloadLink.download = fileName;
 
-                rows.forEach((row, rowIndex) => {
-                    const cells = row.querySelectorAll('td');
-                    currentX = startX;
-
-                    const selectedCells = [
-                        cells[0], cells[1], cells[2], cells[3], cells[4],
-                        cells[5], cells[6], cells[7], cells[8], cells[9], cells[10]
-                    ];
-
-                    selectedCells.forEach((cell, cellIndex) => {
-                        const cellText = cell?.innerText || '';
-                        doc.setFont("helvetica", "normal");
-
-                        const truncatedText = cellText.length > 20 ? cellText.substring(0, 18) + '...' :
-                            cellText;
-
-                        doc.rect(currentX, startY + rowHeight * rowIndex, colWidths[cellIndex],
-                        cellHeight); // Membuat body cell
-                        doc.text(truncatedText, currentX + cellPadding, startY + rowHeight * rowIndex +
-                            cellHeight / 2 + 2);
-                        currentX += colWidths[cellIndex];
-
-                        // Menghitung total budget dari kolom Budget (index ke-8)
-                        if (cellIndex === 8) {
-                            const budgetValue = parseFloat(cellText.replace(/[^\d]/g,
-                            '')); // Mengambil nilai numerik
-                            if (!isNaN(budgetValue)) {
-                                totalBudget += budgetValue;
-                            }
-                        }
-                    });
-
-                    // Jika melebihi halaman, tambahkan halaman baru
-                    if (startY + rowHeight * (rowIndex + 1) > pageHeight - 50) { // Batas bawah halaman
-                        doc.addPage('landscape', 'a4');
-                        startY = 20;
-                        currentX = startX;
-
-                        // Gambarkan ulang header di halaman baru
-                        headers.forEach((header, index) => {
-                            doc.setFont("helvetica", "bold");
-                            doc.rect(currentX, startY, colWidths[index], headerHeight); // Membuat header cell
-                            doc.text(header, currentX + cellPadding, startY + headerHeight / 2 + 2);
-                            currentX += colWidths[index];
-                        });
-                        startY += headerHeight;
-                    }
-                });
-
-                // Tambahkan total budget di bawah tabel
-                const totalBudgetText = `Total Budget: Rp ${totalBudget.toLocaleString('id-ID')}`;
-                startY += rowHeight;
-                doc.setFont("helvetica", "bold");
-
-                const totalBudgetX = pageWidth - 100;
-                doc.text(totalBudgetText, totalBudgetX, pageHeight - 77);
-
-                // Tambahkan section tanda tangan
-                const currentDate = new Date();
-                const monthNames = [
-                    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-                    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-                ];
-                const formattedDate =
-                    `${currentDate.getDate()} ${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-
-                const signatureX = pageWidth - 140;
-                const signatureY = pageHeight - 66;
-
-                doc.setFontSize(10);
-                doc.setFont("helvetica", "normal");
-                doc.text(`Cikarang, ${formattedDate}`, pageWidth - 70, signatureY);
-
-                doc.text('Dibuat', signatureX, signatureY + 10);
-                doc.text('Diperiksa', signatureX + 50, signatureY + 10);
-                doc.text('Disetujui', signatureX + 100, signatureY + 10);
-
-                doc.save('table-export-a4.pdf');
+                // Simulasikan klik untuk mulai download
+                downloadLink.click();
             }
         </script>
 

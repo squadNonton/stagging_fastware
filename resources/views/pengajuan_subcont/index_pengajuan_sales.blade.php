@@ -49,12 +49,14 @@
                                             <th class="text-center" width="50px">NO</th>
                                             <th class="text-center" width="100px">PIC</th>
                                             <th class="text-center" width="100px">Nama Customer</th>
+                                            <th class="text-center" width="100px">QTY</th>
                                             <th class="text-center" width="100px">Nama Project</th>
                                             <th class="text-center" width="100px">Keterangan</th>
                                             <th class="text-center" width="100px">Jenis Proses Subcont</th>
                                             <th class="text-center" width="100px">Tgl Pengajuan</th>
                                             <th class="text-center" width="100px">Status</th>
                                             <th class="text-center" width="100px">Aksi</th>
+                                            <th class="text-center" width="100px">Unduh Quotation</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -64,6 +66,7 @@
                                                 <td class="text-center">{{ $pengajuan->modified_at }}</td>
                                                 <!-- Sesuaikan jika ada kolom 'pic' -->
                                                 <td class="text-center">{{ $pengajuan->nama_customer }}</td>
+                                                <td class="text-center">{{ $pengajuan->qty }}</td>
                                                 <td class="text-center">{{ $pengajuan->nama_project }}</td>
                                                 <td class="text-center">{{ $pengajuan->keterangan }}</td>
                                                 <td class="text-center">{{ $pengajuan->jenis_proses_subcont }}</td>
@@ -95,25 +98,40 @@
                                                         <!-- Tombol Edit -->
                                                         <a href="{{ route('pengajuan-subcont.edit', $pengajuan->id) }}"
                                                             class="btn btn-sm btn-primary">
-                                                            <i class="fas fa-edit"></i> Edit
+                                                            <i class="fas fa-edit"></i>
                                                         </a>
 
                                                         <!-- Tombol Delete -->
                                                         <a href="#" class="btn btn-sm btn-danger"
                                                             onclick="event.preventDefault(); deleteData('{{ route('pengajuan-subcont.destroy', $pengajuan->id) }}');">
-                                                            <i class="fas fa-trash-alt"></i> Delete
+                                                            <i class="fas fa-trash-alt"></i>
                                                         </a>
 
                                                         <!-- Tombol Kirim -->
                                                         <a href="#" class="btn btn-sm btn-success"
                                                             onclick="event.preventDefault(); kirimData('{{ route('pengajuan-subcont.kirim', $pengajuan->id) }}');">
-                                                            <i class="fas fa-paper-plane"></i> Kirim
+                                                            <i class="fas fa-paper-plane"></i>
                                                         </a>
                                                     @endif
                                                     <a href="{{ route('pengajuan-subcont.view', $pengajuan->id) }}"
                                                         class="btn btn-sm btn-info">
-                                                        <i class="fas fa-eye"></i> View
+                                                        <i class="fas fa-eye"></i>
                                                     </a>
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    @if ($pengajuan->quotation_file)
+                                                        <a href="{{ asset($pengajuan->quotation_file) }}" target="_blank" 
+                                                           class="d-inline-block p-3 bg-white rounded border shadow-sm text-decoration-none" 
+                                                           style="color: inherit; transition: transform 0.2s ease;" 
+                                                           onmouseover="this.style.transform='scale(1.05)'" 
+                                                           onmouseout="this.style.transform='scale(1)'"
+                                                           data-bs-toggle="tooltip" title="Click to view or download the quotation file">
+                                                            <i class="fas fa-file-pdf fa-2x text-danger mb-1"></i>
+                                                            <p class="mb-0 fw-bold">View Quotation</p>
+                                                        </a>
+                                                    @else
+                                                        <span class="text-muted fst-italic">Quotation belum tersedia</span>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

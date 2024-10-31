@@ -42,6 +42,12 @@
                                     placeholder="Masukkan nama project" required>
                             </div>
 
+                            <div class="mb-3">
+                                <label for="qty" class="form-label">QTY<span style="color: red;">*</span></label>
+                                <input type="text" class="form-control" id="qty" name="qty"
+                                    placeholder="Masukkan QTY" required>
+                            </div>
+
                             <!-- Keterangan (Textarea) -->
                             <div class="mb-3">
                                 <label for="keterangan" class="form-label">Keterangan(Jika Ada)</label>
@@ -49,15 +55,18 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="jenis_proses_subcont" class="form-label">Jenis Proses Subcont<span style="color: red;">*</span></label>
+                                <label for="jenis_proses_subcont" class="form-label">Jenis Proses Subcont<span
+                                        style="color: red;">*</span></label>
                                 <input type="text" class="form-control" id="jenis_proses_subcont"
                                     name="jenis_proses_subcont" placeholder="Masukkan jenis proses subcont" required>
                             </div>
 
                             <!-- File -->
-                            <div class="mb-3">
-                                <label for="file" class="form-label">Drawing<span style="color: red;">*</span></label>
-                                <input type="file" class="form-control-file" id="file" name="file" required>
+                            <div class="mb-4 p-3 border rounded shadow-sm bg-light">
+                                <label for="file" class="form-label fw-bold text-primary">
+                                    <i class="fas fa-upload"></i> Upload Drawing <span style="color: red;">*</span>
+                                </label>
+                                <input type="file" class="form-control" id="file" name="file" required>
                             </div>
 
                             <!-- Tombol Submit -->

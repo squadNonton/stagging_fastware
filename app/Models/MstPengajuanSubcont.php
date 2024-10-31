@@ -15,7 +15,8 @@ class MstPengajuanSubcont extends Model
     // Definisikan kolom yang bisa diisi (fillable)
     protected $fillable = [
         'nama_customer',
-        'nama_project', 
+        'nama_project',
+        'qty', 
         'keterangan', 
         'jenis_proses_subcont', 
         'file', 

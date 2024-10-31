@@ -40,9 +40,12 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('editPdPengajuanHRGA', $item->id) }}" class="btn btn-primary"
+                                    {{-- <a href="{{ route('editPdPengajuanHRGA', $item->id) }}" class="btn btn-primary"
                                         title="Tindak Lanjut Training">
                                         <i class="bi bi-clipboard2-check-fill"></i>
+                                    </a> --}}
+                                    <a href="{{ route('editPdPengajuanHRGA', $item->modified_at) }}" class="btn btn-primary"
+                                        title="Edit Form"> <i class="bi bi-clipboard2-check-fill"></i>
                                     </a>
                                     <a href="{{ route('viewPD2', $item->id) }}" class="btn btn-sm btn-info"
                                         title="View Form">
