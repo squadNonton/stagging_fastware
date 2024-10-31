@@ -23,10 +23,17 @@
                             <h5 class="card-title">Tampilan Data Form Permintaan Barang/Jasa</h5>
                             <!-- Table with stripped rows -->
                             <div class="table-responsive" style="height: 100%; overflow-y: auto;">
+                                <button id="kirimSemuaData" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Kirim Semua FPB
+                                </button>
                                 <table class="datatable table">
                                     <thead>
                                         <tr>
                                             <th class="text-center" width="50px">NO</th>
+                                            <th class="text-center" width="50px">
+                                                <input type="checkbox" id="selectAll" />
+                                                <!-- Checkbox untuk memilih semua -->
+                                            </th>
                                             <th class="text-center" width="100px">NO FPB</th>
                                             <th class="text-center" width="100px">PIC</th>
                                             <th class="text-center" width="100px">Kategori</th>
@@ -52,6 +59,12 @@
                                                 <!-- Tambahkan kondisi untuk menampilkan hanya jika status_1 == 2 -->
                                                 <tr>
                                                     <td class="text-center py-3">{{ $loop->iteration }}</td>
+                                                    <td class="text-center">
+                                                        @if (!in_array($row->status_1, [5, 6, 7, 8, 9, 10]))
+                                                            <input type="checkbox" class="selectRow"
+                                                                data-no_fpb="{{ $row->no_fpb }}" />
+                                                        @endif
+                                                    </td>
                                                     <td class="text-center py-3">{{ $row->no_fpb }}</td>
                                                     <td class="text-center py-3">{{ $row->modified_at }}</td>
                                                     <td class="text-center py-3">{{ $row->kategori_po }}</td>
@@ -89,12 +102,12 @@
                                                         @endif
                                                     </td>
                                                     <td class="text-center py-4">
-                                                        @if ($row->status_1 == 3)
+                                                        {{-- @if ($row->status_1 == 3)
                                                             <button type="button" class="btn btn-success btn-sm btn-kirim"
                                                                 data-no_fpb="{{ $row->no_fpb }}" title="Kirim">
                                                                 <i class="fas fa-paper-plane"></i>
                                                             </button>
-                                                        @endif
+                                                        @endif --}}
 
                                                         <a href="{{ route('view.FormPo.3', ['id' => $row->id]) }}"
                                                             class="btn btn-primary btn-sm" title="View Form">
@@ -114,26 +127,38 @@
         </section>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                document.querySelectorAll('.btn-kirim').forEach(button => {
-                    button.addEventListener('click', function() {
-                        // Mengambil no_fpb dari data attribute dan mengganti "/" dengan "-"
-                        var no_fpb = this.getAttribute('data-no_fpb').replace(/\//g, '-');
-                        console.log("FPB Number to send:", no_fpb); // Log FPB number yang diambil
+                document.getElementById('kirimSemuaData').addEventListener('click', function() {
+                    // Ambil semua checkbox yang dipilih
+                    const selectedCheckboxes = document.querySelectorAll('.selectRow:checked');
 
-                        Swal.fire({
-                            title: 'Apakah anda ingin mengirim data?',
-                            text: "Data yang telah dikirim tidak dapat dirubah!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Ya, kirim!',
-                            cancelButtonText: 'Batal'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Jika konfirmasi, lakukan AJAX POST request
+                    // Periksa apakah ada checkbox yang dipilih
+                    if (selectedCheckboxes.length === 0) {
+                        Swal.fire('Pilih data terlebih dahulu!', '', 'warning');
+                        return;
+                    }
+
+                    // Ambil semua no_fpb dari checkbox yang dipilih
+                    let noFpbArray = [];
+                    selectedCheckboxes.forEach(checkbox => {
+                        noFpbArray.push(checkbox.getAttribute('data-no_fpb').replace(/\//g, '-'));
+                    });
+
+                    // Tampilkan pesan konfirmasi
+                    Swal.fire({
+                        title: 'Apakah anda ingin mengirim semua data?',
+                        text: "Data yang telah dikirim tidak dapat dirubah!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, kirim!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Lakukan AJAX POST request untuk setiap no_fpb yang dipilih
+                            noFpbArray.forEach(no_fpb => {
                                 $.ajax({
-                                    url: "{{ route('kirim.fpb.user', ':no_fpb') }}"
+                                    url: "{{ route('kirim.fpb.finance', ':no_fpb') }}"
                                         .replace(':no_fpb', no_fpb),
                                     type: 'POST',
                                     data: {
@@ -141,32 +166,30 @@
                                     },
                                     success: function(response) {
                                         console.log("Response from server:",
-                                            response); // Log response dari server
-
-                                        Swal.fire(
-                                            'Terkirim!',
-                                            'Data berhasil dikirim.',
-                                            'success'
-                                        ).then(() => {
-                                            location
-                                                .reload(); // Refresh halaman setelah sukses
-                                        });
+                                            response);
                                     },
                                     error: function(xhr) {
                                         console.log("Error occurred:", xhr
-                                            .responseText
-                                        ); // Log error jika terjadi kesalahan
-
-                                        Swal.fire(
-                                            'Gagal!',
-                                            'Terjadi kesalahan saat mengirim data.',
-                                            'error'
-                                        );
+                                            .responseText);
                                     }
                                 });
-                            }
-                        });
+                            });
+
+                            // Tampilkan pesan sukses dan refresh halaman setelah semua request berhasil
+                            Swal.fire('Terkirim!', 'Semua data berhasil dikirim.', 'success').then(
+                                () => {
+                                    location.reload();
+                                });
+                        }
                     });
+                });
+
+            });
+
+            // Fungsi untuk memilih semua checkbox
+            document.getElementById('selectAll').addEventListener('change', function() {
+                document.querySelectorAll('.selectRow').forEach(checkbox => {
+                    checkbox.checked = this.checked;
                 });
             });
         </script>
