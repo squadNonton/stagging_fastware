@@ -45,17 +45,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($data as $row)
-                                            @if (
-                                                $row->status_1 == 3 ||
-                                                    $row->status_1 == 4 ||
-                                                    $row->status_1 == 5 ||
-                                                    $row->status_1 == 6 ||
-                                                    $row->status_1 == 7 ||
-                                                    $row->status_1 == 8 ||
-                                                    $row->status_1 == 9 ||
-                                                    $row->status_1 == 10 ||
-                                                    $row->status_1 == 11 ||
-                                                    $row->status_1 == 12)
+                                            @if ($row->status_1 == 3)
                                                 <!-- Tambahkan kondisi untuk menampilkan hanya jika status_1 == 2 -->
                                                 <tr>
                                                     <td class="text-center py-3">{{ $loop->iteration }}</td>
@@ -102,17 +92,14 @@
                                                         @endif
                                                     </td>
                                                     <td class="text-center py-4">
-                                                        {{-- @if ($row->status_1 == 3)
-                                                            <button type="button" class="btn btn-success btn-sm btn-kirim"
-                                                                data-no_fpb="{{ $row->no_fpb }}" title="Kirim">
-                                                                <i class="fas fa-paper-plane"></i>
-                                                            </button>
-                                                        @endif --}}
-
                                                         <a href="{{ route('view.FormPo.3', ['id' => $row->id]) }}"
                                                             class="btn btn-primary btn-sm" title="View Form">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
+                                                        <button type="button" class="btn btn-success btn-sm btn-kirim"
+                                                            data-no_fpb="{{ $row->no_fpb }}" title="Kirim">
+                                                            <i class="fas fa-paper-plane"></i>
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             @endif
@@ -158,7 +145,7 @@
                             // Lakukan AJAX POST request untuk setiap no_fpb yang dipilih
                             noFpbArray.forEach(no_fpb => {
                                 $.ajax({
-                                    url: "{{ route('kirim.fpb.finance', ':no_fpb') }}"
+                                    url: "{{ route('kirim.fpb.user', ':no_fpb') }}"
                                         .replace(':no_fpb', no_fpb),
                                     type: 'POST',
                                     data: {
@@ -184,6 +171,60 @@
                     });
                 });
 
+                document.querySelectorAll('.btn-kirim').forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Mengambil no_fpb dari data attribute dan mengganti "/" dengan "-"
+                        var no_fpb = this.getAttribute('data-no_fpb').replace(/\//g, '-');
+                        console.log("FPB Number to send:", no_fpb); // Log FPB number yang diambil
+
+                        Swal.fire({
+                            title: 'Apakah anda ingin mengirim data?',
+                            text: "Data yang telah dikirim tidak dapat dirubah!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya, kirim!',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Jika konfirmasi, lakukan AJAX POST request
+                                $.ajax({
+                                    url: "{{ route('kirim.fpb.user', ':no_fpb') }}"
+                                        .replace(':no_fpb', no_fpb),
+                                    type: 'POST',
+                                    data: {
+                                        _token: '{{ csrf_token() }}', // CSRF Token Laravel
+                                    },
+                                    success: function(response) {
+                                        console.log("Response from server:",
+                                            response); // Log response dari server
+
+                                        Swal.fire(
+                                            'Terkirim!',
+                                            'Data berhasil dikirim.',
+                                            'success'
+                                        ).then(() => {
+                                            location
+                                                .reload(); // Refresh halaman setelah sukses
+                                        });
+                                    },
+                                    error: function(xhr) {
+                                        console.log("Error occurred:", xhr
+                                            .responseText
+                                        ); // Log error jika terjadi kesalahan
+
+                                        Swal.fire(
+                                            'Gagal!',
+                                            'Terjadi kesalahan saat mengirim data.',
+                                            'error'
+                                        );
+                                    }
+                                });
+                            }
+                        });
+                    });
+                });
             });
 
             // Fungsi untuk memilih semua checkbox

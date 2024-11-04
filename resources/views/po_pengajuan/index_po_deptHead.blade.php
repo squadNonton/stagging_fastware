@@ -39,17 +39,7 @@
                                     <tbody>
                                         @foreach ($data as $row)
                                             @if (
-                                                $row->status_1 == 2 ||
-                                                    $row->status_1 == 3 ||
-                                                    $row->status_1 == 4 ||
-                                                    $row->status_1 == 5 ||
-                                                    $row->status_1 == 6 ||
-                                                    $row->status_1 == 7 ||
-                                                    $row->status_1 == 8 ||
-                                                    $row->status_1 == 9 ||
-                                                    $row->status_1 == 10 ||
-                                                    $row->status_1 == 11 ||
-                                                    $row->status_1 == 12)
+                                                $row->status_1 == 2)
                                                 <!-- Tambahkan kondisi untuk menampilkan hanya jika status_1 == 2 -->
                                                 <tr>
                                                     <td class="text-center py-3">{{ $loop->iteration }}</td>
