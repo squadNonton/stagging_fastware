@@ -27,7 +27,7 @@
                                     <i class="fas fa-plus"></i> Tambah Data
                                 </a>
                             </div>
-                            // Menambahkan SweetAlert untuk notifikasi
+
                             @if (!empty($namaCustomerTerakhir))
                                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                                 <script>
