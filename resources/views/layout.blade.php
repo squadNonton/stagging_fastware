@@ -658,7 +658,7 @@
                 </a>
 
                 <ul id="nav-po-pengajuan" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    @if (in_array(Auth::user()->role_id, $secHeadRoles))
+                    @if (in_array(Auth::user()->role_id, array_merge($secHeadRoles, $ppicRoles)))
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('index.PO') }}">
                                 <i class="bi bi-file-earmark-plus fs-6"></i>
