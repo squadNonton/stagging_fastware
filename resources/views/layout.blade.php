@@ -121,7 +121,6 @@
                     </ul>
                 </li>
             @endif
-
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-toggle="collapse" href="#dashboard-menu-nav">
                     <i class="bi bi-gear"></i>
@@ -174,9 +173,7 @@
                         </li>
                     </ul>
                 @endif
-            </li>
-            {{-- Maintenance dan Handling --}}
-            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 8 || Auth::user()->role_id == 9 || Auth::user()->role_id == 14 || Auth::user()->role_id == 22 || Auth::user()->role_id == 30 || Auth::user()->role_id == 31 || Auth::user()->role_id == 42 || Auth::user()->role_id == 45 || Auth::user()->role_id == 51 || Auth::user()->role_id == 48) --}}
+            </li>  
             @php
                 $acsrole = [1, 5, 8, 9, 14, 22, 30, 31, 42, 45, 48, 51, 58];
             @endphp
@@ -204,7 +201,6 @@
                     </ul>
                 </li>
             @endif
-            {{-- @if (Auth::user()->role_id == 6 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 22 || Auth::user()->role_id == 1) --}}
             @php
                 $acsrole = [6, 5, 14, 22, 1];
             @endphp
@@ -245,14 +241,11 @@
                     </ul>
                 </li><!-- End Maint Received Nav -->
             @endif
-            <!-- End Prod Forms Nav -->
-            {{-- @if (Auth::user()->role_id == 5 || Auth::user()->role_id == 1 || Auth::user()->role_id == 14) --}}
             @php
                 $acsrole = [1, 22, 5, 14];
             @endphp
             @if (in_array(Auth::user()->role_id, $acsrole))
-                {{-- Role ID untuk Maintenance --}}
-                {{-- Tampilkan sidebar untuk Maintenance --}}
+                
                 <li class="nav-heading">Engineering</li>
 
                 <li class="nav-item">
@@ -313,7 +306,6 @@
                     </ul>
                 </li><!-- End Dept Complain & Claim Nav -->
             @endif
-            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 4 || Auth::user()->role_id == 11 || Auth::user()->role_id == 12 || Auth::user()->role_id == 13 || Auth::user()->role_id == 14) --}}
             @php
                 $acsrole = [1, 2, 3, 4, 11, 12, 13, 14];
             @endphp
@@ -383,7 +375,6 @@
 
                 </li><!-- End Forms Nav -->
             @endif
-
             {{-- SS, Safety Patrol dan Trace WO --}}
             <li class="nav-heading">Suggestion System</li>
             {{-- Form Sumbang Saran --}}
@@ -407,9 +398,6 @@
                     </li>
                 </ul>
             </li>
-
-            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 5 || Auth::user()->role_id == 7 || Auth::user()->role_id == 9 || Auth::user()->role_id == 11 || Auth::user()->role_id == 12 || Auth::user()->role_id == 14 || Auth::user()->role_id == 16 || Auth::user()->role_id == 22 || Auth::user()->role_id == 30 || Auth::user()->role_id == 31 || Auth::user()->role_id == 32) --}}
-
             @php
                 $acsrole = [1, 2, 3, 5, 7, 9, 11, 12, 14, 15, 16, 20, 22, 30, 31, 32];
             @endphp
@@ -420,7 +408,7 @@
                 </a>
             @endif
             <ul id="nav-approval-ss" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 3 || Auth::user()->role_id == 9 || Auth::user()->role_id == 12 || Auth::user()->role_id == 14 || Auth::user()->role_id == 22 || Auth::user()->role_id == 30 || Auth::user()->role_id == 31 || Auth::user()->role_id == 32) --}}
+                
                 @php
                     $acsrole = [1, 3, 9, 12, 14, 15, 22, 30, 31, 32];
                 @endphp
@@ -445,8 +433,6 @@
                     </li>
                 @endif
             </ul>
-
-            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 15 || Auth::user()->role_id == 20) --}}
             @php
                 $acsrole = [1, 5, 14, 15, 20];
             @endphp
@@ -457,7 +443,7 @@
                 </a>
             @endif
             <ul id="nav-pic" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 15 || Auth::user()->role_id == 16 || Auth::user()->role_id == 20) --}}
+                
                 @php
                     $acsrole = [1, 5, 14, 15, 16, 20];
                 @endphp
@@ -469,7 +455,7 @@
                         </a>
                     </li>
                 @endif
-                {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 14 || Auth::user()->role_id == 15 || Auth::user()->role_id == 16 || Auth::user()->role_id == 20) --}}
+                
                 @php
                     $acsrole = [1, 5, 14, 15, 16, 20];
                 @endphp
@@ -600,7 +586,6 @@
                 </ul>
             @endif
 
-
             @php
                 $deptrole = [1, 2, 5, 11, 7, 14, 15]; // Roles for accessing Training Management
             @endphp
@@ -659,10 +644,10 @@
                 $userRoles = [1, 14, 15, 50, 30, 40, 11, 39]; // User Roles
                 $finnRole = [1, 14, 11, 12]; // Finance Roles
                 $procRoles = [1, 14, 41, 54]; // Procurement Roles
+                $ppicRoles = [52];
                 // Gabungkan semua roles ke dalam satu array
-                $allRoles = array_merge($secHeadRoles, $deptHeadRoles, $userRoles, $finnRole, $procRoles);
+                $allRoles = array_merge($secHeadRoles, $deptHeadRoles, $userRoles, $finnRole, $procRoles, $ppicRoles);
             @endphp
-
             @if (in_array(Auth::user()->role_id, $allRoles))
                 <li class="nav-heading">Form Pengajuan Barang/Jasa</li>
 
@@ -834,8 +819,6 @@
                     </a>
                 </li>
             @endif
-
-            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 22 || Auth::user()->role_id == 26) --}}
             @php
                 $acsrole = [1, 5, 14, 22, 26];
             @endphp
@@ -848,7 +831,7 @@
                     </a>
                 </li><!-- End Profile Page Nav -->
             @endif
-            {{-- @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 5 || Auth::user()->role_id == 14 || Auth::user()->role_id == 22 || Auth::user()->role_id == 26 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 4 || Auth::user()->role_id == 28 || Auth::user()->role_id == 30) --}}
+            
             @php
                 $acsrole = [1, 2, 3, 4, 5, 14, 22, 26, 28, 30];
             @endphp
