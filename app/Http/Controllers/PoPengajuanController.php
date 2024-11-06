@@ -86,6 +86,7 @@ class PoPengajuanController extends Controller
                     DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
                     DB::raw('MAX(trs.updated_at) as trs_updated_at')
                 )
+                ->groupBy('mst_po_pengajuans.no_fpb') // Menambahkan GROUP BY untuk no_fpb
                 ->orderBy(DB::raw('MAX(mst_po_pengajuans.status_1)'), 'asc') // Urutan berdasarkan status_1
                 ->orderBy(DB::raw('MAX(trs.created_at)'), 'asc')
                 ->get();
