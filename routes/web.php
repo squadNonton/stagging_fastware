@@ -289,99 +289,101 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/insights/add', [KmPengajuanController::class, 'addInsight'])->name('insights.add');
 
     // // tc
-    // Route::get('/job', [TcJobController::class, 'jobShow'])->name('jobShow');
+    Route::get('/job', [TcJobController::class, 'jobShow'])->name('jobShow');
 
-    // Route::get('/tcShow', [TcController::class, 'tcShow'])->name('tcShow');
-    // Route::get('/tcCreate', [TcController::class, 'createTC'])->name('tcCreate');
-    // Route::post('/mst_tc/store', [TcController::class, 'storeTC'])->name('mst_tc.store');
+    Route::get('/tcShow', [TcController::class, 'tcShow'])->name('tcShow');
+    Route::get('/tcCreate', [TcController::class, 'createTC'])->name('tcCreate');
+    Route::post('/mst_tc/store', [TcController::class, 'storeTC'])->name('mst_tc.store');
 
-    // Route::get('mst_tc/{id}/edit', [TcController::class, 'edit'])->name('mst_tc.edit');
-    // Route::get('mst_sk/{id}/editSoftSKills', [TcController::class, 'editSoftSKills'])->name('mst_sk.editSoftSKills');
-    // Route::get('mst_ad/{id}/editAdditionals', [TcController::class, 'editAdditional'])->name('mst_ad.editAdditionals');
-    // Route::get('/job-position/{id}/edit', [TcJobController::class, 'getJobPositionData'])->name('getJobPosition');
+    Route::get('mst_tc/{id}/edit', [TcController::class, 'edit'])->name('mst_tc.edit');
+    Route::get('mst_sk/{id}/editSoftSKills', [TcController::class, 'editSoftSKills'])->name('mst_sk.editSoftSKills');
+    Route::get('mst_ad/{id}/editAdditionals', [TcController::class, 'editAdditional'])->name('mst_ad.editAdditionals');
+    Route::get('/job-position/{id}/edit', [TcJobController::class, 'getJobPositionData'])->name('getJobPosition');
 
-    // Route::delete('/job-positions/delete-row', [TcJobController::class, 'deleteRow'])->name('jobPositions.deleteRow');
+    Route::delete('/job-positions/delete-row', [TcJobController::class, 'deleteRow'])->name('jobPositions.deleteRow');
 
-    // Route::put('mst_tc/{id}', [TcController::class, 'update'])->name('mst_tc.update');
-    // Route::put('mst_sk/{id}/updateSoftSkills', [TcController::class, 'updateSoftSkills'])->name('mst_sk.updateSoftSkills');
-    // Route::put('mst_ad/{id}/updateAdditionals', [TcController::class, 'updateAdditionals'])->name('mst_ad.updateAdditionals');
-    // Route::get('/employees-by-job-position', [TcController::class, 'fetchEmployeesByJobPosition'])->name('employees.by.job.position');
-
-
-
-    // Route::get('/users/{userId}/role', [TcJobController::class, 'getUserRole'])->name('users.role');
-    // Route::post('/job-positions', [TcJobController::class, 'store'])->name('jobPositions.store');
-    // Route::put('/job-positions/{id}', [TcJobController::class, 'updateJob'])->name('jobPositions.update');
-    // Route::delete('/job-positions/{id}', [TcJobController::class, 'deleteRow'])->name('jobPositions.destroy');
-    // Route::delete('/delete-tc-row/{id}', [TcController::class, 'deleteTcRow'])->name('tc.deleteRow');
-    // Route::delete('/delete-sk-row/{id}', [TcController::class, 'deleteSkRow'])->name('sk.deleteRow');
-    // Route::delete('/delete-ad-row/{id}', [TcController::class, 'deleteAdRow'])->name('ad.deleteRow');
-
-    // //Route untuk menampilkan halaman penilaian (index)
-    // Route::get('/penilaian', [PenilaianTCController::class, 'indexTrs'])->name('penilaian.index');
-    // Route::get('/penilaian-dept', [PenilaianTCController::class, 'indexTrs2'])->name('penilaian.index2');
-    // Route::get('/dashboard-competency', [PenilaianTCController::class, 'dsCompetency'])->name('dsCompetency');
-    // Route::get('/dashboard-detail-competency', [PenilaianTCController::class, 'dsDetailCompetency'])->name('dsDetailCompetency');
-
-    // Route::get('/dashboard-people-development', [PdController::class, 'indexPD'])->name('indexPD');
-    // Route::get('/dashboard-people-development-hrga', [PdController::class, 'indexPD2'])->name('indexPD2');
-    // Route::get('/dashboard-histori-development', [PdController::class, 'historiDevelop'])->name('historiDept');
+    Route::put('mst_tc/{id}', [TcController::class, 'update'])->name('mst_tc.update');
+    Route::put('mst_sk/{id}/updateSoftSkills', [TcController::class, 'updateSoftSkills'])->name('mst_sk.updateSoftSkills');
+    Route::put('mst_ad/{id}/updateAdditionals', [TcController::class, 'updateAdditionals'])->name('mst_ad.updateAdditionals');
+    Route::get('/employees-by-job-position', [TcController::class, 'fetchEmployeesByJobPosition'])->name('employees.by.job.position');
 
 
-    // Route::get('/buat-penilaian', [PenilaianTCController::class, 'createPenilaian'])->name('create.penilaian');
-    // Route::get('/buat-training', [PdController::class, 'createPD'])->name('createPD');
 
-    // Route::get('/get-job-position-data', [PenilaianTCController::class, 'getJobPositionData'])->name('getJobPositionData');
-    // Route::get('/get-job-position-data-edit', [PenilaianTCController::class, 'getJobPositionDataEdit'])->name('getJobPositionDataEdit');
-    // Route::get('/get-nilai-data-edit', [PenilaianTCController::class, 'getNilaiDataEdit'])->name('getNilaiDataEdit');
-    // Route::get('/get-job-point-kategori', [PenilaianTCController::class, 'getJobPointKategori'])->name('getJobPointKategori');
+    Route::get('/users/{userId}/role', [TcJobController::class, 'getUserRole'])->name('users.role');
+    Route::post('/job-positions', [TcJobController::class, 'store'])->name('jobPositions.store');
+    Route::put('/job-positions/{id}', [TcJobController::class, 'updateJob'])->name('jobPositions.update');
+    Route::delete('/job-positions/{id}', [TcJobController::class, 'deleteRow'])->name('jobPositions.destroy');
+    Route::delete('/delete-tc-row/{id}', [TcController::class, 'deleteTcRow'])->name('tc.deleteRow');
+    Route::delete('/delete-sk-row/{id}', [TcController::class, 'deleteSkRow'])->name('sk.deleteRow');
+    Route::delete('/delete-ad-row/{id}', [TcController::class, 'deleteAdRow'])->name('ad.deleteRow');
 
-    // Route::get('/view-pd/{modified_at}', [PdController::class, 'viewPD'])->name('viewPD');
-    // Route::get('/view-pd-HRGA/{id}', [PdController::class, 'viewPD2'])->name('viewPD2');
+    //Route untuk menampilkan halaman penilaian (index)
+    Route::get('/penilaian', [PenilaianTCController::class, 'indexTrs'])->name('penilaian.index');
+    Route::get('/penilaian-dept', [PenilaianTCController::class, 'indexTrs2'])->name('penilaian.index2');
+    Route::get('/dashboard-competency', [PenilaianTCController::class, 'dsCompetency'])->name('dsCompetency');
+    Route::get('/dashboard-detail-competency', [PenilaianTCController::class, 'dsDetailCompetency'])->name('dsDetailCompetency');
 
-    // Route::post('/save-penilaian', [PenilaianTCController::class, 'savePenilaian'])->name('savePenilaian');
-    // Route::post('/save-pd-pengajuan', [PdController::class, 'savePdPengajuan'])->name('savePdPengajuan');
-    // Route::post('/save-pd-pengajuan-Dept', [PdController::class, 'savePdPengajuanDept'])->name('savePdPengajuanDept');
-
-    // // Route::put('/updated-pd-hrga', [PdController::class, 'updatePdPlan'])->name('updatePdPlan');
-
-    // Route::post('/update-data', [PdController::class, 'updateData'])->name('updateData');
-
-    // Route::put('/updated-pd-hrga2', [PdController::class, 'updatePdPlan2'])->name('updatePdPlan2');
-    // Route::post('/update-status/{id_job_position}', [PenilaianTCController::class, 'kirimSC'])->name('update.status');
-    // Route::post('/update-status-dept/{id}', [PenilaianTCController::class, 'kirimDept'])->name('update.status2');
-
-    // Route::get('/editPdPengajuan/{modified_at}', [PdController::class, 'editPdPengajuan'])->name('editPdPengajuan');
-    // Route::get('/editPdPengajuan-HRGA/{id}', [PdController::class, 'editPdPengajuanHRGA'])->name('editPdPengajuanHRGA');
-
-    // Route::put('/update-pd', [PdController::class, 'update'])->name('updatePD');
-
-    // Route::get('/send-pd/{modified_at}', [PdController::class, 'sendPD'])->name('sendPD');
-    // Route::get('/send-pd2/{tahun_aktual}', [PdController::class, 'sendPD2'])->name('sendPD2');
-
-    // Route::get('/people-development/filter', [PdController::class, 'getFilteredData'])->name('people_development.filter');
-
-    // Route::get('/trs/edit-penilaian/{id_job_position}', [PenilaianTCController::class, 'editTrs'])->name('penilaian.edit');
-    // Route::get('/trs/edit-dept/{id_job_position}', [PenilaianTCController::class, 'editTrs2'])->name('penilaian.edit2');
-    // Route::get('/trs/view-penilaian/{id_job_position}', [PenilaianTCController::class, 'viewTrs'])->name('penilaian.view');
-    // Route::get('/trs/preview-penilaian/{id_job_position}', [PenilaianTCController::class, 'previewTrs'])->name('penilaian.preview');
-
-    // Route::get('/get-edit-Trs', [PenilaianTCController::class, 'getDataTrs'])->name('getDataTrs');
-    // Route::put('/penilaian/update/{id}', [PenilaianTCController::class, 'updateTrs'])->name('updatePenilaian');
-    // Route::put('/penilaian/dept/{id}', [PenilaianTCController::class, 'updateTrs2'])->name('updateDept');
-
-    // Route::put('/penilaian/{id}', [PenilaianTCController::class, 'update'])->name('penilaian.update');
-    // Route::delete('/penilaian/{id}', [PenilaianTCController::class, 'destroy'])->name('penilaian.destroy');
-
-    // Route::get('/download-pdf/{id}', [PdController::class, 'downloadPDF'])->name('download.pdf');
-    // // web.php
-    // Route::post('/update-button-status', [PdController::class, 'updateBtn'])->name('updateButtonStatus');
+    Route::get('/dashboard-people-development', [PdController::class, 'indexPD'])->name('indexPD');
+    Route::get('/dashboard-people-development-hrga', [PdController::class, 'indexPD2'])->name('indexPD2');
+    Route::get('/dashboard-histori-development', [PdController::class, 'historiDevelop'])->name('historiDept');
 
 
-    // //chartTC
-    // Route::get('/get-competency-data', [PenilaianTCController::class, 'getCompetencyData'])->name('get-competency-data');
-    // Route::get('/get-competency-filter', [PenilaianTCController::class, 'getCompetencyFilter'])->name('get-competency-filter');
-    // Route::get('/get-detail-filter', [PenilaianTCController::class, 'getDetailCompetency'])->name('get-detail-filter');
+    Route::get('/buat-penilaian', [PenilaianTCController::class, 'createPenilaian'])->name('create.penilaian');
+    Route::get('/buat-training', [PdController::class, 'createPD'])->name('createPD');
+
+    Route::get('/get-job-position-data', [PenilaianTCController::class, 'getJobPositionData'])->name('getJobPositionData');
+    Route::get('/get-job-position-data-edit', [PenilaianTCController::class, 'getJobPositionDataEdit'])->name('getJobPositionDataEdit');
+    Route::get('/get-nilai-data-edit', [PenilaianTCController::class, 'getNilaiDataEdit'])->name('getNilaiDataEdit');
+    Route::get('/get-job-point-kategori', [PenilaianTCController::class, 'getJobPointKategori'])->name('getJobPointKategori');
+
+    Route::get('/view-pd/{modified_at}/{tahun_aktual}', [PdController::class, 'viewPD'])->name('viewPD');
+    Route::get('/view-pd-HRGA/{tahun_aktual}', [PdController::class, 'viewPD2'])->name('viewPD2');
+
+    Route::post('/save-penilaian', [PenilaianTCController::class, 'savePenilaian'])->name('savePenilaian');
+    Route::post('/save-pd-pengajuan', [PdController::class, 'savePdPengajuan'])->name('savePdPengajuan');
+    Route::post('/save-pd-pengajuan-Dept', [PdController::class, 'savePdPengajuanDept'])->name('savePdPengajuanDept');
+
+    Route::put('/updated-pd-hrga', [PdController::class, 'updatePdPlan'])->name('updatePdPlan');
+
+    Route::post('/update-data', [PdController::class, 'updateData'])->name('updateData');
+
+    Route::put('/updated-pd-hrga2', [PdController::class, 'updatePdPlan2'])->name('updatePdPlan2');
+    Route::post('/update-status/{id_job_position}', [PenilaianTCController::class, 'kirimSC'])->name('update.status');
+    Route::post('/update-status-dept/{id}', [PenilaianTCController::class, 'kirimDept'])->name('update.status2');
+
+    Route::get('/editPdPengajuan/{modified_at}/{tahun_aktual}', [PdController::class, 'editPdPengajuan'])->name('editPdPengajuan');
+    Route::get('/editPdPengajuan-HRGA/{tahun_aktual}', [PdController::class, 'editPdPengajuanHRGA'])->name('editPdPengajuanHRGA');
+
+    Route::put('/update-pd', [PdController::class, 'update'])->name('updatePD');
+    
+
+    Route::get('/send-pd/{modified_at}/{tahun_aktual}', [PdController::class, 'sendPD'])->name('sendPD');
+    Route::get('/send-pd2/{tahun_aktual}', [PdController::class, 'sendPD2'])->name('sendPD2');
+
+    Route::get('/people-development/filter', [PdController::class, 'getFilteredData'])->name('people_development.filter');
+
+    Route::get('/trs/edit-penilaian/{id_job_position}', [PenilaianTCController::class, 'editTrs'])->name('penilaian.edit');
+    Route::get('/trs/edit-dept/{id_job_position}', [PenilaianTCController::class, 'editTrs2'])->name('penilaian.edit2');
+    Route::get('/trs/view-penilaian/{id_job_position}', [PenilaianTCController::class, 'viewTrs'])->name('penilaian.view');
+    Route::get('/trs/preview-penilaian/{id_job_position}', [PenilaianTCController::class, 'previewTrs'])->name('penilaian.preview');
+
+    Route::get('/get-edit-Trs', [PenilaianTCController::class, 'getDataTrs'])->name('getDataTrs');
+    Route::put('/penilaian/update/{id}', [PenilaianTCController::class, 'updateTrs'])->name('updatePenilaian');
+    Route::put('/penilaian/dept/{id}', [PenilaianTCController::class, 'updateTrs2'])->name('updateDept');
+    Route::put('/update-catatan/{id}', [PenilaianTCController::class, 'updateCatatan'])->name('updateCatatan');
+
+    Route::put('/penilaian/{id}', [PenilaianTCController::class, 'update'])->name('penilaian.update');
+    Route::delete('/penilaian/{id}', [PenilaianTCController::class, 'destroy'])->name('penilaian.destroy');
+
+    Route::get('/download-pdf/{id}', [PdController::class, 'downloadPDF'])->name('download.pdf');
+    // web.php
+    Route::post('/update-button-status', [PdController::class, 'updateBtn'])->name('updateButtonStatus');
+
+
+    //chartTC
+    Route::get('/get-competency-data', [PenilaianTCController::class, 'getCompetencyData'])->name('get-competency-data');
+    Route::get('/get-competency-filter', [PenilaianTCController::class, 'getCompetencyFilter'])->name('get-competency-filter');
+    Route::get('/get-detail-filter', [PenilaianTCController::class, 'getDetailCompetency'])->name('get-detail-filter');
 
     //FPB
     Route::get('/index-po', [PoPengajuanController::class, 'indexPoPengajuan'])->name('index.PO');

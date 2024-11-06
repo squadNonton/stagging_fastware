@@ -152,12 +152,12 @@
                                     <span>Safety Patrol</span>
                                 </a>
                             </li>
-                            {{-- <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" href="{{ route('dsCompetency') }}">
                                     <i class="bi bi-bar-chart-line-fill fs-6"></i>
                                     <span>People Development</span>
                                 </a>
-                            </li> --}}
+                            </li>
                         @endif
                         <li class="nav-item">
                             <a class="nav-link collapsed" href="{{ route('dashboardSS') }}">
@@ -505,7 +505,7 @@
                 @endif
             </ul>
 
-            {{-- @php
+            @php
                 $hrgarole = [1, 14, 15]; // Roles for accessing Technical Competency Management
                 $secHeadRoles = [1, 3, 9, 31, 22, 30, 12, 14, 15]; // Roles for accessing Technical Competency by Sec. Head
                 $deptHeadRoles = [1, 2, 5, 11, 7, 14, 15]; // Roles for accessing Technical Competency by Dept. Head
@@ -636,7 +636,7 @@
                         </ul>
                     </li>
                 @endif
-            </ul> --}}
+            </ul>
 
             @php
                 $secHeadRoles = [1, 3, 4, 9, 12, 14, 15, 22, 30, 31, 39, 40, 41, 44, 50]; // Roles for accessing PO Pengajuan Management
