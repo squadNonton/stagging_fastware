@@ -166,6 +166,12 @@
                                                                 name="nama_project[]"
                                                                 value="{{ $pengajuanPoItem->nama_project }}">
                                                         </div>
+                                                        <div class="col-md-2">
+                                                            <label for="no_so" class="form-label">NO SO</label>
+                                                            <input type="text" class="form-control"
+                                                                name="no_so[]"
+                                                                value="{{ $pengajuanPoItem->no_so }}">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             @endif
@@ -432,6 +438,10 @@
                         <div class="col-md-2">
                             <label for="nama_project" class="form-label">Nama Project:</label>
                             <input type="text" class="form-control" name="nama_project[]">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="no_so" class="form-label">NO SO:</label>
+                            <input type="text" class="form-control" id="no_so" name="no_so[]" placeholder="Contoh: 00001" maxlength="5">
                         </div>
                     `;
                     dynamicFieldsContainer.appendChild(newSubcontRow);

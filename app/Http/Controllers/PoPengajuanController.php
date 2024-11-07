@@ -1040,6 +1040,7 @@ class PoPengajuanController extends Controller
                 'rekomendasi.*' => 'nullable|string',
                 'nama_customer.*' => 'nullable|string',
                 'nama_project.*' => 'nullable|string',
+                'no_so.*' => 'nullable|string',
             ]);
 
             Log::info('Validated data:', $validatedData); // Log the validated data
@@ -1115,12 +1116,17 @@ class PoPengajuanController extends Controller
                     $purchaseOrder->nama_customer = $validatedData['nama_customer'][$index] ?? null;
                     $purchaseOrder->nama_project = $validatedData['nama_project'][$index] ?? null;
 
+                    // Generate and insert no_so
+                    $so_number = 'SO/' . $currentYear . '/' . ($validatedData['no_so'][$index] ?? ''); // Format SO/{year}/{value from view}
+                    $purchaseOrder->no_so = $so_number;
+
                     Log::info('Subcont fields for item:', [
                         'target_cost' => $purchaseOrder->target_cost,
                         'lead_time' => $purchaseOrder->lead_time,
                         'rekomendasi' => $purchaseOrder->rekomendasi,
                         'nama_customer' => $purchaseOrder->nama_customer,
                         'nama_project' => $purchaseOrder->nama_project,
+                        'no_so' => $so_number,
                     ]);
                 }
 
@@ -1205,6 +1211,7 @@ class PoPengajuanController extends Controller
                             $pengajuanPoItem->rekomendasi = $request->rekomendasi[$index] ?? null;
                             $pengajuanPoItem->nama_customer = $request->nama_customer[$index] ?? null;
                             $pengajuanPoItem->nama_project = $request->nama_project[$index] ?? null;
+                            $pengajuanPoItem->no_so = $request->no_so[$index] ?? null;
                         }
 
                         $pengajuanPoItem->save();
@@ -1252,6 +1259,7 @@ class PoPengajuanController extends Controller
                         $pengajuanPoItem->rekomendasi = $request->rekomendasi[$index] ?? null;
                         $pengajuanPoItem->nama_customer = $request->nama_customer[$index] ?? null;
                         $pengajuanPoItem->nama_project = $request->nama_project[$index] ?? null;
+                        $pengajuanPoItem->no_so = $request->no_so[$index] ?? null;
                     }
 
                     $pengajuanPoItem->save();
@@ -1338,6 +1346,7 @@ class PoPengajuanController extends Controller
                             $pengajuanPoItem->rekomendasi = $request->rekomendasi[$index] ?? null;
                             $pengajuanPoItem->nama_customer = $request->nama_customer[$index] ?? null;
                             $pengajuanPoItem->nama_project = $request->nama_project[$index] ?? null;
+                            $pengajuanPoItem->no_so = $request->no_so[$index] ?? null;
                         }
 
                         $pengajuanPoItem->save();
@@ -1397,6 +1406,7 @@ class PoPengajuanController extends Controller
                         $pengajuanPoItem->rekomendasi = $request->rekomendasi[$index] ?? null;
                         $pengajuanPoItem->nama_customer = $request->nama_customer[$index] ?? null;
                         $pengajuanPoItem->nama_project = $request->nama_project[$index] ?? null;
+                        $pengajuanPoItem->no_so = $request->no_so[$index] ?? null;
                     }
 
                     $pengajuanPoItem->save();

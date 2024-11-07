@@ -312,13 +312,14 @@
                                         <th>PCS</th>
                                         <th style="width: 10%">Harga Satuan</th>
                                         <th style="width: 10%">Total Harga</th>
-                                        @if ($mstPoPengajuans->first()->kategori_po == 'Subcon')
+                                        @if ($mstPoPengajuans->first()->kategori_po == 'Subcont')
                                             <!-- Tambahkan kolom baru jika kategori_po adalah Subcon -->
                                             <th style="width: 10%">Target Cost</th>
                                             <th style="width: 10%">Lead Time</th>
                                             <th>Rekomendasi</th>
                                             <th>Nama Customer</th>
                                             <th>Nama Project</th>
+                                            <th>NO SO</th>
                                         @endif
                                         <th class="no-print">File</th>
                                         <th>Tgl Dibuat</th>
@@ -359,7 +360,7 @@
                                                     {{ number_format($item->price_list, 0, ',', '.') }}</td>
                                                 <td class="{{ $item->status_2 == 8 ? 'disabled-cell' : '' }}">Rp
                                                     {{ number_format($item->total_harga, 0, ',', '.') }}</td>
-                                                @if ($item->kategori_po == 'Subcon')
+                                                @if ($item->kategori_po == 'Subcont')
                                                     <td class="{{ $item->status_2 == 8 ? 'disabled-cell' : '' }}">Rp
                                                         {{ number_format($item->target_cost, 0, ',', '.') }}</td>
                                                     <td class="{{ $item->status_2 == 8 ? 'disabled-cell' : '' }}">
@@ -370,6 +371,9 @@
                                                         {{ $item->nama_customer }}</td>
                                                     <td class="{{ $item->status_2 == 8 ? 'disabled-cell' : '' }}">
                                                         {{ $item->nama_project }}</td>
+                                                    <td
+                                                        class="{{ $item->status_2 == 8 ? 'disabled-cell' : '' }} Subcont-only">
+                                                        {{ $item->no_so }}</td>
                                                 @endif
                                                 <td class="{{ $item->status_2 == 8 ? 'disabled-cell' : '' }} no-print">
                                                     @if ($item->file)
@@ -1089,6 +1093,7 @@
                         item.rekomendasi = cells[8].innerText;
                         item.nama_customer = cells[9].innerText;
                         item.nama_project = cells[10].innerText;
+                        item.no_so = cells[11].innerText;
                     }
                     data.push(item);
                 });
@@ -1129,9 +1134,7 @@
 
                     // Jika ada data tambahan Subcon, tambahkan ke baris
                     if (item.hasOwnProperty('target_cost')) {
-                        row = row.concat([item.target_cost, item.lead_time, item.rekomendasi, item.nama_customer, item
-                            .nama_project
-                        ]);
+                        row = row.concat([item.target_cost, item.lead_time, item.rekomendasi, item.nama_customer, item.nama_project,  item.no_so]);
                     }
 
                     return row;

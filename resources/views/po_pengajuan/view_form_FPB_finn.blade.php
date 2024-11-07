@@ -355,6 +355,7 @@
                                                 <th style="width: 10%; text-align: center;">Rekomendasi (Jika Ada)</th>
                                                 <th style="width: 10%">Nama Customer</th>
                                                 <th style="width: 10%">Nama Project</th>
+                                                <th style="width: 10%">NO SO</th>
                                             @endif
                                             <th class="no-print">File</th>
                                             <th>Tgl Dibuat</th>
@@ -400,6 +401,9 @@
                                                     <td
                                                         class="{{ $item->status_2 == 8 ? 'disabled-cell' : '' }} Subcont-only">
                                                         {{ $item->nama_project }}</td>
+                                                    <td
+                                                        class="{{ $item->status_2 == 8 ? 'disabled-cell' : '' }} Subcont-only">
+                                                        {{ $item->no_so }}</td>
                                                 @endif
 
                                                 <td class="{{ $item->status_2 == 8 ? 'disabled-cell' : '' }} no-print"
@@ -519,15 +523,15 @@
                                             </td>
                                             <td style="vertical-align: top; height: 60px;">
                                                 @if ($mstPoPengajuans->first()->status_1 >= 5 && $mstPoPengajuans->first()->status_1 <= 13)
-                                                <p>
-                                                    <b>APPROVED by&nbsp;
-                                                        @if ($trsPoPengajuanStatus4)
-                                                            {{ $trsPoPengajuanStatus4->modified_at }}
-                                                        @else
-                                                            &nbsp;
-                                                        @endif
-                                                    </b>
-                                                </p>
+                                                    <p>
+                                                        <b>APPROVED by&nbsp;
+                                                            @if ($trsPoPengajuanStatus4)
+                                                                {{ $trsPoPengajuanStatus4->modified_at }}
+                                                            @else
+                                                                &nbsp;
+                                                            @endif
+                                                        </b>
+                                                    </p>
                                                 @else
                                                     <p>&nbsp;</p>
                                                 @endif

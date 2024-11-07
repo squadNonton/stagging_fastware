@@ -121,6 +121,11 @@
                                                     <input type="text" class="form-control" id="nama_project"
                                                         name="nama_project[]">
                                                 </div>
+                                                <div class="col-md-2">
+                                                    <label for="no_so" class="form-label">NO SO:</label>
+                                                    <input type="text" class="form-control" id="no_so"
+                                                        name="no_so[]" placeholder="Contoh: 00001" maxlength="5">
+                                                </div>
                                             </div>
                                             <br>
                                         </div>
@@ -239,11 +244,7 @@
                             <label for="total_harga" class="form-label">Total Harga:<span style="color: red;">*</span></label>
                             <input type="text" class="form-control" name="total_harga[]" disabled required>
                         </div>
-                        <div class="col-md-2">
-                            <label for="file" class="form-label">Upload File/Drawing:<span
-                                                    style="color: red;">*</span></label>
-                            <input class="form-control" type="file" name="file[]" accept="*/*">
-                        </div>
+                        
                         <hr style="margin-top:3%">
                     `;
                 dynamicFieldsContainer.appendChild(newRow);
@@ -276,6 +277,14 @@
                     <div class="col-md-2">
                         <label for="nama_project" class="form-label">Nama Project:</label>
                         <input type="text" class="form-control" name="nama_project[]">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="no_so" class="form-label">Nama Project:</label>
+                        <input type="text" class="form-control" name="nama_project[]">
+                    </div>
+                    <div class="col-md-2">
+                            <label for="no_so" class="form-label">NO SO:</label>
+                            <input type="text" class="form-control" id="no_so" name="no_so[]" placeholder="Contoh: 00001" maxlength="5">
                     </div>
                     <hr style="margin-top:3%">
                 `;

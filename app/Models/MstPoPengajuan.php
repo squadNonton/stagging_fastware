@@ -33,6 +33,7 @@ class MstPoPengajuan extends Model
         'lead_time',
         'nama_customer',
         'nama_project', 
+        'no_so',
         'catatan',
         'status_1', 
         'status_2', 
