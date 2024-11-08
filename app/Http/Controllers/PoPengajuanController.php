@@ -1032,7 +1032,7 @@ class PoPengajuanController extends Controller
                 'nama_barang.*' => 'required|string',
                 'spesifikasi.*' => 'required|string',
                 'pcs.*' => 'required|integer',
-                'file.*' => 'nullable|file|max:50048',
+                'file.*' => 'nullable|file|max:11048',
                 'price_list.*' => 'nullable|numeric',
                 'total_harga.*' => 'nullable|numeric',
                 'target_cost.*' => 'nullable|numeric',

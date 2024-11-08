@@ -244,7 +244,12 @@
                             <label for="total_harga" class="form-label">Total Harga:<span style="color: red;">*</span></label>
                             <input type="text" class="form-control" name="total_harga[]" disabled required>
                         </div>
-                        
+                        <div class="col-md-2">
+                           <label for="file" class="form-label">Upload File/Drawing:<span
+                                style="color: red;">*</span></label>
+                                <input class="form-control" type="file" id="file" name="file[]"
+                                ccept="*/*" required>
+                        </div>
                         <hr style="margin-top:3%">
                     `;
                 dynamicFieldsContainer.appendChild(newRow);
