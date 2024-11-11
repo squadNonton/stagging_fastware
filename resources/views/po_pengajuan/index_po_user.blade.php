@@ -277,7 +277,6 @@
                 }
 
                 async function exportToExcel(data) {
-                    // Buat workbook dan worksheet dengan ExcelJS
                     const workbook = new ExcelJS.Workbook();
                     const worksheet = workbook.addWorksheet("Data");
 
@@ -333,6 +332,11 @@
                             width: 15
                         },
                         {
+                            header: "Due Date",
+                            key: "due_date",
+                            width: 15
+                        },
+                        {
                             header: "Target Cost",
                             key: "target_cost",
                             width: 15
@@ -365,7 +369,7 @@
                         {
                             header: "Status 2",
                             key: "status_2",
-                            width: 10
+                            width: 15
                         },
                         {
                             header: "Created At",
@@ -379,23 +383,23 @@
                         }
                     ];
 
-                    // Menambahkan header dengan format
                     worksheet.columns = headers;
                     worksheet.getRow(1).font = {
                         bold: true
                     };
-
-                    // Menambahkan filter pada header
                     worksheet.autoFilter = {
                         from: 'A1',
-                        to: String.fromCharCode(64 + headers.length) +
-                            '1' // Menggunakan kode ASCII untuk kolom terakhir
+                        to: String.fromCharCode(64 + headers.length) + '1'
                     };
 
-                    // Map data to worksheet with "No" column
+                    // Format data dan tambahkan ke worksheet
                     data.forEach((item, index) => {
+                        const createdAt = new Date(item.created_at);
+                        const formattedCreatedAt =
+                            `${String(createdAt.getDate()).padStart(2, '0')}-${String(createdAt.getMonth() + 1).padStart(2, '0')}-${createdAt.getFullYear()} ${String(createdAt.getHours()).padStart(2, '0')}:${String(createdAt.getMinutes()).padStart(2, '0')}:${String(createdAt.getSeconds()).padStart(2, '0')}`;
+
                         worksheet.addRow({
-                            no: index + 1, // Kolom No sebagai urutan
+                            no: index + 1,
                             no_fpb: item.no_fpb,
                             no_po: item.no_po,
                             kategori_po: item.kategori_po,
@@ -405,6 +409,7 @@
                             total_harga: item.total_harga,
                             spesifikasi: item.spesifikasi,
                             rekomendasi: item.rekomendasi,
+                            due_date: item.due_date,
                             target_cost: item.target_cost,
                             lead_time: item.lead_time,
                             nama_customer: item.nama_customer,
@@ -412,19 +417,18 @@
                             no_so: item.no_so,
                             status_1: item.status_1,
                             status_2: item.status_2,
-                            created_at: item.created_at,
+                            created_at: formattedCreatedAt,
                             modified_at: item.modified_at
                         });
                     });
 
-                    // Simpan dan unduh file
                     const buffer = await workbook.xlsx.writeBuffer();
                     const blob = new Blob([buffer], {
                         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     });
                     const link = document.createElement("a");
                     link.href = URL.createObjectURL(blob);
-                    link.download = "Export_FP.xlsx";
+                    link.download = "Export_FPB.xlsx";
                     link.click();
                 }
 
