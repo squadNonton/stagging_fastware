@@ -126,6 +126,14 @@
                 </div>
             </div>
         </section>
+        <!-- Include jQuery and SheetJS library (for Excel export functionality) -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Import SheetJS (XLSX) -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+        <!-- Import ExcelJS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.1/exceljs.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('kirimSemuaData').addEventListener('click', function() {
