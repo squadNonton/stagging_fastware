@@ -23,9 +23,23 @@
                             <h5 class="card-title">Tampilan Data Form Permintaan Barang/Jasa</h5>
                             <!-- Table with stripped rows -->
                             <div class="table-responsive" style="height: 100%; overflow-y: auto;">
-                                <button id="kirimSemuaData" class="btn btn-primary">
-                                    <i class="fas fa-paper-plane"></i> Kirim Semua FPB
-                                </button>
+
+
+                                <div class="d-flex align-items-center mb-3 gap-3">
+                                    <button id="kirimSemuaData" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane"></i> Kirim Semua FPB
+                                    </button>
+
+                                    <label for="startDate" class="me-2">Tanggal Mulai:</label>
+                                    <input type="date" id="startDate" name="start_date" class="form-control me-2"
+                                        style="width: 150px;">
+
+                                    <label for="endDate" class="me-2">Tanggal Akhir:</label>
+                                    <input type="date" id="endDate" name="end_date" class="form-control me-2"
+                                        style="width: 150px;">
+
+                                    <button id="exportData" class="btn btn-success ms-2">Export to Excel</button>
+                                </div>
                                 <table class="datatable table">
                                     <thead>
                                         <tr>
@@ -231,6 +245,196 @@
             document.getElementById('selectAll').addEventListener('change', function() {
                 document.querySelectorAll('.selectRow').forEach(checkbox => {
                     checkbox.checked = this.checked;
+                });
+            });
+
+            $(document).ready(function() {
+                const url = `{{ route('getData') }}`;
+
+                function getDataAndExportExcel(startDate, endDate) {
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        data: {
+                            start_date: startDate,
+                            end_date: endDate
+                        },
+                        success: function(response) {
+                            exportToExcel(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Terjadi kesalahan:", error);
+                        }
+                    });
+                }
+
+                async function exportToExcel(data) {
+                    // Buat workbook dan worksheet dengan ExcelJS
+                    const workbook = new ExcelJS.Workbook();
+                    const worksheet = workbook.addWorksheet("Data");
+
+                    // Header dengan kolom "No" di awal dan filter
+                    const headers = [{
+                            header: "No",
+                            key: "no",
+                            width: 5
+                        },
+                        {
+                            header: "No FPB",
+                            key: "no_fpb",
+                            width: 15
+                        },
+                        {
+                            header: "No PO",
+                            key: "no_po",
+                            width: 15
+                        },
+                        {
+                            header: "Kategori PO",
+                            key: "kategori_po",
+                            width: 20
+                        },
+                        {
+                            header: "Nama Barang",
+                            key: "nama_barang",
+                            width: 20
+                        },
+                        {
+                            header: "PCS",
+                            key: "pcs",
+                            width: 7
+                        },
+                        {
+                            header: "Price List",
+                            key: "price_list",
+                            width: 15
+                        },
+                        {
+                            header: "Total Harga",
+                            key: "total_harga",
+                            width: 20
+                        },
+                        {
+                            header: "Spesifikasi",
+                            key: "spesifikasi",
+                            width: 30
+                        },
+                        {
+                            header: "Rekomendasi",
+                            key: "rekomendasi",
+                            width: 15
+                        },
+                        {
+                            header: "Target Cost",
+                            key: "target_cost",
+                            width: 15
+                        },
+                        {
+                            header: "Lead Time",
+                            key: "lead_time",
+                            width: 15
+                        },
+                        {
+                            header: "Nama Customer",
+                            key: "nama_customer",
+                            width: 20
+                        },
+                        {
+                            header: "Nama Project",
+                            key: "nama_project",
+                            width: 20
+                        },
+                        {
+                            header: "No SO",
+                            key: "no_so",
+                            width: 15
+                        },
+                        {
+                            header: "Status 1",
+                            key: "status_1",
+                            width: 10
+                        },
+                        {
+                            header: "Status 2",
+                            key: "status_2",
+                            width: 10
+                        },
+                        {
+                            header: "Created At",
+                            key: "created_at",
+                            width: 23
+                        },
+                        {
+                            header: "Pembuat",
+                            key: "modified_at",
+                            width: 25
+                        }
+                    ];
+
+                    // Menambahkan header dengan format
+                    worksheet.columns = headers;
+                    worksheet.getRow(1).font = {
+                        bold: true
+                    };
+
+                    // Menambahkan filter pada header
+                    worksheet.autoFilter = {
+                        from: 'A1',
+                        to: String.fromCharCode(64 + headers.length) +
+                            '1' // Menggunakan kode ASCII untuk kolom terakhir
+                    };
+
+                    // Map data to worksheet with "No" column
+                    data.forEach((item, index) => {
+                        worksheet.addRow({
+                            no: index + 1, // Kolom No sebagai urutan
+                            no_fpb: item.no_fpb,
+                            no_po: item.no_po,
+                            kategori_po: item.kategori_po,
+                            nama_barang: item.nama_barang,
+                            pcs: item.pcs,
+                            price_list: item.price_list,
+                            total_harga: item.total_harga,
+                            spesifikasi: item.spesifikasi,
+                            rekomendasi: item.rekomendasi,
+                            target_cost: item.target_cost,
+                            lead_time: item.lead_time,
+                            nama_customer: item.nama_customer,
+                            nama_project: item.nama_project,
+                            no_so: item.no_so,
+                            status_1: item.status_1,
+                            status_2: item.status_2,
+                            created_at: item.created_at,
+                            modified_at: item.modified_at
+                        });
+                    });
+
+                    // Simpan dan unduh file
+                    const buffer = await workbook.xlsx.writeBuffer();
+                    const blob = new Blob([buffer], {
+                        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    });
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = "Export_FP.xlsx";
+                    link.click();
+                }
+
+                $('#exportData').click(function() {
+                    const startDate = $('#startDate').val();
+                    const endDate = $('#endDate').val();
+
+                    if (!startDate || !endDate) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Perhatian',
+                            text: 'Silakan pilih tanggal mulai dan tanggal akhir.',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    }
+
+                    getDataAndExportExcel(startDate, endDate);
                 });
             });
         </script>

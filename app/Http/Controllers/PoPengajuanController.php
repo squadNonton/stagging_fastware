@@ -1928,4 +1928,77 @@ class PoPengajuanController extends Controller
 
         return response()->json(['data' => $history]);
     }
+
+    public function getData(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if (!$startDate || !$endDate) {
+            return response()->json(['error' => 'Please provide both start and end dates.'], 400);
+        }
+
+        $data = MstPoPengajuan::select([
+            'no_fpb',
+            'no_po',
+            'kategori_po',
+            'nama_barang',
+            'pcs',
+            'price_list',
+            'total_harga',
+            'spesifikasi',
+            'rekomendasi',
+            'target_cost',
+            'lead_time',
+            'nama_customer',
+            'nama_project',
+            'no_so',
+            'status_1',
+            'status_2',
+            'created_at',
+            'modified_at'
+        ])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get()
+            ->map(function ($item) {
+                // Convert status_1 to text
+                switch ($item->status_1) {
+                    case 1:
+                        $item->status_1 = 'Draf';
+                        break;
+                    case 9:
+                        $item->status_1 = 'Finish';
+                        break;
+                    default:
+                        $item->status_1 = in_array($item->status_1, [2, 3, 4, 5, 6, 7, 8]) ? 'Open' : $item->status_1;
+                        break;
+                }
+
+                // Convert status_2 to text
+                switch ($item->status_2) {
+                    case 1:
+                        $item->status_2 = 'Draf';
+                        break;
+                    case 6:
+                        $item->status_2 = 'PO Confirm';
+                        break;
+                    case 7:
+                        $item->status_2 = 'PO Release';
+                        break;
+                    case 8:
+                        $item->status_2 = 'Reject';
+                        break;
+                    case 10:
+                        $item->status_2 = 'Pengajuan Reject';
+                        break;
+                    default:
+                        $item->status_2 = in_array($item->status_2, [2, 3, 4, 5]) ? 'Open' : $item->status_2;
+                        break;
+                }
+
+                return $item;
+            });
+
+        return response()->json($data);
+    }
 }
