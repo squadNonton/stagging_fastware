@@ -21,7 +21,7 @@ class PoPengajuanController extends Controller
         $roleId = auth()->user()->role_id;
 
         // Jika role_id adalah 1, 14, atau 15, ambil semua data
-        if (in_array($roleId, [1, 14, 15, 41])) {
+        if (in_array($roleId, [1, 14, 15, 41, 54])) {
             $data = MstPoPengajuan::leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id') // Menggunakan LEFT JOIN
                 ->select(
                     'mst_po_pengajuans.no_fpb',
