@@ -132,8 +132,8 @@
                                                             <i class="fa-regular fa-folder-open"></i>
                                                         </a>
                                                         <!-- Pengecekan apakah field quotation_file memiliki nilai -->
-                                                        @if ($row->quotation_file)
-                                                            <!-- Icon bintang merah jika quotation_file memiliki nilai -->
+                                                        @if ($row->quotation_file && !$row->no_po)
+                                                            <!-- Icon bintang merah jika hanya quotation_file yang memiliki nilai dan no_po kosong -->
                                                             <i class="fa-solid fa-star text-danger me-2"
                                                                 title="Quotation Available"></i>
                                                         @endif
