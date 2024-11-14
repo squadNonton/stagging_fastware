@@ -364,6 +364,7 @@ class PoPengajuanController extends Controller
                 'mst_po_pengajuans.modified_at',
                 DB::raw('(SELECT MAX(updated_at) FROM trs_po_pengajuans WHERE id_fpb = mst_po_pengajuans.id) as trs_updated_at')
             )
+            ->where('mst_po_pengajuans.status_2', '!=', 8) // Filter out records with status_2 = 8
             ->groupBy(
                 'mst_po_pengajuans.no_fpb',
                 'mst_po_pengajuans.id',
@@ -410,6 +411,7 @@ class PoPengajuanController extends Controller
         // Mengirim data ke view
         return view('po_pengajuan.index_po_procurment', compact('data', 'pengajuanCancel', 'noFpbTerbaru', 'showNamaBarang'));
     }
+
 
     public function showFPBForm($id)
     {
