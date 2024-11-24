@@ -103,12 +103,16 @@ class User extends Authenticatable
     // Relasi ke model TrsPenilaianTcs
     public function penilaianTcs()
     {
-        return $this->hasMany(TrsPenilaianTc::class, 'id_user');
+        return $this->hasMany(TrsPenilaianTc::class, 'id_user', 'modified_at');
     }
 
     // Relasi ke TcPeopleDevelopment
     public function peopleDevelopments()
     {
         return $this->hasMany(TcPeopleDevelopment::class, 'id_user');
+    }
+    public function details()
+    {
+        return $this->hasMany(DetailTcPenilaian::class, 'id_user', 'id');
     }
 }

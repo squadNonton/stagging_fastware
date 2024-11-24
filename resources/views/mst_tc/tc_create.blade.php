@@ -104,6 +104,7 @@
                                         <div class="form-group">
                                             <label for="nilai_tc_0">Standar Nilai</label>
                                             <select name="tc[nilai][]" id="nilai_tc_0" class="form-control">
+                                                <option value=""> ---- Pilih Standar Nilai ----</option>
                                                 <option value="1">1</option>
                                                 <option value="2">2</option>
                                                 <option value="3">3</option>
@@ -250,6 +251,7 @@
                                         <div class="form-group">
                                             <label for="nilai_sk_0">Standar Nilai</label>
                                             <select name="soft_skills[nilai][]" id="nilai_sk_0" class="form-control">
+                                                <option value=""> ---- Pilih Standar Nilai ----</option>
                                                 <option value="1">1</option>
                                                 <option value="2">2</option>
                                                 <option value="3">3</option>
@@ -396,6 +398,7 @@
                                         <div class="form-group">
                                             <label for="nilai_ad_0">Standar Nilai</label>
                                             <select name="additional[nilai][]" id="nilai_ad_0" class="form-control">
+                                                <option value=""> ---- Pilih Standar Nilai ----</option>
                                                 <option value="1">1</option>
                                                 <option value="2">2</option>
                                                 <option value="3">3</option>
@@ -512,9 +515,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-center" style="margin-top: 3%">
-                                <button type="submit" class="btn btn-primary"
-                                    style="background-color: #007BFF">Submit</button>
+                            <div class="d-flex justify-content-center align-items-center" style="margin-top: 3%">
+                                <a href="{{ route('tcShow') }}" class="btn btn-secondary mx-2">
+                                    <i class="fas fa-arrow-left me-2"></i>Kembali
+                                </a>
+                                <button type="submit" class="btn btn-primary mx-2" style="background-color: #007BFF">
+                                    <i class="fas fa-save me-2"></i>Submit
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -595,8 +602,6 @@
                             icon: 'success',
                             title: 'Berhasil!',
                             text: 'Data berhasil disimpan.',
-                            timer: 2000, // Durasi tampilan pesan (dalam milidetik)
-                            timerProgressBar: true,
                             didClose: () => {
                                 // Kembali ke route setelah SweetAlert ditutup
                                 window.location.href = '{{ route('tcShow') }}';
@@ -612,7 +617,8 @@
                             title: 'Terjadi kesalahan!',
                             text: 'Data tidak berhasil disimpan.',
                             timer: 2000, // Durasi tampilan pesan (dalam milidetik)
-                            timerProgressBar: true
+                            timerProgressBar: true,
+                            showConfirmButton: false // Hapus tombol OK
                         });
                     });
 
@@ -645,6 +651,7 @@
         <div class="form-group">
             <label for="nilai_tc_${container.children.length}">Standar Nilai</label>
             <select name="tc[nilai][]" id="nilai_tc_${container.children.length}" class="form-control">
+                 <option value=""> ---- Pilih Standar Nilai ----</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -683,6 +690,7 @@
         <div class="form-group">
             <label for="nilai_sk_${container.children.length}">Standar Nilai</label>
             <select name="soft_skills[nilai][]" id="nilai_sk_${container.children.length}" class="form-control">
+                 <option value=""> ---- Pilih Standar Nilai ----</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -721,6 +729,7 @@
         <div class="form-group">
             <label for="nilai_ad_${container.children.length}">Standar Nilai</label>
             <select name="additional[nilai][]" id="nilai_ad_${container.children.length}" class="form-control">
+                 <option value=""> ---- Pilih Standar Nilai ----</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>

@@ -91,7 +91,7 @@
                 <div class="table-container" style="overflow-x:auto;">
                     <table id="table" class="styled-table" style="width:100%;">
                         <thead>
-                            <tr>
+                            <tr style="background-color: #4f83e4;">
                                 <th scope="col" rowspan="2">NO</th>
                                 <th scope="col" rowspan="2">Section</th>
                                 <th scope="col" rowspan="2">Job Position</th>
@@ -390,7 +390,7 @@
                 var downloadLink = document.createElement("a");
 
                 // Buat nama file untuk Excel
-                var fileName = "export_data.xls";
+                var fileName = "Report_People Development.xls";
 
                 // Buat link download
                 downloadLink.href = uri + base64(excelHtml);

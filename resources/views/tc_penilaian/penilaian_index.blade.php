@@ -14,8 +14,9 @@
         </div>
         <section class="section">
             <div class="container">
-                <button class="btn btn-primary" onclick="window.location.href='{{ route('create.penilaian') }}'">Buat
-                    Penilaian</button>
+                <button class="btn btn-success" onclick="window.location.href='{{ route('create.penilaian') }}'">
+                    <i class="fas fa-plus"></i> Buat Penilaian
+                </button>
                 <table class="datatable table">
                     <thead>
                         <tr>
@@ -32,7 +33,7 @@
                                 <td>{{ $item->id_job_position }}</td>
                                 <td>
                                     @if ($item->status == 1)
-                                        <span class="badge rounded-pill bg-primary">Draf</span>
+                                        <span class="badge rounded-pill bg-secondary">Draf</span>
                                     @elseif ($item->status == 2)
                                         <span class="badge rounded-pill bg-warning">Menunggu Konfirmasi Dept. Head</span>
                                     @elseif ($item->status == 3)
@@ -47,17 +48,16 @@
                                             class="btn btn-warning">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-
                                         <button type="button" class="btn btn-success"
                                             onclick="kirimData('{{ $item->id_job_position }}')">
                                             <i class="fas fa-paper-plane"></i> Kirim
                                         </button>
                                     @endif
                                     @if ($item->status == 3 || $item->status == 2)
-                                    <a href="{{ route('penilaian.edit2', $item->id_job_position) }}"
-                                        class="btn btn-warning">
-                                        <i class="fas fa-edit"></i> Update Nilai
-                                    </a>
+                                        <a href="{{ route('penilaian.edit', $item->id_job_position) }}"
+                                            class="btn btn-warning">
+                                            <i class="fas fa-edit"></i> Update Nilai
+                                        </a>
                                     @endif
                                     <a href="{{ route('penilaian.view', $item->id_job_position) }}" class="btn btn-info">
                                         <i class="fas fa-eye"></i> View

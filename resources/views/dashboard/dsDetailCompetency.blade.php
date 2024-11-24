@@ -345,10 +345,11 @@
                 <div class="card-header">
                     <div style=" justify-content: space-between; align-items: center;">
                         <span>Histori Development</span>
-                       
+
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <input type="text" id="searchInput" placeholder="Cari Data Disemua Kolom..." style="margin-left: 10px; padding: 5px; width: 250px;">
+                        <input type="text" id="searchInput" placeholder="Cari Data Disemua Kolom..."
+                            style="margin-left: 10px; padding: 5px; width: 250px;">
                     </div>
                 </div>
                 <div style="overflow-x: auto; white-space: nowrap;">
@@ -463,14 +464,23 @@
                 canvas.style.height = '490px';
                 ctx.scale(dpr, dpr);
 
-                const labels = chartData.map(item => item[labelKey] || chartLabel);
+                // Modifikasi labels untuk menambahkan baris baru setelah 2 kata
+                const labels = chartData.map(item => {
+                    const label = item[labelKey] || chartLabel;
+                    const words = label.split(' ');
+                    if (words.length > 2) {
+                        const firstLine = words.slice(0, 2).join(' ');
+                        const secondLine = words.slice(2).join(' ');
+                        return firstLine + '\n' + secondLine;
+                    }
+                    return label;
+                });
+
                 const dataPoints = chartData.map(item => parseInt(item[dataKey]) || 0);
                 const comparisonDataPoints = chartData.map(item => parseInt(item[comparisonKey]) || 0);
-
-                const suggestedMax = 25;
+                const suggestedMax = 5;
                 const minDataPoint = Math.min(...dataPoints);
-                const suggestedMin = minDataPoint - 10 < 0 ? 0 : minDataPoint - 10;
-
+                const suggestedMin = minDataPoint - 1 < 0 ? 0 : minDataPoint - 3;
                 const chart = new Chart(ctx, {
                     type: 'radar',
                     data: {
@@ -479,19 +489,22 @@
                                 label: 'Nilai Standar',
                                 data: comparisonDataPoints,
                                 fill: true,
-                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                borderColor: 'rgba(255, 99, 132, 1)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)', // Area transparan
+                                borderColor: 'rgba(255, 99, 132, 1)', // Warna merah
+                                borderWidth: 1, // Garis luar lebih tipis
+                                borderDash: [5, 5], // Garis putus-putus (opsional)
                                 pointBackgroundColor: 'rgba(255, 99, 132, 1)',
                                 pointBorderColor: '#fff',
                                 pointHoverBackgroundColor: '#fff',
                                 pointHoverBorderColor: 'rgba(255, 99, 132, 1)',
                             },
                             {
-                                label: ' Nilai Aktual',
+                                label: 'Nilai Aktual',
                                 data: dataPoints,
                                 fill: true,
-                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                borderColor: 'rgba(54, 162, 235, 1)',
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Area transparan
+                                borderColor: 'rgba(54, 162, 235, 1)', // Warna biru
+                                borderWidth: 3.5, // Garis lebih tebal
                                 pointBackgroundColor: 'rgba(54, 162, 235, 1)',
                                 pointBorderColor: '#fff',
                                 pointHoverBackgroundColor: '#fff',
@@ -505,12 +518,30 @@
                         scales: {
                             r: {
                                 angleLines: {
-                                    display: true
+                                    display: true,
+                                    color: 'rgba(0, 0, 0, 0.8)', // Warna garis sudut (lebih redup jika diperlukan)
+                                    lineWidth: 1.5 // Ketebalan garis sudut
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.3)', // Warna grid lebih transparan
+                                    lineWidth: 0.5 // Ketebalan garis grid
                                 },
                                 suggestedMin: suggestedMin,
                                 suggestedMax: suggestedMax,
                                 ticks: {
                                     beginAtZero: true
+                                },
+                                pointLabels: {
+                                    font: {
+                                        size: 14
+                                    },
+                                    callback: function(value) {
+                                        if (value.includes(' ')) {
+                                            const words = value.split(' ');
+                                            return words.join('\n'); // Setiap kata akan berada di baris baru
+                                        }
+                                        return value;
+                                    }
                                 }
                             }
                         },
@@ -752,7 +783,7 @@
 
                                 data.penilaians.forEach(function(row) {
                                     // Safely check and use values if row.tc, row.sk, or row.ad is not null
-                                    if (row.tc && row.nilai_tc <= (row.tc.nilai || Infinity) && row
+                                    if (row.tc && row.nilai_tc < (row.tc.nilai || Infinity) && row
                                         .id_tc === (row.tc.id || null) && !tcHeadersViewOnly.some(
                                             item => item.keterangan === row.tc.keterangan_tc)) {
                                         tcHeadersViewOnly.push({
@@ -761,7 +792,7 @@
                                             id: row.tc.id // Track the id_tc
                                         });
                                     }
-                                    if (row.sk && row.nilai_sk <= (row.sk.nilai || Infinity) && row
+                                    if (row.sk && row.nilai_sk < (row.sk.nilai || Infinity) && row
                                         .id_sk === (row.sk.id || null) && !skHeadersViewOnly.some(
                                             item => item.keterangan === row.sk.keterangan_sk)) {
                                         skHeadersViewOnly.push({
@@ -770,7 +801,7 @@
                                             id: row.sk.id // Track the id_sk
                                         });
                                     }
-                                    if (row.ad && row.nilai_ad <= (row.ad.nilai || Infinity) && row
+                                    if (row.ad && row.nilai_ad < (row.ad.nilai || Infinity) && row
                                         .id_ad === (row.ad.id || null) && !adHeadersViewOnly.some(
                                             item => item.keterangan === row.ad.keterangan_ad)) {
                                         adHeadersViewOnly.push({
@@ -791,17 +822,17 @@
                                     }
 
                                     // Store the values in the userRowData object, checking for null
-                                    if (row.id_tc === (row.tc ? row.tc.id : null) && row.nilai_tc <=
+                                    if (row.id_tc === (row.tc ? row.tc.id : null) && row.nilai_tc <
                                         (row.tc ? row.tc.nilai : Infinity)) {
                                         userRowData[row.user.name].tcValues[row.id_tc] = row
                                             .nilai_tc;
                                     }
-                                    if (row.id_sk === (row.sk ? row.sk.id : null) && row.nilai_sk <=
+                                    if (row.id_sk === (row.sk ? row.sk.id : null) && row.nilai_sk <
                                         (row.sk ? row.sk.nilai : Infinity)) {
                                         userRowData[row.user.name].skValues[row.id_sk] = row
                                             .nilai_sk;
                                     }
-                                    if (row.id_ad === (row.ad ? row.ad.id : null) && row.nilai_ad <=
+                                    if (row.id_ad === (row.ad ? row.ad.id : null) && row.nilai_ad <
                                         (row.ad ? row.ad.nilai : Infinity)) {
                                         userRowData[row.user.name].adValues[row.id_ad] = row
                                             .nilai_ad;
@@ -870,6 +901,7 @@
                     });
                 });
             }
+
 
             $(document).on('change', '.data-select', function() {
                 const index = $(this).attr('id').split('-')[2];

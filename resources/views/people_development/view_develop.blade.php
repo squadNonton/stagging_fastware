@@ -112,6 +112,7 @@
                                 <th scope="col">Lembaga</th>
                                 <th scope="col">Keterangan</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
@@ -158,6 +159,7 @@
                                     <th scope="col">Lembaga</th>
                                     <th scope="col">Keterangan</th>
                                     <th scope="col">Status</th>
+                                    <th scope="col">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="table-body2">
@@ -200,9 +202,11 @@
                         </table>
                 </div>
                 <div class="mt-3 mb-4">
-                    <button type="button" id="addRowBtn" class="btn btn-success">
-                        <i class="fas fa-plus"></i> Tambah Baris
-                    </button>
+                    @if ($data->contains('status_1', 2))
+                        <button type="button" id="addRowBtn" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Tambah Baris
+                        </button>
+                    @endif
 
                     <a href="{{ route('indexPD') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Kembali
@@ -277,6 +281,7 @@
                     </ul>
                 </div>
             </div>
+
         </section>
 
         <!-- jQuery -->
@@ -299,6 +304,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 var tableBody = document.getElementById('table-body');
 
+                const updateEvaluasiRoute = "{{ route('update-evaluasi', ':id') }}";
                 existingData.forEach(function(item, index) {
                     // Cek apakah tahun_usulan tidak ada (null, undefined, atau kosong)
                     if (!item.tahun_usulan) {
@@ -349,6 +355,7 @@
                                         <option value="technical" ${item.kategori_competency == 'technical' ? 'selected' : ''}>Technical Competency</option>
                                         <option value="nontechnical" ${item.kategori_competency == 'nontechnical' ? 'selected' : ''}>Non Technical</option>
                                         <option value="additional" ${item.kategori_competency == 'additional' ? 'selected' : ''}>Additional</option>
+                                        <option value="Others" ${item.kategori_competency == 'Others' ? 'selected' : ''}>Others</option>
                                     </select>
                                 </td>
                                 <td>
@@ -375,6 +382,19 @@
                                         <option value="Ditolak" ${item.status_2 == 'Ditolak' ? 'selected' : ''}>Ditolak</option>
                                     </select>
                                 </td>
+                                 <td>
+                                     ${
+                                        item.status_2 === 'Done'
+                                            ? `<a href="${updateEvaluasiRoute.replace(':id', item.id)}" class="btn ${
+                                                item.diketahui ? 'btn-success' : 'btn-danger'
+                                            } btn-sm">
+                                                <i class="fas fa-file-alt"></i> <!-- Ikon form -->
+                                                Evaluasi
+                                            </a>`
+                                            : ''
+                                    }
+                                </td>
+
                             `;
 
                         tableBody.appendChild(newRow);
@@ -438,6 +458,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 var employeeTableBody = document.getElementById('table-body2');
 
+                const updateEvaluasiRoute = "{{ route('update-evaluasi', ':id') }}";
                 // Populate rows with existing data
                 existingEmployeeData.forEach(function(item, index) {
                     // Cek apakah tahun_usulan memiliki nilai
@@ -487,6 +508,7 @@
                                     <option value="technical" ${item.kategori_competency == 'technical' ? 'selected' : ''}>Technical Competency</option>
                                     <option value="nontechnical" ${item.kategori_competency == 'nontechnical' ? 'selected' : ''}>Non Technical</option>
                                     <option value="additional" ${item.kategori_competency == 'additional' ? 'selected' : ''}>Additional</option>
+                                    <option value="Others" ${item.kategori_competency == 'Others' ? 'selected' : ''}>Others</option>
                                 </select>
                             </td>
                             <td>
@@ -512,6 +534,18 @@
                                     <option value="Pending" ${item.status_2 == 'Pending' ? 'selected' : ''}>Pending</option>
                                     <option value="Ditolak" ${item.status_2 == 'Ditolak' ? 'selected' : ''}>Ditolak</option>
                                 </select>
+                            </td>
+                            <td>
+                                     ${
+                                        item.status_2 === 'Done'
+                                            ? `<a href="${updateEvaluasiRoute.replace(':id', item.id)}" class="btn ${
+                                                        item.diketahui ? 'btn-success' : 'btn-danger'
+                                                    } btn-sm">
+                                                        <i class="fas fa-file-alt"></i> <!-- Ikon form -->
+                                                        Evaluasi
+                                                    </a>`
+                                            : ''
+                                    }
                             </td>
                         `;
 
@@ -666,6 +700,7 @@
                                     <option value="technical">Technical Competency</option>
                                     <option value="nontechnical">Non Technical</option>
                                     <option value="additional">Additional</option>
+                                    <option value="Others">Others</option>
                                 </select>
                             </td>
                             <td>

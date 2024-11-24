@@ -62,6 +62,12 @@ class TrsPenilaianTc extends Model
         return $this->belongsTo(User::class, 'id_user');
     }
 
+    // Relasi ke User berdasarkan modified_at
+    public function userModifier()
+    {
+        return $this->belongsTo(User::class, 'modified_at', 'id');
+    }
+
     public function detailPenilaian()
     {
         return $this->hasMany(DetailTcPenilaian::class,'id_job_position');

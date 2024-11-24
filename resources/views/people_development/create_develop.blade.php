@@ -202,6 +202,7 @@
                             <option value="technical">Technical Competency</option>
                             <option value="nontechnical">Non Technical</option>
                             <option value="additional">Additional</option>
+                            <option value="Others">Others</option>
                         </select>
                     </td>
 

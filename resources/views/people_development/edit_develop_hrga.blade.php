@@ -118,6 +118,7 @@
                                     <th scope="col">Status</th>
                                     <th scope="col">Upload File</th>
                                     <th scope="col">Download</th>
+                                    <th scope="col">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="table-body">
@@ -328,6 +329,8 @@
             document.addEventListener('DOMContentLoaded', function() {
                 var tableBody = document.getElementById('table-body');
 
+                const updateEvaluasiRoute = "{{ route('update-evaluasi', ':id') }}";
+
                 existingData.forEach(function(item, index) {
                     // Cek apakah tahun_usulan tidak ada (null, undefined, atau kosong)
                     if (!item.tahun_usulan) {
@@ -378,6 +381,7 @@
                                         <option value="technical" ${item.kategori_competency == 'technical' ? 'selected' : ''}>Technical Competency</option>
                                         <option value="nontechnical" ${item.kategori_competency == 'nontechnical' ? 'selected' : ''}>Non Technical</option>
                                         <option value="additional" ${item.kategori_competency == 'additional' ? 'selected' : ''}>Additional</option>
+                                        <option value="Others" ${item.kategori_competency == 'Others' ? 'selected' : ''}>Others</option>
                                     </select>
                                 </td>
                                 <td>
@@ -407,6 +411,18 @@
                                 </td>
                                 <td><input type="file" name="file[${item.id}]" accept=".pdf" ${item.status_2 !== 'Done' ? 'disabled' : ''}></td>
                                 <td>${item.file ? `<a href="#" class="btn btn-primary" onclick="downloadPdf(${item.id})"><i class="bi bi-filetype-pdf fs-6"></i></a>` : 'No file'}</td>
+                                <td>
+                                     ${
+                                        item.status_2 === 'Done'
+                                            ? `<a href="${updateEvaluasiRoute.replace(':id', item.id)}" class="btn ${
+                                                item.diketahui ? 'btn-success' : 'btn-danger'
+                                            } btn-sm">
+                                                <i class="fas fa-eye"></i> 
+                                                Evaluasi
+                                            </a>`
+                                            : ''
+                                    }
+                                </td>
                             `;
 
                         tableBody.appendChild(newRow);
@@ -469,7 +485,7 @@
             // view tabel 2
             document.addEventListener('DOMContentLoaded', function() {
                 var employeeTableBody = document.getElementById('table-body2');
-
+                const updateEvaluasiRoute = "{{ route('update-evaluasi', ':id') }}";
                 // Populate rows with existing data
                 existingEmployeeData.forEach(function(item, index) {
                     // Cek apakah tahun_usulan memiliki nilai
@@ -519,6 +535,7 @@
                                     <option value="technical" ${item.kategori_competency == 'technical' ? 'selected' : ''}>Technical Competency</option>
                                     <option value="nontechnical" ${item.kategori_competency == 'nontechnical' ? 'selected' : ''}>Non Technical</option>
                                     <option value="additional" ${item.kategori_competency == 'additional' ? 'selected' : ''}>Additional</option>
+                                    <option value="Others" ${item.kategori_competency == 'Others' ? 'selected' : ''}>Others</option>
                                 </select>
                             </td>
                             <td>
@@ -548,7 +565,19 @@
                             </td>
                             <td><input type="file" name="file[${item.id}]" accept=".pdf" ${item.status_2 !== 'Done' ? 'disabled' : ''}></td>
                             <td>${item.file ? `<a href="#" class="btn btn-primary" onclick="downloadPdf(${item.id})"><i class="bi bi-filetype-pdf fs-6"></i></a>` : 'No file'}</td>
-                        `;
+                            <td>
+                                ${
+                                    item.status_2 === 'Done'
+                                        ? `<a href="${updateEvaluasiRoute.replace(':id', item.id)}" class="btn ${
+                                            item.diketahui ? 'btn-success' : 'btn-danger'
+                                        } btn-sm">
+                                            <i class="fas fa-eye"></i> 
+                                            Evaluasi
+                                        </a>`
+                                        : ''
+                                }
+                            </td>
+                            `;
 
                         employeeTableBody.appendChild(newEmployeeRow);
 

@@ -35,6 +35,15 @@
 
     {{-- jadwal kunjungan calender --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css" rel="stylesheet" />
+    
+    <style>
+        .logo-img {
+            width: 150px;
+            /* Sesuaikan ukuran sesuai kebutuhan */
+            height: auto;
+            /* Agar proporsi gambar tetap */
+        }
+    </style>
 
 <body>
 
@@ -43,7 +52,7 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between p-3">
-            <h3 class="fw-bold mt-2 ps-3 fs-4">DMS Adasi DS8</h3>
+            <img src="{{ asset('assets/foto/AdasiLogo.png') }}" alt="Adasi Logo" class="logo-img mt-2">
             <i class="bi bi-list toggle-sidebar-btn mx-3 fs-2"></i>
         </div><!-- End Logo -->
         <nav class="header-nav ms-auto">
@@ -173,7 +182,7 @@
                         </li>
                     </ul>
                 @endif
-            </li>  
+            </li>
             @php
                 $acsrole = [1, 5, 8, 9, 14, 22, 30, 31, 42, 45, 48, 51, 58];
             @endphp
@@ -245,7 +254,6 @@
                 $acsrole = [1, 22, 5, 14];
             @endphp
             @if (in_array(Auth::user()->role_id, $acsrole))
-                
                 <li class="nav-heading">Engineering</li>
 
                 <li class="nav-item">
@@ -408,7 +416,7 @@
                 </a>
             @endif
             <ul id="nav-approval-ss" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                
+
                 @php
                     $acsrole = [1, 3, 9, 12, 14, 15, 22, 30, 31, 32];
                 @endphp
@@ -443,7 +451,7 @@
                 </a>
             @endif
             <ul id="nav-pic" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                
+
                 @php
                     $acsrole = [1, 5, 14, 15, 16, 20];
                 @endphp
@@ -455,7 +463,7 @@
                         </a>
                     </li>
                 @endif
-                
+
                 @php
                     $acsrole = [1, 5, 14, 15, 16, 20];
                 @endphp
@@ -507,11 +515,13 @@
 
             @php
                 $hrgarole = [1, 14, 15]; // Roles for accessing Technical Competency Management
-                $secHeadRoles = [1, 3, 9, 31, 22, 30, 12, 14, 15]; // Roles for accessing Technical Competency by Sec. Head
+                $secHeadRoles = [1, 3, 9, 2, 5, 11, 7, 31, 22, 30, 12, 14, 15]; // Roles for accessing Technical Competency by Sec. Head
                 $deptHeadRoles = [1, 2, 5, 11, 7, 14, 15]; // Roles for accessing Technical Competency by Dept. Head
             @endphp
 
-            @if (in_array(Auth::user()->role_id, $hrgarole) || in_array(Auth::user()->role_id, $secHeadRoles) || in_array(Auth::user()->role_id, $deptHeadRoles))
+            @if (in_array(Auth::user()->role_id, $hrgarole) ||
+                    in_array(Auth::user()->role_id, $secHeadRoles) ||
+                    in_array(Auth::user()->role_id, $deptHeadRoles))
                 <li class="nav-heading">People Development</li>
                 <a class="nav-link collapsed" data-bs-target="#nav-tech-competency" data-bs-toggle="collapse"
                     href="#">
@@ -523,6 +533,11 @@
                         <a class="nav-link" href="{{ route('historiDept') }}">
                             <i class="bi bi-hourglass-bottom fs-6"></i>
                             <span>Histori Development</span>
+                        </a>
+
+                        <a class="nav-link" href="{{ route('job.positions.index') }}">
+                            <i class="bi bi-clipboard fs-6"></i>
+                            <span>Summary Competency</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -639,8 +654,8 @@
             </ul>
 
             @php
-                $secHeadRoles = [1, 3, 4, 9, 12, 14, 15, 22, 30, 31, 39, 40, 41, 44, 50]; // Roles for accessing PO Pengajuan Management
-                $deptHeadRoles = [1, 2, 5, 11, 7, 14, 15, 30]; // Department Head Roles
+                $secHeadRoles = [1, 3, 4, 9, 12, 14, 15, 22, 30, 31, 39, 40, 41, 44, 50, 54]; // Roles for accessing PO Pengajuan Management
+                $deptHeadRoles = [1, 2, 5, 11, 7, 14, 30]; // Department Head Roles
                 $userRoles = [1, 14, 15, 50, 30, 40, 11, 39]; // User Roles
                 $finnRole = [1, 14, 11, 12]; // Finance Roles
                 $procRoles = [1, 14, 41, 54]; // Procurement Roles
@@ -831,7 +846,7 @@
                     </a>
                 </li><!-- End Profile Page Nav -->
             @endif
-            
+
             @php
                 $acsrole = [1, 2, 3, 4, 5, 14, 22, 26, 28, 30];
             @endphp

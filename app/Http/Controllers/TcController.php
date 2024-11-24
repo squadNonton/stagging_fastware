@@ -231,6 +231,75 @@ class TcController extends Controller
         return view('mst_tc.tc_create', compact('jobPositions', 'dataTc1', 'dataTc2', 'dataTc3'));
     }
 
+    public function summaryData()
+    {
+        // Ambil data unik berdasarkan job_position dan pilih ID terkecil (MIN) untuk setiap job_position
+        $jobPositions = TcJobPosition::selectRaw('MIN(id) as id, job_position')
+            ->groupBy('job_position')
+            ->pluck('job_position', 'id');
+
+        return view('mst_tc.summary_view', compact('jobPositions'));
+    }
+
+
+    public function fetchDetails(Request $request)
+    {
+
+        $idJobPosition = $request->input('id');
+
+        // Fetch data from models with poinKategori
+        $tcs = MstTc::where('id_job_position', $idJobPosition)
+            ->with('poinKategori')
+            ->get();
+
+        $softSkills = MstSoftSkill::where('id_job_position', $idJobPosition)
+            ->with('poinKategori')
+            ->get();
+
+        $additionals = MstAdditionals::where('id_job_position', $idJobPosition)
+            ->with('poinKategori')
+            ->get();
+
+        return response()->json([
+            'tcs' => $tcs,
+            'softSkills' => $softSkills,
+            'additionals' => $additionals,
+        ]);
+    }
+
+    public function fetchDetails2($job_position)
+    {
+        // Cari id_job_position berdasarkan job_position
+        $idJobPosition = TcJobPosition::where('job_position', $job_position)->value('id');
+
+        if (!$idJobPosition) {
+            return response()->json([
+                'message' => 'Job Position tidak ditemukan',
+            ], 404);
+        }
+
+        // Fetch data berdasarkan id_job_position
+        $tcs = MstTc::where('id_job_position', $idJobPosition)
+            ->with('poinKategori')
+            ->get();
+
+        $softSkills = MstSoftSkill::where('id_job_position', $idJobPosition)
+            ->with('poinKategori')
+            ->get();
+
+        $additionals = MstAdditionals::where('id_job_position', $idJobPosition)
+            ->with('poinKategori')
+            ->get();
+
+        // Return response dalam format JSON
+        return response()->json([
+            'tcs' => $tcs,
+            'softSkills' => $softSkills,
+            'additionals' => $additionals,
+        ]);
+    }
+
+
     public function storeTC(Request $request)
     {
         // Mengambil data JSON dari body request

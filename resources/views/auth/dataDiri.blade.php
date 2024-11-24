@@ -182,13 +182,13 @@
                     <div class="card">
                         <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-                            @if ($user->file_name)
-                                <img src="{{ asset('assets/data_diri/' . $user->file_name) }}" alt="Profile"
+                            @if ($user->file)
+                                <img src="{{ asset('assets/data_diri/' . $user->file) }}" alt="Profile"
                                     class="rounded-circle" style="width: 150px; height: 150px; cursor: pointer;"
                                     data-bs-toggle="modal" data-bs-target="#imageModal">
                             @else
                                 <img src="{{ asset('assets/img/user.png') }}" alt="Default Profile" class="rounded-circle"
-                                    style="width: 50px; height: 50px; cursor: pointer;" data-bs-toggle="modal"
+                                    style="width: 150px; height: 150px; cursor: pointer;" data-bs-toggle="modal"
                                     data-bs-target="#imageModal">
                             @endif
 
@@ -386,7 +386,7 @@
                     </div>
                 </div>
 
-                {{-- <div class="card">
+                <div class="card">
                     <div class="card mt-3">
                         <div class="card-header">
                             <div style="justify-content: space-between; align-items: center;">
@@ -422,17 +422,30 @@
                                             <td colspan="6" style="text-align: center;">Tidak ada data tersedia</td>
                                         </tr>
                                     @else
-                                        @foreach ($dataTcPeopleDevelopment as $data)
+                                        @foreach ($dataTcPeopleDevelopment as $dataTcPeopleDevelopment)
                                             <tr>
-                                                <td>{{ $data->user->name }}</td>
-                                                <td>{{ $data->program_training_plan }}</td>
-                                                <td>{{ $data->kategori_competency }}</td>
-                                                <td>{{ $data->due_date_plan }}</td>
                                                 <td>
-                                                    <button onclick="downloadPdf({{ $data->id }})"
+                                                    {{ $dataTcPeopleDevelopment->user->name }}
+                                                    <input type="hidden" name="data_ids[]"
+                                                        value="{{ $dataTcPeopleDevelopment->id }}">
+                                                </td>
+                                                <td>{{ $dataTcPeopleDevelopment->program_training_plan }}</td>
+                                                <td>{{ $dataTcPeopleDevelopment->kategori_competency }}</td>
+                                                <td>{{ $dataTcPeopleDevelopment->due_date_plan }}</td>
+                                                <td>
+                                                    <button onclick="downloadPdf({{ $dataTcPeopleDevelopment->id }})"
                                                         style="cursor: pointer; background-color: transparent; border: none; color: blue; text-decoration: underline;">
                                                         <i class="bi bi-download"></i>
                                                     </button>
+                                                    <!-- Tombol Update Evaluasi -->
+                                                    <button class="btn btn-primary btn-sm"
+                                                        onclick="showModal({{ $dataTcPeopleDevelopment }})">
+                                                        <i class="fas fa-eye"></i> View Evaluasi
+                                                    </button>
+
+                                                    <!-- Tombol Print PDF -->
+                                                    <button id="printPdf" data-id="{{ $dataTcPeopleDevelopment->id }}"
+                                                        class="btn btn-success">Print PDF</button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -441,8 +454,203 @@
                             </table>
                         </div>
                     </div>
-                </div> --}}
+                </div>
             </div>
+
+            <!-- Modal Evaluasi -->
+            <div class="modal fade" id="modalEvaluasi" tabindex="-1" aria-labelledby="modalEvaluasiLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="modalEvaluasiLabel">Formulir Evaluasi Hasil Pelatihan</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <!-- Informasi Peserta -->
+                                <div class="mb-3">
+                                    <label for="section" class="form-label"><strong>Seksi</strong></label>
+                                    <input type="text" id="section" class="form-control" readonly>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="npk" class="form-label"><strong>NPK</strong></label>
+                                        <input type="text" id="npk" class="form-control" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="nama" class="form-label"><strong>Nama</strong></label>
+                                        <input type="text" id="nama" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="program_training" class="form-label"><strong>Program
+                                                Pelatihan</strong></label>
+                                        <input type="text" id="program_training" class="form-control" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="penyelenggara"
+                                            class="form-label"><strong>Penyelenggara</strong></label>
+                                        <input type="text" id="penyelenggara" class="form-control" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- Evaluasi Materi -->
+                                <div class="card my-4">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0">Evaluasi Materi</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="relevansi" class="form-label"><strong>Relevansi bagi
+                                                    peserta</strong></label>
+                                            <input type="text" id="relevansi" class="form-control" readonly>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="alasan_relevansi"
+                                                class="form-label"><strong>Alasan</strong></label>
+                                            <textarea id="alasan_relevansi" class="form-control" rows="3" readonly></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="rekomendasi" class="form-label"><strong>Rekomendasi
+                                                    selanjutnya</strong></label>
+                                            <input type="text" id="rekomendasi" class="form-control" readonly>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="alasan_rekomendasi"
+                                                class="form-label"><strong>Alasan</strong></label>
+                                            <textarea id="alasan_rekomendasi" class="form-control" rows="3" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Evaluasi Penyelenggaraan -->
+                                <div class="card my-4">
+                                    <div class="card-header bg-secondary text-white">
+                                        <h5 class="mb-0">Evaluasi Penyelenggaraan</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="kelengkapan_materi" class="form-label"><strong>Kelengkapan
+                                                        Materi</strong></label>
+                                                <input type="text" id="kelengkapan_materi" class="form-control"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="lokasi" class="form-label"><strong>Lokasi
+                                                        Penyelenggaraan</strong></label>
+                                                <input type="text" id="lokasi" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="metode_pengajaran" class="form-label"><strong>Metode
+                                                        Pengajaran</strong></label>
+                                                <input type="text" id="metode_pengajaran" class="form-control"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="fasilitas"
+                                                    class="form-label"><strong>Fasilitas</strong></label>
+                                                <input type="text" id="fasilitas" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="lainnya_1" class="form-label"><strong>Lainnya</strong></label>
+                                            <textarea id="lainnya_1" class="form-control" rows="3" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Evaluasi Peserta -->
+                                <div class="card my-4">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="mb-0">Evaluasi Peserta</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="metode_evaluasi" class="form-label"><strong>Metode
+                                                        Evaluasi</strong></label>
+                                                <input type="text" id="metode_evaluasi" class="form-control" readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="minat" class="form-label"><strong>Minat
+                                                        Pelatihan</strong></label>
+                                                <input type="text" id="minat" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="daya_serap" class="form-label"><strong>Daya Serap
+                                                        Peserta</strong></label>
+                                                <input type="text" id="daya_serap" class="form-control" readonly>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="penerapan" class="form-label"><strong>Penerapan dalam
+                                                        Tugas</strong></label>
+                                                <input type="text" id="penerapan" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="lainnya_2" class="form-label"><strong>Lainnya</strong></label>
+                                            <textarea id="lainnya_2" class="form-control" rows="3" readonly></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="efektif" class="form-label"><strong>Apakah Pelatihan Ini
+                                                    Dinyatakan Efektif?
+                                                </strong></label>
+                                            <input type="text" id="efektif" class="form-control" readonly>
+                                            <label for="lainnya_2" class="form-label"><strong>Catatan
+                                                    Tambahan</strong></label>
+                                            <textarea id="catatan_tambahan" class="form-control" rows="3" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tanda Tangan -->
+                                <div class="card my-4">
+                                    <div class="card-header bg-secondary text-white">
+                                        <h5 class="mb-0">Tanda Tangan</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="dievaluasi" class="form-label"><strong>Diketahui
+                                                        oleh:</strong></label>
+                                                <br>
+                                                <label for="tgl_konfirm" class="form-label"><strong>Tgl:</strong></label>
+                                                <label id="tgl_konfirm" class="form-control"
+                                                    style="display: block;"></label>
+                                                <br><br>
+                                                <label id="dievaluasi" class="form-control"
+                                                    style="display: block; margin-top: 3%;">Jessica Paune</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="diketahui" class="form-label"><strong>Dievaluasi
+                                                        oleh:</strong></label>
+                                                <br>
+                                                <label for="tgl_konfirm" class="form-label"><strong>Tgl:</strong></label>
+                                                <label id="tgl_konfirm2" class="form-control"
+                                                    style="display: block;"></label>
+                                                <br><br>
+                                                <label id="diketahui" class="form-control"
+                                                    style="display: block; margin-top: 3%;"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </section>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <script>
@@ -507,7 +715,6 @@
                 return true;
             }
 
-
             function submitDataDiri() {
                 // Submit form menggunakan JavaScript
                 document.getElementById('ubahDataDiriForm').submit();
@@ -554,6 +761,251 @@
                         row.style.display = 'none';
                     }
                 });
+            });
+
+            function downloadPdf(id) {
+                var downloadPdfUrl = "{{ route('download.pdf', ['id' => ':id']) }}";
+                var url = downloadPdfUrl.replace(':id', id);
+                window.location.href = url; // Redirect to the download URL
+            }
+
+            function showModal(data) {
+                // Isi field modal dengan data dari baris yang dipilih
+                document.getElementById('section').value = data.section || '';
+                document.getElementById('npk').value = data.user ? data.user.npk : '';
+                document.getElementById('nama').value = data.user ? data.user.name : '';
+                document.getElementById('program_training').value = data.program_training_plan || '';
+                document.getElementById('penyelenggara').value = data.lembaga || '-';
+
+                // Evaluasi Materi
+                document.getElementById('relevansi').value = data.relevansi || '';
+                document.getElementById('alasan_relevansi').value = data.alasan_relevansi || '';
+                document.getElementById('rekomendasi').value = data.rekomendasi || '';
+                document.getElementById('alasan_rekomendasi').value = data.alasan_rekomendasi || '';
+
+                // Evaluasi Penyelenggaraan
+                document.getElementById('kelengkapan_materi').value = data.kelengkapan_materi || '';
+                document.getElementById('lokasi').value = data.lokasi || '';
+                document.getElementById('metode_pengajaran').value = data.metode_pengajaran || '';
+                document.getElementById('fasilitas').value = data.fasilitas || '';
+                document.getElementById('lainnya_1').value = data.lainnya_1 || '';
+                document.getElementById('efektif').value = data.efektif || '';
+                document.getElementById('catatan_tambahan').value = data.catatan_tambahan || '';
+
+                // Evaluasi Peserta
+                document.getElementById('metode_evaluasi').value = data.metode_evaluasi || '';
+                document.getElementById('minat').value = data.minat || '';
+                document.getElementById('daya_serap').value = data.daya_serap || '';
+                document.getElementById('penerapan').value = data.penerapan || '';
+                document.getElementById('lainnya_2').value = data.lainnya_2 || '';
+                document.getElementById('tgl_konfirm').innerText = data.tgl_pengajuan || '';
+                document.getElementById('tgl_konfirm2').innerText = data.tgl_pengajuan || '';
+                document.getElementById('diketahui').innerText = data.diketahui || '';
+
+                // Tampilkan modal
+                const modal = new bootstrap.Modal(document.getElementById('modalEvaluasi'));
+                modal.show();
+            }
+
+            document.getElementById('printPdf').addEventListener('click', function() {
+                const id = this.getAttribute('data-id'); // Ambil ID dari atribut tombol
+
+                // Route ke endpoint Laravel menggunakan ID
+                const url = `{{ route('export-pdf', ':id') }}`.replace(':id', id);
+                const imgURL = `{{ asset('assets/foto/AdasiLogo.png') }}`; // Path gambar di folder public
+
+                // Fetch data dari server
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Gagal mengambil data dari server.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const {
+                            jsPDF
+                        } = window.jspdf;
+
+                        // Data dari server
+                        const section = String(data.section || '-');
+                        const peserta = String(data.user ? data.user.name : '-');
+                        const npk = String(data.user ? data.user.npk : '-');
+                        const program = String(data.program_training_plan || '-');
+                        const penyelenggara = String(data.lembaga || '-');
+
+                        const relevansi = String(data.relevansi || '-');
+                        const alasanRelevansi = String(data.alasan_relevansi || '-');
+
+                        const rekomendasi = String(data.rekomendasi || '-');
+                        const alasanRekomendasi = String(data.alasan_rekomendasi || '-');
+
+                        const kelengkapanMateri = String(data.kelengkapan_materi || '-');
+                        const lokasi = String(data.lokasi || '-');
+                        const metodePengajaran = String(data.metode_pengajaran || '-');
+                        const fasilitas = String(data.fasilitas || '-');
+                        const lainnyaPenyelenggara = String(data.lainnya_1 || '-');
+
+                        const metodeEvaluasi = String(data.metode_evaluasi || '-');
+                        const minat = String(data.minat || '-');
+                        const dayaSerap = String(data.daya_serap || '-');
+                        const penerapan = String(data.penerapan || '-');
+                        const lainnyaPeserta = String(data.lainnya_2 || '-');
+
+                        const efektif = String(data.efektif || '-');
+                        const catatanTambahan = String(data.catatan_tambahan || '-');
+
+                        const diketahuiOleh = String(data.diketahui || '-');
+                        const diketahuiTanggal = String(data.tgl_pengajuan || '-');
+                        const dievaluasiOleh = String(data.diketahui || '-');
+                        const dievaluasiTanggal = String(data.tgl_pengajuan || '-');
+
+
+                        // Tambahkan gambar menggunakan base64
+                        const img = new Image();
+                        img.src = imgURL;
+
+                        img.onload = function() {
+                            const pdf = new jsPDF({
+                                orientation: 'portrait',
+                                unit: 'mm',
+                                format: 'a4',
+                            });
+
+                            // Tambahkan gambar ke header
+                            const imgWidth = 60; // Lebar gambar dalam mm
+                            const imgHeight = (img.height / img.width) *
+                            imgWidth; // Sesuaikan tinggi berdasarkan proporsi
+
+                            // Hitung posisi X untuk menempatkan gambar di tengah
+                            const pageWidth = pdf.internal.pageSize.getWidth(); // Lebar halaman PDF
+                            const imgX = (pageWidth - imgWidth) / 2; // Posisi X agar gambar berada di tengah
+
+                            // Tambahkan gambar di tengah
+                            pdf.addImage(img, 'PNG', imgX, 10, imgWidth, imgHeight);
+
+                            // Tambahkan teks lainnya
+                            pdf.setFontSize(12);
+                            pdf.text("FORMULIR EVALUASI HASIL PELATIHAN", pageWidth / 2, 25, {
+                                align: "center"
+                            });
+
+
+                            // Border utama
+                            pdf.setDrawColor(0);
+                            pdf.setLineWidth(0.5);
+                            pdf.rect(10, 30, 190, 250);
+
+                            // Data Peserta
+                            pdf.setFontSize(10);
+                            pdf.setFont("helvetica", "normal");
+                            pdf.text("Seksi:", 12, 40);
+                            pdf.text(section, 50, 40);
+
+                            pdf.text("Peserta:", 12, 50);
+                            pdf.text(peserta, 50, 50);
+                            pdf.text("NPK:", 110, 50);
+                            pdf.text(npk, 140, 50);
+
+                            pdf.text("Program Pelatihan:", 12, 60);
+                            pdf.text(program, 50, 60);
+                            pdf.text("Penyelenggara:", 12, 70);
+                            pdf.text(penyelenggara, 50, 70);
+
+                            // Evaluasi Materi
+                            pdf.setFont("helvetica", "bold");
+                            pdf.text("EVALUASI - MATERI", 12, 80);
+                            pdf.setDrawColor(0);
+                            pdf.setLineWidth(0.2);
+                            pdf.rect(10, 75, 190, 40);
+                            pdf.setFont("helvetica", "normal");
+                            pdf.text("1. Relevansi bagi peserta:", 12, 90);
+                            pdf.text(`Jawaban: ${relevansi}`, 59, 90);
+                            pdf.text("Alasan:", 12, 95);
+                            pdf.text(alasanRelevansi, 50, 95);
+
+                            pdf.text("2. Rekomendasi selanjutnya:", 12, 105);
+                            pdf.text(`Jawaban: ${rekomendasi}`, 59, 105);
+                            pdf.text("Alasan:", 12, 110);
+                            pdf.text(alasanRekomendasi, 50, 110);
+
+                            // Evaluasi Penyelenggara
+                            pdf.setFont("helvetica", "bold");
+                            pdf.text("EVALUASI - PENYELENGGARA", 12, 120);
+                            pdf.rect(10, 115, 190, 60);
+                            pdf.setFont("helvetica", "normal");
+                            pdf.text("1. Kelengkapan Materi:", 12, 130);
+                            pdf.text(kelengkapanMateri, 57, 130);
+
+                            pdf.text("2. Lokasi Penyelenggaraan:", 12, 135);
+                            pdf.text(lokasi, 57, 135);
+
+                            pdf.text("3. Metode Pengajaran:", 12, 140);
+                            pdf.text(metodePengajaran, 57, 140);
+
+                            pdf.text("4. Fasilitas:", 12, 145);
+                            pdf.text(fasilitas, 57, 145);
+
+                            pdf.text("5. Lainnya:", 12, 150);
+                            pdf.text(lainnyaPenyelenggara, 50, 150);
+
+                            // Evaluasi Peserta
+                            pdf.setFont("helvetica", "bold");
+                            pdf.text("EVALUASI - PESERTA", 12, 180);
+                            pdf.rect(10, 175, 190, 40);
+                            pdf.setFont("helvetica", "normal");
+                            pdf.text("1. Metode Evaluasi:", 12, 190);
+                            pdf.text(metodeEvaluasi, 50, 190);
+
+                            pdf.text("2. Minat Pelatihan:", 12, 195);
+                            pdf.text(minat, 50, 195);
+
+                            pdf.text("3. Daya Serap:", 12, 200);
+                            pdf.text(dayaSerap, 50, 200);
+
+                            pdf.text("4. Penerapan:", 12, 205);
+                            pdf.text(penerapan, 50, 205);
+
+                            pdf.text("5. Lainnya:", 12, 210);
+                            pdf.text(lainnyaPeserta, 50, 210);
+
+                            // Efektivitas
+                            pdf.setFont("helvetica", "bold");
+                            pdf.text("EFEKTIVITAS", 12, 220);
+                            pdf.rect(10, 215, 190, 30);
+                            pdf.setFont("helvetica", "bold");
+                            pdf.text(`Apakah Pelatihan Ini Efektif? ${efektif}`, 12, 230);
+                            pdf.text("Catatan Tambahan:", 12, 235);
+                            pdf.text(catatanTambahan, 50, 235);
+
+                            // Footer - Tanda Tangan
+                            pdf.setFont("helvetica", "bold");
+                            pdf.text("Diketahui oleh:", 12, 260);
+                            pdf.text(diketahuiOleh, 50, 260);
+                            pdf.text("Tgl:", 12, 265);
+                            pdf.text(diketahuiTanggal, 50, 265);
+
+                            pdf.text("Dievaluasi oleh:", 110, 260);
+                            pdf.text(dievaluasiOleh, 150, 260);
+                            pdf.text("Tgl:", 110, 265);
+                            pdf.text(dievaluasiTanggal, 150, 265);
+
+                            // Border untuk tanda tangan
+                            pdf.rect(10, 255, 90, 15);
+                            pdf.rect(110, 255, 90, 15);
+
+                            // Simpan PDF
+                            pdf.save(`Evaluasi_${peserta}.pdf`);
+                        };
+
+                        img.onerror = function() {
+                            alert("Gambar tidak ditemukan. Pastikan path gambar sudah benar.");
+                        };
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        alert(`Terjadi kesalahan: ${error.message}`);
+                    });
             });
         </script>
     </main><!-- End #main -->

@@ -63,6 +63,9 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/ubahPassword', 'App\Http\Controllers\AuthController@ubahPassword')->name('ubahPassword');
     Route::post('/ubahDataDiri', 'App\Http\Controllers\AuthController@ubahDataDiri')->name('ubahDataDiri');
 
+    //printpdf
+    Route::get('/edit-evaluasi/{id}', 'App\Http\Controllers\AuthController@showEvaluasiPDF')->name('export-pdf');
+
     // Admin
     Route::get('dashboardusers', [UserController::class, 'index'])->name('dashboardusers');
     Route::get('dashboardcustomers', [CustomerController::class, 'index'])->name('dashboardcustomers');
@@ -290,7 +293,6 @@ Route::middleware(['web', 'auth'])->group(function () {
 
     // // tc
     Route::get('/job', [TcJobController::class, 'jobShow'])->name('jobShow');
-
     Route::get('/tcShow', [TcController::class, 'tcShow'])->name('tcShow');
     Route::get('/tcCreate', [TcController::class, 'createTC'])->name('tcCreate');
     Route::post('/mst_tc/store', [TcController::class, 'storeTC'])->name('mst_tc.store');
@@ -307,6 +309,9 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::put('mst_ad/{id}/updateAdditionals', [TcController::class, 'updateAdditionals'])->name('mst_ad.updateAdditionals');
     Route::get('/employees-by-job-position', [TcController::class, 'fetchEmployeesByJobPosition'])->name('employees.by.job.position');
 
+    Route::get('/summary/index', [TcController::class, 'summaryData'])->name('job.positions.index');
+    Route::post('/sumarry/details', [TcController::class, 'fetchDetails'])->name('job.positions.details');
+    Route::get('/job/positions/details2/{job_position}', [TcController::class, 'fetchDetails2'])->name('job.positions.details2');
 
 
     Route::get('/users/{userId}/role', [TcJobController::class, 'getUserRole'])->name('users.role');
@@ -355,7 +360,8 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/editPdPengajuan-HRGA/{tahun_aktual}', [PdController::class, 'editPdPengajuanHRGA'])->name('editPdPengajuanHRGA');
 
     Route::put('/update-pd', [PdController::class, 'update'])->name('updatePD');
-    
+    Route::get('/update-evaluasi/{id}', [PdController::class, 'editEvaluasi'])->name('update-evaluasi');
+    Route::put('/update-evaluasi/{id}', [PdController::class, 'updateEvaluasi'])->name('update-evaluasi.update');
 
     Route::get('/send-pd/{modified_at}/{tahun_aktual}', [PdController::class, 'sendPD'])->name('sendPD');
     Route::get('/send-pd2/{tahun_aktual}', [PdController::class, 'sendPD2'])->name('sendPD2');
@@ -368,15 +374,16 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/trs/preview-penilaian/{id_job_position}', [PenilaianTCController::class, 'previewTrs'])->name('penilaian.preview');
 
     Route::get('/get-edit-Trs', [PenilaianTCController::class, 'getDataTrs'])->name('getDataTrs');
+
     Route::put('/penilaian/update/{id}', [PenilaianTCController::class, 'updateTrs'])->name('updatePenilaian');
     Route::put('/penilaian/dept/{id}', [PenilaianTCController::class, 'updateTrs2'])->name('updateDept');
+
     Route::put('/update-catatan/{id}', [PenilaianTCController::class, 'updateCatatan'])->name('updateCatatan');
 
     Route::put('/penilaian/{id}', [PenilaianTCController::class, 'update'])->name('penilaian.update');
     Route::delete('/penilaian/{id}', [PenilaianTCController::class, 'destroy'])->name('penilaian.destroy');
 
     Route::get('/download-pdf/{id}', [PdController::class, 'downloadPDF'])->name('download.pdf');
-    // web.php
     Route::post('/update-button-status', [PdController::class, 'updateBtn'])->name('updateButtonStatus');
 
 
@@ -422,6 +429,8 @@ Route::middleware(['web', 'auth'])->group(function () {
 
     Route::get('/download-pdf-2/{no_fpb}', [PoPengajuanController::class, 'downloadPdfByNoFpb'])->name('download.pdf.2');
     Route::get('/download-file/{id}', [PoPengajuanController::class, 'downloadFile'])->name('download.file');
+    Route::get('/get-data', [PoPengajuanController::class, 'getData'])->name('getData');
+
 
     //E-Mading Adasi
     Route::get('/ds-E-Mading-Adasi', [MadingController::class, 'dsMading'])->name('dsMading');
@@ -436,12 +445,12 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/get-history/{id}', [PengajuanSubcontController::class, 'getHistory'])->name('get.history');
 
     Route::post('/pengajuan-subcont/store', [PengajuanSubcontController::class, 'store'])->name('pengajuan-subcont.store');
-    // Route untuk mengubah status menjadi 2 (kirim)
+
     Route::post('/pengajuan-subcont/{id}/kirim', [PengajuanSubcontController::class, 'kirimSales'])->name('pengajuan-subcont.kirim');
     Route::post('/pengajuan-subcont/{id}/kirim-proc', [PengajuanSubcontController::class, 'kirimProc'])->name('pengajuan-subcont.kirim2');
     Route::post('/submit-data/{id}/submit-proc', [PengajuanSubcontController::class, 'submitData'])->name('submit.data');
     Route::post('/submit-data/{id}/finish-proc', [PengajuanSubcontController::class, 'FinishProc'])->name('FinishProc');
-    // Route untuk update data
+
     Route::put('/pengajuan-subcont/{id}', [PengajuanSubcontController::class, 'update'])->name('pengajuan-subcont.update');
     Route::delete('/pengajuan-subcont/{id}', [PengajuanSubcontController::class, 'delete'])->name('pengajuan-subcont.destroy');
 });

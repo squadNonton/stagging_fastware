@@ -7,11 +7,11 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Super Admin</h1>
+            <h1>Kelola Akun EMployee</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Dashboard Admin</li>
-                    <li class="breadcrumb-item">Ubah Data Pengguna</li>
+                    <li class="breadcrumb-item">Ubah Data Employee</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -22,7 +22,7 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Ubah Data Pengguna</h5>
+                                <h5 class="card-title">Ubah Data Employee</h5>
 
                                 <form id="userForm" action="{{ route('users.update', $user->id) }}" method="POST"
                                     enctype="multipart/form-data">
@@ -90,7 +90,10 @@
                                         <input type="number" class="form-control" id="telp" name="telp"
                                             value="{{ $user->telp }}">
                                     </div>
-
+                                    <div class="mb-3">
+                                        <label for="file" class="form-label">Upload Image<span style="color: red;">*</span></label>
+                                        <input type="file" class="form-control" id="file" name="file" accept="image/*">
+                                    </div>
                                     <div class="mb-3">
                                         <button type="submit" class="btn btn-primary">Submit</button>
                                         <a href="{{ route('users.index') }}" class="btn btn-danger">Cancel</a>

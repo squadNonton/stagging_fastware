@@ -13,7 +13,10 @@ class DetailTcPenilaian extends Model
 
     protected $fillable = [
         'id_job_position',
+        'name',
+        'keterangan_sebelum',
         'keterangan_detail',
+        'catatan',
         'modified_at',
     ];
 
@@ -22,4 +25,8 @@ class DetailTcPenilaian extends Model
         return $this->belongsTo(TrsPenilaianTc::class, 'id_job_position');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id');
+    }
 }

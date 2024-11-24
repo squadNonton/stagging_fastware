@@ -34,6 +34,15 @@ class AuthController extends Controller
         return view('auth.dataDiri', compact('user', 'role', 'jobPositions', 'dataTcPeopleDevelopment'));
     }
 
+    public function showEvaluasiPDF($id)
+    {
+        // Ambil data evaluasi beserta data user terkait
+        $data = TcPeopleDevelopment::with('user')->findOrFail($id);
+
+        // Return JSON response
+        return response()->json($data);
+    }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -102,10 +111,6 @@ class AuthController extends Controller
     public function ubahDataDiri(Request $request)
     {
         $user = Auth::user();
-
-        // Perbarui data pengguna
-        $user->name = $request->name;
-        $user->npk = $request->npk;
         $user->telp = $request->telp;
         $user->email = $request->email;
 

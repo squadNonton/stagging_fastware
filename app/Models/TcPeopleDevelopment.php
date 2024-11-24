@@ -34,13 +34,34 @@ class TcPeopleDevelopment extends Model
         'biaya',
         'biaya_plan',
         'tahun_aktual',
+        'tahun_usulan',
         'file',
         'file_name',
         'status_1',
         'status_2',
         'modified_at',
         'modified_updated',
+        // Tambahkan kolom baru di sini
+        'relevansi',
+        'rekomendasi',
+        'kelengkapan_materi',
+        'lokasi',
+        'metode_pengajaran',
+        'fasilitas',
+        'lainnya_1',
+        'metode_evaluasi',
+        'minat',
+        'daya_serap',
+        'penerapan',
+        'lainnya_2',
+        'diketahui',
+        'dievaluasi',
+        'tgl_pengajuan',
+        'tgl_konfirm',
+        'efektif',
+        'catatan_tambahan',
     ];
+
 
     // Definisi relasi
     public function role()

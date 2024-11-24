@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -36,14 +38,41 @@ class UserController extends Controller
         return view('admin.show', compact('user', 'roles'));
     }
 
+
     public function update(Request $request, User $user)
     {
+        // Handle file upload
+        if ($request->hasFile('file')) {
+            // Delete the old file if it exists
+            if ($user->file) {
+                $oldFilePath = public_path('assets/data_diri/' . $user->file);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            }
+
+            // Generate a new UUID for the file and store it in the public path
+            $file = $request->file('file');
+            $file_uuid = Str::uuid();
+            $file_name = $file->getClientOriginalName();
+            $file_extension = $file->getClientOriginalExtension();
+            $file_path = 'assets/data_diri/' . $file_uuid . '.' . $file_extension;
+
+            // Move the file to the specified directory
+            $file->move(public_path('assets/data_diri'), $file_uuid . '.' . $file_extension);
+
+            // Update user with new file information
+            $user->file = $file_uuid . '.' . $file_extension; // Storing just the filename, not full path
+            $user->file_name = $file_name;
+        }
+
+        // Update other fields
         $user->update([
             'role_id' => $request->role_id ?? $user->role_id,
             'name' => $request->nama ?? $user->name,
             'npk' => $request->npk ?? $user->npk,
             'username' => $request->username ?? $user->username,
-            'password' => bcrypt($request->pass) ?? $user->password,
+            'password' => $request->pass ? bcrypt($request->pass) : $user->password,
             'pass' => $request->pass ?? $user->pass,
             'email' => $request->email ?? $user->email,
             'telp' => $request->telp ?? $user->telp,
@@ -53,6 +82,7 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
+
 
     public function store(Request $request)
     {

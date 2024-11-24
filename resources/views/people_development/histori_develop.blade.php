@@ -178,6 +178,7 @@
                             <div style="display: flex; align-items: center; gap: 40px;">
                                 <!-- Dropdown for selecting role_id -->
                                 <select id="role_id" style="width: 45%;">
+                                    <option value=""> ----- Pilih Departemen ------ </option>
                                     <!-- Show only if user's role_id is 11 -->
                                     @if (auth()->user()->role_id == 11 || in_array(auth()->user()->role_id, [1, 14, 15]))
                                         <option value="11">Departemen Finn Acc Hrga IT Proc</option>
@@ -332,6 +333,12 @@
                         row.style.display = 'none';
                     }
                 });
+            });
+
+            document.getElementById("role_id").addEventListener("change", function() {
+                if (this.value === "") {
+                    window.location.href = "{{ route('historiDept') }}";
+                }
             });
         </script>
     </main>

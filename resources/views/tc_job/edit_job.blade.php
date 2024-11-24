@@ -36,10 +36,11 @@
 
                                 <div id="dynamicRowsContainer" class="mt-3">
                                     @foreach ($relatedUsers as $user)
-                                        <div class="row dynamic-row mb-2" data-job-position-id="{{ $jobPosition->id }}">
+                                        <div class="row dynamic-row mb-2" data-job-position-id="{{ $jobPosition->id }}"
+                                            data-job-position-name="{{ $jobPosition->job_position }}">
                                             <div class="col-md-10">
                                                 <div class="form-group">
-                                                    <label>User{{ $jobPosition->id }}</label>
+                                                    <label>Nama Karyawan</label>
                                                     <input type="text" class="form-control user-search"
                                                         placeholder="Search user...">
                                                     <select class="form-control user-dropdown" name="id_user[]">
@@ -62,12 +63,18 @@
                                 </div>
 
                                 <div class="d-flex justify-content-end mt-2">
-                                    <button type="button" class="btn btn-secondary" id="addRowBtn">+ Add Row</button>
+                                    <button type="button" class="btn btn-secondary" id="addRowBtn">
+                                        <i class="fas fa-plus"></i> Tambah Baris
+                                    </button>
                                 </div>
 
                                 <div class="mt-3">
-                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                    <a href="{{ route('jobShow') }}" class="btn btn-secondary">Back</a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Update
+                                    </button>
+                                    <a href="{{ route('jobShow') }}" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Kembali
+                                    </a>
                                 </div>
                             </form>
                         </div>
@@ -172,13 +179,14 @@
 
             function removeField(button) {
                 const row = button.closest('.dynamic-row');
-                const userId = row.querySelector('.user-dropdown').value;
+                const jobPositionId = row.getAttribute('data-job-position-name');
+                const userId = row.querySelector('.user-dropdown').value; // Ambil id_user dari elemen dropdown
 
-                if (userId) {
+                if (jobPositionId && userId) {
                     // Gunakan SweetAlert untuk konfirmasi
                     Swal.fire({
                         title: 'Konfirmasi',
-                        text: `Apakah Anda yakin ingin menghapus job position untuk user ini?`,
+                        text: `Apakah Anda yakin ingin menghapus id_user pada job position ini?`,
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonText: 'Ya, hapus!',
@@ -195,14 +203,15 @@
                                             .getAttribute('content')
                                     },
                                     body: JSON.stringify({
-                                        userId: userId // Kirim user ID
+                                        jobPositionId: jobPositionId, // Kirim job_position ID
+                                        userId: userId // Kirim id_user
                                     })
                                 })
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.success) {
                                         row.remove(); // Hapus baris dari tampilan
-                                        Swal.fire('Deleted!', 'Data berhasil dihapus.', 'success').then(() => {
+                                        Swal.fire('Deleted!', 'Karyawan berhasil dihapus.', 'success').then(() => {
                                             // Redirect ke route jobShow setelah berhasil
                                             window.location.href = '{{ route('jobShow') }}';
                                         });
@@ -213,12 +222,12 @@
                                 .catch(error => {
                                     console.error('Error:', error);
                                     Swal.fire('Gagal!', 'Gagal menghapus data. Silakan coba lagi.',
-                                    'error'); // Tampilkan pesan error
+                                        'error'); // Tampilkan pesan error
                                 });
                         }
                     });
                 } else {
-                    row.remove(); // Jika ID tidak tersedia, hapus baris dari tampilan
+                    row.remove(); // Jika jobPositionId atau userId tidak tersedia, hapus baris dari tampilan
                 }
             }
         </script>

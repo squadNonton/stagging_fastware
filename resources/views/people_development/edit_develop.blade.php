@@ -193,6 +193,7 @@
                                 <option value="technical" ${item.kategori_competency == 'technical' ? 'selected' : ''}>Technical Competency</option>
                                 <option value="nontechnical" ${item.kategori_competency == 'nontechnical' ? 'selected' : ''}>Non Technical</option>
                                 <option value="additional" ${item.kategori_competency == 'additional' ? 'selected' : ''}>Additional</option>
+                                <option value="Others" ${item.kategori_competency == 'Others' ? 'selected' : ''}>Others</option>
                             </select>
                         </td>
 

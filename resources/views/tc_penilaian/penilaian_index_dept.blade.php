@@ -18,7 +18,6 @@
                     <thead>
                         <tr>
                             <th scope="col">NO</th>
-                            <th scope="col">PIC</th>
                             <th scope="col">Job Position</th>
                             <th scope="col">Status</th>
                             <th scope="col">Aksi</th>
@@ -29,7 +28,6 @@
                             @if ($item->status == 1 || $item->status == 2 || $item->status == 3)
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
-                                    <td>{{ $item->modified_at }}</td>
                                     <td>{{ $item->id_job_position }}</td>
                                     <td>
                                         @if ($item->status == 1)

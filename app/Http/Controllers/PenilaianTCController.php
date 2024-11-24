@@ -21,116 +21,253 @@ class PenilaianTCController extends Controller
     {
         // Mengambil semua data penilaian
         $allPenilaianData = TrsPenilaianTc::all();
-        
+
         // Mengambil data unik berdasarkan id_job_position
         $penilaianData = $allPenilaianData->unique('id_job_position');
-    
+
         // Ambil nama dan role_id user yang sedang login
         $userName = auth()->user()->name;
         $roleId = auth()->user()->role_id;
-    
+
         // Cek apakah role_id adalah 1, 14, atau 15
         if (!in_array($roleId, [1, 14, 15])) {
             // Tentukan data yang ditampilkan berdasarkan nama user
-            if ($userName == 'VITRI HANDAYANI') {
+            if ($userName == 'RANGGA FADILLAH') {
                 $penilaianData = $penilaianData->filter(function ($item) {
                     return in_array($item->id_job_position, [
-                        'Purchasing & Logistics Sec. Head', 
-                        'Logistic Foreman', 
-                        'Feeder', 
-                        'Delivery Staff', 
-                        'Admin Cutting Sheet (ACS)', 
+                        'Logistic Foreman',
+                        'Feeder',
+                        'Delivery Staff',
+                        'Admin Cutting Sheet (ACS)',
+                        'Logistic Admin'
+                    ]);
+                });
+            } elseif ($userName == 'ABDUR RAHMAN AL FAAIZ') {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'Foreman CT & MC',
+                        'Foreman QC',
+                        'Leader CT',
+                        'PPIC Staff',
+                        'Operator CT',
+                    ]);
+                });
+            } elseif ($userName == 'RAGIL ISHA RAHMANTO') {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'Foreman Machining Custom',
+                        'Leader MC',
+                        'Operator Bubut',
+                        'Operator Mc. Custom',
+                        'MC Custom Staff',
+                        'Operator Machining',
+                    ]);
+                });
+            } elseif ($userName == 'MUGI PRAMONO') {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'Produksi HT Sec. Head',
+                        'Leader HT',
+                        'Operator HT',
+                        'Admin HT & PPC',
+                        'Operator MTN',
+                    ]);
+                });
+            } elseif ($userName == 'JESSICA PAUNE' || $userName == 'SITI MARIA ULFA') {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'HRGA & CSR Staff',
+                        'HR & Legal Staff',
+                        'IT Staff',
+                        'Procurement Staff',
+                        'Accounting Staff & Kasir',
+                        'AR Staff',
+                        'Invoicing Staff',
+                        'Kurir'
+                    ]);
+                });
+            } elseif ($userName == 'ADHI PRASETIYO' ||  $userName == 'RICHARDUS') {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'Accounting Staff & Kasir',
+                        'AR Staff',
+                        'Invoicing Staff',
+                        'Kurir'
+                    ]);
+                });
+            } elseif ($userName == 'ILHAM CHOLID') {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'Sales Engineer Reg 1',
+                        'Sales Engineer Reg 2',
+                        'Sales Admin',
+                        'SOH Reg 1',
+                        'SOH Reg 2'
+                    ]);
+                });
+            } elseif ($userName == 'JUN JOHAMIN PD') {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'Sales Engineer Reg 3',
+                        'Sales Engineer Reg 4'
+                    ]);
+                });
+            } elseif ($userName == 'VITRI HANDAYANI') {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'Purchasing & Logistics Sec. Head',
+                        'Logistic Foreman',
+                        'Feeder',
+                        'Delivery Staff',
+                        'Admin Cutting Sheet (ACS)',
                         'Logistic Admin'
                     ]);
                 });
             } elseif ($userName == 'ARY RODJO PRASETYO') {
                 $penilaianData = $penilaianData->filter(function ($item) {
                     return in_array($item->id_job_position, [
-                        'Machining Custom Sec. Head', 
-                        'Produksi HT Sec. Head', 
-                        'Produksi CT & MC Sec. Head', 
-                        'Foreman CT & MC', 
-                        'Leader CT', 
-                        'PPIC Staff', 
-                        'Operator CT', 
-                        'Foreman Machining Custom', 
-                        'Foreman QC', 
-                        'Leader MC', 
-                        'Operator Bubut', 
-                        'Operator Mc. Custom', 
-                        'MC Custom Staff', 
-                        'Operator Machining',
-                        'Leader HT', 
+                        'Produksi CT & MC Sec. Head',
+                        'Foreman CT & MC',
+                        'Foreman QC',
+                        'Leader CT',
+                        'PPIC Staff',
+                        'Operator CT',
+                        'Produksi HT Sec. Head',
+                        'Leader HT',
                         'Operator HT',
                         'Admin HT & PPC',
-                        'Operator MTN'
+                        'Operator MTN',
+                        'Foreman Machining Custom',
+                        'Leader MC',
+                        'Operator Bubut',
+                        'Operator Mc. Custom',
+                        'MC Custom Staff',
+                        'Operator Machining',
                     ]);
                 });
             } elseif ($userName == 'MARTINUS CAHYO RAHASTO') {
                 $penilaianData = $penilaianData->filter(function ($item) {
                     return in_array($item->id_job_position, [
-                        'Finance & Accounting Sec. Head', 
-                        'Finance & Treasury Sec. Head', 
-                        'HRGA & CSR Staff', 
-                        'HR & Legal Staff', 
-                        'HR, GA, Legal, PDCA, Procurement & IT Se. Head', 
-                        'IT Staff', 
-                        'Procurement Staff', 
-                        'Accounting Staff & Kasir', 
-                        'AR Staff', 
-                        'Invoicing Staff', 
+                        'Finance & Accounting Sec. Head',
+                        'Finance & Treasury Sec. Head',
+                        'HRGA & CSR Staff',
+                        'HR & Legal Staff',
+                        'HR, GA, Legal, PDCA, Procurement & IT Se. Head',
+                        'IT Staff',
+                        'Procurement Staff',
+                        'Accounting Staff & Kasir',
+                        'AR Staff',
+                        'Invoicing Staff',
                         'Kurir'
                     ]);
                 });
             } elseif ($userName == 'YULMAI RIDO WINANDA') {
                 $penilaianData = $penilaianData->filter(function ($item) {
                     return in_array($item->id_job_position, [
-                        'Sales Engineer Reg 1', 
-                        'Sales Engineer Reg 2', 
-                        'Sales Admin', 
-                        'SOH Reg 1', 
+                        'Sales Engineer Reg 1',
+                        'Sales Engineer Reg 2',
+                        'Sales Admin',
+                        'SOH Reg 1',
                         'SOH Reg 2'
                     ]);
                 });
             } elseif ($userName == 'ANDIK TOTOK SISWOYO') {
                 $penilaianData = $penilaianData->filter(function ($item) {
                     return in_array($item->id_job_position, [
-                        'Sales Engineer Reg 3', 
-                        'Sales Engineer Reg 4'
-                    ]);
-                });
-            } elseif ($userName == 'HARDI SAPUTRA') {
-                $penilaianData = $penilaianData->filter(function ($item) {
-                    return in_array($item->id_job_position, [
-                        'Sales Engineer Reg 1', 
-                        'Sales Engineer Reg 2', 
-                        'Sales Admin', 
-                        'SOH Reg 1', 
-                        'SOH Reg 2',
-                        'SOH Reg 3',
-                        'SOH Reg 4',
-                        'Sales Engineer Reg 3', 
+                        'Sales Engineer Reg 3',
                         'Sales Engineer Reg 4'
                     ]);
                 });
             }
         }
-    
+
         // Ambil semua data posisi dan karyawan
         $positions = TcJobPosition::all();
         $employees = User::all();
-    
+
         // Menampilkan halaman penilaian dan mengirimkan data yang telah diambil ke view
         return view('tc_penilaian.penilaian_index', compact('penilaianData', 'positions', 'employees'));
     }
-    
+
     public function indexTrs2()
     {
-        // Mengambil semua data
+        // Mengambil semua data penilaian
         $allPenilaianData = TrsPenilaianTc::all();
 
-        // Menggunakan koleksi untuk mendapatkan data unik berdasarkan id_job_position
+        // Mengambil data unik berdasarkan id_job_position
         $penilaianData = $allPenilaianData->unique('id_job_position');
+
+        // Ambil nama dan role_id user yang sedang login
+        $userName = auth()->user()->name;
+        $roleId = auth()->user()->role_id;
+
+        // Cek apakah role_id adalah 1, 14, atau 15
+        if (!in_array($roleId, [1, 14, 15])) {
+            // Tentukan data yang ditampilkan berdasarkan nama user
+            if ($roleId == 7) {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'Purchasing & Logistics Sec. Head',
+                        'Logistic Foreman',
+                        'Feeder',
+                        'Delivery Staff',
+                        'Admin Cutting Sheet (ACS)',
+                        'Logistic Admin'
+                    ]);
+                });
+            } elseif ($roleId == 5) {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'Produksi CT & MC Sec. Head',
+                        'Foreman CT & MC',
+                        'Foreman QC',
+                        'Leader CT',
+                        'PPIC Staff',
+                        'Operator CT',
+                        'Machining Custom Sec. Head',
+                        'Foreman Machining Custom',
+                        'Leader MC',
+                        'Operator Bubut',
+                        'Operator Mc. Custom',
+                        'MC Custom Staff',
+                        'Operator Machining',
+                        'Produksi HT Sec. Head',
+                        'Leader HT',
+                        'Operator HT',
+                        'Admin HT & PPC',
+                        'Operator MTN'
+                    ]);
+                });
+            } elseif ($roleId == 11) {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'Finance & Accounting Sec. Head',
+                        'Finance & Treasury Sec. Head',
+                        'HRGA & CSR Staff',
+                        'HR & Legal Staff',
+                        'HR, GA, Legal, PDCA, Procurement & IT Se. Head',
+                        'IT Staff',
+                        'Procurement Staff',
+                        'Accounting Staff & Kasir',
+                        'AR Staff',
+                        'Invoicing Staff',
+                        'Kurir'
+                    ]);
+                });
+            } elseif ($roleId == 2) {
+                $penilaianData = $penilaianData->filter(function ($item) {
+                    return in_array($item->id_job_position, [
+                        'Sales Engineer Reg 1',
+                        'Sales Engineer Reg 2',
+                        'Sales Admin',
+                        'SOH Reg 1',
+                        'SOH Reg 2',
+                        'Sales Engineer Reg 3',
+                        'Sales Engineer Reg 4'
+                    ]);
+                });
+            }
+        }
 
         $positions = TcJobPosition::all(); // Mengambil semua data posisi
         $employees = User::all(); // Mengambil semua data karyawan
@@ -148,99 +285,102 @@ class PenilaianTCController extends Controller
 
         // Ambil data employee dan posisi untuk form
         $users = User::all(); // Ambil semua users atau sesuai kebutuhan
-        
-       // Ambil role_id dan nama user yang sedang login
-            $roleId = auth()->user()->role_id;
-            $userName = auth()->user()->name;
 
-            // Inisialisasi query untuk job positions
-            $jobPositionsQuery = TcJobPosition::select(DB::raw('MIN(id) as id'), 'job_position')
-                ->groupBy('job_position');
+        // Ambil role_id dan nama user yang sedang login
+        $roleId = auth()->user()->role_id;
+        $userName = auth()->user()->name;
 
-            // Cek apakah role_id adalah 1, 14, atau 15
-            if (in_array($roleId, [1, 14, 15])) {
-                // Jika ya, tampilkan semua data job_position
-                $jobPositions = $jobPositionsQuery->get();
+        // Inisialisasi query untuk job positions
+        $jobPositionsQuery = TcJobPosition::select(DB::raw('MIN(id) as id'), 'job_position')
+            ->groupBy('job_position');
+
+        // Cek apakah role_id adalah 1, 14, atau 15
+        if (in_array($roleId, [1, 14, 15])) {
+            // Jika ya, tampilkan semua data job_position
+            $jobPositions = $jobPositionsQuery->get();
+        } else {
+            // Jika tidak, tentukan job_position berdasarkan nama user
+            if ($userName == 'RANGGA FADILLAH') {
+                $jobPositions = $jobPositionsQuery->whereIn('job_position', [
+                    'Purchasing & Logistics Sec. Head',
+                    'Logistic Foreman',
+                    'Feeder',
+                    'Delivery Staff',
+                    'Admin Cutting Sheet (ACS)',
+                    'Logistic Admin'
+                ])->get();
+            } elseif ($userName == 'ABDUR RAHMAN AL FAAIZ') {
+                $jobPositions = $jobPositionsQuery->whereIn('job_position', [
+                    'Produksi CT & MC Sec. Head',
+                    'Foreman CT & MC',
+                    'Foreman QC',
+                    'Leader CT',
+                    'PPIC Staff',
+                    'Operator CT'
+                ])->get();
+            } elseif ($userName == 'RAGIL ISHA RAHMANTO') {
+                $jobPositions = $jobPositionsQuery->whereIn('job_position', [
+                    'Machining Custom Sec. Head',
+                    'Foreman Machining Custom',
+                    'Leader MC',
+                    'Operator Bubut',
+                    'Operator Mc. Custom',
+                    'MC Custom Staff',
+                    'Operator Machining'
+                ])->get();
+            } elseif ($userName == 'MUGI PRAMONO') {
+                $jobPositions = $jobPositionsQuery->whereIn('job_position', [
+                    'Produksi HT Sec. Head',
+                    'Leader HT',
+                    'Operator HT',
+                    'Admin HT & PPC',
+                    'Operator MTN'
+                ])->get();
+            } elseif ($userName == 'JESSICA PAUNE' || $userName == 'SITI MARIA ULFA') {
+                $jobPositions = $jobPositionsQuery->whereIn('job_position', [
+                    'Finance & Accounting Sec. Head',
+                    'Finance & Treasury Sec. Head',
+                    'HRGA & CSR Staff',
+                    'HR & Legal Staff',
+                    'HR, GA, Legal, PDCA, Procurement & IT Se. Head',
+                    'IT Staff',
+                    'Procurement Staff',
+                    'Accounting Staff & Kasir',
+                    'AR Staff',
+                    'Invoicing Staff',
+                    'Kurir'
+                ])->get();
+            } elseif ($userName == 'ADHI PRASETIYO' ||  $userName == 'RICHARDUS') {
+                $jobPositions = $jobPositionsQuery->whereIn('job_position', [
+                    'Finance & Accounting Sec. Head',
+                    'Finance & Treasury Sec. Head',
+                    'Accounting Staff & Kasir',
+                    'AR Staff',
+                    'Invoicing Staff',
+                    'Kurir'
+                ])->get();
+            } elseif ($userName == 'ILHAM CHOLID') {
+                $jobPositions = $jobPositionsQuery->whereIn('job_position', [
+                    'Sales Engineer Reg 1',
+                    'Sales Engineer Reg 2',
+                    'Sales Admin',
+                    'SOH Reg 1',
+                    'SOH Reg 2'
+                ])->get();
+            } elseif ($userName == 'JUN JOHAMIN PD') {
+                $jobPositions = $jobPositionsQuery->whereIn('job_position', [
+                    'Sales Engineer Reg 3',
+                    'Sales Engineer Reg 4'
+                ])->get();
             } else {
-                // Jika tidak, tentukan job_position berdasarkan nama user
-                if ($userName == 'VITRI HANDAYANI') {
-                    $jobPositions = $jobPositionsQuery->whereIn('job_position', [
-                        'Purchasing & Logistics Sec. Head', 
-                        'Logistic Foreman', 
-                        'Feeder', 
-                        'Delivery Staff', 
-                        'Admin Cutting Sheet (ACS)', 
-                        'Logistic Admin'
-                    ])->get();
-                } elseif ($userName == 'ARY RODJO PRASETYO') {
-                    $jobPositions = $jobPositionsQuery->whereIn('job_position', [
-                        'Machining Custom Sec. Head', 
-                        'Produksi HT Sec. Head', 
-                        'Produksi CT & MC Sec. Head', 
-                        'Foreman CT & MC', 
-                        'Leader CT', 
-                        'PPIC Staff', 
-                        'Operator CT', 
-                        'Foreman Machining Custom', 
-                        'Foreman QC', 
-                        'Leader MC', 
-                        'Operator Bubut', 
-                        'Operator Mc. Custom', 
-                        'MC Custom Staff', 
-                        'Operator Machining',
-                        'Leader HT', 
-                        'Operator HT',
-                        'Admin HT & PPC',
-                        'Operator MTN'
-                    ])->get();
-                } elseif ($userName == 'MARTINUS CAHYO RAHASTO') {
-                    $jobPositions = $jobPositionsQuery->whereIn('job_position', [
-                        'Finance & Accounting Sec. Head', 
-                        'Finance & Treasury Sec. Head', 
-                        'HRGA & CSR Staff', 
-                        'HR & Legal Staff', 
-                        'HR, GA, Legal, PDCA, Procurement & IT Se. Head', 
-                        'IT Staff', 
-                        'Procurement Staff', 
-                        'Accounting Staff & Kasir', 
-                        'AR Staff', 
-                        'Invoicing Staff', 
-                        'Kurir'
-                    ])->get();
-                } elseif ($userName == 'YULMAI RIDO WINANDA') {
-                    $jobPositions = $jobPositionsQuery->whereIn('job_position', [
-                        'Sales Engineer Reg 1', 
-                        'Sales Engineer Reg 2', 
-                        'Sales Admin', 
-                        'SOH Reg 1', 
-                        'SOH Reg 2'
-                    ])->get();
-                } elseif ($userName == 'ANDIK TOTOK SISWOYO') {
-                    $jobPositions = $jobPositionsQuery->whereIn('job_position', [
-                        'Sales Engineer Reg 3', 
-                        'Sales Engineer Reg 4'
-                    ])->get();
-                } elseif ($userName == 'HARDI SAPUTRA') {
-                    $jobPositions = $jobPositionsQuery->whereIn('job_position', [
-                        'Sales Engineer Reg 1', 
-                        'Sales Engineer Reg 2', 
-                        'Sales Admin', 
-                        'SOH Reg 1', 
-                        'SOH Reg 2',
-                        'SOH Reg 3',
-                        'SOH Reg 4',
-                        'Sales Engineer Reg 3', 
-                        'Sales Engineer Reg 4'
-                    ])->get();
-                } else {
-                    // Jika nama user tidak cocok dengan yang ditentukan, tampilkan semua data job_position
-                    $jobPositions = $jobPositionsQuery->get();
-                }
+                // Jika nama user tidak cocok dengan yang ditentukan, tampilkan semua data job_position
+                $jobPositions = $jobPositionsQuery->get();
             }
+        }
 
         $trsPenilaian = TrsPenilaianTc::all();
         $idJobPosition = optional($trsPenilaian->first())->id_job_position;
-        
+
         $dataTc1 = PoinKategori::find(1);  // Misalnya TcModel adalah model untuk tabel pertama
         $dataTc2 = PoinKategori::find(2);  // Misalnya TcModel adalah model untuk tabel kedua
         $dataTc3 = PoinKategori::find(3);  // Misalnya TcModel adalah model untuk tabel ketiga
@@ -248,53 +388,62 @@ class PenilaianTCController extends Controller
         return view('tc_penilaian.sc_penilaian', compact('users', 'id_tc', 'id_sk', 'id_ad', 'jobPositions', 'trsPenilaian', 'idJobPosition', 'dataTc1', 'dataTc2', 'dataTc3'));
     }
 
-    public function dsCompetency() {
+    public function dsCompetency()
+    {
         // Ambil role_id dari user yang sedang login
         $currentUserRoleId = Auth::user()->role_id;
-    
+
         // Cek jika role_id adalah 1, 14, atau 15
         if (in_array($currentUserRoleId, [1, 14, 15])) {
             // Jika role_id adalah salah satu dari yang dikecualikan, ambil semua id_job_position dengan status 3
             $jobPositions = TrsPenilaianTc::where('status', 3)
-                                            ->distinct()
-                                            ->pluck('id_job_position');
+                ->distinct()
+                ->pluck('id_job_position');
         } else {
             // Jika tidak, filter berdasarkan role_id pengguna yang sedang login
             $jobPositions = TrsPenilaianTc::where('status', 3)
-                ->where(function($query) use ($currentUserRoleId) {
+                ->where(function ($query) use ($currentUserRoleId) {
                     // Kondisi role 2, 4, 44 melihat modified_at 3
                     if (in_array($currentUserRoleId, [2, 4, 44])) {
-                        $query->where('modified_at', [99, 45, 59]);
+                        $query->whereIn('modified_at', [65, 45, 99, 59, 72]);
                     }
                     // Kondisi role 5, 8, 18, 42, 21, 43, 52, 9 melihat modified_at 9
                     else if (in_array($currentUserRoleId, [5, 6, 8, 9, 18, 21, 22, 26, 27, 31, 42, 43, 45, 46, 48, 52])) {
-                        $query->where('modified_at', 46);
+                        $query->whereIn('modified_at', [25, 84, 102, 46]);
                     }
                     // Kondisi role 29, 50, 49, 47, 51, 7, 30 melihat modified_at 30
                     else if (in_array($currentUserRoleId, [7, 29, 30, 47, 49, 50, 51])) {
-                        $query->where('modified_at', 39);
+                        $query->whereIn('modified_at', [70, 91, 77, 86, 46]);
                     }
                     // Kondisi role 11, 13, 37, 12, 32 melihat modified_at 12 atau 32
                     else if (in_array($currentUserRoleId, [11, 12, 13, 14, 15, 37, 42])) {
-                        $query->whereIn('modified_at', 77);
+                        $query->whereIn('modified_at', [39, 31, 20, 91, 70]);
+                    } else if (in_array($currentUserRoleId, [7])) {
+                        $query->whereIn('modified_at', [39]);
+                    } else if (in_array($currentUserRoleId, [5])) {
+                        $query->whereIn('modified_at', [46]);
+                    } else if (in_array($currentUserRoleId, [11])) {
+                        $query->whereIn('modified_at', [77]);
+                    } else if (in_array($currentUserRoleId, [2])) {
+                        $query->whereIn('modified_at', [99, 45]);
                     }
                 })
                 ->distinct()
                 ->pluck('id_job_position');
         }
-    
+
         return view('dashboard.dsCompetency', compact('jobPositions'));
     }
-          
-    public function dsDetailCompetency() 
+
+    public function dsDetailCompetency()
     {
         $dataTc1 = PoinKategori::find(1);  // Misalnya TcModel adalah model untuk tabel pertama
         $dataTc2 = PoinKategori::find(2);  // Misalnya TcModel adalah model untuk tabel kedua
         $dataTc3 = PoinKategori::find(3);  // Misalnya TcModel adalah model untuk tabel ketiga
-        
+
 
         return view('dashboard.dsDetailCompetency', compact('dataTc1', 'dataTc2', 'dataTc3'));
-    }  
+    }
 
     public function getJobPositionData(Request $request)
     {
@@ -542,18 +691,18 @@ class PenilaianTCController extends Controller
     {
         // Ambil satu data penilaian berdasarkan id_job_position
         $penilaian = TrsPenilaianTc::with(['tc', 'sk', 'ad', 'poinKategori', 'user'])
-                        ->where('id_job_position', $id_job_position)
-                        ->first(); // Mengambil satu record
+            ->where('id_job_position', $id_job_position)
+            ->first(); // Mengambil satu record
 
         $dataTc1 = PoinKategori::find(1);  // Misalnya TcModel adalah model untuk tabel pertama
         $dataTc2 = PoinKategori::find(2);  // Misalnya TcModel adalah model untuk tabel kedua
         $dataTc3 = PoinKategori::find(3);  // Misalnya TcModel adalah model untuk tabel ketiga
-                
-         // Ambil semua data dari DetailTcPenilaian yang terkait dengan id_job_position
+
+        // Ambil semua data dari DetailTcPenilaian yang terkait dengan id_job_position
         // Ambil data detail penilaian terkait id_job_position
         $detailPenilaian = DetailTcPenilaian::where('id_job_position', $id_job_position)
-        ->orderBy('created_at', 'desc') // Urutkan berdasarkan waktu terbaru
-        ->get();
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan waktu terbaru
+            ->get();
 
         return view('tc_penilaian.edit_penilaian', compact('penilaian', 'dataTc1', 'dataTc2', 'dataTc3', 'detailPenilaian'));
     }
@@ -562,16 +711,16 @@ class PenilaianTCController extends Controller
     {
         // Ambil satu data penilaian berdasarkan id_job_position
         $penilaian = TrsPenilaianTc::with(['tc', 'sk', 'ad', 'poinKategori', 'user'])
-                        ->where('id_job_position', $id_job_position)
-                        ->first(); // Mengambil satu record
+            ->where('id_job_position', $id_job_position)
+            ->first(); // Mengambil satu record
 
         $dataTc1 = PoinKategori::find(1);  // Misalnya TcModel adalah model untuk tabel pertama
         $dataTc2 = PoinKategori::find(2);  // Misalnya TcModel adalah model untuk tabel kedua
         $dataTc3 = PoinKategori::find(3);  // Misalnya TcModel adalah model untuk tabel ketiga
-                
+
         $detailPenilaian = DetailTcPenilaian::where('id_job_position', $id_job_position)
-        ->orderBy('created_at', 'desc') // Urutkan berdasarkan waktu terbaru
-        ->get();
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan waktu terbaru
+            ->get();
 
         return view('tc_penilaian.dept_penilaian', compact('penilaian', 'dataTc1', 'dataTc2', 'dataTc3', 'detailPenilaian'));
     }
@@ -580,16 +729,16 @@ class PenilaianTCController extends Controller
     {
         // Ambil satu data penilaian berdasarkan id_job_position
         $penilaian = TrsPenilaianTc::with(['tc', 'sk', 'ad', 'poinKategori', 'user'])
-                        ->where('id_job_position', $id_job_position)
-                        ->first(); // Mengambil satu record
+            ->where('id_job_position', $id_job_position)
+            ->first(); // Mengambil satu record
 
         $dataTc1 = PoinKategori::find(1);  // Misalnya TcModel adalah model untuk tabel pertama
         $dataTc2 = PoinKategori::find(2);  // Misalnya TcModel adalah model untuk tabel kedua
         $dataTc3 = PoinKategori::find(3);  // Misalnya TcModel adalah model untuk tabel ketiga
-                
+
         $detailPenilaian = DetailTcPenilaian::where('id_job_position', $id_job_position)
-        ->orderBy('created_at', 'desc') // Urutkan berdasarkan waktu terbaru
-        ->get();
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan waktu terbaru
+            ->get();
 
         return view('tc_penilaian.view_penilaian', compact('penilaian', 'dataTc1', 'dataTc2', 'dataTc3', 'detailPenilaian'));
     }
@@ -598,16 +747,16 @@ class PenilaianTCController extends Controller
     {
         // Ambil satu data penilaian berdasarkan id_job_position
         $penilaian = TrsPenilaianTc::with(['tc', 'sk', 'ad', 'poinKategori', 'user'])
-                        ->where('id_job_position', $id_job_position)
-                        ->first(); // Mengambil satu record
+            ->where('id_job_position', $id_job_position)
+            ->first(); // Mengambil satu record
 
-                        $dataTc1 = PoinKategori::find(1);  // Misalnya TcModel adalah model untuk tabel pertama
+        $dataTc1 = PoinKategori::find(1);  // Misalnya TcModel adalah model untuk tabel pertama
         $dataTc2 = PoinKategori::find(2);  // Misalnya TcModel adalah model untuk tabel kedua
         $dataTc3 = PoinKategori::find(3);  // Misalnya TcModel adalah model untuk tabel ketiga
-                
+
         $detailPenilaian = DetailTcPenilaian::where('id_job_position', $id_job_position)
-        ->orderBy('created_at', 'desc') // Urutkan berdasarkan waktu terbaru
-        ->get();
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan waktu terbaru
+            ->get();
 
 
         return view('tc_penilaian.privew_penilaian', compact('penilaian', 'dataTc1', 'dataTc2', 'dataTc3', 'detailPenilaian'));
@@ -617,141 +766,217 @@ class PenilaianTCController extends Controller
     {
         // Ambil semua data penilaian berdasarkan id_job_position
         $penilaians = TrsPenilaianTc::with(['tc', 'sk', 'ad', 'poinKategori', 'user'])
-                        ->where('id_job_position', $request->id_job_position)
-                        ->get(); // Mengambil semua record yang cocok
+            ->where('id_job_position', $request->id_job_position)
+            ->get(); // Mengambil semua record yang cocok
 
         return response()->json($penilaians);
     }
 
-    public function updateTrs(Request $request, $id)
+    public function updateTrs(Request $request, $id_job_position)
     {
+        // Decode HTML entities pada $id_job_position untuk menghindari perubahan karakter
+        $decoded_job_position = html_entity_decode($id_job_position);
+
         // Ambil data JSON yang dikirim dari AJAX
         $data = $request->json()->all();
 
-        // Log the received data
+        // Log data yang diterima untuk pengecekan
         Log::info('Received data:', [
             'nilai_tc' => $data['nilai_tc'],
             'keterangan_tc' => $data['keterangan_tc'],
             'nilai_sk' => $data['nilai_sk'],
             'keterangan_sk' => $data['keterangan_sk'],
             'nilai_ad' => $data['nilai_ad'],
-            'keterangan_ad' => $data['keterangan_ad']
+            'keterangan_ad' => $data['keterangan_ad'],
+            'names' => $data['names']
         ]);
 
+        // Update status dari penilaian
+        TrsPenilaianTc::where('id_job_position', $decoded_job_position)
+            ->where('status', 3)
+            ->update(['status' => 2]);
+
         // Ambil semua data penilaian terkait berdasarkan id_job_position
-        $penilaians = TrsPenilaianTc::where('id_job_position', $id)->get();
+        $penilaians = TrsPenilaianTc::where('id_job_position', $decoded_job_position)->get();
+
+        // Array untuk mengumpulkan perubahan keterangan_detail per name
+        $changesByName = [];
 
         foreach ($penilaians as $index => $penilaian) {
             $hasChanged = false;
-            $keteranganDetail = [];
+            $userName = isset($data['names'][$index]) ? $data['names'][$index] : 'Unknown'; // Ambil nama sesuai indeks
+            $currentKeteranganDetail = [];
 
-            if (isset($data['nilai_tc'][$index])) {
-                if ($penilaian->nilai_tc != $data['nilai_tc'][$index]) {
-                    $penilaian->nilai_tc = $data['nilai_tc'][$index];
-                    $hasChanged = true;
-                    $keteranganDetail[] = "Technical Competency: {$data['keterangan_tc'][$index]} = {$data['nilai_tc'][$index]}";
-                }
+            // Proses nilai_tc
+            if (isset($data['nilai_tc'][$index]) && $penilaian->nilai_tc != $data['nilai_tc'][$index]) {
+                $penilaian->nilai_tc = $data['nilai_tc'][$index];
+                $hasChanged = true;
+                $currentKeteranganDetail[] = "Technical Competency: {$data['keterangan_tc'][$index]} = {$data['nilai_tc'][$index]}";
             }
 
-            if (isset($data['nilai_sk'][$index])) {
-                if ($penilaian->nilai_sk != $data['nilai_sk'][$index]) {
-                    $penilaian->nilai_sk = $data['nilai_sk'][$index];
-                    $hasChanged = true;
-                    $keteranganDetail[] = "Non-Competency(Soft Skills): {$data['keterangan_sk'][$index]} = {$data['nilai_sk'][$index]}";
-                }
+            // Proses nilai_sk
+            if (isset($data['nilai_sk'][$index]) && $penilaian->nilai_sk != $data['nilai_sk'][$index]) {
+                $penilaian->nilai_sk = $data['nilai_sk'][$index];
+                $hasChanged = true;
+                $currentKeteranganDetail[] = "Non-Competency (Soft Skills): {$data['keterangan_sk'][$index]} = {$data['nilai_sk'][$index]}";
             }
 
-            if (isset($data['nilai_ad'][$index])) {
-                if ($penilaian->nilai_ad != $data['nilai_ad'][$index]) {
-                    $penilaian->nilai_ad = $data['nilai_ad'][$index];
-                    $hasChanged = true;
-                    $keteranganDetail[] = "Additional: {$data['keterangan_ad'][$index]} = {$data['nilai_ad'][$index]}";
-                }
+            // Proses nilai_ad
+            if (isset($data['nilai_ad'][$index]) && $penilaian->nilai_ad != $data['nilai_ad'][$index]) {
+                $penilaian->nilai_ad = $data['nilai_ad'][$index];
+                $hasChanged = true;
+                $currentKeteranganDetail[] = "Additional: {$data['keterangan_ad'][$index]} = {$data['nilai_ad'][$index]}";
             }
 
+            // Simpan perubahan penilaian jika ada
             if ($hasChanged) {
                 $penilaian->save();
 
-                DetailTcPenilaian::create([
-                    'id_job_position' => $id,
-                    'keterangan_detail' => implode(', ', $keteranganDetail),
-                    'modified_at' => auth()->user()->name,
-                ]);
-
-                Log::info('DetailTcPenilaian created:', [
-                    'id_job_position' => $id,
-                    'keterangan_detail' => implode(', ', $keteranganDetail),
-                ]);
+                // Gabungkan perubahan berdasarkan nama
+                if (!isset($changesByName[$userName])) {
+                    $changesByName[$userName] = [];
+                }
+                $changesByName[$userName] = array_merge($changesByName[$userName], $currentKeteranganDetail);
             }
         }
 
-        return response()->json(['success' => true, 'message' => 'Nilai berhasil diupdate']);
-    }
+        // Simpan ke DetailTcPenilaian dengan menggabungkan keterangan_detail per nama
+        foreach ($changesByName as $userName => $keteranganDetails) {
+            DetailTcPenilaian::create([
+                'id_job_position' => $decoded_job_position,
+                'name' => $userName,
+                'keterangan_detail' => implode('; ', $keteranganDetails), // Gabungkan detail dengan pemisah
+                'catatan' => $data['alasan_perubahan'], // Alasan perubahan
+                'modified_at' => auth()->user()->name,
+            ]);
 
-    public function updateTrs2(Request $request, $id_job_position)
-    {
-        // Ambil data JSON yang dikirim dari AJAX
-        $data = $request->json()->all();
-
-        // Log the received data
-        Log::info('Received data:', [
-            'nilai_tc' => $data['nilai_tc'],
-            'keterangan_tc' => $data['keterangan_tc'],
-            'nilai_sk' => $data['nilai_sk'],
-            'keterangan_sk' => $data['keterangan_sk'],
-            'nilai_ad' => $data['nilai_ad'],
-            'keterangan_ad' => $data['keterangan_ad']
-        ]);
-
-        // Ambil semua data penilaian terkait berdasarkan id_job_position
-        $penilaians = TrsPenilaianTc::where('id_job_position', $id)->get();
-
-        foreach ($penilaians as $index => $penilaian) {
-            $hasChanged = false;
-            $keteranganDetail = [];
-
-            if (isset($data['nilai_tc'][$index])) {
-                if ($penilaian->nilai_tc != $data['nilai_tc'][$index]) {
-                    $penilaian->nilai_tc = $data['nilai_tc'][$index];
-                    $hasChanged = true;
-                    $keteranganDetail[] = "Technical Competency: {$data['keterangan_tc'][$index]} = {$data['nilai_tc'][$index]}";
-                }
-            }
-
-            if (isset($data['nilai_sk'][$index])) {
-                if ($penilaian->nilai_sk != $data['nilai_sk'][$index]) {
-                    $penilaian->nilai_sk = $data['nilai_sk'][$index];
-                    $hasChanged = true;
-                    $keteranganDetail[] = "Non-Competency(Soft Skills): {$data['keterangan_sk'][$index]} = {$data['nilai_sk'][$index]}";
-                }
-            }
-
-            if (isset($data['nilai_ad'][$index])) {
-                if ($penilaian->nilai_ad != $data['nilai_ad'][$index]) {
-                    $penilaian->nilai_ad = $data['nilai_ad'][$index];
-                    $hasChanged = true;
-                    $keteranganDetail[] = "Additional: {$data['keterangan_ad'][$index]} = {$data['nilai_ad'][$index]}";
-                }
-            }
-
-            if ($hasChanged) {
-                $penilaian->save();
-
-                DetailTcPenilaian::create([
-                    'id_job_position' => $id,
-                    'keterangan_detail' => implode(', ', $keteranganDetail),
-                    'modified_at' => auth()->user()->name,
-                ]);
-
-                Log::info('DetailTcPenilaian created:', [
-                    'id_job_position' => $id,
-                    'keterangan_detail' => implode(', ', $keteranganDetail),
-                ]);
-            }
+            Log::info('DetailTcPenilaian created for:', [
+                'id_job_position' => $decoded_job_position,
+                'name' => $userName,
+                'keterangan_detail' => implode('; ', $keteranganDetails),
+                'catatan' => $data['alasan_perubahan']
+            ]);
         }
 
         // Kembalikan respon sukses
         return response()->json(['success' => true, 'message' => 'Nilai berhasil diupdate']);
+    }
+
+
+    public function updateTrs2(Request $request, $id_job_position)
+    {
+        // Decode HTML entities pada $id_job_position untuk menghindari perubahan karakter
+        $decoded_job_position = html_entity_decode($id_job_position);
+
+        // Ambil data JSON yang dikirim dari AJAX
+        $data = $request->json()->all();
+
+        // Log data yang diterima untuk pengecekan
+        Log::info('Received data:', [
+            'nilai_tc' => $data['nilai_tc'],
+            'keterangan_tc' => $data['keterangan_tc'],
+            'nilai_sk' => $data['nilai_sk'],
+            'keterangan_sk' => $data['keterangan_sk'],
+            'nilai_ad' => $data['nilai_ad'],
+            'keterangan_ad' => $data['keterangan_ad'],
+            'names' => $data['names']
+        ]);
+
+        // Ambil semua data penilaian terkait berdasarkan id_job_position
+        $penilaians = TrsPenilaianTc::where('id_job_position', $decoded_job_position)->get();
+
+        // Array untuk mengumpulkan perubahan keterangan_detail per nama
+        $changesByName = [];
+
+        foreach ($penilaians as $index => $penilaian) {
+            $hasChanged = false;
+            $userName = isset($data['names'][$index]) ? $data['names'][$index] : 'Unknown'; // Ambil nama sesuai indeks
+            $currentKeteranganDetail = [];
+
+            // Proses nilai_tc
+            if (isset($data['nilai_tc'][$index]) && $penilaian->nilai_tc != $data['nilai_tc'][$index]) {
+                $penilaian->nilai_tc = $data['nilai_tc'][$index];
+                $hasChanged = true;
+                $currentKeteranganDetail[] = "Technical Competency: {$data['keterangan_tc'][$index]} = {$data['nilai_tc'][$index]}";
+            }
+
+            // Proses nilai_sk
+            if (isset($data['nilai_sk'][$index]) && $penilaian->nilai_sk != $data['nilai_sk'][$index]) {
+                $penilaian->nilai_sk = $data['nilai_sk'][$index];
+                $hasChanged = true;
+                $currentKeteranganDetail[] = "Non-Competency (Soft Skills): {$data['keterangan_sk'][$index]} = {$data['nilai_sk'][$index]}";
+            }
+
+            // Proses nilai_ad
+            if (isset($data['nilai_ad'][$index]) && $penilaian->nilai_ad != $data['nilai_ad'][$index]) {
+                $penilaian->nilai_ad = $data['nilai_ad'][$index];
+                $hasChanged = true;
+                $currentKeteranganDetail[] = "Additional: {$data['keterangan_ad'][$index]} = {$data['nilai_ad'][$index]}";
+            }
+
+            // Simpan perubahan penilaian jika ada
+            if ($hasChanged) {
+                $penilaian->save();
+
+                // Gabungkan perubahan berdasarkan nama
+                if (!isset($changesByName[$userName])) {
+                    $changesByName[$userName] = [];
+                }
+                $changesByName[$userName] = array_merge($changesByName[$userName], $currentKeteranganDetail);
+            }
+        }
+
+        // Simpan ke DetailTcPenilaian dengan menggabungkan keterangan_detail per nama
+        foreach ($changesByName as $userName => $keteranganDetails) {
+            DetailTcPenilaian::create([
+                'id_job_position' => $decoded_job_position,
+                'name' => $userName,
+                'keterangan_detail' => implode('; ', $keteranganDetails), // Gabungkan detail dengan pemisah
+                'catatan' => $data['alasan_perubahan'], // Alasan perubahan
+                'modified_at' => auth()->user()->name,
+            ]);
+
+            Log::info('DetailTcPenilaian created for:', [
+                'id_job_position' => $decoded_job_position,
+                'name' => $userName,
+                'keterangan_detail' => implode('; ', $keteranganDetails),
+                'catatan' => $data['alasan_perubahan']
+            ]);
+        }
+
+        // Kembalikan respon sukses
+        return response()->json(['success' => true, 'message' => 'Nilai berhasil diupdate']);
+    }
+
+    public function updateCatatan(Request $request, $id)
+    {
+        // Validasi input
+        $request->validate([
+            'catatan' => 'nullable|string|max:255'
+        ]);
+
+        // Temukan catatan berdasarkan ID
+        $detail = DetailTcPenilaian::find($id);
+
+        // Periksa apakah catatan ditemukan
+        if (!$detail) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+
+        // Perbarui catatan
+        $detail->catatan = $request->input('catatan');
+        $detail->modified_at = auth()->user()->name; // Set 'modified_by' sebagai pengguna yang mengedit
+        $detail->save();
+
+        // Log pembaruan catatan
+        Log::info('Catatan updated:', [
+            'id' => $id,
+            'catatan' => $detail->catatan,
+            'modified_at' => $detail->modified_at,
+        ]);
+
+        // Redirect kembali dengan pesan sukses
+        return redirect()->back()->with('success', 'Catatan berhasil diperbarui.');
     }
 
     public function kirimSC(Request $request, $id_job_position)
@@ -765,7 +990,7 @@ class PenilaianTCController extends Controller
 
         // Ubah status menjadi 2 untuk semua entri yang ditemukan
         foreach ($penilaians as $penilaian) {
-            $penilaian->status = 3;
+            $penilaian->status = 2;
             $penilaian->modified_at = auth()->user()->id;
             $penilaian->save();
         }
@@ -790,7 +1015,6 @@ class PenilaianTCController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Data Competency Telah Dikirim.']);
     }
-
     //chartRadar
     public function getCompetencyData(Request $request)
     {
@@ -802,7 +1026,7 @@ class PenilaianTCController extends Controller
             ->leftJoin('mst_soft_skills as sk', 'tpt.id_sk', '=', 'sk.id')
             ->leftJoin('mst_additionals as ad', 'tpt.id_ad', '=', 'ad.id')
             ->select(
-                'tpt.id_job_position', 
+                'tpt.id_job_position',
                 'u.name',
                 'tpt.id_user',
                 DB::raw('GROUP_CONCAT(DISTINCT tpt.id_tc ORDER BY tpt.id_tc ASC) AS id_tcs'),
@@ -813,7 +1037,10 @@ class PenilaianTCController extends Controller
                 DB::raw('GROUP_CONCAT(DISTINCT ad.keterangan_ad ORDER BY tpt.id_ad ASC) AS keterangan_ads'),
                 DB::raw('SUM(tpt.nilai_tc) AS total_nilai_tc'),
                 DB::raw('SUM(tpt.nilai_sk) AS total_nilai_sk'),
-                DB::raw('SUM(tpt.nilai_ad) AS total_nilai_ad')
+                DB::raw('SUM(tpt.nilai_ad) AS total_nilai_ad'),
+                DB::raw('SUM(tc.nilai) AS standar_nilai_tc'),
+                DB::raw('SUM(sk.nilai) AS standar_nilai_sk'),
+                DB::raw('SUM(ad.nilai) AS standar_nilai_ad') // Pastikan ini diperbaiki
             )
             ->where('tpt.id_job_position', $selectedJobPosition)
             ->groupBy('tpt.id_user', 'tpt.id_job_position', 'u.name')
@@ -833,7 +1060,7 @@ class PenilaianTCController extends Controller
                 ->leftJoin('users as u', 'tpt.id_user', '=', 'u.id')
                 ->leftJoin('mst_tcs as tc', 'tpt.id_tc', '=', 'tc.id')
                 ->select(
-                    'tpt.id_job_position', 
+                    'tpt.id_job_position',
                     'u.name',
                     'tpt.id_user',
                     'tpt.id_tc',
@@ -843,8 +1070,11 @@ class PenilaianTCController extends Controller
                 )
                 ->where('tpt.id_job_position', $jobPosition)
                 ->groupBy(
-                    'tpt.id_user', 'tpt.id_job_position', 'u.name', 
-                    'tpt.id_tc', 'tc.keterangan_tc'
+                    'tpt.id_user',
+                    'tpt.id_job_position',
+                    'u.name',
+                    'tpt.id_tc',
+                    'tc.keterangan_tc'
                 )
                 ->get();
         } elseif ($dataType === 'total_nilai_sk') {
@@ -853,7 +1083,7 @@ class PenilaianTCController extends Controller
                 ->leftJoin('users as u', 'tpt.id_user', '=', 'u.id')
                 ->leftJoin('mst_soft_skills as sk', 'tpt.id_sk', '=', 'sk.id')
                 ->select(
-                    'tpt.id_job_position', 
+                    'tpt.id_job_position',
                     'u.name',
                     'tpt.id_user',
                     'tpt.id_sk',
@@ -863,8 +1093,11 @@ class PenilaianTCController extends Controller
                 )
                 ->where('tpt.id_job_position', $jobPosition)
                 ->groupBy(
-                    'tpt.id_user', 'tpt.id_job_position', 'u.name', 
-                    'tpt.id_sk', 'sk.keterangan_sk'
+                    'tpt.id_user',
+                    'tpt.id_job_position',
+                    'u.name',
+                    'tpt.id_sk',
+                    'sk.keterangan_sk'
                 )
                 ->get();
         } elseif ($dataType === 'total_nilai_ad') {
@@ -873,7 +1106,7 @@ class PenilaianTCController extends Controller
                 ->leftJoin('users as u', 'tpt.id_user', '=', 'u.id')
                 ->leftJoin('mst_additionals as ad', 'tpt.id_ad', '=', 'ad.id')
                 ->select(
-                    'tpt.id_job_position', 
+                    'tpt.id_job_position',
                     'u.name',
                     'tpt.id_user',
                     'tpt.id_ad',
@@ -883,8 +1116,11 @@ class PenilaianTCController extends Controller
                 )
                 ->where('tpt.id_job_position', $jobPosition)
                 ->groupBy(
-                    'tpt.id_user', 'tpt.id_job_position', 'u.name', 
-                    'tpt.id_ad', 'ad.keterangan_ad'
+                    'tpt.id_user',
+                    'tpt.id_job_position',
+                    'u.name',
+                    'tpt.id_ad',
+                    'ad.keterangan_ad'
                 )
                 ->get();
         } else {
@@ -899,13 +1135,13 @@ class PenilaianTCController extends Controller
     public function getDetailCompetency(Request $request)
     {
         $id_user = $request->query('id_user');
-    
+
         // Query untuk data yang berhubungan dengan TC
         $tcData = DB::table('trs_penilaian_tcs as tpt')
             ->leftJoin('users as u', 'tpt.id_user', '=', 'u.id')
             ->leftJoin('mst_tcs as tc', 'tpt.id_tc', '=', 'tc.id')
             ->select(
-                'tpt.id_job_position', 
+                'tpt.id_job_position',
                 'u.name',
                 'tpt.id_user',
                 'tpt.id_tc',
@@ -915,17 +1151,20 @@ class PenilaianTCController extends Controller
             )
             ->where('tpt.id_user', $id_user)
             ->groupBy(
-                'tpt.id_user', 'tpt.id_job_position', 'u.name', 
-                'tpt.id_tc', 'tc.keterangan_tc'
+                'tpt.id_user',
+                'tpt.id_job_position',
+                'u.name',
+                'tpt.id_tc',
+                'tc.keterangan_tc'
             )
             ->get();
-    
+
         // Query untuk data yang berhubungan dengan SK
         $skData = DB::table('trs_penilaian_tcs as tpt')
             ->leftJoin('users as u', 'tpt.id_user', '=', 'u.id')
             ->leftJoin('mst_soft_skills as sk', 'tpt.id_sk', '=', 'sk.id')
             ->select(
-                'tpt.id_job_position', 
+                'tpt.id_job_position',
                 'u.name',
                 'tpt.id_user',
                 'tpt.id_sk',
@@ -935,17 +1174,20 @@ class PenilaianTCController extends Controller
             )
             ->where('tpt.id_user', $id_user)
             ->groupBy(
-                'tpt.id_user', 'tpt.id_job_position', 'u.name', 
-                'tpt.id_sk', 'sk.keterangan_sk'
+                'tpt.id_user',
+                'tpt.id_job_position',
+                'u.name',
+                'tpt.id_sk',
+                'sk.keterangan_sk'
             )
             ->get();
-    
+
         // Query untuk data yang berhubungan dengan AD
         $adData = DB::table('trs_penilaian_tcs as tpt')
             ->leftJoin('users as u', 'tpt.id_user', '=', 'u.id')
             ->leftJoin('mst_additionals as ad', 'tpt.id_ad', '=', 'ad.id')
             ->select(
-                'tpt.id_job_position', 
+                'tpt.id_job_position',
                 'u.name',
                 'tpt.id_user',
                 'tpt.id_ad',
@@ -955,22 +1197,25 @@ class PenilaianTCController extends Controller
             )
             ->where('tpt.id_user', $id_user)
             ->groupBy(
-                'tpt.id_user', 'tpt.id_job_position', 'u.name', 
-                'tpt.id_ad', 'ad.keterangan_ad'
+                'tpt.id_user',
+                'tpt.id_job_position',
+                'u.name',
+                'tpt.id_ad',
+                'ad.keterangan_ad'
             )
             ->get();
 
-            // Query untuk TcPeopleDevelopment
-            $dataTcPeopleDevelopment = TcPeopleDevelopment::where('id_user', $id_user)
+        // Query untuk TcPeopleDevelopment
+        $dataTcPeopleDevelopment = TcPeopleDevelopment::where('id_user', $id_user)
             ->where('status_2', 'Done') // Add condition for status_2 to be 'Done'
             ->with('user') // Ensure the user relationship is loaded
             ->get();
-    
+
         // Menggunakan model Eloquent untuk mengambil data penilaian
         $penilaians = TrsPenilaianTc::with(['tc', 'sk', 'ad', 'poinKategori', 'user'])
             ->where('id_user', $id_user)
             ->get(); // Mengambil semua record yang cocok
-    
+
         // Gabungkan hasil query menjadi satu array
         $data = [
             'tc_data' => $tcData,
@@ -979,10 +1224,8 @@ class PenilaianTCController extends Controller
             'penilaians' => $penilaians,
             'dataTcPeopleDevelopment' => $dataTcPeopleDevelopment, // Tambahkan hasil penilaian ke dalam array data
         ];
-    
+
         // Mengembalikan data sebagai JSON
         return response()->json($data);
     }
 }
-
-

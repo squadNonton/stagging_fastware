@@ -15,9 +15,9 @@ class TcJobController extends Controller
     {
         // Ambil job position yang spesifik untuk edit
         $jobPositions = TcJobPosition::with('user', 'role')
-                        ->select('job_position', 'status', DB::raw('MIN(id) as id'))
-                        ->groupBy('job_position', 'status')
-                        ->get();
+            ->select('job_position', 'status', DB::raw('MIN(id) as id'))
+            ->groupBy('job_position', 'status')
+            ->get();
 
         // Ambil semua pengguna dan filter berdasarkan job_position
         $users = User::all();
@@ -96,10 +96,12 @@ class TcJobController extends Controller
         if (!$jobPosition) {
             return redirect()->route('getJobPosition')->with('error', 'Job Position not found');
         }
-        
+
+        $jobPositions = TcJobPosition::all();
+
         // Fetch all users
         $allUsers = User::all();
-        
+
         // Fetch users related to the job position
         $relatedUsers = User::whereHas('jobPositions', function ($query) use ($jobPosition) {
             $query->where('job_position', $jobPosition->job_position);
@@ -120,6 +122,7 @@ class TcJobController extends Controller
             'allUsers' => $allUsers,
             'userJobPositionCounts' => $userJobPositionCounts,
             'jobPositionIds' => $jobPositionIds,
+            'jobPositions' => $jobPositions,
         ]);
     }
 
@@ -190,20 +193,29 @@ class TcJobController extends Controller
 
     public function deleteRow(Request $request)
     {
-        // Ambil user_id dari request
-        $userId = $request->input('userId');
+        // Ambil job_position dan id_user dari request
+        $jobPositionName = $request->input('jobPositionId'); // Menggunakan job_position sebagai nama
+        $userId = $request->input('userId'); // Ambil id_user yang dikirim dari front end
 
-        // Cari TcJobPosition berdasarkan user_id
-        $jobPosition = TcJobPosition::where('id_user', $userId)->first();
+        // Cari semua job positions berdasarkan nama dan id_user
+        $jobPositions = TcJobPosition::where('job_position', $jobPositionName)
+            ->where('id_user', $userId)
+            ->get();
 
-        // Cek apakah job position ditemukan
-        if ($jobPosition) {
-            $jobPosition->delete(); // Hapus job position
-            return response()->json(['success' => true, 'message' => 'Data berhasil dihapus']);
+        // Cek apakah job positions ditemukan
+        if ($jobPositions->isNotEmpty()) {
+            // Hapus semua entri yang sesuai
+            TcJobPosition::where('job_position', $jobPositionName)
+                ->where('id_user', $userId)
+                ->delete(); // Hapus entri dari database
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Entri job position berhasil dihapus untuk id_user yang sama',
+                'id_user' => $userId
+            ]);
         }
 
         return response()->json(['success' => false, 'message' => 'Job position tidak ditemukan']);
     }
-
-
 }

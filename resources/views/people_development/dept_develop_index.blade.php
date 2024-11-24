@@ -63,76 +63,91 @@
                 </ol>
             </nav>
         </div>
-        <section class="section">
-            <div class="container">
-                @php
-                    $user = auth()->user(); // Ambil data pengguna yang sedang login
-                    $currentYear = now()->year; // Ambil tahun saat ini
-                    $nextYear = $currentYear + 1; // Hitung tahun depan
-                @endphp
 
-                <a href="{{ route('createPD') }}" id="trainingButton"
-                    class="btn btn-success {{ Cache::get('button_status') ? '' : 'disabled' }}
+        <div class="container">
+            @php
+                $user = auth()->user(); // Ambil data pengguna yang sedang login
+                $currentYear = now()->year; // Ambil tahun saat ini
+                $nextYear = $currentYear + 1; // Hitung tahun depan
+            @endphp
+
+            <a href="{{ route('createPD') }}" id="trainingButton"
+                class="btn btn-success {{ Cache::get('button_status') ? '' : 'disabled' }}
                     {{ $tahun_aktual == $nextYear ? 'disabled' : '' }}">
-                    Tambah Data Training
-                </a>
+                Tambah Data Training
+            </a>
 
-                @if (in_array($user->role_id, [1, 14, 15]))
-                    <!-- Periksa role_id dan tahun -->
-                    <label class="switch">
-                        <input type="checkbox" id="toggleSwitch" {{ Cache::get('button_status') ? 'checked' : '' }}>
-                        <span class="slider"></span>
-                    </label>
-                @endif
+            @if (in_array($user->role_id, [1, 14, 15]))
+                <!-- Periksa role_id dan tahun -->
+                <label class="switch">
+                    <input type="checkbox" id="toggleSwitch" {{ Cache::get('button_status') ? 'checked' : '' }}>
+                    <span class="slider"></span>
+                </label>
+            @endif
 
+            <!-- SweetAlert untuk Notifikasi -->
+            @if (!empty($hasDoneStatus))
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            title: 'Notifikasi!',
+                            text: 'Isilah form evaluasi pada menu view',
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+                </script>
+            @endif
 
-                <table class="datatable table">
-                    <thead>
+            <table class="datatable table">
+                <thead>
+                    <tr>
+                        <th scope="col">NO</th>
+                        <th scope="col">PIC</th>
+                        <th scope="col">Tahun Plan</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($data as $index => $item)
                         <tr>
-                            <th scope="col">NO</th>
-                            <th scope="col">PIC</th>
-                            <th scope="col">Tahun Plan</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($data as $index => $item)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td> <!-- Nomor urut otomatis -->
-                                <td>{{ $item->modified_at }}</td> <!-- PIC dari modified_at -->
-                                <td>{{ $item->tahun_aktual }}</td>
-                                <td>
-                                    @if ($item->status_1 == 1)
-                                        <span class="badge rounded-pill bg-primary">Draf</span>
-                                    @elseif ($item->status_1 == 2)
-                                        <span class="badge rounded-pill bg-warning">Menunggu Konfirmasi HRGA</span>
-                                    @elseif ($item->status_1 == 3)
-                                        <span class="badge rounded-pill bg-success">Telah Disetujui</span>
-                                    @else
-                                        <!-- Tambahkan opsi lain jika diperlukan -->
-                                    @endif
-                                </td>
-                                <td>
-                                    @if (!in_array($item->status_1, [2, 3, 4]))
-                                        <a href="{{ route('editPdPengajuan', $item->modified_at) }}" class="btn btn-warning"
-                                            title="Edit Form"> <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <a href="{{ route('sendPD', $item->modified_at) }}" class="btn btn-sm btn-success"
-                                            title="Kirim">
-                                            <i class="fas fa-paper-plane"></i>
-                                        </a>
-                                    @endif
-                                    <a href="{{ route('viewPD', $item->modified_at) }}" class="btn btn-sm btn-info"
-                                        title="View Form">
-                                        <i class="bi bi-eye"></i>
+                            <td>{{ $loop->iteration }}</td> <!-- Nomor urut otomatis -->
+                            <td>{{ $item->modified_at }}</td> <!-- PIC dari modified_at -->
+                            <td>{{ $item->tahun_aktual }}</td>
+                            <td>
+                                @if ($item->status_1 == 1)
+                                    <span class="badge rounded-pill bg-secondary">Draf</span>
+                                @elseif ($item->status_1 == 2)
+                                    <span class="badge rounded-pill bg-warning">Menunggu Konfirmasi HRGA</span>
+                                @elseif ($item->status_1 == 3)
+                                    <span class="badge rounded-pill bg-success">Telah Disetujui</span>
+                                @else
+                                    <!-- Tambahkan opsi lain jika diperlukan -->
+                                @endif
+                            </td>
+                            <td>
+                                @if (!in_array($item->status_1, [2, 3, 4]))
+                                    <a href="{{ route('editPdPengajuan', ['modified_at' => $item->modified_at, 'tahun_aktual' => $item->tahun_aktual]) }}"
+                                        class="btn btn-warning" title="Edit Form"> <i class="bi bi-pencil-square"></i>
                                     </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                                    <a href="{{ route('sendPD', ['modified_at' => $item->modified_at, 'tahun_aktual' => $item->tahun_aktual]) }}"
+                                        class="btn btn-sm btn-success" title="Kirim">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </a>
+                                @endif
+                                <a href="{{ route('viewPD', ['modified_at' => $item->modified_at, 'tahun_aktual' => $item->tahun_aktual]) }}"
+                                    class="btn btn-sm btn-info" title="View Form">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
         </section>
 
         <!-- jQuery -->

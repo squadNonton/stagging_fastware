@@ -145,34 +145,40 @@
                             charts = [];
 
                             if (response.length > 0) {
-                                const maxCharts = 16;
+                                const maxCharts = 10;
                                 const chartsToDisplay = response.slice(0, maxCharts);
 
-                                // Konten Chart
                                 chartsToDisplay.forEach((user, index) => {
-                                    const labels = ['Total Nilai Technical Competency',
-                                        'Total Nilai Softskills', 'Total Nilai Additional'
+                                    const labels = [
+                                        'Total Nilai Technical Competency',
+                                        'Total Nilai Softskills',
+                                        'Total Nilai Additional'
                                     ];
                                     const dataPoints = [
                                         parseInt(user.total_nilai_tc) || 0,
                                         parseInt(user.total_nilai_sk) || 0,
-                                        parseInt(user.total_nilai_ad) || 0
+                                        parseInt(user.total_nilai_ad) || 0,
+                                    ];
+                                    const standardDataPoints = [
+                                        parseInt(user.standar_nilai_tc) || 0,
+                                        parseInt(user.standar_nilai_sk) || 0,
+                                        parseInt(user.standar_nilai_ad) || 0,
                                     ];
 
-                                    // Ubah nilai maksimal yang disarankan menjadi 25
-                                    const suggestedMax = 15;
-                                    const minDataPoint = Math.min(...dataPoints);
-                                    const suggestedMin = minDataPoint - 10 < 0 ? 0 : minDataPoint - 10;
+                                    console.log('Standard Data Points:', standardDataPoints);
+
+                                    const suggestedMax = 12;
+                                    const minDataPoint = Math.min(...dataPoints, ...standardDataPoints);
+                                    const suggestedMin = minDataPoint - 1 < 0 ? 0 : minDataPoint - 1;
 
                                     const canvasId = 'radarChart' + index;
                                     $('#radarChartContainer').append(
-                                        '<div class="card">' + // Ganti inner-card dengan card
+                                        '<div class="card">' +
                                         '<div class="user-profile">' +
                                         '<i class="fas fa-user-circle profile-icon"></i>' +
                                         '<div class="user-details">' +
                                         '<span class="user-name" data-user-id="' + user.id_user +
-                                        '">Nama Pengguna : ' + user.name +
-                                        '</span>' +
+                                        '">Nama Pengguna : ' + user.name + '</span>' +
                                         '<span class="user-job">Job Position : ' + jobPosition +
                                         '</span>' +
                                         '<input type="hidden" class="user-id-hidden" value="' + user
@@ -191,35 +197,38 @@
                                         '</select>' +
                                         '</div>' +
                                         '<canvas id="' + canvasId +
-                                        '"width="500" height="490"></canvas>' +
-                                        '<button type="button" onclick="btnDsDetail(' + user
-                                        .id_user +
+                                        '" width="500" height="490"></canvas>' +
+                                        '<button type="button" onclick="btnDsDetail(' + user.id_user +
                                         ')" style="margin-top: 10px; width: 30%">Competency Employee</button>' +
                                         '</div>'
                                     );
 
+                                    // Create the radar chart directly here
                                     const ctx = document.getElementById(canvasId).getContext('2d');
                                     const chart = new Chart(ctx, {
                                         type: 'radar',
                                         data: {
                                             labels: labels,
                                             datasets: [{
-                                                    label:'Nilai Aktual',
-                                                    data: dataPoints,
+                                                    label: 'Nilai Aktual',
+                                                    data: dataPoints, // Data nilai aktual
                                                     fill: true,
                                                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                                                     borderColor: 'rgba(54, 162, 235, 1)',
+                                                    borderWidth: 3, // Garis lebih tebal untuk nilai aktual
                                                     pointBackgroundColor: 'rgba(54, 162, 235, 1)',
                                                     pointBorderColor: '#fff',
                                                     pointHoverBackgroundColor: '#fff',
                                                     pointHoverBorderColor: 'rgba(54, 162, 235, 1)',
                                                 },
                                                 {
-                                                    label:'Nilai Standar',
-                                                    data: [], // This will be filled with `dataPoints2` in the `updateChartData` function
+                                                    label: 'Nilai Standar',
+                                                    data: standardDataPoints, // Data nilai standar dari response
                                                     fill: true,
                                                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                                                     borderColor: 'rgba(255, 99, 132, 1)',
+                                                    borderWidth: 1.5, // Garis lebih tebal untuk nilai standar
+                                                    borderDash: [5, 5],
                                                     pointBackgroundColor: 'rgba(255, 99, 132, 1)',
                                                     pointBorderColor: '#fff',
                                                     pointHoverBackgroundColor: '#fff',
@@ -233,22 +242,22 @@
                                             scales: {
                                                 r: {
                                                     angleLines: {
-                                                        display: true
+                                                        display: true, // Menampilkan garis sudut
                                                     },
-                                                    suggestedMin: suggestedMin,
-                                                    suggestedMax: suggestedMax,
+                                                    suggestedMin: suggestedMin, // Minimum skala
+                                                    suggestedMax: suggestedMax, // Maksimum skala
                                                     ticks: {
                                                         beginAtZero: true,
-                                                        stepSize: 2,
-                                                        backdropPaddingX: 2,
-                                                        backdropPaddingY: 2,
-                                                        maxTicksLimit: 2
+                                                        stepSize: 2, // Jarak antar tick
+                                                        backdropPaddingX: 2, // Padding horizontal untuk ticks
+                                                        backdropPaddingY: 2, // Padding vertikal untuk ticks
+                                                        maxTicksLimit: 6, // Batas jumlah ticks
                                                     },
                                                     pointLabels: {
                                                         font: {
-                                                            size: 16
+                                                            size: 16 // Ukuran font label titik
                                                         },
-                                                        padding: 2
+                                                        padding: 2 // Padding untuk label titik
                                                     }
                                                 }
                                             },
@@ -265,7 +274,7 @@
                                                     display: true,
                                                     labels: {
                                                         font: {
-                                                            size: 12
+                                                            size: 12 // Ukuran font legenda
                                                         }
                                                     }
                                                 },
@@ -273,19 +282,18 @@
                                                     enabled: true,
                                                     callbacks: {
                                                         label: function(tooltipItem) {
-                                                            return tooltipItem.raw;
+                                                            return `Value: ${tooltipItem.raw}`;
                                                         }
                                                     }
                                                 }
                                             }
                                         }
                                     });
-
                                     charts.push(chart);
                                 });
                             } else {
                                 $('#radarChartContainer').append(
-                                    '<div class="card"><p>Data tidak ditemukan untuk posisi pekerjaan yang dipilih.</p></div>' // Ganti inner-card dengan card
+                                    '<div class="card"><p>Data tidak ditemukan untuk posisi pekerjaan yang dipilih.</p></div>'
                                 );
                                 console.log('No data found for the selected job position.');
                             }
