@@ -48,7 +48,8 @@
                                                 style="width: 50px; height: 50px;">
                                             <div>
                                                 <h6 class="mb-0">{{ $data[0]->user->name }}</h6>
-                                                <small class="text-muted">{{ \Carbon\Carbon::parse($data[0]->tgl_pengajuan_ide)->diffForHumans() }}</small>
+                                                <small
+                                                    class="text-muted">{{ \Carbon\Carbon::parse($data[0]->tgl_pengajuan_ide)->diffForHumans() }}</small>
                                             </div>
                                         </div>
                                         <p class="mb-4">{{ $data[0]->judul }}</p>
@@ -351,6 +352,7 @@
             }
         </style>
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             document.getElementById('searchInput').addEventListener('input', function() {
                 let searchQuery = this.value.toLowerCase();
@@ -516,6 +518,22 @@
                     }
                 });
             });
+
+            // Ambil nama user dari server-side (Laravel)
+            const userName = "{{ Auth::user()->name }}";
+            // Fungsi untuk menampilkan pesan ketika halaman selesai dimuat
+            window.onload = function() {
+                const userName = "{{ Auth::user()->name }}"; // Ambil nama pengguna
+
+                Swal.fire({
+                    title: 'Selamat Datang!',
+                    text: `Selamat datang, ${userName}. Semoga harimu menyenangkan!`,
+                    icon: 'info',
+                    showConfirmButton: false, // Menghilangkan tombol OK
+                    timer: 3000, // Durasi pesan (5 detik)
+                    timerProgressBar: true, // Menampilkan progress bar
+                });
+            };
         </script>
     </main>
 @endsection
