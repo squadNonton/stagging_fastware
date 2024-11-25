@@ -64,7 +64,7 @@ class PoPengajuanController extends Controller
                 ->get();
         } elseif ($roleId == 5) {
             // Jika role_id adalah 48, ambil data dengan modified_at bernilai 'MUGI PRAMONO'
-            $data = MstPoPengajuan::where('mst_po_pengajuans.modified_at', ['MUGI PRAMONO', 'RAGIL ISHA RAHMANTO', 'ABDUR RAHMAN AL FAAIZ'])
+            $data = MstPoPengajuan::whereIn('mst_po_pengajuans.modified_at', ['MUGI PRAMONO', 'RAGIL ISHA RAHMANTO', 'ABDUR RAHMAN AL FAAIZ'])
                 ->leftJoin('trs_po_pengajuans as trs', function ($join) {
                     $join->on('trs.id_fpb', '=', 'mst_po_pengajuans.id')
                         ->whereRaw('trs.updated_at = (SELECT MAX(updated_at) FROM trs_po_pengajuans WHERE trs_po_pengajuans.id_fpb = mst_po_pengajuans.id)');
