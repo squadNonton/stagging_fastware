@@ -659,7 +659,7 @@
                 $userRoles = [1, 14, 15, 50, 30, 40, 11, 39]; // User Roles
                 $finnRole = [1, 14, 11, 12]; // Finance Roles
                 $procRoles = [1, 14, 41, 54]; // Procurement Roles
-                $ppicRoles = [52];
+                $ppicRoles = [52, 48, ];
                 // Gabungkan semua roles ke dalam satu array
                 $allRoles = array_merge($secHeadRoles, $deptHeadRoles, $userRoles, $finnRole, $procRoles, $ppicRoles);
             @endphp

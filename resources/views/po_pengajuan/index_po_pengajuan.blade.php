@@ -21,11 +21,14 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Tampilan Data Form Permintaan Barang/Jasa</h5>
-                            <div class="card-header" style="margin-bottom: 20px;">
-                                <a href="{{ route('createPO') }}" class="btn btn-success btn-sm" style="font-size: 20px;">
-                                    <i class="fas fa-plus"></i> Tambah Data
-                                </a>
-                            </div>
+                            @if (Auth::user()->role_id != 48)
+                                <div class="card-header" style="margin-bottom: 20px;">
+                                    <a href="{{ route('createPO') }}" class="btn btn-success btn-sm"
+                                        style="font-size: 20px;">
+                                        <i class="fas fa-plus"></i> Tambah Data
+                                    </a>
+                                </div>
+                            @endif
                             <!-- Table with stripped rows -->
                             <div class="table-responsive" style="height: 100%; overflow-y: auto;">
                                 <table class="datatable table">
@@ -85,14 +88,16 @@
                                                 <td class="text-center py-4">
                                                     @if (auth()->user()->name == $row->modified_at && $row->status_1 == 1)
                                                         <!-- Cek kesesuaian nama dan status_1 == 1 -->
-                                                        <a href="{{ route('edit.PoPengajuan', ['id' => $row->id]) }}"
-                                                            class="btn btn-warning btn-sm" title="Edit">
-                                                            <i class="fas fa-edit"></i>
-                                                        </a>
-                                                        <button type="button" class="btn btn-success btn-sm btn-kirim"
-                                                            data-no_fpb="{{ $row->no_fpb }}" title="Kirim">
-                                                            <i class="fas fa-paper-plane"></i>
-                                                        </button>
+                                                        @if (Auth::user()->role_id != 48)
+                                                            <a href="{{ route('edit.PoPengajuan', ['id' => $row->id]) }}"
+                                                                class="btn btn-warning btn-sm" title="Edit">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <button type="button" class="btn btn-success btn-sm btn-kirim"
+                                                                data-no_fpb="{{ $row->no_fpb }}" title="Kirim">
+                                                                <i class="fas fa-paper-plane"></i>
+                                                            </button>
+                                                        @endif
                                                     @endif
                                                     <a href="{{ route('view.FormPo', ['id' => $row->id]) }}"
                                                         class="btn btn-primary btn-sm" title="View Form">
