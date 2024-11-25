@@ -37,6 +37,24 @@ class PoPengajuanController extends Controller
                 ->orderBy(DB::raw('MAX(mst_po_pengajuans.status_1)'), 'asc') // Urutan berdasarkan status_1
                 ->orderBy(DB::raw('MAX(trs.created_at)'), 'asc') // Urutan berdasarkan created_at
                 ->get();
+        } elseif ($roleId == 48) {
+            // Jika role_id adalah 48, ambil data dengan modified_at bernilai 'MUGI PRAMONO'
+            $data = MstPoPengajuan::where('mst_po_pengajuans.modified_at', 'MUGI PRAMONO')
+                ->leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id')
+                ->select(
+                    'mst_po_pengajuans.no_fpb',
+                    DB::raw('MAX(mst_po_pengajuans.id) as id'),
+                    DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'),
+                    DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'),
+                    DB::raw('MAX(mst_po_pengajuans.catatan) as catatan'),
+                    DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'),
+                    DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
+                    DB::raw('COALESCE(MAX(trs.updated_at), "-") as trs_updated_at')
+                )
+                ->groupBy('mst_po_pengajuans.no_fpb')
+                ->orderBy(DB::raw('MAX(mst_po_pengajuans.status_1)'), 'asc') // Urutan berdasarkan status_1
+                ->orderBy(DB::raw('MAX(trs.created_at)'), 'asc') // Urutan berdasarkan created_at
+                ->get();
         } else {
             // Mendapatkan nama user yang sedang login
             $loggedInUserName = auth()->user()->name;
