@@ -654,7 +654,7 @@
             </ul>
 
             @php
-                $secHeadRoles = [1, 3, 4, 9, 12, 14, 15, 22, 30, 31, 39, 40, 41, 44, 50, 54]; // Roles for accessing PO Pengajuan Management
+                $secHeadRoles = [1, 3, 4, 5, 9, 12, 14, 15, 22, 30, 31, 39, 40, 41, 44, 50, 54]; // Roles for accessing PO Pengajuan Management
                 $deptHeadRoles = [1, 2, 5, 11, 7, 14, 30]; // Department Head Roles
                 $userRoles = [1, 14, 15, 50, 30, 40, 11, 39]; // User Roles
                 $finnRole = [1, 14, 11, 12]; // Finance Roles

@@ -62,6 +62,28 @@ class PoPengajuanController extends Controller
                 ->orderBy('mst_po_pengajuans.no_fpb', 'desc') // Urutan berdasarkan no_fpb
                 ->orderBy('trs.updated_at', 'asc') // Urutan berdasarkan trs.updated_at
                 ->get();
+        } elseif ($roleId == 5) {
+            // Jika role_id adalah 48, ambil data dengan modified_at bernilai 'MUGI PRAMONO'
+            $data = MstPoPengajuan::where('mst_po_pengajuans.modified_at', ['MUGI PRAMONO', 'RAGIL ISHA RAHMANTO', 'ABDUR RAHMAN AL FAAIZ'])
+                ->leftJoin('trs_po_pengajuans as trs', function ($join) {
+                    $join->on('trs.id_fpb', '=', 'mst_po_pengajuans.id')
+                        ->whereRaw('trs.updated_at = (SELECT MAX(updated_at) FROM trs_po_pengajuans WHERE trs_po_pengajuans.id_fpb = mst_po_pengajuans.id)');
+                }) // LEFT JOIN dengan filter subquery untuk mengambil baris terbaru
+                ->select(
+                    'mst_po_pengajuans.no_fpb',
+                    'mst_po_pengajuans.id',
+                    'mst_po_pengajuans.modified_at',
+                    'mst_po_pengajuans.kategori_po',
+                    'mst_po_pengajuans.nama_barang',
+                    'mst_po_pengajuans.catatan',
+                    'mst_po_pengajuans.status_1',
+                    'mst_po_pengajuans.status_2',
+                    DB::raw('COALESCE(trs.updated_at, "-") as trs_updated_at')
+                )
+                ->orderBy('mst_po_pengajuans.status_1', 'asc')
+                ->orderBy('mst_po_pengajuans.no_fpb', 'desc') // Urutan berdasarkan no_fpb
+                ->orderBy('trs.updated_at', 'asc') // Urutan berdasarkan trs.updated_at
+                ->get();
         } else {
             // Mendapatkan nama user yang sedang login
             $loggedInUserName = auth()->user()->name;
@@ -91,8 +113,6 @@ class PoPengajuanController extends Controller
         // Mengirim data ke view
         return view('po_pengajuan.index_po_pengajuan', compact('data'));
     }
-
-
 
     public function indexPoDeptHead()
     {
@@ -437,7 +457,6 @@ class PoPengajuanController extends Controller
         // Mengirim data ke view
         return view('po_pengajuan.index_po_procurment', compact('data', 'pengajuanCancel', 'noFpbTerbaru', 'showNamaBarang'));
     }
-
 
     public function showFPBForm($id)
     {

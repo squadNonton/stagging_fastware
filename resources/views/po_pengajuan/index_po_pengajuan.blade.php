@@ -94,7 +94,7 @@
                                                 <td class="text-center py-4">
                                                     @if (auth()->user()->name == $row->modified_at && $row->status_1 == 1)
                                                         <!-- Cek kesesuaian nama dan status_1 == 1 -->
-                                                        @if (Auth::user()->role_id != 48)
+                                                        @if (Auth::user()->role_id != 48 && Auth::user()->role_id != 5)
                                                             <a href="{{ route('edit.PoPengajuan', ['id' => $row->id]) }}"
                                                                 class="btn btn-warning btn-sm" title="Edit">
                                                                 <i class="fas fa-edit"></i>
