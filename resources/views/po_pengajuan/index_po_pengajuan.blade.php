@@ -77,14 +77,14 @@
                                                         <span class="badge bg-success align-items-center"
                                                             style="font-size: 18px;">Open</span>
                                                     @elseif($row->status_1 == 6)
-                                                        <span class="badge bg-success align-items-center"
-                                                            style="font-size: 18px;">Open</span>
+                                                        <span class="badge bg-warning align-items-center"
+                                                            style="font-size: 18px;">On Progress</span>
                                                     @elseif($row->status_1 == 7)
-                                                        <span class="badge bg-success align-items-center"
-                                                            style="font-size: 18px;">Open</span>
+                                                        <span class="badge bg-warning align-items-center"
+                                                            style="font-size: 18px;">On Progress</span>
                                                     @elseif($row->status_1 == 8)
-                                                        <span class="badge bg-success align-items-center"
-                                                            style="font-size: 18px;">Open</span>
+                                                        <span class="badge bg-warning align-items-center"
+                                                            style="font-size: 18px;">On Progress</span>
                                                     @elseif($row->status_1 == 9)
                                                         <span class="badge bg-info align-items-center"
                                                             style="font-size: 18px;">Finish</span>

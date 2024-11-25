@@ -38,8 +38,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($data as $row)
-                                            @if (
-                                                $row->status_1 == 2)
+                                            @if ($row->status_1 == 2)
                                                 <!-- Tambahkan kondisi untuk menampilkan hanya jika status_1 == 2 -->
                                                 <tr>
                                                     <td class="text-center py-3">{{ $loop->iteration }}</td>
@@ -49,7 +48,7 @@
                                                     <td class="text-center py-3"><b>{{ $row->catatan }}</b></td>
                                                     <td class="text-center py-3">
                                                         <b>
-                                                            {{ ($row->trs_updated_at !== '-' && $row->trs_updated_at) ? \Carbon\Carbon::parse($row->trs_updated_at)->format('d-m-Y') : '-' }}
+                                                            {{ $row->trs_updated_at !== '-' && $row->trs_updated_at ? \Carbon\Carbon::parse($row->trs_updated_at)->format('d-m-Y') : '-' }}
                                                         </b>
                                                     </td>
                                                     <td class="text-center py-4"
@@ -70,14 +69,14 @@
                                                             <span class="badge bg-success align-items-center"
                                                                 style="font-size: 18px;">Open</span>
                                                         @elseif($row->status_1 == 6)
-                                                            <span class="badge bg-success align-items-center"
-                                                                style="font-size: 18px;">Open</span>
+                                                            <span class="badge bg-warning align-items-center"
+                                                                style="font-size: 18px;">On Progress</span>
                                                         @elseif($row->status_1 == 7)
-                                                            <span class="badge bg-success align-items-center"
-                                                                style="font-size: 18px;">Open</span>
+                                                            <span class="badge bg-warning align-items-center"
+                                                                style="font-size: 18px;">On Progress</span>
                                                         @elseif($row->status_1 == 8)
-                                                            <span class="badge bg-success align-items-center"
-                                                                style="font-size: 18px;">Open</span>
+                                                            <span class="badge bg-warning align-items-center"
+                                                                style="font-size: 18px;">On Progress</span>
                                                         @elseif($row->status_1 == 9)
                                                             <span class="badge bg-info align-items-center"
                                                                 style="font-size: 18px;">Finish</span>
