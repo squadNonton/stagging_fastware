@@ -73,7 +73,11 @@
                                                     <td class="text-center py-3">{{ $row->modified_at }}</td>
                                                     <td class="text-center py-3">{{ $row->kategori_po }}</td>
                                                     <td class="text-center py-3"><b>{{ $row->catatan }}</b></td>
-                                                    <td class="text-center py-3"><b>{{ $row->trs_updated_at }}</b></td>
+                                                    <td class="text-center py-3">
+                                                        <b>
+                                                            {{ ($row->trs_updated_at !== '-' && $row->trs_updated_at) ? \Carbon\Carbon::parse($row->trs_updated_at)->format('d-m-Y') : '-' }}
+                                                        </b>
+                                                    </td>
                                                     <td class="text-center py-4"
                                                         style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                                                         @if ($row->status_1 == 1)
