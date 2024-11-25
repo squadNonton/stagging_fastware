@@ -38,6 +38,7 @@
                                             <th class="text-center" width="100px">NO FPB</th>
                                             <th class="text-center" width="100px">PIC</th>
                                             <th class="text-center" width="100px">Kategori</th>
+                                            <th class="text-center" width="100px">Nama Barang</th>
                                             <th class="text-center" width="100px">Catatan Cancel</th>
                                             <th class="text-center" width="100px">Tgl Pembaruan</th>
                                             <th class="text-center" width="100px">Status</th>
@@ -51,6 +52,7 @@
                                                 <td class="text-center py-3">{{ $row->no_fpb }}</td>
                                                 <td class="text-center py-3">{{ $row->modified_at }}</td>
                                                 <td class="text-center py-3">{{ $row->kategori_po }}</td>
+                                                <td class="text-center py-3">{{ $row->nama_barang }}</td>
                                                 <td class="text-center py-3"><b>{{ $row->catatan }}</b></td>
                                                 <td class="text-center py-3"><b>{{ $row->trs_updated_at }}</b></td>
                                                 <td class="text-center py-4"

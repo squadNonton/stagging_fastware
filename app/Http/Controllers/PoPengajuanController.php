@@ -16,75 +16,83 @@ class PoPengajuanController extends Controller
     // Method untuk menampilkan data ke view
     public function indexPoPengajuan()
     {
-
         // Mendapatkan role_id dari pengguna yang sedang login
         $roleId = auth()->user()->role_id;
 
         // Jika role_id adalah 1, 14, atau 15, ambil semua data
         if (in_array($roleId, [1, 14, 15, 41, 54])) {
-            $data = MstPoPengajuan::leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id') // Menggunakan LEFT JOIN
+            $data = MstPoPengajuan::leftJoin('trs_po_pengajuans as trs', function ($join) {
+                $join->on('trs.id_fpb', '=', 'mst_po_pengajuans.id')
+                    ->whereRaw('trs.updated_at = (SELECT MAX(updated_at) FROM trs_po_pengajuans WHERE trs_po_pengajuans.id_fpb = mst_po_pengajuans.id)');
+            }) // LEFT JOIN dengan filter subquery untuk mengambil baris terbaru
                 ->select(
                     'mst_po_pengajuans.no_fpb',
-                    DB::raw('MAX(mst_po_pengajuans.id) as id'),
-                    DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'),
-                    DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'),
-                    DB::raw('MAX(mst_po_pengajuans.catatan) as catatan'),
-                    DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'),
-                    DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
-                    DB::raw('COALESCE(MAX(trs.updated_at), "-") as trs_updated_at')
+                    'mst_po_pengajuans.id',
+                    'mst_po_pengajuans.modified_at',
+                    'mst_po_pengajuans.kategori_po',
+                    'mst_po_pengajuans.nama_barang',
+                    'mst_po_pengajuans.catatan',
+                    'mst_po_pengajuans.status_1',
+                    'mst_po_pengajuans.status_2',
+                    DB::raw('COALESCE(trs.updated_at, "-") as trs_updated_at')
                 )
-                ->groupBy('mst_po_pengajuans.no_fpb')
-                ->orderBy(DB::raw('MAX(mst_po_pengajuans.status_1)'), 'asc') // Urutan berdasarkan status_1
-                ->orderBy(DB::raw('MAX(trs.created_at)'), 'asc') // Urutan berdasarkan created_at
+                ->orderBy('mst_po_pengajuans.status_1', 'asc')
+                ->orderBy('mst_po_pengajuans.no_fpb', 'desc') // Urutan berdasarkan no_fpb
+                ->orderBy('trs.updated_at', 'asc') // Urutan berdasarkan trs.updated_at
                 ->get();
         } elseif ($roleId == 48) {
             // Jika role_id adalah 48, ambil data dengan modified_at bernilai 'MUGI PRAMONO'
             $data = MstPoPengajuan::where('mst_po_pengajuans.modified_at', 'MUGI PRAMONO')
-                ->leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id')
+                ->leftJoin('trs_po_pengajuans as trs', function ($join) {
+                    $join->on('trs.id_fpb', '=', 'mst_po_pengajuans.id')
+                        ->whereRaw('trs.updated_at = (SELECT MAX(updated_at) FROM trs_po_pengajuans WHERE trs_po_pengajuans.id_fpb = mst_po_pengajuans.id)');
+                }) // LEFT JOIN dengan filter subquery untuk mengambil baris terbaru
                 ->select(
                     'mst_po_pengajuans.no_fpb',
-                    DB::raw('MAX(mst_po_pengajuans.id) as id'),
-                    DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'),
-                    DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'),
-                    DB::raw('MAX(mst_po_pengajuans.catatan) as catatan'),
-                    DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'),
-                    DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
-                    DB::raw('COALESCE(MAX(trs.updated_at), "-") as trs_updated_at')
+                    'mst_po_pengajuans.id',
+                    'mst_po_pengajuans.modified_at',
+                    'mst_po_pengajuans.kategori_po',
+                    'mst_po_pengajuans.nama_barang',
+                    'mst_po_pengajuans.catatan',
+                    'mst_po_pengajuans.status_1',
+                    'mst_po_pengajuans.status_2',
+                    DB::raw('COALESCE(trs.updated_at, "-") as trs_updated_at')
                 )
-                ->groupBy('mst_po_pengajuans.no_fpb')
-                ->orderBy(DB::raw('MAX(mst_po_pengajuans.status_1)'), 'asc') // Urutan berdasarkan status_1
-                ->orderBy(DB::raw('MAX(trs.created_at)'), 'asc') // Urutan berdasarkan created_at
+                ->orderBy('mst_po_pengajuans.status_1', 'asc')
+                ->orderBy('mst_po_pengajuans.no_fpb', 'desc') // Urutan berdasarkan no_fpb
+                ->orderBy('trs.updated_at', 'asc') // Urutan berdasarkan trs.updated_at
                 ->get();
         } else {
             // Mendapatkan nama user yang sedang login
             $loggedInUserName = auth()->user()->name;
 
             $data = MstPoPengajuan::where('mst_po_pengajuans.modified_at', $loggedInUserName)
-                ->whereIn('mst_po_pengajuans.id', function ($query) {
-                    $query->select(DB::raw('MAX(id)'))
-                        ->from('mst_po_pengajuans')
-                        ->groupBy('no_fpb');
-                })
-                ->leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id')
+                ->leftJoin('trs_po_pengajuans as trs', function ($join) {
+                    $join->on('trs.id_fpb', '=', 'mst_po_pengajuans.id')
+                        ->whereRaw('trs.updated_at = (SELECT MAX(updated_at) FROM trs_po_pengajuans WHERE trs_po_pengajuans.id_fpb = mst_po_pengajuans.id)');
+                }) // LEFT JOIN dengan filter subquery untuk mengambil baris terbaru
                 ->select(
                     'mst_po_pengajuans.no_fpb',
-                    DB::raw('MAX(mst_po_pengajuans.id) as id'),
-                    DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'),
-                    DB::raw('MAX(mst_po_pengajuans.kategori_po) as kategori_po'),
-                    DB::raw('MAX(mst_po_pengajuans.catatan) as catatan'),
-                    DB::raw('MAX(mst_po_pengajuans.status_1) as status_1'),
-                    DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
-                    DB::raw('COALESCE(MAX(trs.updated_at), "-") as trs_updated_at')
+                    'mst_po_pengajuans.id',
+                    'mst_po_pengajuans.modified_at',
+                    'mst_po_pengajuans.kategori_po',
+                    'mst_po_pengajuans.nama_barang',
+                    'mst_po_pengajuans.catatan',
+                    'mst_po_pengajuans.status_1',
+                    'mst_po_pengajuans.status_2',
+                    DB::raw('COALESCE(trs.updated_at, "-") as trs_updated_at')
                 )
-                ->groupBy('mst_po_pengajuans.no_fpb')
-                ->orderBy(DB::raw('MAX(mst_po_pengajuans.status_1)'), 'asc') // Urutan berdasarkan status_1
-                ->orderBy(DB::raw('MAX(trs.created_at)'), 'asc') // Urutan berdasarkan created_at
+                ->orderBy('mst_po_pengajuans.status_1', 'asc')
+                ->orderBy('mst_po_pengajuans.no_fpb', 'desc') // Urutan berdasarkan no_fpb
+                ->orderBy('trs.updated_at', 'asc') // Urutan berdasarkan trs.updated_at
                 ->get();
         }
 
         // Mengirim data ke view
         return view('po_pengajuan.index_po_pengajuan', compact('data'));
     }
+
+
 
     public function indexPoDeptHead()
     {
