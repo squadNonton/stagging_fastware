@@ -438,12 +438,15 @@
                                                     @endif
                                                 </td>
                                                 <td class="no-print">
-                                                    @if (empty($item->quotation_file))
+                                                    @if (empty($item->quotation_file) || $item->konfirmasi_quotation == 'Ditolak')
                                                         <input type="file" name="quotation_file_{{ $item->id }}"
                                                             class="form-control form-control-sm">
                                                     @endif
                                                 </td>
-                                                <td class="no-print">
+                                                <td class="no-print"
+                                                    @if ($item->konfirmasi_quotation == 'Ditolak') style="background-color: #e74c3c; color: white;"
+                                                        @elseif ($item->konfirmasi_quotation == 'Dikonfirmasi')
+                                                            style="background-color: #2ecc71; color: white;" @endif>
                                                     @if ($item->quotation_file)
                                                         <p>
                                                             <a href="{{ asset($item->quotation_file) }}" target="_blank">
@@ -458,11 +461,11 @@
                                                                 @if ($fileExtension == 'pdf')
                                                                     <!-- Ikon untuk file PDF -->
                                                                     <i class="fas fa-file-pdf fa-2x"
-                                                                        style="color: #e74c3c;"></i>
+                                                                        style="color: #0026ff;"></i>
                                                                 @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
                                                                     <!-- Ikon untuk file gambar -->
                                                                     <i class="fas fa-file-image fa-2x"
-                                                                        style="color: #3498db;"></i>
+                                                                        style="color: #00e1ff;"></i>
                                                                 @else
                                                                     <!-- Ikon untuk file umum -->
                                                                     <i class="fas fa-file-alt fa-2x"
@@ -1134,7 +1137,9 @@
 
                     // Jika ada data tambahan Subcon, tambahkan ke baris
                     if (item.hasOwnProperty('target_cost')) {
-                        row = row.concat([item.target_cost, item.lead_time, item.rekomendasi, item.nama_customer, item.nama_project,  item.no_so]);
+                        row = row.concat([item.target_cost, item.lead_time, item.rekomendasi, item.nama_customer, item
+                            .nama_project, item.no_so
+                        ]);
                     }
 
                     return row;

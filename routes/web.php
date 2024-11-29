@@ -423,6 +423,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/cancel-item/{id}', [PoPengajuanController::class, 'updateCancelByProcurment'])->name('kirim.fpb.cancel');
     Route::post('/cancel-item2/{id}', [PoPengajuanController::class, 'updateCancelBySecHead'])->name('kirim.fpb.cancel2');
     Route::post('/po_pengajuan/finish/{no_fpb}', [PoPengajuanController::class, 'updateFinishByProcurment'])->name('update.PoPengajuan.finish');
+    Route::post('/po-pengajuan/approve-quotation/{id}', [PoPengajuanController::class, 'updateStatusQuotation'])->name('poPengajuan.updateStatusQuotation');
 
     Route::get('/po-history/{no_fpb}', [PoPengajuanController::class, 'getPoHistory'])->name('po.history');
     Route::delete('/po_pengajuan/delete_multiple', [PoPengajuanController::class, 'deletePoPengajuanMultiple'])->name('delete.PoPengajuanMultiple');

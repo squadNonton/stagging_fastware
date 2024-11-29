@@ -57,12 +57,14 @@
                                         <tr>
                                             <th class="text-center" width="50px">NO</th>
                                             <th class="text-center" width="100px">NO FPB</th>
+                                            @if (isset($showNamaBarang) && $showNamaBarang == true)
+                                                <th class="text-center" width="100px">No PO</th>
+                                            @endif
                                             <th class="text-center" width="100px">PIC</th>
                                             <th class="text-center" width="100px">Kategori</th>
                                             @if (isset($showNamaBarang) && $showNamaBarang == true)
                                                 <th class="text-center" width="100px">Nama Barang</th>
                                             @endif
-
                                             <th class="text-center" width="100px">Catatan</th>
                                             <th class="text-center" width="100px">Tgl Pembaruan</th>
                                             <th class="text-center" width="100px">Status</th>
@@ -84,6 +86,7 @@
                                                 <tr>
                                                     <td class="text-center py-3">{{ $loop->iteration }}</td>
                                                     <td class="text-center py-3">{{ $row->no_fpb }}</td>
+                                                    <td class="text-center py-3">{{ $row->no_po }}</td>
                                                     <td class="text-center py-3">{{ $row->modified_at }}</td>
                                                     <td class="text-center py-3">{{ $row->kategori_po }}</td>
                                                     <!-- Conditionally hide/show nama_barang based on controller source -->

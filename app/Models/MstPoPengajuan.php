@@ -34,6 +34,7 @@ class MstPoPengajuan extends Model
         'nama_customer',
         'nama_project', 
         'no_so',
+        'konfirmasi_quotation',
         'catatan',
         'status_1', 
         'status_2', 

@@ -384,7 +384,6 @@ class PoPengajuanController extends Controller
             ->select(
                 'mst_po_pengajuans.no_fpb',
                 'mst_po_pengajuans.id',
-                'mst_po_pengajuans.no_po',
                 'mst_po_pengajuans.kategori_po',
                 'mst_po_pengajuans.nama_barang',
                 'mst_po_pengajuans.qty',
@@ -408,13 +407,13 @@ class PoPengajuanController extends Controller
                 'mst_po_pengajuans.created_at',
                 'mst_po_pengajuans.updated_at',
                 'mst_po_pengajuans.modified_at',
+                'trs.no_po',
                 DB::raw('(SELECT MAX(updated_at) FROM trs_po_pengajuans WHERE id_fpb = mst_po_pengajuans.id) as trs_updated_at')
             )
             ->where('mst_po_pengajuans.status_2', '!=', 8) // Filter out records with status_2 = 8
             ->groupBy(
                 'mst_po_pengajuans.no_fpb',
                 'mst_po_pengajuans.id',
-                'mst_po_pengajuans.no_po',
                 'mst_po_pengajuans.kategori_po',
                 'mst_po_pengajuans.nama_barang',
                 'mst_po_pengajuans.qty',
@@ -437,7 +436,8 @@ class PoPengajuanController extends Controller
                 'mst_po_pengajuans.status_2',
                 'mst_po_pengajuans.created_at',
                 'mst_po_pengajuans.updated_at',
-                'mst_po_pengajuans.modified_at'
+                'mst_po_pengajuans.modified_at',
+                'trs.no_po',
             )
             ->orderBy(DB::raw('MAX(mst_po_pengajuans.status_1)'), 'asc') // Urutan berdasarkan status_1
             ->orderBy(DB::raw('MAX(mst_po_pengajuans.created_at)'), 'asc') // Urutan berdasarkan created_at
@@ -1723,13 +1723,21 @@ class PoPengajuanController extends Controller
             // Nama file menggunakan UUID dan ekstensi file asli
             $fileName = $uuid . '.' . $extension;
 
-            // Simpan file di public/assets/pre_order
+            // Hapus file lama jika ada
+            if ($pengajuan->quotation_file && file_exists(public_path($pengajuan->quotation_file))) {
+                unlink(public_path($pengajuan->quotation_file)); // Hapus file lama
+            }
+
+            // Simpan file baru di public/assets/pre_order
             $filePath = $file->move(public_path('assets/pre_order'), $fileName);
 
-            // Simpan path file di database
+            // Simpan path file baru di database dan update konfirmasi_quotation
             $pengajuan->update([
                 'quotation_file' => 'assets/pre_order/' . $fileName, // Simpan path file yang diunggah
+                'konfirmasi_quotation' => 'Dikonfirmasi', // Ubah nilai konfirmasi_quotation menjadi "Dikonfirmasi"
             ]);
+
+            \Log::info('File updated and konfirmasi_quotation set to Dikonfirmasi for id: ' . $id);
         } else {
             // Jika no_po diisi, ubah status menjadi 7
             if (request()->filled('no_po')) {
@@ -1760,6 +1768,7 @@ class PoPengajuanController extends Controller
 
         return response()->json(['message' => 'Status updated successfully for id: ' . $id]);
     }
+
 
     //cancel by procurment
     public function rejectItem($id)
@@ -1936,6 +1945,36 @@ class PoPengajuanController extends Controller
         }
 
         return redirect()->route('index.PO.procurement')->with('success', 'Status updated successfully for no_fpb: ' . $no_fpb);
+    }
+
+    public function updateStatusQuotation(Request $request, $id)
+    {
+        // Validasi request
+        $request->validate([
+            'status' => 'required|in:Diterima,Ditolak,Dikonfirmasi', // Tambahkan "Dikonfirmasi" sebagai status valid
+        ]);
+
+        try {
+            // Cari data berdasarkan ID
+            $pengajuan = MstPoPengajuan::findOrFail($id);
+
+            // Update status
+            $pengajuan->konfirmasi_quotation = $request->status; // Simpan status ("Diterima", "Ditolak", "Dikonfirmasi")
+            $pengajuan->save();
+
+            // Response sukses
+            return response()->json([
+                'success' => true,
+                'message' => 'Status berhasil diperbarui.',
+                'data' => $pengajuan,
+            ]);
+        } catch (\Exception $e) {
+            // Response gagal
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui status: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function downloadFile($id)
