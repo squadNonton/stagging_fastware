@@ -362,6 +362,8 @@
                                             <th>Tgl Dibuat</th>
                                             <th class="no-print">Status</th>
                                             <th class="no-print">Aksi</th> <!-- Kolom baru untuk aksi -->
+                                            <th class="no-print">konfirmasi Quotation</th> <!-- Kolom baru untuk aksi -->
+                                            <th class="no-print">View Quotation</th> <!-- Kolom baru untuk aksi -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -451,6 +453,50 @@
                                                             title="Pengajuan Reject" data-id="{{ $item->id }}">
                                                             <i class="fas fa-close"></i> Pengajuan Reject
                                                         </button>
+                                                    @endif
+                                                </td>
+                                                <td class="no-print">
+                                                    @if ($item->quotation_file)
+                                                        <button class="btn btn-primary btn-action" data-id="{{ $item->id }}">
+                                                            <i class="fas fa-check-circle"></i> Konfirmasi
+                                                        </button>
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
+
+                                                <td class="no-print"
+                                                    @if ($item->konfirmasi_quotation == 'Ditolak') style="background-color: #e74c3c; color: white;"
+                                                        @elseif ($item->konfirmasi_quotation == 'Dikonfirmasi')
+                                                            style="background-color: #2ecc71; color: white;" @endif>
+                                                    @if ($item->quotation_file)
+                                                        <p>
+                                                            <a href="{{ asset($item->quotation_file) }}" target="_blank">
+                                                                @php
+                                                                    // Mendapatkan ekstensi file
+                                                                    $fileExtension = pathinfo(
+                                                                        $item->quotation_file,
+                                                                        PATHINFO_EXTENSION,
+                                                                    );
+                                                                @endphp
+
+                                                                @if ($fileExtension == 'pdf')
+                                                                    <!-- Ikon untuk file PDF -->
+                                                                    <i class="fas fa-file-pdf fa-2x"
+                                                                        style="color: #0026ff;"></i>
+                                                                @elseif(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
+                                                                    <!-- Ikon untuk file gambar -->
+                                                                    <i class="fas fa-file-image fa-2x"
+                                                                        style="color: #00e1ff;"></i>
+                                                                @else
+                                                                    <!-- Ikon untuk file umum -->
+                                                                    <i class="fas fa-file-alt fa-2x"
+                                                                        style="color: #2ecc71;"></i>
+                                                                @endif
+                                                            </a>
+                                                        </p>
+                                                    @else
+                                                        <span class="text-muted">-</span>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -787,6 +833,83 @@
                         });
                     });
                 });
+
+                //Konfirmasi Quotation
+                document.querySelectorAll('.btn-action').forEach(button => {
+                    button.addEventListener('click', function() {
+                        var id = this.getAttribute('data-id'); // Ambil ID dari tombol
+
+                        Swal.fire({
+                            title: 'Konfirmasi Item',
+                            text: 'Pilih tindakan untuk item ini:',
+                            icon: 'question',
+                            showCancelButton: true,
+                            showDenyButton: true,
+                            confirmButtonText: 'Dikonfirmasi',
+                            denyButtonText: 'Ditolak',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Jika "Dikonfirmasi"
+                                $.ajax({
+                                    url: "{{ route('poPengajuan.updateStatusQuotation', ':id') }}"
+                                        .replace(':id', id),
+                                    type: 'POST',
+                                    data: {
+                                        _token: '{{ csrf_token() }}', // CSRF Token Laravel
+                                        status: 'Dikonfirmasi' // Status untuk update
+                                    },
+                                    success: function(response) {
+                                        Swal.fire(
+                                            'Berhasil!',
+                                            'Item berhasil dikonfirmasi.',
+                                            'success'
+                                        ).then(() => {
+                                            location
+                                                .reload(); // Refresh halaman
+                                        });
+                                    },
+                                    error: function(xhr) {
+                                        Swal.fire(
+                                            'Gagal!',
+                                            'Terjadi kesalahan saat mengkonfirmasi item.',
+                                            'error'
+                                        );
+                                    }
+                                });
+                            } else if (result.isDenied) {
+                                // Jika "Ditolak"
+                                $.ajax({
+                                    url: "{{ route('poPengajuan.updateStatusQuotation', ':id') }}"
+                                        .replace(':id', id),
+                                    type: 'POST',
+                                    data: {
+                                        _token: '{{ csrf_token() }}', // CSRF Token Laravel
+                                        status: 'Ditolak' // Status untuk update
+                                    },
+                                    success: function(response) {
+                                        Swal.fire(
+                                            'Berhasil!',
+                                            'Item berhasil ditolak.',
+                                            'success'
+                                        ).then(() => {
+                                            location
+                                                .reload(); // Refresh halaman
+                                        });
+                                    },
+                                    error: function(xhr) {
+                                        Swal.fire(
+                                            'Gagal!',
+                                            'Terjadi kesalahan saat menolak item.',
+                                            'error'
+                                        );
+                                    }
+                                });
+                            }
+                        });
+                    });
+                });
+
 
             });
 
