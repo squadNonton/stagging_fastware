@@ -382,6 +382,7 @@ class PoPengajuanController extends Controller
     public function indexPoProcurement2()
     {
         $data = DB::table('mst_po_pengajuans as mst')
+            ->leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst.id') // LEFT JOIN dengan tabel trs_po_pengajuans
             ->select(
                 'mst.no_fpb',
                 'mst.id',
@@ -408,12 +409,36 @@ class PoPengajuanController extends Controller
                 'mst.created_at',
                 'mst.updated_at',
                 'mst.modified_at',
-                DB::raw('(SELECT trs.no_po 
-                      FROM trs_po_pengajuans AS trs 
-                      WHERE trs.id_fpb = mst.id 
-                      LIMIT 1) AS no_po') // Subquery untuk mengambil no_po
+                DB::raw('MIN(trs.no_po) AS no_po') // Ambil nilai no_po terkecil
             )
             ->where('mst.status_2', '!=', 8) // Filter untuk status_2 != 8
+            ->groupBy(
+                'mst.no_fpb',
+                'mst.id',
+                'mst.kategori_po',
+                'mst.nama_barang',
+                'mst.qty',
+                'mst.pcs',
+                'mst.price_list',
+                'mst.total_harga',
+                'mst.spesifikasi',
+                'mst.file',
+                'mst.file_name',
+                'mst.quotation_file',
+                'mst.amount',
+                'mst.rekomendasi',
+                'mst.due_date',
+                'mst.target_cost',
+                'mst.lead_time',
+                'mst.nama_customer',
+                'mst.nama_project',
+                'mst.catatan',
+                'mst.status_1',
+                'mst.status_2',
+                'mst.created_at',
+                'mst.updated_at',
+                'mst.modified_at'
+            ) // Pastikan semua kolom di SELECT yang berasal dari mst dikelompokkan
             ->orderBy('mst.status_1', 'asc') // Urutkan berdasarkan status_1
             ->orderBy('mst.created_at', 'asc') // Urutkan berdasarkan created_at
             ->get();
@@ -432,6 +457,7 @@ class PoPengajuanController extends Controller
         // Kirim data ke view
         return view('po_pengajuan.index_po_procurment', compact('data', 'pengajuanCancel', 'noFpbTerbaru', 'showNamaBarang'));
     }
+
 
     public function showFPBForm($id)
     {
