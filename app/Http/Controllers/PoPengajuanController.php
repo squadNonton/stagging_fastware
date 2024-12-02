@@ -381,6 +381,7 @@ class PoPengajuanController extends Controller
 
     public function indexPoProcurement2()
     {
+        //queryprc2
         $data = DB::table('mst_po_pengajuans as mst')
             ->leftJoin('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst.id') // LEFT JOIN dengan tabel trs_po_pengajuans
             ->select(
