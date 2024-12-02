@@ -86,7 +86,9 @@
                                                 <tr>
                                                     <td class="text-center py-3">{{ $loop->iteration }}</td>
                                                     <td class="text-center py-3">{{ $row->no_fpb }}</td>
-                                                    <td class="text-center py-3">{{ $row->no_po }}</td>
+                                                    @if (isset($showNamaBarang) && $showNamaBarang == true)
+                                                        <td class="text-center py-3">{{ $row->no_po }}</td>
+                                                    @endif
                                                     <td class="text-center py-3">{{ $row->modified_at }}</td>
                                                     <td class="text-center py-3">{{ $row->kategori_po }}</td>
                                                     <!-- Conditionally hide/show nama_barang based on controller source -->
@@ -96,7 +98,7 @@
                                                     <td class="text-center py-3"><b>{{ $row->catatan }}</b></td>
                                                     <td class="text-center py-3">
                                                         <b>
-                                                            {{ $row->trs_updated_at !== '-' && $row->trs_updated_at ? \Carbon\Carbon::parse($row->trs_updated_at)->format('d-m-Y') : '-' }}
+                                                            {{ $row->updated_at !== '-' && $row->updated_at ? \Carbon\Carbon::parse($row->updated_at)->format('d-m-Y') : '-' }}
                                                         </b>
                                                     </td>
                                                     <td class="text-center py-4"

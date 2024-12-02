@@ -356,7 +356,8 @@ class PoPengajuanController extends Controller
                 DB::raw('MAX(mst_po_pengajuans.status_2) as status_2'),
                 DB::raw('MAX(mst_po_pengajuans.created_at) as created_at'),
                 DB::raw('MAX(mst_po_pengajuans.modified_at) as modified_at'),
-                DB::raw('MAX(trs.updated_at) as trs_updated_at') // Ambil updated_at terbaru dari TrsPoPengajuan
+                DB::raw('MAX(trs.updated_at) as trs_updated_at'),
+                DB::raw('MAX(trs.no_po) as no_po') // Ambil updated_at terbaru dari TrsPoPengajuan
             )
             ->groupBy('mst_po_pengajuans.no_fpb')
             ->orderBy(DB::raw('MAX(mst_po_pengajuans.status_1)'), 'asc') // Urutan berdasarkan status_1
@@ -380,81 +381,55 @@ class PoPengajuanController extends Controller
 
     public function indexPoProcurement2()
     {
-        $data = MstPoPengajuan::join('trs_po_pengajuans as trs', 'trs.id_fpb', '=', 'mst_po_pengajuans.id')
+        $data = DB::table('mst_po_pengajuans as mst')
             ->select(
-                'mst_po_pengajuans.no_fpb',
-                'mst_po_pengajuans.id',
-                'mst_po_pengajuans.kategori_po',
-                'mst_po_pengajuans.nama_barang',
-                'mst_po_pengajuans.qty',
-                'mst_po_pengajuans.pcs',
-                'mst_po_pengajuans.price_list',
-                'mst_po_pengajuans.total_harga',
-                'mst_po_pengajuans.spesifikasi',
-                'mst_po_pengajuans.file',
-                'mst_po_pengajuans.file_name',
-                'mst_po_pengajuans.quotation_file',
-                'mst_po_pengajuans.amount',
-                'mst_po_pengajuans.rekomendasi',
-                'mst_po_pengajuans.due_date',
-                'mst_po_pengajuans.target_cost',
-                'mst_po_pengajuans.lead_time',
-                'mst_po_pengajuans.nama_customer',
-                'mst_po_pengajuans.nama_project',
-                'mst_po_pengajuans.catatan',
-                'mst_po_pengajuans.status_1',
-                'mst_po_pengajuans.status_2',
-                'mst_po_pengajuans.created_at',
-                'mst_po_pengajuans.updated_at',
-                'mst_po_pengajuans.modified_at',
-                'trs.no_po',
-                DB::raw('(SELECT MAX(updated_at) FROM trs_po_pengajuans WHERE id_fpb = mst_po_pengajuans.id) as trs_updated_at')
+                'mst.no_fpb',
+                'mst.id',
+                'mst.kategori_po',
+                'mst.nama_barang',
+                'mst.qty',
+                'mst.pcs',
+                'mst.price_list',
+                'mst.total_harga',
+                'mst.spesifikasi',
+                'mst.file',
+                'mst.file_name',
+                'mst.quotation_file',
+                'mst.amount',
+                'mst.rekomendasi',
+                'mst.due_date',
+                'mst.target_cost',
+                'mst.lead_time',
+                'mst.nama_customer',
+                'mst.nama_project',
+                'mst.catatan',
+                'mst.status_1',
+                'mst.status_2',
+                'mst.created_at',
+                'mst.updated_at',
+                'mst.modified_at',
+                DB::raw('(SELECT trs.no_po 
+                      FROM trs_po_pengajuans AS trs 
+                      WHERE trs.id_fpb = mst.id 
+                      LIMIT 1) AS no_po') // Subquery untuk mengambil no_po
             )
-            ->where('mst_po_pengajuans.status_2', '!=', 8) // Filter out records with status_2 = 8
-            ->groupBy(
-                'mst_po_pengajuans.no_fpb',
-                'mst_po_pengajuans.id',
-                'mst_po_pengajuans.kategori_po',
-                'mst_po_pengajuans.nama_barang',
-                'mst_po_pengajuans.qty',
-                'mst_po_pengajuans.pcs',
-                'mst_po_pengajuans.price_list',
-                'mst_po_pengajuans.total_harga',
-                'mst_po_pengajuans.spesifikasi',
-                'mst_po_pengajuans.file',
-                'mst_po_pengajuans.file_name',
-                'mst_po_pengajuans.quotation_file',
-                'mst_po_pengajuans.amount',
-                'mst_po_pengajuans.rekomendasi',
-                'mst_po_pengajuans.due_date',
-                'mst_po_pengajuans.target_cost',
-                'mst_po_pengajuans.lead_time',
-                'mst_po_pengajuans.nama_customer',
-                'mst_po_pengajuans.nama_project',
-                'mst_po_pengajuans.catatan',
-                'mst_po_pengajuans.status_1',
-                'mst_po_pengajuans.status_2',
-                'mst_po_pengajuans.created_at',
-                'mst_po_pengajuans.updated_at',
-                'mst_po_pengajuans.modified_at',
-                'trs.no_po',
-            )
-            ->orderBy(DB::raw('MAX(mst_po_pengajuans.status_1)'), 'asc') // Urutan berdasarkan status_1
-            ->orderBy(DB::raw('MAX(mst_po_pengajuans.created_at)'), 'asc') // Urutan berdasarkan created_at
+            ->where('mst.status_2', '!=', 8) // Filter untuk status_2 != 8
+            ->orderBy('mst.status_1', 'asc') // Urutkan berdasarkan status_1
+            ->orderBy('mst.created_at', 'asc') // Urutkan berdasarkan created_at
             ->get();
 
-        // Mencari data yang memiliki catatan "Terdapat Reject Item" dan status_1 != 9
+        // Filter untuk mencari data yang memiliki catatan "Terdapat Reject Item" dan status_1 != 9
         $pengajuanCancel = $data->filter(function ($item) {
             return strpos($item->catatan, 'Terdapat Reject Item') !== false && $item->status_1 != 9;
-        })->pluck('no_fpb')->toArray(); // Mengambil no_fpb untuk data yang memiliki catatan "Cancel Item"
+        })->pluck('no_fpb')->toArray();
 
-        // Mencari pengajuan terbaru dengan status_1 = 5 dari data yang sudah diambil
+        // Cari pengajuan terbaru dengan status_1 = 5 dari data yang sudah diambil
         $pengajuanTerbaru = $data->firstWhere('status_1', 5);
         $noFpbTerbaru = $pengajuanTerbaru ? $pengajuanTerbaru->no_fpb : null;
 
         $showNamaBarang = true;
 
-        // Mengirim data ke view
+        // Kirim data ke view
         return view('po_pengajuan.index_po_procurment', compact('data', 'pengajuanCancel', 'noFpbTerbaru', 'showNamaBarang'));
     }
 
@@ -1477,18 +1452,13 @@ class PoPengajuanController extends Controller
     //Sec.Head
     public function updateStatusByNoFPB($no_fpb)
     {
-        // Log no_fpb yang diterima
-        \Log::info('Received no_fpb: ' . $no_fpb);
-
         // Ubah kembali tanda minus (-) menjadi garis miring (/)
         $no_fpb = str_replace('-', '/', $no_fpb);
-        \Log::info('Transformed no_fpb: ' . $no_fpb);
 
         // Cari data berdasarkan no_fpb yang telah diubah
         $pengajuanList = MstPoPengajuan::where('no_fpb', $no_fpb)->get();
 
-        if ($pengajuanList->isEmpty()) {
-            \Log::error('No data found for no_fpb: ' . $no_fpb); // Log jika data tidak ditemukan
+        if ($pengajuanList->isEmpty()) { // Log jika data tidak ditemukan
             return redirect()->back()->with('error', 'Data not found');
         }
 
@@ -1496,7 +1466,6 @@ class PoPengajuanController extends Controller
         foreach ($pengajuanList as $pengajuan) {
             // Cek jika status_1 atau status_2 bernilai 8
             if ($pengajuan->status_1 == 8 || $pengajuan->status_2 == 8) {
-                \Log::warning('Skipping update for no_fpb: ' . $no_fpb . ' because status is 8');
                 continue; // Lewati iterasi ini jika status_1 atau status_2 adalah 8
             }
 
@@ -1768,7 +1737,6 @@ class PoPengajuanController extends Controller
 
         return response()->json(['message' => 'Status updated successfully for id: ' . $id]);
     }
-
 
     //cancel by procurment
     public function rejectItem($id)
